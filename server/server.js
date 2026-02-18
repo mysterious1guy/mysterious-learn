@@ -37,7 +37,7 @@ app.get('/api/status', (req, res) => {
 
 // 5. La "Route Secours" : Renvoie l'index.html pour toutes les autres requêtes
 // (Essentiel pour que React/Vue/Vite gère le routage côté client)
-app.get('(.*)', (req, res) => {
+app.get('/:any*', (req, res) => {
   const indexPath = path.join(rootDir, 'dist', 'index.html');
   res.sendFile(indexPath);
 });
