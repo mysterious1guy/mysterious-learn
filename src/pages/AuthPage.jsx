@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // ← Ajout de Link
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle, Globe } from 'lucide-react';
 import CyberPet from '../CyberPet';
@@ -15,9 +15,9 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [petSecret, setPetSecret] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [showPolicies, setShowPolicies] = useState(false); // Gardé pour la modale si besoin
+    const [showPolicies, setShowPolicies] = useState(false);
 
-    // Validation email en temps réel
+    // Validation email
     const [emailError, setEmailError] = useState('');
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -30,7 +30,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         setEmailError(validateEmail(formData.email));
     }, [formData.email]);
 
-    // Validation mot de passe
+    // Force mot de passe
     const [passwordStrength, setPasswordStrength] = useState(0);
     useEffect(() => {
         if (formData.password.length === 0) {
@@ -44,14 +44,13 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         }
     }, [formData.password]);
 
-    // Fonction pour charger le script Google
+    // Charger script Google
     const loadGoogleScript = () => {
         return new Promise((resolve, reject) => {
             if (window.google && window.google.accounts) {
                 resolve();
                 return;
             }
-
             const script = document.createElement('script');
             script.src = 'https://accounts.google.com/gsi/client';
             script.async = true;
@@ -62,7 +61,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         });
     };
 
-    // VERSION CORRIGÉE - Utilise google.accounts.id au lieu de initTokenClient
+    // Google Login
     const handleGoogleLogin = async () => {
         setIsLoading(true);
         setAuthError('');
@@ -76,7 +75,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     if (response.error) {
                         console.error('Erreur Google:', response.error);
                         setAuthError('Erreur lors de la connexion Google');
-                        setIsLoading(false); // ← TRÈS IMPORTANT !
+                        setIsLoading(false);
                         return;
                     }
 
@@ -104,7 +103,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         console.error('Erreur réseau:', err);
                         setAuthError('Erreur de connexion au serveur');
                     } finally {
-                        setIsLoading(false); // ← TRÈS IMPORTANT !
+                        setIsLoading(false);
                     }
                 },
             });
@@ -114,7 +113,85 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         } catch (error) {
             console.error('Erreur Google:', error);
             setAuthError('Erreur lors de l\'initialisation de Google');
-            setIsLoading(false); // ← TRÈS IMPORTANT !
+            setIsLoading(false);
+        }
+    };
+
+    // 🟢 NOUVELLE FONCTION - Connexion email/mot de passe
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        if (emailError) {
+            setAuthError('Veuillez entrer un email valide');
+            return;
+        }
+
+        setIsLoading(true);
+        setAuthError('');
+
+        try {
+            const response = await fetch(`${API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password,
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setUser(data);
+                setToast({ message: 'Connexion réussie !', type: 'success' });
+                navigate('/dashboard');
+                fetchProgressions();
+            } else {
+                setAuthError(data.message || 'Email ou mot de passe incorrect');
+            }
+        } catch (err) {
+            setAuthError('Erreur réseau');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // 🟢 NOUVELLE FONCTION - Inscription email/mot de passe
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        if (!agreedToPolicy || !agreedToTerms) {
+            setAuthError('Vous devez accepter les conditions et la politique de confidentialité');
+            return;
+        }
+
+        if (emailError) {
+            setAuthError('Veuillez entrer un email valide');
+            return;
+        }
+
+        setIsLoading(true);
+        setAuthError('');
+
+        try {
+            const response = await fetch(`${API_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: `${formData.firstName} ${formData.lastName}`.trim(),
+                    email: formData.email,
+                    password: formData.password,
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setUser(data);
+                setToast({ message: 'Inscription réussie !', type: 'success' });
+                navigate('/dashboard');
+                fetchProgressions();
+            } else {
+                setAuthError(data.message || 'Erreur lors de l\'inscription');
+            }
+        } catch (err) {
+            setAuthError('Erreur réseau');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -226,12 +303,12 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     <div
                                         key={level}
                                         className={`h-1 flex-1 rounded-full transition-all ${passwordStrength >= level
-                                            ? level === 1
-                                                ? 'bg-red-500'
-                                                : level === 2
-                                                    ? 'bg-yellow-500'
-                                                    : 'bg-green-500'
-                                            : 'bg-gray-700'
+                                                ? level === 1
+                                                    ? 'bg-red-500'
+                                                    : level === 2
+                                                        ? 'bg-yellow-500'
+                                                        : 'bg-green-500'
+                                                : 'bg-gray-700'
                                             }`}
                                     />
                                 ))}
@@ -263,7 +340,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     />
                                     <CheckCircle className="absolute text-white opacity-0 peer-checked:opacity-100" size={12} />
                                 </div>
-                                {/* 🟢 CHANGÉ: button -> Link */}
                                 <label htmlFor="privacy-check" className="text-sm text-gray-400 cursor-pointer select-none">
                                     J'accepte la <Link to="/privacy" className="text-blue-400 hover:underline font-bold">politique de confidentialité</Link>
                                 </label>
@@ -281,7 +357,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     />
                                     <CheckCircle className="absolute text-white opacity-0 peer-checked:opacity-100" size={12} />
                                 </div>
-                                {/* 🟢 CHANGÉ: button -> Link */}
                                 <label htmlFor="terms-check" className="text-sm text-gray-400 cursor-pointer select-none">
                                     J'accepte les <Link to="/terms" className="text-blue-400 hover:underline font-bold">conditions d'utilisation</Link>
                                 </label>
@@ -305,8 +380,8 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         type="submit"
                         disabled={isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms)) || !!emailError}
                         className={`w-full font-bold py-3 rounded-2xl shadow-lg transition-all ${isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms)) || emailError
-                            ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
-                            : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'
+                                ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
+                                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'
                             }`}
                     >
                         {isLoading ? (
