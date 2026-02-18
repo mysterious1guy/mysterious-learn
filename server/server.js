@@ -1,37 +1,50 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db'); // ← import correct
+const path = require('path');
+const connectDB = require('./config/db'); 
 
-// Connexion à MongoDB
-connectDB(); // ← appel de la fonction
+// 1. Connexion à MongoDB
+connectDB();
 
 const app = express();
 
-// Middlewares
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+// 2. Middlewares
+// On autorise le CORS pour ton frontend
+app.use(cors({ 
+  origin: process.env.CLIENT_URL || '*', 
+  credentials: true 
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
+// 3. Routes API (Important : elles doivent être AVANT les fichiers statiques)
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 
-// Route de base
-app.get('/', (req, res) => {
-  res.send('API Mysterious Learn fonctionne');
+// 4. Gestion des fichiers statiques (Frontend Vite)
+// __dirname est le dossier actuel. On remonte d'un cran si nécessaire.
+const rootDir = path.resolve(); 
+
+// Sert les fichiers du dossier 'dist'
+app.use(express.static(path.join(rootDir, 'dist')));
+
+// Route de base pour tester l'API
+app.get('/api/status', (req, res) => {
+  res.json({ message: 'L\'API Mysterious Learn est en ligne' });
 });
 
-const PORT = process.env.PORT || 5000;
-const path = require('path');
-const _dirname = path.resolve();
-
-// Sert les fichiers statiques du dossier 'dist' (généré par Vite)
-app.use(express.static(path.join(_dirname, 'dist')));
-
-// Pour toutes les autres routes, renvoie l'index.html du front
+// 5. La "Route Secours" : Renvoie l'index.html pour toutes les autres requêtes
+// (Essentiel pour que React/Vue/Vite gère le routage côté client)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(_dirname, 'dist', 'index.html'));
+  const indexPath = path.join(rootDir, 'dist', 'index.html');
+  res.sendFile(indexPath);
 });
-app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
+
+// 6. Démarrage du serveur
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`✅ Serveur démarré sur le port ${PORT}`);
+  console.log(`📂 Dossier racine : ${rootDir}`);
+});
