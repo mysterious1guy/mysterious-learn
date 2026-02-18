@@ -1,0 +1,317 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Le style global de Mysterious Classroom */
+body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Premium Brand Font */
+.brand-font {
+  font-family: 'Cinzel Decorative', 'Orbitron', serif;
+}
+
+.brand-font-secondary {
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* Effet de verre (Glassmorphism) */
+.glass-panel {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Texte Néon */
+.neon-text {
+  text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+}
+
+/* Glowing text effect for brand */
+.glow-text {
+  text-shadow:
+    0 0 20px rgba(59, 130, 246, 0.4),
+    0 0 40px rgba(99, 102, 241, 0.2),
+    0 0 80px rgba(139, 92, 246, 0.1);
+}
+
+/* Pulsing glow button */
+.glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), 0 0 40px rgba(59, 130, 246, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.3);
+  }
+}
+
+/* Animated gradient border */
+.gradient-border {
+  position: relative;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 1rem;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
+  background-size: 300% 300%;
+  animation: gradientShift 4s ease infinite;
+  z-index: -1;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animations globales */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes pulse-slow {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 0.4;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animation pour les yeux du CyberPet */
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.animate-blink {
+  animation: blink 1.5s infinite;
+}
+
+/* Animation de flottement (pour le logo) */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Animation d'apparition vers le haut */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+/* Typing cursor animation */
+@keyframes typingCursor {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.typing-cursor::after {
+  content: '|';
+  animation: typingCursor 0.8s step-end infinite;
+  color: #60a5fa;
+  margin-left: 2px;
+}
+
+/* Floating geometric shapes */
+@keyframes floatShape1 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(30px, -40px) rotate(90deg);
+  }
+
+  50% {
+    transform: translate(-20px, -80px) rotate(180deg);
+  }
+
+  75% {
+    transform: translate(40px, -30px) rotate(270deg);
+  }
+}
+
+@keyframes floatShape2 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(-50px, -30px) rotate(120deg);
+  }
+
+  66% {
+    transform: translate(30px, -60px) rotate(240deg);
+  }
+}
+
+.float-shape-1 {
+  animation: floatShape1 20s ease-in-out infinite;
+}
+
+.float-shape-2 {
+  animation: floatShape2 15s ease-in-out infinite;
+}
+
+/* CyberPet breathing glow */
+@keyframes breathe {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.3));
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.7));
+  }
+}
+
+.pet-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* Sparkle effect */
+@keyframes sparkle {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+/* Verification code input */
+.code-input {
+  width: 3rem;
+  height: 3.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: rgba(15, 23, 42, 0.8);
+  border: 2px solid rgba(100, 116, 139, 0.3);
+  border-radius: 0.75rem;
+  color: white;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.code-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+/* Délais d'animation */
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
