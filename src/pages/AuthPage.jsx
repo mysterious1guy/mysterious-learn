@@ -70,23 +70,21 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         try {
             await loadGoogleScript();
 
-            // 🟢 NOUVELLE MÉTHODE: utiliser google.accounts.id.initialize
             google.accounts.id.initialize({
                 client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
                 callback: async (response) => {
                     if (response.error) {
                         console.error('Erreur Google:', response.error);
                         setAuthError('Erreur lors de la connexion Google');
-                        setIsLoading(false);
+                        setIsLoading(false); // ← TRÈS IMPORTANT !
                         return;
                     }
 
                     try {
-                        // 🟢 IMPORTANT: Envoyer credential (l'id_token) au backend
                         const res = await fetch(`${API_URL}/auth/google`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ credential: response.credential }) // ← response.credential est l'id_token
+                            body: JSON.stringify({ credential: response.credential })
                         });
 
                         const data = await res.json();
@@ -106,98 +104,17 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         console.error('Erreur réseau:', err);
                         setAuthError('Erreur de connexion au serveur');
                     } finally {
-                        setIsLoading(false);
+                        setIsLoading(false); // ← TRÈS IMPORTANT !
                     }
                 },
             });
 
-            // Déclencher la fenêtre de connexion Google
             google.accounts.id.prompt();
 
         } catch (error) {
             console.error('Erreur Google:', error);
             setAuthError('Erreur lors de l\'initialisation de Google');
-            setIsLoading(false);
-        }
-    };
-
-    const handleRegister = async (e) => {
-        e.preventDefault();
-        if (!agreedToPolicy || !agreedToTerms) {
-            setAuthError('Vous devez accepter les conditions et la politique de confidentialité');
-            return;
-        }
-
-        if (emailError) {
-            setAuthError('Veuillez entrer un email valide');
-            return;
-        }
-
-        setIsLoading(true);
-        setAuthError('');
-
-        try {
-            const response = await fetch(`${API_URL}/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: `${formData.firstName} ${formData.lastName}`.trim(),
-                    email: formData.email,
-                    password: formData.password,
-                }),
-            });
-            const data = await response.json();
-            if (response.ok) {
-                setUser(data);
-                setToast({ message: 'Inscription réussie !', type: 'success' });
-                navigate('/dashboard');
-                fetchProgressions();
-            } else {
-                setAuthError(data.message || 'Erreur lors de l\'inscription');
-            }
-        } catch (err) {
-            setAuthError('Erreur réseau');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        if (emailError) {
-            setAuthError('Veuillez entrer un email valide');
-            return;
-        }
-
-        setIsLoading(true);
-        setAuthError('');
-
-        try {
-            const response = await fetch(`${API_URL}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                }),
-            });
-            const data = await response.json();
-            if (response.ok) {
-                setUser(data);
-                setToast({ message: 'Connexion réussie !', type: 'success' });
-                navigate('/dashboard');
-                fetchProgressions();
-            } else {
-                if (data.message?.includes('Google')) {
-                    setAuthError(data.message);
-                } else {
-                    setAuthError(data.message || 'Email ou mot de passe incorrect');
-                }
-            }
-        } catch (err) {
-            setAuthError('Erreur réseau');
-        } finally {
-            setIsLoading(false);
+            setIsLoading(false); // ← TRÈS IMPORTANT !
         }
     };
 
