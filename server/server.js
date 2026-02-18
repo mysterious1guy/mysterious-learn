@@ -24,4 +24,14 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+const path = require('path');
+const _dirname = path.resolve();
+
+// Sert les fichiers statiques du dossier 'dist' (généré par Vite)
+app.use(express.static(path.join(_dirname, 'dist')));
+
+// Pour toutes les autres routes, renvoie l'index.html du front
+app.get('*', (req, res) => {
+  res.sendFile(path.join(_dirname, 'dist', 'index.html'));
+});
 app.listen(PORT, () => console.log(`Serveur démarré sur le port ${PORT}`));
