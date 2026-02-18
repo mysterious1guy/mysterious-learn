@@ -218,22 +218,52 @@ const login = async (req, res) => {
   }
 };
 
-// @desc    Google OAuth
+// @desc    Google OAuth - VERSION CORRIGÉE
 // @route   POST /api/auth/google
 const googleAuth = async (req, res) => {
   try {
-    const { credential } = req.body;
     console.log('Tentative de connexion Google reçue');
+
+    // Accepter soit credential (ancien) soit token (nouveau)
+    const token = req.body.credential || req.body.token;
+
+    if (!token) {
+      return res.status(400).json({ message: 'Token manquant' });
+    }
 
     // Verify Google ID token
     const ticket = await googleClient.verifyIdToken({
-      idToken: credential,
+      idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
 
     const payload = ticket.getPayload();
-    const { sub: googleId, email, name, picture } = payload;
+    const { sub: googleId, email, email_verified, name, picture } = payload;
+
     console.log('Token Google vérifié pour:', email);
+
+    // 🔐 VÉRIFICATION : L'email est-il vérifié par Google ?
+    if (!email_verified) {
+      return res.status(401).json({
+        message: 'Votre email Google n\'est pas vérifié. Veuillez vérifier votre email sur Google.'
+      });
+    }
+
+    // 🔐 VÉRIFICATION : L'email a-t-il un format valide ?
+    if (!email || !email.includes('@')) {
+      return res.status(401).json({
+        message: 'Email Google invalide'
+      });
+    }
+
+    // 🔐 VÉRIFICATION OPTIONNELLE : Domaines autorisés (décommente si besoin)
+    // const allowedDomains = ['gmail.com', 'esp.sn'];
+    // const domain = email.split('@')[1];
+    // if (!allowedDomains.includes(domain)) {
+    //   return res.status(401).json({ 
+    //     message: 'Domaine email non autorisé. Utilise une adresse personnelle.' 
+    //   });
+    // }
 
     // Check if user exists
     let user = await User.findOne({ $or: [{ googleId }, { email }] });
@@ -256,11 +286,12 @@ const googleAuth = async (req, res) => {
       console.log('Nouvel utilisateur Google:', email);
       // Create new user
       user = await User.create({
-        name,
+        name: name || email.split('@')[0],
         email,
         googleId,
         avatar: picture || null,
         isEmailVerified: true, // Google accounts are pre-verified
+        joinedAt: new Date(),
       });
     }
 
@@ -278,7 +309,15 @@ const googleAuth = async (req, res) => {
     });
   } catch (err) {
     console.error('Erreur Google Auth:', err);
-    res.status(401).json({ message: 'Échec de l\'authentification Google' });
+
+    // Messages d'erreur plus précis
+    if (err.message.includes('token')) {
+      res.status(401).json({ message: 'Token Google invalide ou expiré' });
+    } else if (err.message.includes('audience')) {
+      res.status(401).json({ message: 'Client ID Google invalide' });
+    } else {
+      res.status(401).json({ message: 'Échec de l\'authentification Google' });
+    }
   }
 };
 

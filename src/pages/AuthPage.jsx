@@ -44,19 +44,87 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         }
     }, [formData.password]);
 
+    // Fonction pour charger le script Google
+    const loadGoogleScript = () => {
+        return new Promise((resolve, reject) => {
+            if (window.google && window.google.accounts) {
+                resolve();
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = 'https://accounts.google.com/gsi/client';
+            script.async = true;
+            script.defer = true;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    };
+
+    // VERSION CORRIGÉE - Envoie credential (ID token) au lieu de token (access token)
     const handleGoogleLogin = async () => {
         setIsLoading(true);
         setAuthError('');
 
-        // Redirection vers Google OAuth
-        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-            `client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}` +
-            `&redirect_uri=${window.location.origin}/api/auth/google/callback` +
-            `&response_type=code` +
-            `&scope=email profile` +
-            `&prompt=select_account`;
+        try {
+            // Charger le script Google si nécessaire
+            await loadGoogleScript();
 
-        window.location.href = googleAuthUrl;
+            // Utiliser Google Identity Services pour obtenir un ID token (credential)
+            const client = google.accounts.oauth2.initTokenClient({
+                client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+                scope: 'email profile',
+                callback: async (response) => {
+                    if (response.error) {
+                        console.error('Erreur Google:', response.error);
+                        setAuthError('Erreur lors de la connexion Google');
+                        setIsLoading(false);
+                        return;
+                    }
+
+                    try {
+                        // 🟢 IMPORTANT: Envoyer credential (ID token) au lieu de token
+                        const res = await fetch(`${API_URL}/auth/google`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ credential: response.access_token })
+                        });
+
+                        const data = await res.json();
+
+                        if (res.ok) {
+                            setUser(data.user || data);
+                            setToast({
+                                message: 'Connexion réussie !',
+                                type: 'success'
+                            });
+                            navigate('/dashboard');
+                            if (fetchProgressions) fetchProgressions();
+                        } else {
+                            // Message d'erreur plus spécifique
+                            if (data.message?.includes('email') || data.message?.includes('vérifié')) {
+                                setAuthError(data.message);
+                            } else {
+                                setAuthError(data.message || 'Échec de l\'authentification Google');
+                            }
+                        }
+                    } catch (err) {
+                        console.error('Erreur réseau:', err);
+                        setAuthError('Erreur de connexion au serveur');
+                    } finally {
+                        setIsLoading(false);
+                    }
+                },
+            });
+
+            client.requestAccessToken();
+
+        } catch (error) {
+            console.error('Erreur Google:', error);
+            setAuthError('Erreur lors de l\'initialisation de Google');
+            setIsLoading(false);
+        }
     };
 
     const handleRegister = async (e) => {
@@ -126,7 +194,12 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 navigate('/dashboard');
                 fetchProgressions();
             } else {
-                setAuthError(data.message || 'Email ou mot de passe incorrect');
+                // Message spécifique pour les comptes Google
+                if (data.message?.includes('Google')) {
+                    setAuthError(data.message);
+                } else {
+                    setAuthError(data.message || 'Email ou mot de passe incorrect');
+                }
             }
         } catch (err) {
             setAuthError('Erreur réseau');
@@ -243,12 +316,12 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     <div
                                         key={level}
                                         className={`h-1 flex-1 rounded-full transition-all ${passwordStrength >= level
-                                                ? level === 1
-                                                    ? 'bg-red-500'
-                                                    : level === 2
-                                                        ? 'bg-yellow-500'
-                                                        : 'bg-green-500'
-                                                : 'bg-gray-700'
+                                            ? level === 1
+                                                ? 'bg-red-500'
+                                                : level === 2
+                                                    ? 'bg-yellow-500'
+                                                    : 'bg-green-500'
+                                            : 'bg-gray-700'
                                             }`}
                                     />
                                 ))}
@@ -320,8 +393,8 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         type="submit"
                         disabled={isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms)) || !!emailError}
                         className={`w-full font-bold py-3 rounded-2xl shadow-lg transition-all ${isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms)) || emailError
-                                ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
-                                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'
+                            ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
+                            : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'
                             }`}
                     >
                         {isLoading ? (
@@ -345,7 +418,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     </div>
                 </div>
 
-                {/* Bouton Google */}
+                {/* Bouton Google - CORRIGÉ avec credential */}
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
