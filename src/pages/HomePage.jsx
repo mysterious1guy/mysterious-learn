@@ -33,7 +33,8 @@ const HomePage = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="text-4xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 mb-8 text-center px-4"
+          className="text-4xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 mb-8 text-center px-4 tracking-tighter"
+          style={{ fontFamily: 'Orbitron, sans-serif', letterSpacing: '-0.05em' }}
         >
           MYSTERIOUS CLASSROOM
         </motion.h1>

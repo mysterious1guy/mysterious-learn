@@ -14,6 +14,7 @@ const {
   forgotPassword,
   resetPassword,
   nukeUsers,
+  checkEmail, // ← AJOUTÉ
 } = require('../controllers/authController');
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.post('/google', googleAuth);
 router.get('/google/callback', googleCallback);  // ← CORRIGÉ (utilise googleCallback)
 router.post('/verify-email', verifyEmail);
 router.post('/resend-verification', resendVerification);
+router.post('/check-email', checkEmail); // ← AJOUTÉ
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
 router.delete('/profile', protect, deleteAccount);

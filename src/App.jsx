@@ -17,6 +17,7 @@ import CoursePage from './pages/CoursePage';
 
 // Hooks et composants
 import { useLocalStorage } from './hooks/useLocalStorage';
+import { useCookies } from './hooks/useCookies';
 import { Toast } from './components/Toast';
 import Particles from './Particles';
 import { AnimatePresence } from 'framer-motion';
@@ -26,8 +27,18 @@ function App() {
   const [toast, setToast] = useState(null);
   const [progressions, setProgressions] = useState({});
   const [favorites, setFavorites] = useLocalStorage('favorites', []);
+  const { setUserCookie, getUserCookie, removeUserCookie, setProgressCookie, getProgressCookie } = useCookies();
 
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+  // Synchroniser les cookies avec le localStorage
+  useEffect(() => {
+    if (user) {
+      setUserCookie(user);
+    } else {
+      removeUserCookie();
+    }
+  }, [user, setUserCookie, removeUserCookie]);
 
   const handleUpdateUser = (updatedData) => {
     if (!updatedData) return;
@@ -39,17 +50,20 @@ function App() {
       setFavorites(updatedData.favorites);
     }
 
-    setUser(prev => ({
-      ...prev,
+    const updatedUser = {
+      ...user,
       ...updatedData,
       firstName,
       lastName
-    }));
+    };
+    
+    setUser(updatedUser);
   };
 
   const handleLogout = () => {
     setUser(null);
     setProgressions({});
+    removeUserCookie();
     setToast({ message: 'Déconnexion réussie', type: 'info' });
   };
 

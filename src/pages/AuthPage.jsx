@@ -16,17 +16,52 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     const [petSecret, setPetSecret] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Validation email
+    // Validation email améliorée
     const [emailError, setEmailError] = useState('');
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email) return '';
         if (!re.test(email)) return 'Format d\'email invalide';
+        
+        // Validation plus stricte pour éviter les faux emails
+        const domain = email.split('@')[1];
+        if (!domain || domain.length < 4) return 'Domaine invalide';
+        if (!domain.includes('.')) return 'Domaine doit contenir un point';
+        if (domain.endsWith('@gmail.com') && email.split('@')[0].length < 3) return 'Nom d\'utilisateur Gmail trop court';
+        
         return '';
     };
     useEffect(() => {
         setEmailError(validateEmail(formData.email));
     }, [formData.email]);
+
+    // Vérification si l'email existe déjà (mode inscription)
+    const [emailExists, setEmailExists] = useState(false);
+    const checkEmailExists = async (email) => {
+        if (!email || emailError) return;
+        try {
+            const response = await fetch(`${API_URL}/auth/check-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+            const data = await response.json();
+            setEmailExists(data.exists);
+        } catch (err) {
+            console.error('Erreur vérification email:', err);
+        }
+    };
+
+    useEffect(() => {
+        if (authMode === 'signup' && formData.email && !emailError) {
+            const timer = setTimeout(() => {
+                checkEmailExists(formData.email);
+            }, 500);
+            return () => clearTimeout(timer);
+        } else {
+            setEmailExists(false);
+        }
+    }, [formData.email, authMode, emailError]);
 
     // Force mot de passe
     const [passwordStrength, setPasswordStrength] = useState(0);
@@ -68,7 +103,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
             if (response.ok) {
                 setUser(data);
                 setToast({ message: 'Connexion réussie !', type: 'success' });
-                navigate('/account');
+                navigate('/account'); // Redirection vers la page compte
                 if (fetchProgressions) fetchProgressions();
             } else {
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
@@ -91,6 +126,10 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
             setAuthError('Veuillez entrer un email valide');
             return;
         }
+        if (emailExists) {
+            setAuthError('Un compte existe déjà avec cet email. Connectez-vous plutôt.');
+            return;
+        }
         setIsLoading(true);
         setAuthError('');
         try {
@@ -107,7 +146,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
             if (response.ok) {
                 setUser(data);
                 setToast({ message: 'Inscription réussie !', type: 'success' });
-                navigate('/account');
+                navigate('/account'); // Redirection vers la page compte
                 if (fetchProgressions) fetchProgressions();
             } else {
                 setAuthError(data.message || 'Erreur lors de l\'inscription');
@@ -190,6 +229,8 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                             <div className="absolute right-3 top-3">
                                 {emailError ? (
                                     <XCircle className="text-red-500" size={20} />
+                                ) : emailExists ? (
+                                    <XCircle className="text-orange-500" size={20} />
                                 ) : (
                                     <CheckCircle className="text-green-500" size={20} />
                                 )}
@@ -197,6 +238,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         )}
                     </div>
                     {emailError && <p className="text-red-500 text-xs -mt-2">{emailError}</p>}
+                    {emailExists && !emailError && <p className="text-orange-500 text-xs -mt-2">Un compte existe déjà avec cet email</p>}
 
                     <div className="relative">
                         <Lock className="absolute left-3 top-3 text-gray-500" size={20} />
@@ -291,8 +333,8 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
-                        disabled={isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms)) || !!emailError}
-                        className={`w-full font-bold py-3 rounded-2xl shadow-lg transition-all ${isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms)) || emailError
+                        disabled={isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms || emailExists)) || !!emailError}
+                        className={`w-full font-bold py-3 rounded-2xl shadow-lg transition-all ${isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms || emailExists)) || emailError
                             ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
                             : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'
                             }`}

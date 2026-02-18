@@ -517,6 +517,24 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+// @desc    Vérifier si un email existe déjà
+// @route   POST /api/auth/check-email
+const checkEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: 'Email requis' });
+    }
+
+    const user = await User.findOne({ email });
+    res.json({ exists: !!user });
+  } catch (err) {
+    console.error('Erreur checkEmail:', err);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -531,4 +549,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   nukeUsers,
+  checkEmail, // ← AJOUTÉ
 };
