@@ -33,8 +33,8 @@ app.get('/api/status', (req, res) => {
 
 // 5. La "Route Secours" CORRIGÉE
 // On utilise '*' pour capturer toutes les routes qui ne sont pas des fichiers ou l'API
-app.get('*', (req, res) => {
-  // On vérifie si la requête ne commence pas par /api
+// 5. La "Route Secours" (Modifiée pour éviter l'erreur PathError)
+app.get('/*', (req, res) => {
   if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(rootDir, 'dist', 'index.html'));
   }
