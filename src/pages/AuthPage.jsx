@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // ← Ajout de Link
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle, Globe } from 'lucide-react';
 import CyberPet from '../CyberPet';
@@ -15,7 +15,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [petSecret, setPetSecret] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [showPolicies, setShowPolicies] = useState(false);
+    const [showPolicies, setShowPolicies] = useState(false); // Gardé pour la modale si besoin
 
     // Validation email en temps réel
     const [emailError, setEmailError] = useState('');
@@ -62,19 +62,17 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         });
     };
 
-    // VERSION CORRIGÉE - Envoie credential (ID token) au lieu de token (access token)
+    // VERSION CORRIGÉE - Utilise google.accounts.id au lieu de initTokenClient
     const handleGoogleLogin = async () => {
         setIsLoading(true);
         setAuthError('');
 
         try {
-            // Charger le script Google si nécessaire
             await loadGoogleScript();
 
-            // Utiliser Google Identity Services pour obtenir un ID token (credential)
-            const client = google.accounts.oauth2.initTokenClient({
+            // 🟢 NOUVELLE MÉTHODE: utiliser google.accounts.id.initialize
+            google.accounts.id.initialize({
                 client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-                scope: 'email profile',
                 callback: async (response) => {
                     if (response.error) {
                         console.error('Erreur Google:', response.error);
@@ -84,11 +82,11 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     }
 
                     try {
-                        // 🟢 IMPORTANT: Envoyer credential (ID token) au lieu de token
+                        // 🟢 IMPORTANT: Envoyer credential (l'id_token) au backend
                         const res = await fetch(`${API_URL}/auth/google`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ credential: response.access_token })
+                            body: JSON.stringify({ credential: response.credential }) // ← response.credential est l'id_token
                         });
 
                         const data = await res.json();
@@ -102,12 +100,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                             navigate('/dashboard');
                             if (fetchProgressions) fetchProgressions();
                         } else {
-                            // Message d'erreur plus spécifique
-                            if (data.message?.includes('email') || data.message?.includes('vérifié')) {
-                                setAuthError(data.message);
-                            } else {
-                                setAuthError(data.message || 'Échec de l\'authentification Google');
-                            }
+                            setAuthError(data.message || 'Échec de l\'authentification Google');
                         }
                     } catch (err) {
                         console.error('Erreur réseau:', err);
@@ -118,7 +111,8 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 },
             });
 
-            client.requestAccessToken();
+            // Déclencher la fenêtre de connexion Google
+            google.accounts.id.prompt();
 
         } catch (error) {
             console.error('Erreur Google:', error);
@@ -194,7 +188,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 navigate('/dashboard');
                 fetchProgressions();
             } else {
-                // Message spécifique pour les comptes Google
                 if (data.message?.includes('Google')) {
                     setAuthError(data.message);
                 } else {
@@ -353,8 +346,9 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     />
                                     <CheckCircle className="absolute text-white opacity-0 peer-checked:opacity-100" size={12} />
                                 </div>
+                                {/* 🟢 CHANGÉ: button -> Link */}
                                 <label htmlFor="privacy-check" className="text-sm text-gray-400 cursor-pointer select-none">
-                                    J'accepte la <button type="button" onClick={() => setShowPolicies(true)} className="text-blue-400 hover:underline font-bold">politique de confidentialité</button>
+                                    J'accepte la <Link to="/privacy" className="text-blue-400 hover:underline font-bold">politique de confidentialité</Link>
                                 </label>
                             </div>
 
@@ -370,8 +364,9 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     />
                                     <CheckCircle className="absolute text-white opacity-0 peer-checked:opacity-100" size={12} />
                                 </div>
+                                {/* 🟢 CHANGÉ: button -> Link */}
                                 <label htmlFor="terms-check" className="text-sm text-gray-400 cursor-pointer select-none">
-                                    J'accepte les <button type="button" onClick={() => setShowPolicies(true)} className="text-blue-400 hover:underline font-bold">conditions d'utilisation</button>
+                                    J'accepte les <Link to="/terms" className="text-blue-400 hover:underline font-bold">conditions d'utilisation</Link>
                                 </label>
                             </div>
                         </motion.div>
@@ -418,7 +413,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     </div>
                 </div>
 
-                {/* Bouton Google - CORRIGÉ avec credential */}
+                {/* Bouton Google */}
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -444,71 +439,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     </button>
                 </p>
             </motion.div>
-
-            {/* Modal des politiques */}
-            <AnimatePresence>
-                {showPolicies && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-                        onClick={() => setShowPolicies(false)}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, y: 20 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.9, y: 20 }}
-                            className="bg-gray-800 rounded-2xl p-6 max-w-2xl max-h-[80vh] overflow-y-auto"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <h3 className="text-2xl font-bold text-white mb-4">Politique de confidentialité</h3>
-                            <div className="text-gray-300 space-y-4">
-                                <p className="text-lg">Dernière mise à jour : 18 février 2026</p>
-
-                                <div className="space-y-3">
-                                    <h4 className="text-xl font-semibold text-white">1. Collecte des informations</h4>
-                                    <p>Nous collectons les informations que vous nous fournissez directement, telles que votre nom, adresse email, et toute autre information que vous choisissez de partager avec nous lors de la création de votre compte.</p>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <h4 className="text-xl font-semibold text-white">2. Utilisation des informations</h4>
-                                    <p>Les informations que nous collectons sont utilisées pour :</p>
-                                    <ul className="list-disc list-inside ml-4">
-                                        <li>Fournir et améliorer nos services</li>
-                                        <li>Personnaliser votre expérience</li>
-                                        <li>Communiquer avec vous concernant votre compte</li>
-                                        <li>Vous envoyer des mises à jour et des offres promotionnelles (avec votre consentement)</li>
-                                    </ul>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <h4 className="text-xl font-semibold text-white">3. Protection des données</h4>
-                                    <p>Nous mettons en œuvre des mesures de sécurité techniques et organisationnelles appropriées pour protéger vos informations personnelles contre tout accès non autorisé, modification, divulgation ou destruction.</p>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <h4 className="text-xl font-semibold text-white">4. Vos droits</h4>
-                                    <p>Vous avez le droit d'accéder à vos données, de les rectifier, de les supprimer, et de vous opposer à leur traitement. Pour exercer ces droits, contactez-nous à privacy@mysterious-classroom.com</p>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <h4 className="text-xl font-semibold text-white">5. Cookies et technologies similaires</h4>
-                                    <p>Nous utilisons des cookies et des technologies similaires pour améliorer votre expérience de navigation et analyser l'utilisation de notre site.</p>
-                                </div>
-                            </div>
-                            <div className="mt-6 flex justify-end">
-                                <button
-                                    onClick={() => setShowPolicies(false)}
-                                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
-                                >
-                                    J'ai compris
-                                </button>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </div>
     );
 };
