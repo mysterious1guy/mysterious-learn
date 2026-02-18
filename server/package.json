@@ -1,7 +1,6 @@
 {
   "name": "mysterious-learn-server",
   "version": "1.0.0",
-  "description": "Backend pour Mysterious Learn",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
