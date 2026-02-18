@@ -17,19 +17,23 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
         }
 
         if (token) {
-            // Itu dois avoir l'API_URL accessible, soit via props soit via import.meta.env
+            // Utiliser la route /auth/profile pour récupérer l'utilisateur
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-            fetch(`${API_URL}/auth/me`, {
+            fetch(`${API_URL}/auth/profile`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error('Erreur de récupération du profil');
+                    return res.json();
+                })
                 .then(data => {
                     setUser(data);
                     setToast({ message: 'Connexion réussie !', type: 'success' });
                     navigate('/dashboard');
                     if (fetchProgressions) fetchProgressions();
                 })
-                .catch(() => {
+                .catch(err => {
+                    console.error(err);
                     setToast({ message: 'Erreur de récupération du profil', type: 'error' });
                     navigate('/auth');
                 });
