@@ -31,13 +31,9 @@ app.get('/api/status', (req, res) => {
   res.json({ message: 'L\'API Mysterious Learn est en ligne' });
 });
 
-// 5. La "Route Secours" CORRIGÉE
-// On utilise '*' pour capturer toutes les routes qui ne sont pas des fichiers ou l'API
-// 5. La "Route Secours" (Modifiée pour éviter l'erreur PathError)
-app.get('/*', (req, res) => {
-  if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(rootDir, 'dist', 'index.html'));
-  }
+// 5. La "Route Secours" (Syntaxe compatible Node 22+)
+app.get(/^(?!\/api).+/, (req, res) => {
+  res.sendFile(path.join(rootDir, 'dist', 'index.html'));
 });
 
 // 6. Démarrage du serveur
