@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import AuthPage from './pages/AuthPage';
+import CallbackPage from './pages/CallbackPage'; // ← AJOUTÉ
 import DashboardPage from './pages/DashboardPage';
 import AccountPage from './pages/AccountPage';
 import CoursePage from './pages/CoursePage';
@@ -25,7 +26,7 @@ function App() {
   const [toast, setToast] = useState(null);
   const [progressions, setProgressions] = useState({});
   const [favorites, setFavorites] = useLocalStorage('favorites', []);
-  
+
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   const handleUpdateUser = (updatedData) => {
@@ -84,7 +85,7 @@ function App() {
     <Router>
       <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
         <Particles theme="dark" />
-        
+
         <AnimatePresence>
           {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </AnimatePresence>
@@ -95,9 +96,17 @@ function App() {
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/auth" element={
-              <AuthPage 
+              <AuthPage
                 setUser={handleUpdateUser}
                 API_URL={API_URL}
+                setToast={setToast}
+                fetchProgressions={fetchProgressions}
+              />
+            } />
+            {/* ✅ Nouvelle route pour le callback Google */}
+            <Route path="/auth/callback" element={
+              <CallbackPage
+                setUser={handleUpdateUser}
                 setToast={setToast}
                 fetchProgressions={fetchProgressions}
               />
@@ -107,11 +116,11 @@ function App() {
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
             <Route path="/dashboard" element={
               user ? (
-                <DashboardPage 
+                <DashboardPage
                   user={user}
                   favorites={favorites}
                   toggleFavorite={(id) => {
-                    const newFavs = favorites.includes(id) 
+                    const newFavs = favorites.includes(id)
                       ? favorites.filter(f => f !== id)
                       : [...favorites, id];
                     setFavorites(newFavs);
@@ -122,17 +131,17 @@ function App() {
                 />
               ) : <Navigate to="/auth" />
             } />
-            
+
             <Route path="/account" element={
               user ? (
-                <AccountPage 
+                <AccountPage
                   user={user}
                   onUpdateUser={handleUpdateUser}
                   onLogout={handleLogout}
                   progressions={progressions}
                   favorites={favorites}
                   onToggleFavorite={(id) => {
-                    const newFavs = favorites.includes(id) 
+                    const newFavs = favorites.includes(id)
                       ? favorites.filter(f => f !== id)
                       : [...favorites, id];
                     setFavorites(newFavs);

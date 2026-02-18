@@ -4,6 +4,7 @@ const {
   register,
   login,
   googleAuth,
+  googleCallback,   // ← IMPORT AJOUTÉ
   verifyEmail,
   resendVerification,
   getProfile,
@@ -20,7 +21,7 @@ const router = express.Router();
 router.post('/register', register);
 router.post('/login', login);
 router.post('/google', googleAuth);
-router.get('/google/callback', googleAuth);  // ← AJOUTÉ
+router.get('/google/callback', googleCallback);  // ← CORRIGÉ (utilise googleCallback)
 router.post('/verify-email', verifyEmail);
 router.post('/resend-verification', resendVerification);
 router.get('/profile', protect, getProfile);

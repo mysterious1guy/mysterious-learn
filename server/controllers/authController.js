@@ -63,7 +63,6 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Generate verification code
     const verificationCode = generateVerificationCode();
 
     const user = await User.create({
@@ -71,11 +70,10 @@ const register = async (req, res) => {
       email,
       password: hashedPassword,
       emailVerificationCode: verificationCode,
-      emailVerificationExpire: Date.now() + 30 * 60 * 1000, // 30 min
+      emailVerificationExpire: Date.now() + 30 * 60 * 1000,
       isEmailVerified: false,
     });
 
-    // Send verification email
     await sendVerificationEmail(email, name, verificationCode);
 
     res.status(201).json({
@@ -181,7 +179,6 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    // Check if this is a Google-only account
     if (user.googleId && !user.password) {
       return res.status(400).json({ message: 'Ce compte utilise Google. Connecte-toi avec Google.' });
     }
@@ -191,7 +188,6 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    // Check email verification
     if (!user.isEmailVerified) {
       return res.status(403).json({
         message: 'Email non vérifié. Vérifie ton email avant de te connecter.',
@@ -224,14 +220,12 @@ const googleAuth = async (req, res) => {
   try {
     console.log('Tentative de connexion Google reçue');
 
-    // Accepter soit credential (ancien) soit token (nouveau)
     const token = req.body.credential || req.body.token;
 
     if (!token) {
       return res.status(400).json({ message: 'Token manquant' });
     }
 
-    // Verify Google ID token
     const ticket = await googleClient.verifyIdToken({
       idToken: token,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -242,39 +236,25 @@ const googleAuth = async (req, res) => {
 
     console.log('Token Google vérifié pour:', email);
 
-    // 🔐 VÉRIFICATION : L'email est-il vérifié par Google ?
     if (!email_verified) {
       return res.status(401).json({
         message: 'Votre email Google n\'est pas vérifié. Veuillez vérifier votre email sur Google.'
       });
     }
 
-    // 🔐 VÉRIFICATION : L'email a-t-il un format valide ?
     if (!email || !email.includes('@')) {
       return res.status(401).json({
         message: 'Email Google invalide'
       });
     }
 
-    // 🔐 VÉRIFICATION OPTIONNELLE : Domaines autorisés (décommente si besoin)
-    // const allowedDomains = ['gmail.com', 'esp.sn'];
-    // const domain = email.split('@')[1];
-    // if (!allowedDomains.includes(domain)) {
-    //   return res.status(401).json({ 
-    //     message: 'Domaine email non autorisé. Utilise une adresse personnelle.' 
-    //   });
-    // }
-
-    // Check if user exists
     let user = await User.findOne({ $or: [{ googleId }, { email }] });
 
     if (user) {
       console.log('Utilisateur existant trouvé:', user.email);
-      // Update Google ID if not set
       if (!user.googleId) {
         user.googleId = googleId;
       }
-      // Google users are auto-verified
       if (!user.isEmailVerified) {
         user.isEmailVerified = true;
       }
@@ -284,13 +264,12 @@ const googleAuth = async (req, res) => {
       await user.save();
     } else {
       console.log('Nouvel utilisateur Google:', email);
-      // Create new user
       user = await User.create({
         name: name || email.split('@')[0],
         email,
         googleId,
         avatar: picture || null,
-        isEmailVerified: true, // Google accounts are pre-verified
+        isEmailVerified: true,
         joinedAt: new Date(),
       });
     }
@@ -309,8 +288,6 @@ const googleAuth = async (req, res) => {
     });
   } catch (err) {
     console.error('Erreur Google Auth:', err);
-
-    // Messages d'erreur plus précis
     if (err.message.includes('token')) {
       res.status(401).json({ message: 'Token Google invalide ou expiré' });
     } else if (err.message.includes('audience')) {
@@ -320,6 +297,71 @@ const googleAuth = async (req, res) => {
     }
   }
 };
+
+// ========== NOUVELLE FONCTION GOOGLE CALLBACK ==========
+// @desc    Google OAuth Callback (échange du code contre un token)
+// @route   GET /api/auth/google/callback
+const googleCallback = async (req, res) => {
+  const { code } = req.query;
+
+  try {
+    console.log('Google callback reçu avec code:', code);
+
+    const { OAuth2Client } = require('google-auth-library');
+    const client = new OAuth2Client(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      `${process.env.CLIENT_URL}/api/auth/google/callback`
+    );
+
+    const { tokens } = await client.getToken(code);
+    console.log('Tokens reçus de Google');
+
+    const ticket = await client.verifyIdToken({
+      idToken: tokens.id_token,
+      audience: process.env.GOOGLE_CLIENT_ID
+    });
+
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, email_verified, name, picture } = payload;
+
+    console.log('Email vérifié:', email);
+
+    if (!email_verified) {
+      return res.redirect(`${process.env.CLIENT_URL}/auth?error=email_not_verified`);
+    }
+
+    let user = await User.findOne({ $or: [{ googleId }, { email }] });
+
+    if (user) {
+      console.log('Utilisateur existant:', email);
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.avatar = picture || user.avatar;
+        await user.save();
+      }
+    } else {
+      console.log('Nouvel utilisateur:', email);
+      user = await User.create({
+        name: name || email.split('@')[0],
+        email,
+        googleId,
+        avatar: picture,
+        isEmailVerified: true,
+        joinedAt: new Date()
+      });
+    }
+
+    const token = generateToken(user._id);
+
+    res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
+
+  } catch (error) {
+    console.error('Erreur Google callback:', error);
+    res.redirect(`${process.env.CLIENT_URL}/auth?error=google_auth_failed`);
+  }
+};
+// ========== FIN NOUVELLE FONCTION ==========
 
 // @desc    Obtenir le profil
 // @route   GET /api/auth/profile
@@ -439,7 +481,6 @@ const changePassword = async (req, res) => {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
-    // Google users can't change password
     if (user.googleId && !user.password) {
       return res.status(400).json({ message: 'Ce compte utilise Google. Pas de mot de passe à changer.' });
     }
@@ -480,6 +521,7 @@ module.exports = {
   register,
   login,
   googleAuth,
+  googleCallback,   // ← AJOUTÉ
   verifyEmail,
   resendVerification,
   getProfile,

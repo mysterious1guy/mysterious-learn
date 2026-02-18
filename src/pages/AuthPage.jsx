@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle, Globe } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
 import CyberPet from '../CyberPet';
 
 const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
@@ -15,7 +15,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [petSecret, setPetSecret] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [showPolicies, setShowPolicies] = useState(false);
 
     // Validation email
     const [emailError, setEmailError] = useState('');
@@ -25,7 +24,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         if (!re.test(email)) return 'Format d\'email invalide';
         return '';
     };
-
     useEffect(() => {
         setEmailError(validateEmail(formData.email));
     }, [formData.email]);
@@ -33,116 +31,45 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     // Force mot de passe
     const [passwordStrength, setPasswordStrength] = useState(0);
     useEffect(() => {
-        if (formData.password.length === 0) {
-            setPasswordStrength(0);
-        } else if (formData.password.length < 6) {
-            setPasswordStrength(1);
-        } else if (formData.password.length < 8) {
-            setPasswordStrength(2);
-        } else {
-            setPasswordStrength(3);
-        }
+        if (formData.password.length === 0) setPasswordStrength(0);
+        else if (formData.password.length < 6) setPasswordStrength(1);
+        else if (formData.password.length < 8) setPasswordStrength(2);
+        else setPasswordStrength(3);
     }, [formData.password]);
 
-    // Charger script Google
-    const loadGoogleScript = () => {
-        return new Promise((resolve, reject) => {
-            if (window.google && window.google.accounts) {
-                resolve();
-                return;
-            }
-            const script = document.createElement('script');
-            script.src = 'https://accounts.google.com/gsi/client';
-            script.async = true;
-            script.defer = true;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    };
-
-    // Google Login
-    const handleGoogleLogin = async () => {
+    // Google Login - REDIRECTION SIMPLE
+    const handleGoogleLogin = () => {
         setIsLoading(true);
-        setAuthError('');
-
-        try {
-            await loadGoogleScript();
-
-            google.accounts.id.initialize({
-                client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-                callback: async (response) => {
-                    if (response.error) {
-                        console.error('Erreur Google:', response.error);
-                        setAuthError('Erreur lors de la connexion Google');
-                        setIsLoading(false);
-                        return;
-                    }
-
-                    try {
-                        const res = await fetch(`${API_URL}/auth/google`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ credential: response.credential })
-                        });
-
-                        const data = await res.json();
-
-                        if (res.ok) {
-                            setUser(data.user || data);
-                            setToast({
-                                message: 'Connexion réussie !',
-                                type: 'success'
-                            });
-                            navigate('/dashboard');
-                            if (fetchProgressions) fetchProgressions();
-                        } else {
-                            setAuthError(data.message || 'Échec de l\'authentification Google');
-                        }
-                    } catch (err) {
-                        console.error('Erreur réseau:', err);
-                        setAuthError('Erreur de connexion au serveur');
-                    } finally {
-                        setIsLoading(false);
-                    }
-                },
-            });
-
-            google.accounts.id.prompt();
-
-        } catch (error) {
-            console.error('Erreur Google:', error);
-            setAuthError('Erreur lors de l\'initialisation de Google');
-            setIsLoading(false);
-        }
+        const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
+            'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +
+            '&redirect_uri=' + window.location.origin + '/api/auth/google/callback' +
+            '&response_type=code' +
+            '&scope=email profile' +
+            '&prompt=select_account';
+        window.location.href = googleAuthUrl;
     };
 
-    // 🟢 NOUVELLE FONCTION - Connexion email/mot de passe
+    // Connexion email
     const handleLogin = async (e) => {
         e.preventDefault();
         if (emailError) {
             setAuthError('Veuillez entrer un email valide');
             return;
         }
-
         setIsLoading(true);
         setAuthError('');
-
         try {
             const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                }),
+                body: JSON.stringify({ email: formData.email, password: formData.password }),
             });
             const data = await response.json();
             if (response.ok) {
                 setUser(data);
                 setToast({ message: 'Connexion réussie !', type: 'success' });
                 navigate('/dashboard');
-                fetchProgressions();
+                if (fetchProgressions) fetchProgressions();
             } else {
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
             }
@@ -153,22 +80,19 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         }
     };
 
-    // 🟢 NOUVELLE FONCTION - Inscription email/mot de passe
+    // Inscription email
     const handleRegister = async (e) => {
         e.preventDefault();
         if (!agreedToPolicy || !agreedToTerms) {
             setAuthError('Vous devez accepter les conditions et la politique de confidentialité');
             return;
         }
-
         if (emailError) {
             setAuthError('Veuillez entrer un email valide');
             return;
         }
-
         setIsLoading(true);
         setAuthError('');
-
         try {
             const response = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
@@ -184,7 +108,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 setUser(data);
                 setToast({ message: 'Inscription réussie !', type: 'success' });
                 navigate('/dashboard');
-                fetchProgressions();
+                if (fetchProgressions) fetchProgressions();
             } else {
                 setAuthError(data.message || 'Erreur lors de l\'inscription');
             }
@@ -295,7 +219,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         </button>
                     </div>
 
-                    {/* Indicateur de force du mot de passe */}
                     {formData.password && (
                         <div className="space-y-1">
                             <div className="flex gap-1">
@@ -303,18 +226,13 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     <div
                                         key={level}
                                         className={`h-1 flex-1 rounded-full transition-all ${passwordStrength >= level
-                                                ? level === 1
-                                                    ? 'bg-red-500'
-                                                    : level === 2
-                                                        ? 'bg-yellow-500'
-                                                        : 'bg-green-500'
+                                                ? level === 1 ? 'bg-red-500' : level === 2 ? 'bg-yellow-500' : 'bg-green-500'
                                                 : 'bg-gray-700'
                                             }`}
                                     />
                                 ))}
                             </div>
                             <p className="text-xs text-gray-500">
-                                {passwordStrength === 0 && ''}
                                 {passwordStrength === 1 && '🔴 Faible'}
                                 {passwordStrength === 2 && '🟡 Moyen'}
                                 {passwordStrength === 3 && '🟢 Fort'}
@@ -323,11 +241,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     )}
 
                     {authMode === 'signup' && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="space-y-3 mt-4"
-                        >
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3 mt-4">
                             <div className="flex items-start gap-3">
                                 <div className="relative flex items-center mt-1">
                                     <input
@@ -344,7 +258,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     J'accepte la <Link to="/privacy" className="text-blue-400 hover:underline font-bold">politique de confidentialité</Link>
                                 </label>
                             </div>
-
                             <div className="flex items-start gap-3">
                                 <div className="relative flex items-center mt-1">
                                     <input
@@ -395,7 +308,6 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     </motion.button>
                 </form>
 
-                {/* Séparateur */}
                 <div className="relative w-full my-6">
                     <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-gray-700"></div>
@@ -405,17 +317,19 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     </div>
                 </div>
 
-                {/* Bouton Google */}
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                {/* Bouton Google avec vrai logo */}
+                <button
                     onClick={handleGoogleLogin}
                     disabled={isLoading}
-                    className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 font-bold py-3 px-4 rounded-2xl shadow-lg transition-all border border-gray-300"
+                    className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 font-bold py-3 px-4 rounded-2xl shadow-lg transition-all border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                    <Globe className="text-blue-500" size={20} />
+                    <img
+                        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                        alt="Google logo"
+                        className="w-5 h-5"
+                    />
                     <span>Continuer avec Google</span>
-                </motion.button>
+                </button>
 
                 <p className="mt-4 text-sm text-gray-500">
                     {authMode === 'signin' ? "Pas encore de compte ?" : "Déjà un compte ?"}
