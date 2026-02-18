@@ -68,7 +68,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
             if (response.ok) {
                 setUser(data);
                 setToast({ message: 'Connexion réussie !', type: 'success' });
-                navigate('/dashboard');
+                navigate('/account');
                 if (fetchProgressions) fetchProgressions();
             } else {
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
@@ -107,7 +107,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
             if (response.ok) {
                 setUser(data);
                 setToast({ message: 'Inscription réussie !', type: 'success' });
-                navigate('/dashboard');
+                navigate('/account');
                 if (fetchProgressions) fetchProgressions();
             } else {
                 setAuthError(data.message || 'Erreur lors de l\'inscription');
@@ -226,8 +226,8 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     <div
                                         key={level}
                                         className={`h-1 flex-1 rounded-full transition-all ${passwordStrength >= level
-                                                ? level === 1 ? 'bg-red-500' : level === 2 ? 'bg-yellow-500' : 'bg-green-500'
-                                                : 'bg-gray-700'
+                                            ? level === 1 ? 'bg-red-500' : level === 2 ? 'bg-yellow-500' : 'bg-green-500'
+                                            : 'bg-gray-700'
                                             }`}
                                     />
                                 ))}
@@ -293,8 +293,8 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         type="submit"
                         disabled={isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms)) || !!emailError}
                         className={`w-full font-bold py-3 rounded-2xl shadow-lg transition-all ${isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms)) || emailError
-                                ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
-                                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'
+                            ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
+                            : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'
                             }`}
                     >
                         {isLoading ? (

@@ -17,7 +17,6 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
         }
 
         if (token) {
-            // Utiliser la route /auth/profile pour récupérer l'utilisateur
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
             fetch(`${API_URL}/auth/profile`, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -27,9 +26,9 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
                     return res.json();
                 })
                 .then(data => {
-                    setUser(data);
+                    setUser({ ...data, token });
                     setToast({ message: 'Connexion réussie !', type: 'success' });
-                    navigate('/dashboard');
+                    navigate('/account');  // ← Redirection vers /account
                     if (fetchProgressions) fetchProgressions();
                 })
                 .catch(err => {
@@ -38,7 +37,6 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
                     navigate('/auth');
                 });
         } else {
-            // Si pas de token, rediriger vers auth
             navigate('/auth');
         }
     }, [location, navigate, setUser, setToast, fetchProgressions]);
