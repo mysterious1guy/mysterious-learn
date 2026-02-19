@@ -23,6 +23,20 @@ const AdminLoginPage = ({ setToast }) => {
     try {
       console.log('🛡️ AdminLoginPage: Tentative connexion admin pour:', formData.email);
       
+      // Vérifier si c'est un admin Google
+      if (formData.email === 'mouhamedfall@esp.sn') {
+        console.log('🛡️ AdminLoginPage: Admin Google détecté, redirection OAuth');
+        const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
+          'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +
+          '&redirect_uri=' + encodeURIComponent(window.location.origin + '/api/auth/google/callback') +
+          '&response_type=code' +
+          '&scope=email profile' +
+          '&prompt=select_account';
+        window.location.href = googleAuthUrl;
+        return;
+      }
+      
+      // Pour les autres admins, connexion normale
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/login`, {
         method: 'POST',
         headers: {
@@ -144,9 +158,15 @@ const AdminLoginPage = ({ setToast }) => {
           </form>
 
           {/* Lien vers connexion normale */}
-          <div className="mt-6 text-center">
+          <div className="text-center">
+            <p className="text-gray-400 text-sm mb-2">
+              Admin principal : mouhamedfall@esp.sn
+            </p>
+            <p className="text-gray-400 text-sm mb-4">
+              Connexion obligatoire via Google OAuth
+            </p>
             <p className="text-gray-400 text-sm">
-              Pas administrateur ?{' '}
+              Autres admins ?{' '}
               <button
                 onClick={() => navigate('/auth')}
                 className="text-orange-400 hover:text-orange-300 font-medium transition-colors"

@@ -93,6 +93,9 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         }
         setIsLoading(true);
         setAuthError('');
+        
+        console.log('🔐 AuthPage: Tentative connexion pour:', formData.email);
+        
         try {
             const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
@@ -100,7 +103,11 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 body: JSON.stringify({ email: formData.email, password: formData.password }),
             });
             const data = await response.json();
+            
+            console.log('🔐 AuthPage: Réponse API:', response.ok ? 'OK' : 'ERREUR', data.message);
+            
             if (response.ok) {
+                console.log('✅ AuthPage: Connexion réussie, stockage...');
                 // Stocker les infos utilisateur dans localStorage pour le tracking
                 localStorage.setItem('user', JSON.stringify(data));
                 localStorage.setItem('token', data.token);
@@ -108,6 +115,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 setUser(data);
                 setToast({ message: 'Connexion réussie !', type: 'success' });
                 
+                console.log('✅ AuthPage: Redirection vers /dashboard');
                 // Redirection immédiate vers le dashboard pour éviter le conflit avec le tracking
                 navigate('/dashboard');
                 
@@ -116,9 +124,11 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                     if (fetchProgressions) fetchProgressions();
                 }, 100);
             } else {
+                console.log('❌ AuthPage: Échec connexion:', data.message);
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
             }
         } catch (err) {
+            console.error('❌ AuthPage: Erreur réseau:', err);
             setAuthError('Erreur réseau');
         } finally {
             setIsLoading(false);
