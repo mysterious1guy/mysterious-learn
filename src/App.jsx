@@ -25,6 +25,7 @@ import Particles from './Particles';
 import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './components/ProtectedRoute';
 import DebugMonitor from './components/DebugMonitor';
+import OAuthDebugger from './components/OAuthDebugger';
 
 function App() {
   const [user, setUser] = useLocalStorage('user', null);
@@ -110,6 +111,9 @@ function App() {
 
         {/* Debug Monitor - Uniquement en développement */}
         {import.meta.env.DEV && <DebugMonitor API_URL={API_URL} />}
+        
+        {/* OAuth Debugger - Toujours visible */}
+        <OAuthDebugger />
 
         <Routes>
           <Route element={<AuthLayout />}>
