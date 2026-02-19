@@ -149,11 +149,13 @@ function App() {
                 fetchProgressions={fetchProgressions}
               />
             } />
+            {/* Route Admin - accès direct */}
+            <Route path="/admin" element={<AdminLoginPage setToast={setToast} />} />
           </Route>
 
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
-            {/* Route Admin - uniquement pour cmouhamedfall@esp.sn */}
-            <Route path="/admin" element={<AdminLoginPage setToast={setToast} />} />
+            {/* Route Admin - accès direct */}
+            <Route path="/admin" element={<AdminPage user={user} API_URL={API_URL} setToast={setToast} />} />
             
             <Route path="/dashboard" element={<DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
                     const newFavs = favorites.includes(id)

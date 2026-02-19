@@ -155,39 +155,49 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     const handleRegister = async (e) => {
         e.preventDefault();
         if (!agreedToPolicy || !agreedToTerms) {
-            setAuthError('Vous devez accepter les conditions et la politique de confidentialité');
-            return;
-        }
-        if (emailError) {
-            setAuthError('Veuillez entrer un email valide');
-            return;
-        }
-        if (emailExists) {
-            setAuthError('Un compte existe déjà avec cet email. Connectez-vous plutôt.');
+            setAuthError('Vous devez accepter les conditions');
             return;
         }
         setIsLoading(true);
         setAuthError('');
+        
+        console.log('🔐 AuthPage: Tentative inscription pour:', formData.email);
+        
         try {
             const response = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: `${formData.firstName} ${formData.lastName}`.trim(),
-                    email: formData.email,
-                    password: formData.password,
-                }),
+                body: JSON.stringify(formData),
             });
             const data = await response.json();
+            
+            console.log('🔐 AuthPage: Réponse API:', response.ok ? 'OK' : 'ERREUR', data.message);
+            
             if (response.ok) {
+                console.log('✅ AuthPage: Inscription réussie, stockage...');
+                
+                // Stockage immédiat
+                localStorage.setItem('user', JSON.stringify(data));
+                localStorage.setItem('token', data.token);
+                
+                // Mise à jour du state
                 setUser(data);
-                setToast({ message: 'Inscription réussie !', type: 'success' });
-                navigate('/account'); // Redirection vers la page compte
-                if (fetchProgressions) fetchProgressions();
+                setToast({ message: 'Compte créé avec succès !', type: 'success' });
+                
+                console.log('✅ AuthPage: Redirection vers /dashboard');
+                navigate('/dashboard');
             } else {
-                setAuthError(data.message || 'Erreur lors de l\'inscription');
+                console.log('❌ AuthPage: Échec inscription:', data.message);
+                
+                // Si le compte existe déjà et utilise Google
+                if (data.message && data.message.includes('existe déjà')) {
+                    setAuthError('Ce compte existe déjà. Utilisez Google OAuth pour vous connecter.');
+                } else {
+                    setAuthError(data.message || 'Erreur lors de l\'inscription');
+                }
             }
         } catch (err) {
+            console.error('❌ AuthPage: Erreur réseau:', err);
             setAuthError('Erreur réseau');
         } finally {
             setIsLoading(false);

@@ -43,8 +43,9 @@ const AdminPage = ({ user, API_URL, setToast }) => {
 
     // Vérifier si c'est l'admin principal avec le bon token
     if (user.email === 'mouhamedfall@esp.sn' && user.token && user.token.startsWith('admin_token_')) {
-      console.log('✅ AdminPage: Admin principal connecté directement');
+      console.log('✅ AdminPage: Admin principal connecté - ACCÈS TOTAL AU SITE');
       // Ne pas faire d'appel API, utiliser les données locales
+      // L'admin a accès à TOUT le site sans restriction
       return;
     }
 
@@ -58,13 +59,13 @@ const AdminPage = ({ user, API_URL, setToast }) => {
     fetchAdminData();
   }, [user, navigate]);
 
-  // Redirection automatique vers le dashboard pour les admins connectés
-  useEffect(() => {
-    if (user && (user.email === 'mouhamedfall@esp.sn' || user.role === 'admin')) {
-      console.log('👑 AdminPage: Redirection automatique vers /dashboard');
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
+  // PAS DE REDIRECTION AUTOMATIQUE - L'ADMIN ACCÈDE À TOUT
+  // useEffect(() => {
+  //   if (user && (user.email === 'mouhamedfall@esp.sn' || user.role === 'admin')) {
+  //     console.log('👑 AdminPage: Redirection automatique vers /dashboard');
+  //     navigate('/dashboard');
+  //   }
+  // }, [user, navigate]);
 
   const fetchAdminData = async () => {
     try {
