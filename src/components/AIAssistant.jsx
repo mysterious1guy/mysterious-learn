@@ -109,7 +109,7 @@ const AIAssistant = ({ user, currentView, onAction }) => {
     const [chatInput, setChatInput] = useState("");
     const [isThinking, setIsThinking] = useState(false);
     const [chatHistory, setChatHistory] = useState([
-        { role: 'assistant', text: `Bonjour ${user?.firstName || 'ami'} ! Je suis ton Guide Mystérieux. Pose-moi n'importe quelle question sur le code ou le site !` }
+        { role: 'assistant', text: `Bonjour ${user && user.firstName ? user.firstName : 'ami'} ! Je suis ton Guide Mystérieux. Pose-moi n'importe quelle question sur le code ou le site !` }
     ]);
     const chatEndRef = useRef(null);
 
@@ -131,7 +131,7 @@ const AIAssistant = ({ user, currentView, onAction }) => {
     }, [user, currentView]);
 
     const handleFinishOnboarding = () => {
-        localStorage.setItem(`hasSeenOnboarding_${user?.id || 'guest'}`, 'true');
+        localStorage.setItem(`hasSeenOnboarding_${user && user.id ? user.id : 'guest'}`, 'true');
         setShowOnboarding(false);
     };
 
