@@ -19,6 +19,12 @@ const isMongoDBAvailable = async () => {
 // @desc    Obtenir tous les cours
 // @route   GET /api/courses
 const getAllCourses = async (req, res) => {
+  // Forcer le fallback temporairement pour résoudre le problème Render
+  console.log('🔄 Forcing fallback mode for Render deployment');
+  return getAllCoursesFallback(req, res);
+  
+  // Code original (commenté temporairement)
+  /*
   const mongoAvailable = await isMongoDBAvailable();
   
   if (!mongoAvailable) {
@@ -46,6 +52,7 @@ const getAllCourses = async (req, res) => {
     // Fallback en cas d'erreur
     return getAllCoursesFallback(req, res);
   }
+  */
 };
 
 // @desc    Obtenir un cours par son ID
