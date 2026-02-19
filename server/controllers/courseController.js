@@ -159,9 +159,6 @@ const getAllProgress = async (req, res) => {
 module.exports = { 
   getAllCourses, 
   getCourseById, 
-  createCourse, 
-  updateCourse, 
-  deleteCourse, 
   getCategories,
   getProgress, 
   updateProgress, 

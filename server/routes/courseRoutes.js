@@ -3,9 +3,6 @@ const { protect } = require('../middleware/authMiddleware');
 const {
   getAllCourses,
   getCourseById,
-  createCourse,
-  updateCourse,
-  deleteCourse,
   getCategories,
   getProgress,
   updateProgress,
@@ -23,10 +20,5 @@ router.get('/:id', getCourseById);
 router.get('/progress/all', protect, getAllProgress);
 router.get('/:courseId/progress', protect, getProgress);
 router.post('/:courseId/progress', protect, updateProgress);
-
-// Routes admin (protégées)
-router.post('/', protect, createCourse);
-router.put('/:id', protect, updateCourse);
-router.delete('/:id', protect, deleteCourse);
 
 module.exports = router;
