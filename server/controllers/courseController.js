@@ -1,4 +1,98 @@
+const Course = require('../models/Course');
 const Progress = require('../models/Progress');
+const { 
+  getAllCoursesFallback, 
+  getCourseByIdFallback, 
+  getCategoriesFallback 
+} = require('./courseControllerFallback');
+
+// Vérifie si MongoDB est disponible
+const isMongoDBAvailable = async () => {
+  try {
+    await Course.findOne().limit(1);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+// @desc    Obtenir tous les cours
+// @route   GET /api/courses
+const getAllCourses = async (req, res) => {
+  const mongoAvailable = await isMongoDBAvailable();
+  
+  if (!mongoAvailable) {
+    console.log('⚠️ MongoDB indisponible - utilisation du fallback JSON');
+    return getAllCoursesFallback(req, res);
+  }
+
+  try {
+    const { category, level, search } = req.query;
+    
+    let query = {};
+    if (category) query.category = category;
+    if (level) query.level = level;
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    const courses = await Course.find(query)
+      .populate('prerequisites', 'title')
+      .sort({ createdAt: -1 });
+
+    res.json(courses);
+  } catch (err) {
+    console.error('Erreur MongoDB:', err);
+    // Fallback en cas d'erreur
+    return getAllCoursesFallback(req, res);
+  }
+};
+
+// @desc    Obtenir un cours par son ID
+// @route   GET /api/courses/:id
+const getCourseById = async (req, res) => {
+  const mongoAvailable = await isMongoDBAvailable();
+  
+  if (!mongoAvailable) {
+    console.log('⚠️ MongoDB indisponible - utilisation du fallback JSON');
+    return getCourseByIdFallback(req, res);
+  }
+
+  try {
+    const course = await Course.findById(req.params.id)
+      .populate('prerequisites', 'title description');
+    
+    if (!course) {
+      return res.status(404).json({ message: 'Cours non trouvé' });
+    }
+
+    res.json(course);
+  } catch (err) {
+    console.error('Erreur MongoDB:', err);
+    // Fallback en cas d'erreur
+    return getCourseByIdFallback(req, res);
+  }
+};
+
+// @desc    Obtenir les catégories disponibles
+// @route   GET /api/courses/categories
+const getCategories = async (req, res) => {
+  const mongoAvailable = await isMongoDBAvailable();
+  
+  if (!mongoAvailable) {
+    console.log('⚠️ MongoDB indisponible - utilisation du fallback JSON');
+    return getCategoriesFallback(req, res);
+  }
+
+  try {
+    const categories = await Course.distinct('category');
+    res.json(categories);
+  } catch (err) {
+    console.error('Erreur MongoDB:', err);
+    // Fallback en cas d'erreur
+    return getCategoriesFallback(req, res);
+  }
+};
 
 // @desc    Obtenir la progression de l'utilisateur pour un cours
 // @route   GET /api/courses/:courseId/progress
@@ -62,4 +156,14 @@ const getAllProgress = async (req, res) => {
   }
 };
 
-module.exports = { getProgress, updateProgress, getAllProgress };
+module.exports = { 
+  getAllCourses, 
+  getCourseById, 
+  createCourse, 
+  updateCourse, 
+  deleteCourse, 
+  getCategories,
+  getProgress, 
+  updateProgress, 
+  getAllProgress 
+};
