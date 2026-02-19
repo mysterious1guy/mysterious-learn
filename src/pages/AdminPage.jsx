@@ -33,8 +33,23 @@ const AdminPage = ({ user, API_URL, setToast }) => {
   const [profileImage, setProfileImage] = useState(user?.profileImage || null);
 
   useEffect(() => {
+    console.log('👑 AdminPage: Initialisation pour', user?.email);
+    
+    if (!user) {
+      console.log('❌ AdminPage: Aucun utilisateur, redirection vers /auth');
+      navigate('/auth');
+      return;
+    }
+
+    if (user.email !== 'cmouhamedfall@esp.sn' && user.role !== 'admin') {
+      console.log('❌ AdminPage: Utilisateur non-admin, redirection vers /dashboard');
+      navigate('/dashboard');
+      return;
+    }
+
+    console.log('✅ AdminPage: Accès autorisé pour', user.email);
     fetchAdminData();
-  }, []);
+  }, [user, navigate]);
 
   const fetchAdminData = async () => {
     try {
