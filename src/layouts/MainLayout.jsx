@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import MobileMenu from '../components/MobileMenu';
 import AIAssistant from '../components/AIAssistant';
+import Footer from '../components/Footer';
 
 const MainLayout = ({ user, onLogout }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -52,6 +53,8 @@ const MainLayout = ({ user, onLogout }) => {
       <main className="relative z-10 pt-16">
         <Outlet />
       </main>
+      
+      <Footer />
     </>
   );
 };

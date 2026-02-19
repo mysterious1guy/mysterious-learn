@@ -1,7 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Clock, Users, Star, BookOpen } from 'lucide-react';
+import { ArrowRight, Clock, Users, Star, BookOpen, Sparkles, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import AnimatedLogo from '../components/AnimatedLogo';
+import Footer from '../components/Footer';
 
 const HomePage = ({ API_URL }) => {
     const navigate = useNavigate();
@@ -106,33 +108,141 @@ const HomePage = ({ API_URL }) => {
             {/* Hero Section */}
             <div className="relative overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 pt-24 pb-16">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="text-center"
-                    >
-                        <h1 className="text-5xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 mb-8 px-4">
-                            MYSTERIOUS CLASSROOM
-                        </h1>
-                        <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-                            Apprenez la programmation avec des cours de qualité, 
-                            <span className="text-green-400 font-bold"> 100% gratuits</span> et accessibles à tous
-                        </p>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => navigate('/courses')}
-                            className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-bold text-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    <div className="text-center space-y-8">
+                        {/* Logo animé */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="flex justify-center"
                         >
-                            Explorer les cours
-                        </motion.button>
-                    </motion.div>
+                            <AnimatedLogo size="xlarge" />
+                        </motion.div>
+                        
+                        {/* Titre avec typographie améliorée */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="space-y-4"
+                        >
+                            <h1 className="relative">
+                                <span className="text-6xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 block leading-none tracking-tight">
+                                    MYSTERIOUS
+                                </span>
+                                <span className="text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 block leading-none tracking-tight">
+                                    CLASSROOM
+                                </span>
+                                
+                                {/* Effet de brillance */}
+                                <div className="absolute inset-0 text-6xl md:text-8xl lg:text-9xl font-black text-white/5 leading-none tracking-tight pointer-events-none">
+                                    MYSTERIOUS CLASSROOM
+                                </div>
+                            </h1>
+                            
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.8, delay: 0.4 }}
+                                className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
+                            >
+                                Découvrez une nouvelle façon d'apprendre avec des cours gratuits, 
+                                interactifs et conçus par des passionnés.
+                            </motion.p>
+                        </motion.div>
+                        
+                        {/* Boutons d'action */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.6 }}
+                            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+                        >
+                            <motion.button
+                                onClick={() => navigate('/auth')}
+                                className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-semibold text-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-xl hover:shadow-2xl"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <span className="flex items-center gap-2">
+                                    <Zap size={20} />
+                                    Commencer l'aventure
+                                    <ArrowRight size={20} className="group-hover:translate-x-1 transition" />
+                                </span>
+                                
+                                {/* Effet de brillance */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                            </motion.button>
+                            
+                            <motion.button
+                                onClick={() => document.getElementById('courses').scrollIntoView({ behavior: 'smooth' })}
+                                className="px-8 py-4 bg-gray-800/50 border border-gray-700 text-white rounded-full font-semibold text-lg hover:bg-gray-800/70 hover:border-blue-500/50 transition-all duration-300 backdrop-blur-sm"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <span className="flex items-center gap-2">
+                                    <BookOpen size={20} />
+                                    Explorer les cours
+                                </span>
+                            </motion.button>
+                        </motion.div>
+                        
+                        {/* Stats */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.8 }}
+                            className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
+                        >
+                            {[
+                                { icon: BookOpen, label: "Cours", value: "12+" },
+                                { icon: Users, label: "Étudiants", value: "2.3K+" },
+                                { icon: Star, label: "Note", value: "4.8/5" },
+                                { icon: Sparkles, label: "Satisfaction", value: "98%" }
+                            ].map((stat, index) => (
+                                <motion.div
+                                    key={stat.label}
+                                    className="text-center"
+                                    whileHover={{ scale: 1.1 }}
+                                >
+                                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <stat.icon size={20} className="text-blue-400" />
+                                    </div>
+                                    <div className="text-2xl font-bold text-white">{stat.value}</div>
+                                    <div className="text-sm text-gray-400">{stat.label}</div>
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </div>
+                
+                {/* Particules flottantes */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    {[...Array(6)].map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
+                            style={{
+                                left: `${10 + i * 15}%`,
+                                top: `${20 + (i % 2) * 30}%`
+                            }}
+                            animate={{
+                                y: [0, -20, 0],
+                                opacity: [0, 1, 0],
+                                scale: [1, 1.5, 1]
+                            }}
+                            transition={{
+                                duration: 3 + i,
+                                repeat: Infinity,
+                                delay: i * 0.5
+                            }}
+                        />
+                    ))}
                 </div>
             </div>
 
             {/* Courses Section */}
-            <div className="max-w-7xl mx-auto px-6 pb-20">
+            <div id="courses" className="max-w-7xl mx-auto px-6 pb-20">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
