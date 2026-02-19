@@ -4,7 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle } from 'lucide-react';
 import CyberPet from '../CyberPet';
 
+// DEBUG - Pour voir si le composant charge
+console.log(' AuthPage: Component loaded');
+
 const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
+    // DEBUG - Pour voir si le composant s'initialise
+    console.log(' AuthPage: Component initializing');
+    
     const navigate = useNavigate();
     const [authMode, setAuthMode] = useState('signin');
     const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '' });
