@@ -25,6 +25,51 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   const [activeTab, setActiveTab] = useState('profile');
   const fileInputRef = useRef(null);
 
+  // Fonction de suppression de compte
+  const handleDeleteAccount = async () => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+      return;
+    }
+
+    if (!confirm('Dernière confirmation : Toutes vos données seront définitivement perdues. Confirmer ?')) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      console.log('🗑️ AccountDetails: Suppression du compte pour:', user.email);
+      
+      const response = await fetch(`${API_URL}/auth/profile`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        }
+      });
+
+      if (response.ok) {
+        console.log('✅ AccountDetails: Compte supprimé avec succès');
+        setToast({ message: 'Compte supprimé avec succès', type: 'success' });
+        
+        // Nettoyage local
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        
+        // Redirection vers la page d'accueil
+        window.location.href = '/';
+      } else {
+        const data = await response.json();
+        console.error('❌ AccountDetails: Erreur suppression:', data.message);
+        setToast({ message: data.message || 'Erreur lors de la suppression', type: 'error' });
+      }
+    } catch (error) {
+      console.error('❌ AccountDetails: Erreur réseau:', error);
+      setToast({ message: 'Erreur réseau', type: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSave = async () => {
     setIsLoading(true);
     try {
@@ -480,9 +525,13 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           Exporter mes données
         </button>
         
-        <button className="px-6 py-3 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition flex items-center gap-2">
+        <button 
+          onClick={handleDeleteAccount}
+          disabled={isLoading}
+          className="px-6 py-3 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <Trash2 size={18} />
-          Supprimer mon compte
+          {isLoading ? 'Suppression...' : 'Supprimer mon compte'}
         </button>
       </div>
     </div>
