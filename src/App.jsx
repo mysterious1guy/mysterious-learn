@@ -149,41 +149,35 @@ function App() {
                 />} />
 
             <Route path="/account" element={
-              <ProtectedRoute>
-                <AccountPage
-                  user={user}
-                  onUpdateUser={handleUpdateUser}
-                  onToggleFavorite={(id) => {
-                    const newFavs = favorites.includes(id)
-                      ? favorites.filter(f => f !== id)
-                      : [...favorites, id];
-                    setFavorites(newFavs);
-                  }}
-                  API_URL={API_URL}
-                  setToast={setToast}
-                />
-              </ProtectedRoute>
+              <AccountPage
+                user={user}
+                onUpdateUser={handleUpdateUser}
+                onToggleFavorite={(id) => {
+                  const newFavs = favorites.includes(id)
+                    ? favorites.filter(f => f !== id)
+                    : [...favorites, id];
+                  setFavorites(newFavs);
+                }}
+                API_URL={API_URL}
+                setToast={setToast}
+              />
             } />
 
             <Route path="/course/:courseId" element={
-              <ProtectedRoute>
-                <CoursePage
-                  user={user}
-                  API_URL={API_URL}
-                  setToast={setToast}
-                />
-              </ProtectedRoute>
+              <CoursePage
+                user={user}
+                API_URL={API_URL}
+                setToast={setToast}
+              />
             } />
 
             {/* Route 2FA Setup */}
             <Route path="/two-factor-setup" element={
-              <ProtectedRoute>
-                <TwoFactorSetupPage
-                  user={user}
-                  API_URL={API_URL}
-                  setToast={setToast}
-                />
-              </ProtectedRoute>
+              <TwoFactorSetupPage
+                user={user}
+                API_URL={API_URL}
+                setToast={setToast}
+              />
             } />
           </Route>
 
