@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Shield, 
-  Smartphone, 
-  CheckCircle, 
-  AlertTriangle, 
-  Copy, 
-  Eye, 
+import {
+  Shield,
+  Smartphone,
+  CheckCircle,
+  AlertTriangle,
+  Copy,
+  Eye,
   EyeOff,
   ArrowLeft,
   Lock,
@@ -70,7 +70,7 @@ const TwoFactorSetupPage = ({ user, API_URL, setToast }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setToast({ 
+        setToast({
           message: data.simulated ? 'Code affiché dans la console (dev)' : 'SMS envoyé avec succès',
           type: 'success'
         });
@@ -193,48 +193,30 @@ const TwoFactorSetupPage = ({ user, API_URL, setToast }) => {
 
   const renderStep1 = () => (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-md mx-auto space-y-6"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="max-w-md mx-auto"
     >
-      <div className="text-center">
-        <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Smartphone size={32} className="text-white" />
+      <div className="bg-gray-800/50 backdrop-blur-xl border border-gray-700/50 rounded-[2.5rem] p-12 text-center shadow-2xl">
+        <div className="w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center mx-auto mb-8">
+          <AlertTriangle size={36} className="text-red-500" />
         </div>
-        <h2 className="text-2xl font-bold text-white mb-2">Activer l'authentification 2FA</h2>
-        <p className="text-gray-400">Ajoutez une couche de sécurité supplémentaire à votre compte</p>
-      </div>
+        <h2 className="text-3xl font-black text-white mb-4">Service SMS Désactivé</h2>
+        <p className="text-gray-400 mb-8 leading-relaxed">
+          L'authentification par SMS (2FA) n'est pas encore disponible sur cette plateforme. Nous travaillons à l'intégration de services sécurisés.
+        </p>
 
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
-            Numéro de téléphone
-          </label>
-          <input
-            type="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            placeholder="+221771234567"
-            className="w-full px-4 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
-          />
-          <p className="text-xs text-gray-400 mt-1">
-            Format international (ex: +221771234567)
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 mb-8">
+          <p className="text-sm text-blue-400 font-medium italic">
+            "Priorisez la vérification par Email déjà active sur votre compte pour une sécurité optimale."
           </p>
         </div>
 
         <button
-          onClick={handleEnableTwoFactor}
-          disabled={loading}
-          className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition flex items-center justify-center gap-2 disabled:opacity-50"
+          onClick={() => navigate('/account')}
+          className="w-full px-8 py-4 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-2xl transition-all active:scale-95"
         >
-          {loading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          ) : (
-            <>
-              <Shield size={16} />
-              Envoyer le code
-            </>
-          )}
+          Retour aux réglages
         </button>
       </div>
     </motion.div>

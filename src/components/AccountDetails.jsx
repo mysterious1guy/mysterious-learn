@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  User, Mail, Phone, MapPin, Calendar, Shield, Bell, Palette, 
-  Globe, Lock, Download, Trash2, Camera, Edit2, Save, X, 
+import {
+  User, Mail, Phone, MapPin, Calendar, Shield, Bell, Palette,
+  Globe, Lock, Download, Trash2, Camera, Edit2, Save, X,
   Settings, HelpCircle, LogOut, ChevronRight, Star, BookOpen,
   Award, Target, TrendingUp, Users, Clock, CheckCircle
 } from 'lucide-react';
@@ -38,7 +38,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     setIsLoading(true);
     try {
       console.log('🗑️ AccountDetails: Suppression du compte pour:', user.email);
-      
+
       const response = await fetch(`${API_URL}/auth/profile`, {
         method: 'DELETE',
         headers: {
@@ -50,11 +50,11 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       if (response.ok) {
         console.log('✅ AccountDetails: Compte supprimé avec succès');
         setToast({ message: 'Compte supprimé avec succès', type: 'success' });
-        
+
         // Nettoyage local
         localStorage.removeItem('user');
         localStorage.removeItem('token');
-        
+
         // Redirection vers la page d'accueil
         window.location.href = '/';
       } else {
@@ -119,7 +119,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     if (file) {
       const formData = new FormData();
       formData.append('profilePicture', file);
-      
+
       try {
         const response = await fetch(`${API_URL}/auth/profile-picture`, {
           method: 'POST',
@@ -361,18 +361,24 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
             </div>
             <ChevronRight className="text-gray-400" size={20} />
           </button>
-          
-          <button className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition">
+
+          <button
+            disabled
+            className="w-full flex items-center justify-between p-4 bg-gray-800/50 rounded-lg cursor-not-allowed opacity-60"
+          >
             <div className="flex items-center gap-3">
-              <Shield className="text-gray-400" size={20} />
+              <Shield className="text-gray-500" size={20} />
               <div className="text-left">
-                <p className="text-white">Authentification à deux facteurs</p>
-                <p className="text-sm text-gray-400">Non activé</p>
+                <p className="text-gray-400">Authentification à deux facteurs</p>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                  <p className="text-xs text-red-400 font-medium">Service SMS désactivé</p>
+                </div>
               </div>
             </div>
-            <ChevronRight className="text-gray-400" size={20} />
+            <Lock size={16} className="text-gray-600" />
           </button>
-          
+
           <button className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition">
             <div className="flex items-center gap-3">
               <Globe className="text-gray-400" size={20} />
@@ -403,7 +409,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white">Langue</p>
@@ -415,7 +421,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <option value="es">Español</option>
             </select>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div>
               <p className="text-white">Thème</p>
@@ -446,7 +452,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <p className="text-sm text-gray-400">Il y a 2 heures</p>
             </div>
           </div>
-          
+
           <div className="flex items-start gap-3">
             <div className="p-2 bg-green-500/20 rounded-lg">
               <CheckCircle className="text-green-400" size={16} />
@@ -456,7 +462,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <p className="text-sm text-gray-400">Il y a 1 jour</p>
             </div>
           </div>
-          
+
           <div className="flex items-start gap-3">
             <div className="p-2 bg-purple-500/20 rounded-lg">
               <Star className="text-purple-400" size={16} />
@@ -481,11 +487,10 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition ${
-                activeTab === tab.id
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition ${activeTab === tab.id
                   ? 'bg-blue-500 text-white'
                   : 'text-gray-400 hover:text-white hover:bg-gray-700'
-              }`}
+                }`}
             >
               <Icon size={16} />
               <span className="hidden md:inline">{tab.label}</span>
@@ -519,13 +524,13 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           <LogOut size={18} />
           Déconnexion
         </button>
-        
+
         <button className="px-6 py-3 bg-gray-700/50 text-gray-300 rounded-xl hover:bg-gray-700 transition flex items-center gap-2">
           <Download size={18} />
           Exporter mes données
         </button>
-        
-        <button 
+
+        <button
           onClick={handleDeleteAccount}
           disabled={isLoading}
           className="px-6 py-3 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
