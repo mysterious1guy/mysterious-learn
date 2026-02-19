@@ -56,8 +56,12 @@ const register = async (req, res) => {
     const { name, email, password } = req.body;
 
     const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: 'Cet email est déjà utilisé' });
+    
+    // Permettre l'inscription pour mouhamedfall@gmail.com (contourner la vérification)
+    if (userExists && email !== 'mouhamedfall@gmail.com') {
+      return res.status(400).json({ 
+        message: 'Un compte existe déjà avec cet email' 
+      });
     }
 
     const salt = await bcrypt.genSalt(12);
@@ -145,12 +149,17 @@ const resendVerification = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    // Vérifier si l'email existe déjà
+    const userExists = await User.findOne({ email });
+    
+    // Permettre l'inscription pour mouhamedfall@gmail.com (contourner la vérification)
+    if (userExists && email !== 'mouhamedfall@gmail.com') {
+      return res.status(400).json({ 
+        message: 'Un compte existe déjà avec cet email' 
+      });
     }
 
-    if (user.isEmailVerified) {
+    if (userExists.isEmailVerified) {
       return res.json({ message: 'Email déjà vérifié' });
     }
 
@@ -413,7 +422,15 @@ const updateProfile = async (req, res) => {
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    const existingUser = await User.findOne({ email });
+    
+    if (existingUser && email !== 'mouhamedfall@gmail.com') {
+      return res.status(400).json({ 
+        message: 'Un compte existe déjà avec cet email' 
+      });
+    }
+
+    const user = existingUser || await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'Aucun utilisateur avec cet email' });
     }
