@@ -44,8 +44,9 @@ const nukeUsers = async (req, res) => {
   try {
     await User.deleteMany({});
     res.json({ message: 'All users deleted' });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+  } catch (error) {
+    console.error('❌ Register error:', error);
+    res.status(500).json({ message: 'Erreur serveur: ' + error.message });
   }
 };
 
@@ -53,9 +54,14 @@ const nukeUsers = async (req, res) => {
 // @route   POST /api/auth/register
 const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    console.log('📝 Register request body:', req.body);
+    
+    const { firstName, lastName, email, password } = req.body;
+    const name = `${firstName} ${lastName}`;
 
+    console.log('🔍 Checking if user exists:', email);
     const userExists = await User.findOne({ email });
+    console.log('👤 User exists:', userExists ? 'YES' : 'NO');
     
     // Permettre l'inscription pour mouhamedfall@gmail.com (contourner la vérification)
     if (userExists && email !== 'mouhamedfall@gmail.com') {
@@ -64,21 +70,29 @@ const register = async (req, res) => {
       });
     }
 
+    console.log('🔐 Hashing password...');
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const verificationCode = generateVerificationCode();
+    console.log('🔢 Verification code:', verificationCode);
 
+    console.log('👤 Creating user...');
     const user = await User.create({
       name,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       emailVerificationCode: verificationCode,
       emailVerificationExpire: Date.now() + 30 * 60 * 1000,
       isEmailVerified: false,
     });
+    console.log('✅ User created successfully');
 
-    await sendVerificationEmail(email, name, verificationCode);
+    // Désactiver l'email pour les tests
+    console.log('📧 Email de vérification (désactivé):', verificationCode);
+    // await sendVerificationEmail(email, name, verificationCode);
 
     res.status(201).json({
       _id: user._id,
@@ -406,7 +420,18 @@ const getProfile = async (req, res) => {
 // @route   PUT /api/auth/profile
 const updateProfile = async (req, res) => {
   try {
-    const { name, email, avatar, lastSelectedCourse } = req.body;
+    const { 
+      name, 
+      email, 
+      avatar, 
+      lastSelectedCourse,
+      bio,
+      location,
+      phone,
+      firstName,
+      lastName
+    } = req.body;
+    
     const user = await User.findById(req.user._id);
 
     if (name) user.name = name;
@@ -414,6 +439,11 @@ const updateProfile = async (req, res) => {
     if (avatar) user.avatar = avatar;
     if (lastSelectedCourse !== undefined) user.lastSelectedCourse = lastSelectedCourse;
     if (req.body.favorites !== undefined) user.favorites = req.body.favorites;
+    if (bio !== undefined) user.bio = bio;
+    if (location !== undefined) user.location = location;
+    if (phone !== undefined) user.phone = phone;
+    if (firstName !== undefined) user.firstName = firstName;
+    if (lastName !== undefined) user.lastName = lastName;
 
     await user.save();
 

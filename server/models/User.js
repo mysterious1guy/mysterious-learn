@@ -9,6 +9,16 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: [2, 'Le nom doit contenir au moins 2 caractères'],
     },
+    firstName: {
+      type: String,
+      required: [true, 'Le prénom est requis'],
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Le nom est requis'],
+      trim: true,
+    },
     email: {
       type: String,
       required: [true, "L'email est requis"],
@@ -64,6 +74,19 @@ const userSchema = new mongoose.Schema(
     favorites: {
       type: [String],
       default: [],
+    },
+    // Profile additionnel
+    bio: {
+      type: String,
+      default: null,
+    },
+    location: {
+      type: String,
+      default: null,
+    },
+    phone: {
+      type: String,
+      default: null,
     },
   },
   {

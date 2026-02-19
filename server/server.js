@@ -59,23 +59,14 @@ app.get('/auth/callback', (req, res) => {
   res.redirect(`${process.env.CLIENT_URL}/auth?error=no_token`);
 });
 
-// 4. Gestion des fichiers statiques
-const rootDir = path.resolve(); 
-app.use(express.static(path.join(rootDir, 'dist')));
-
-// Route de base pour tester l'API
+// 4. Route de base pour tester l'API
 app.get('/api/status', (req, res) => {
   res.json({ message: 'L\'API Mysterious Learn est en ligne' });
 });
 
-// 5. La "Route Secours" (Syntaxe compatible Node 22+)
-app.get(/^(?!\/api).+/, (req, res) => {
-  res.sendFile(path.join(rootDir, 'dist', 'index.html'));
-});
-
-// 6. Démarrage du serveur
+// 5. Démarrage du serveur
 const PORT = process.env.PORT || 10000; // Render utilise souvent 10000
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Serveur démarré sur le port ${PORT}`);
-  console.log(`📂 Dossier racine : ${rootDir}`);
+  console.log(`📂 Dossier racine : ${__dirname}`);
 });
