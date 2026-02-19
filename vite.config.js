@@ -8,5 +8,8 @@ export default defineConfig({
   },
   server: { // <-- Ajoutez cette section
     allowedHosts: 'all'
+  },
+  build: {
+    chunkSizeWarningLimit: 1000
   }
 })

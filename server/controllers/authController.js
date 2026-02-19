@@ -603,6 +603,5 @@ module.exports = {
   deleteAccount,
   forgotPassword,
   resetPassword,
-  nukeUsers,
   checkEmail, // ← AJOUTÉ
 };
