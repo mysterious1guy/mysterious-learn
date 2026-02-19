@@ -173,7 +173,7 @@ function App() {
 
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
             {/* Route Admin - Dashboard */}
-            <Route path="/admin" element={<AdminPage user={user} API_URL={API_URL} setToast={setToast} />} />
+            <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
 
             {/* Routes protégées - nécessitent une connexion et un onboarding complété */}
             <Route path="/dashboard" element={

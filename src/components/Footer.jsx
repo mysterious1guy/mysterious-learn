@@ -16,10 +16,10 @@ const Footer = () => {
     <footer className="relative bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent border-t border-gray-800">
       {/* Effet de brillance */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5" />
-      
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
+
           {/* Section À propos */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -31,12 +31,12 @@ const Footer = () => {
               <AnimatedLogo size="medium" />
               <h3 className="text-xl font-bold text-white">Mysterious Classroom</h3>
             </div>
-            
+
             <p className="text-gray-400 text-sm leading-relaxed">
-              Plateforme d'apprentissage innovante créée avec passion pour l'éducation 
+              Plateforme d'apprentissage innovante créée avec passion pour l'éducation
               technologique et le partage des connaissances.
             </p>
-            
+
             <div className="flex gap-3">
               {socialLinks.map((social, index) => (
                 <motion.a
@@ -64,7 +64,7 @@ const Footer = () => {
               <Code size={18} className="text-blue-400" />
               Créateur
             </h4>
-            
+
             <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
@@ -75,7 +75,7 @@ const Footer = () => {
                   <p className="text-gray-400 text-sm">Étudiant en informatique</p>
                 </div>
               </div>
-              
+
               <div className="space-y-2 text-sm text-gray-400">
                 <p className="flex items-center gap-2">
                   <Sparkles size={14} className="text-yellow-400" />
@@ -104,7 +104,7 @@ const Footer = () => {
               <Sparkles size={18} className="text-purple-400" />
               Technologies
             </h4>
-            
+
             <div className="grid grid-cols-2 gap-2">
               {[
                 'React', 'Node.js', 'MongoDB', 'Express',
@@ -132,17 +132,15 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
               <p className="text-gray-400 text-sm">
-                © {currentYear} Mysterious Classroom. Tous droits réservés.
+                © {currentYear} Mysterious Classroom. Plateforme créée par Mouhamed Fall.
               </p>
               <p className="text-gray-500 text-xs mt-1">
-                Créé avec <Heart className="inline text-red-400" size={12} /> par Mouhamed FALL
+                Mouhamed Fall • ESP (École Supérieure Polytechnique de Dakar) • 18 ans
               </p>
             </div>
-            
+
             <div className="flex items-center gap-4 text-gray-500 text-xs">
-              <span>ESP Dakar</span>
-              <span>•</span>
-              <span>Class of 2027</span>
+              <span>Fait avec passion et l'aide de l'IA</span>
               <span>•</span>
               <span>Full-Stack Developer</span>
             </div>

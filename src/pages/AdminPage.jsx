@@ -1,518 +1,465 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Users,
-  Mail,
-  Bell,
-  BookOpen,
-  Settings,
-  Crown,
-  Eye,
-  Edit,
-  Trash2,
-  Send,
-  BarChart3,
-  UserPlus,
-  UserMinus,
-  Camera,
-  Upload,
-  AlertTriangle,
-  TrendingUp,
-  Activity
+  Users, Mail, Bell, BookOpen, Settings, Crown, Eye, Edit, Trash2, Send,
+  BarChart3, UserPlus, UserMinus, Camera, Upload, AlertTriangle, TrendingUp,
+  Activity, LayoutDashboard, Database, Shield, LogOut, Search, Filter,
+  CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X
 } from 'lucide-react';
 
-const AdminPage = ({ user, API_URL, setToast }) => {
+const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [notifications, setNotifications] = useState([]);
-  const [emailContent, setEmailContent] = useState({ subject: '', body: '', recipients: 'all' });
+  const [stats, setStats] = useState({
+    totalUsers: 0, verifiedUsers: 0, unverifiedUsers: 0,
+    totalCourses: 0, activeUsers: 0, growthRate: '0%'
+  });
+  const [emailContent, setEmailContent] = useState({ subject: '', body: '', recipients: 'all', specificEmail: '' });
   const [notificationContent, setNotificationContent] = useState({ title: '', message: '', type: 'info' });
-  const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState({ totalUsers: 0, totalCourses: 0, activeUsers: 0 });
-  const [profileImage, setProfileImage] = useState(user?.profileImage || null);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
-    console.log('👑 AdminPage: Initialisation pour', user?.email);
-
-    if (!user) {
-      console.log('❌ AdminPage: Aucun utilisateur - redirection vers /admin/login');
-      navigate('/admin/login');
-      return;
-    }
-
-    // Vérifier si c'est l'admin principal avec le bon token
-    if (user.email === 'mouhamedfall@esp.sn' && user.token && user.token.startsWith('admin_token_')) {
-      console.log('✅ AdminPage: Admin principal connecté - ACCÈS TOTAL AU SITE');
-      // Ne pas faire d'appel API, utiliser les données locales
-      // L'admin a accès à TOUT le site sans restriction
-      return;
-    }
-
-    if (user.email !== 'mouhamedfall@esp.sn' && user.role !== 'admin') {
-      console.log('❌ AdminPage: Utilisateur non-admin, redirection vers /dashboard');
+    if (!user || user.role !== 'admin') {
       navigate('/dashboard');
       return;
     }
-
-    console.log('✅ AdminPage: Accès autorisé pour', user.email);
-    fetchAdminData();
+    fetchData();
   }, [user, navigate]);
 
-  // PAS DE REDIRECTION AUTOMATIQUE - L'ADMIN ACCÈDE À TOUT
-  // useEffect(() => {
-  //   if (user && (user.email === 'mouhamedfall@esp.sn' || user.role === 'admin')) {
-  //     console.log('👑 AdminPage: Redirection automatique vers /dashboard');
-  //     navigate('/dashboard');
-  //   }
-  // }, [user, navigate]);
-
-  const fetchAdminData = async () => {
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-
-      // Récupérer les stats
-      const [usersRes, coursesRes] = await Promise.all([
-        fetch(`${API_URL}/api/admin/users`),
-        fetch(`${API_URL}/api/courses`)
+      const headers = { Authorization: `Bearer ${user.token}` };
+      const [usersRes, statsRes, coursesRes] = await Promise.all([
+        fetch(`${API_URL}/admin/users`, { headers }),
+        fetch(`${API_URL}/admin/stats`, { headers }),
+        fetch(`${API_URL}/courses`, { headers })
       ]);
 
-      if (usersRes.ok) {
-        const usersData = await usersRes.json();
-        setUsers(usersData);
-        setStats(prev => ({ ...prev, totalUsers: usersData.length, activeUsers: usersData.filter(u => u.lastLogin).length }));
-      }
-
-      if (coursesRes.ok) {
-        const coursesData = await coursesRes.json();
-        setCourses(coursesData);
-        setStats(prev => ({ ...prev, totalCourses: coursesData.length }));
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-      setToast({ message: 'Erreur de chargement', type: 'error' });
+      if (usersRes.ok) setUsers(await usersRes.json());
+      if (statsRes.ok) setStats(await statsRes.json());
+      if (coursesRes.ok) setCourses(await coursesRes.json());
+    } catch (err) {
+      setToast({ message: 'Erreur de connexion au serveur', type: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
-  const sendEmailToUsers = async () => {
+  const handleSendEmail = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/api/admin/send-email`, {
+      const res = await fetch(`${API_URL}/admin/send-email`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
         body: JSON.stringify(emailContent)
       });
-
-      if (response.ok) {
-        setToast({ message: 'Email envoyé avec succès', type: 'success' });
-        setEmailContent({ subject: '', body: '', recipients: 'all' });
+      if (res.ok) {
+        setToast({ message: 'Emails envoyés !', type: 'success' });
+        setEmailContent({ subject: '', body: '', recipients: 'all', specificEmail: '' });
       }
-    } catch (error) {
-      setToast({ message: "Erreur lors de l'envoi de l'email", type: 'error' });
+    } catch (err) {
+      setToast({ message: "Échec de l'envoi", type: 'error' });
     }
   };
 
-  const sendNotification = async () => {
+  const handleSendNotification = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/api/admin/send-notification`, {
+      const res = await fetch(`${API_URL}/admin/send-notification`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
         body: JSON.stringify(notificationContent)
       });
-
-      if (response.ok) {
-        setToast({ message: 'Notification envoyée', type: 'success' });
+      if (res.ok) {
+        setToast({ message: 'Notification diffusée !', type: 'success' });
         setNotificationContent({ title: '', message: '', type: 'info' });
       }
-    } catch (error) {
-      setToast({ message: 'Erreur notification', type: 'error' });
+    } catch (err) {
+      setToast({ message: "Échec de la diffusion", type: 'error' });
     }
   };
 
-  const deleteUser = async (userId) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
-
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm('Supprimer définitivement cet utilisateur ?')) return;
     try {
-      const response = await fetch(`${API_URL}/api/admin/users/${userId}`, {
-        method: 'DELETE'
+      const res = await fetch(`${API_URL}/admin/users/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${user.token}` }
       });
-
-      if (response.ok) {
-        setUsers(users.filter(u => u._id !== userId));
+      if (res.ok) {
+        setUsers(users.filter(u => u._id !== id));
         setToast({ message: 'Utilisateur supprimé', type: 'success' });
       }
-    } catch (error) {
+    } catch (err) {
       setToast({ message: 'Erreur suppression', type: 'error' });
     }
   };
 
-  const handleProfileImageUpload = async (e) => {
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      setToast({ message: 'Image trop volumineuse (max 5MB)', type: 'error' });
-      return;
-    }
+    const formData = new FormData();
+    formData.append('avatar', file);
 
     try {
-      const formData = new FormData();
-      formData.append('profileImage', file);
-
-      const response = await fetch(`${API_URL}/api/admin/profile-image`, {
+      const res = await fetch(`${API_URL}/user/avatar`, {
         method: 'POST',
+        headers: { Authorization: `Bearer ${user.token}` },
         body: formData
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProfileImage(data.profileImage);
-        setToast({ message: 'Photo de profil mise à jour', type: 'success' });
+      if (res.ok) {
+        const data = await res.json();
+        onUpdateUser({ avatar: data.avatar });
+        setToast({ message: 'Avatar mis à jour !', type: 'success' });
       }
-    } catch (error) {
-      setToast({ message: 'Erreur upload image', type: 'error' });
+    } catch (err) {
+      setToast({ message: "Erreur lors de l'envoi", type: 'error' });
     }
   };
 
-  const renderDashboard = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-blue-600/20 to-blue-700/20 backdrop-blur-sm border border-blue-600/30 rounded-2xl p-6"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-blue-400 text-sm">Total Utilisateurs</p>
-              <p className="text-3xl font-bold text-white">{stats.totalUsers}</p>
-            </div>
-            <Users className="text-blue-400" size={32} />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gradient-to-r from-green-600/20 to-green-700/20 backdrop-blur-sm border border-green-600/30 rounded-2xl p-6"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-green-400 text-sm">Utilisateurs Actifs</p>
-              <p className="text-3xl font-bold text-white">{stats.activeUsers}</p>
-            </div>
-            <Activity className="text-green-400" size={32} />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-gradient-to-r from-purple-600/20 to-purple-700/20 backdrop-blur-sm border border-purple-600/30 rounded-2xl p-6"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-purple-400 text-sm">Total Cours</p>
-              <p className="text-3xl font-bold text-white">{stats.totalCourses}</p>
-            </div>
-            <BookOpen className="text-purple-400" size={32} />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-gradient-to-r from-yellow-600/20 to-yellow-700/20 backdrop-blur-sm border border-yellow-600/30 rounded-2xl p-6"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-yellow-400 text-sm">Taux Croissance</p>
-              <p className="text-3xl font-bold text-white">+24%</p>
-            </div>
-            <TrendingUp className="text-yellow-400" size={32} />
-          </div>
-        </motion.div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6"
-        >
-          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <Users size={20} />
-            Utilisateurs Récents
-          </h3>
-          <div className="space-y-3">
-            {users.slice(0, 5).map((user) => (
-              <div key={user._id} className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-                    {user.firstName?.[0] || user.email?.[0]?.toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="text-white font-medium">{user.firstName} {user.lastName}</p>
-                    <p className="text-gray-400 text-sm">{user.email}</p>
-                  </div>
-                </div>
-                <span className={`px-2 py-1 rounded text-xs ${user.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
-                  }`}>
-                  {user.verified ? 'Vérifié' : 'En attente'}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6"
-        >
-          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <BookOpen size={20} />
-            Cours Populaires
-          </h3>
-          <div className="space-y-3">
-            {courses.slice(0, 5).map((course) => (
-              <div key={course._id} className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg">
-                <div>
-                  <p className="text-white font-medium">{course.title}</p>
-                  <p className="text-gray-400 text-sm">{course.students} étudiants</p>
-                </div>
-                <div className="flex items-center gap-1 text-yellow-400">
-                  <span>{course.rating}</span>
-                  <span>⭐</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-    </div>
+  const filteredUsers = users.filter(u =>
+    u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    `${u.firstName} ${u.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const renderUsers = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Users size={24} />
-          Gestion des Utilisateurs
-        </h2>
-        <button className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition flex items-center gap-2">
-          <UserPlus size={16} />
-          Ajouter Utilisateur
-        </button>
-      </div>
-
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-700/50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Utilisateur</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Statut</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Inscription</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700">
-              {users.map((user) => (
-                <tr key={user._id} className="hover:bg-gray-700/30 transition">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
-                        {user.firstName?.[0] || user.email?.[0]?.toUpperCase()}
-                      </div>
-                      <span className="text-white font-medium">{user.firstName} {user.lastName}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-300">{user.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 rounded text-xs ${user.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
-                      }`}>
-                      {user.verified ? 'Vérifié' : 'En attente'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-400">
-                    {new Date(user.createdAt).toLocaleDateString('fr-FR')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <button className="p-1 text-blue-400 hover:text-blue-300 transition">
-                        <Eye size={16} />
-                      </button>
-                      <button className="p-1 text-yellow-400 hover:text-yellow-300 transition">
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => deleteUser(user._id)}
-                        className="p-1 text-red-400 hover:text-red-300 transition"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderNotifications = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-        <Bell size={24} />
-        Notifications Globales
-      </h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6"
-        >
-          <h3 className="text-xl font-bold text-white mb-4">Envoyer une Notification</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Titre</label>
-              <input
-                type="text"
-                value={notificationContent.title}
-                onChange={(e) => setNotificationContent({ ...notificationContent, title: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
-                placeholder="Titre de la notification"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Message</label>
-              <textarea
-                value={notificationContent.message}
-                onChange={(e) => setNotificationContent({ ...notificationContent, message: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none h-32"
-                placeholder="Contenu de la notification"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
-              <select
-                value={notificationContent.type}
-                onChange={(e) => setNotificationContent({ ...notificationContent, type: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
-              >
-                <option value="info">Information</option>
-                <option value="success">Succès</option>
-                <option value="warning">Attention</option>
-                <option value="error">Erreur</option>
-              </select>
-            </div>
-            <button
-              onClick={sendNotification}
-              className="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 transition flex items-center justify-center gap-2"
-            >
-              <Send size={16} />
-              Envoyer la Notification
-            </button>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6"
-        >
-          <h3 className="text-xl font-bold text-white mb-4">Envoyer un Email</h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Destinataires</label>
-              <select
-                value={emailContent.recipients}
-                onChange={(e) => setEmailContent({ ...emailContent, recipients: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
-              >
-                <option value="all">Tous les utilisateurs</option>
-                <option value="verified">Utilisateurs vérifiés</option>
-                <option value="unverified">Utilisateurs non vérifiés</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Sujet</label>
-              <input
-                type="text"
-                value={emailContent.subject}
-                onChange={(e) => setEmailContent({ ...emailContent, subject: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
-                placeholder="Sujet de l'email"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Contenu</label>
-              <textarea
-                value={emailContent.body}
-                onChange={(e) => setEmailContent({ ...emailContent, body: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none h-32"
-                placeholder="Contenu de l'email"
-              />
-            </div>
-            <button
-              onClick={sendEmailToUsers}
-              className="w-full px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition flex items-center justify-center gap-2"
-            >
-              <Mail size={16} />
-              Envoyer l'Email
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    </div>
-  );
+  const sidebarItems = [
+    { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
+    { id: 'users', label: 'Utilisateurs', icon: Users },
+    { id: 'notifications', label: 'Communications', icon: Bell },
+    { id: 'courses', label: 'Gestion des cours', icon: BookOpen },
+    { id: 'settings', label: 'Paramètres', icon: Settings },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
-      <div className="max-w-7xl mx-auto p-6 pt-24">
-        {/* Header Admin */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
-                <Crown size={32} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">Panneau d'Administration</h1>
-                <p className="text-gray-400">Bienvenue, {user?.firstName} {user?.lastName}</p>
-              </div>
-            </div>
-          </div>
+    <div className="flex min-h-screen bg-slate-950 text-slate-200">
+      {/* Sidebar */}
+      <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col z-50`}>
+        <div className="p-6 flex items-center justify-between">
+          {isSidebarOpen && <span className="font-black text-xl bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">ADMIN</span>}
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-slate-800 rounded-lg">
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
 
-        {/* Contenu principal */}
-        {activeTab === 'dashboard' && renderDashboard()}
-        {activeTab === 'users' && renderUsers()}
-        {activeTab === 'notifications' && renderNotifications()}
-        {activeTab === 'courses' && (
-          <div className="text-center text-gray-400 py-20">
-            Gestion des cours - Bientôt disponible
+        <nav className="flex-1 px-3 space-y-1">
+          {sidebarItems.map(item => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all ${activeTab === item.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'hover:bg-slate-800 text-slate-400 hover:text-white'}`}
+            >
+              <item.icon size={20} />
+              {isSidebarOpen && <span className="font-bold text-sm">{item.label}</span>}
+            </button>
+          ))}
+        </nav>
+
+        <div className="p-4 border-t border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="relative group">
+              {user?.avatar ? (
+                <img src={user.avatar} className="w-10 h-10 rounded-full border-2 border-blue-500 cursor-pointer" />
+              ) : (
+                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold">{user?.firstName?.[0]}</div>
+              )}
+              <button onClick={() => fileInputRef.current.click()} className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 rounded-full transition-opacity">
+                <Camera size={12} />
+              </button>
+              <input ref={fileInputRef} type="file" hidden accept="image/*" onChange={handleAvatarChange} />
+            </div>
+            {isSidebarOpen && (
+              <div className="flex-1 overflow-hidden">
+                <p className="text-xs font-bold text-white truncate">{user?.firstName} {user?.lastName}</p>
+                <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
+              </div>
+            )}
           </div>
-        )}
-        {activeTab === 'settings' && (
-          <div className="text-center text-gray-400 py-20">
-            Paramètres système - Bientôt disponible
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-y-auto p-8 pt-24">
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
           </div>
+        ) : (
+          <AnimatePresence mode="wait">
+            {activeTab === 'dashboard' && (
+              <motion.div key="dash" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <h1 className="text-4xl font-black text-white">Bonjour, Mouhamed ! 👋</h1>
+                    <p className="text-slate-400 mt-2">Voici ce qu'il se passe sur Mysterious Classroom aujourd'hui.</p>
+                  </div>
+                  <button onClick={fetchData} className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 text-slate-400 transition-colors">
+                    <RefreshCw size={20} />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  {[
+                    { label: 'Utilisateurs', value: stats.totalUsers, icon: Users, color: 'blue' },
+                    { label: 'Vérifiés', value: stats.verifiedUsers, icon: CheckCircle, color: 'green' },
+                    { label: 'Cours', value: stats.totalCourses, icon: BookOpen, color: 'purple' },
+                    { label: 'Actifs', value: stats.activeUsers, icon: Activity, color: 'orange' },
+                  ].map((s, i) => (
+                    <div key={i} className="bg-slate-900 p-6 rounded-[2rem] border border-slate-800 shadow-xl overflow-hidden relative group">
+                      <div className={`absolute top-0 right-0 w-32 h-32 bg-${s.color}-600/10 blur-3xl -mr-12 -mt-12 transition-transform group-hover:scale-150`} />
+                      <div className={`p-3 bg-${s.color}-600/20 text-${s.color}-400 rounded-2xl w-fit mb-4`}>
+                        <s.icon size={24} />
+                      </div>
+                      <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">{s.label}</p>
+                      <p className="text-3xl font-black text-white mt-1">{s.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8">
+                    <h2 className="text-xl font-bold text-white mb-6">Utilisateurs Récents</h2>
+                    <div className="space-y-4">
+                      {users.slice(-5).reverse().map(u => (
+                        <div key={u._id} className="flex items-center justify-between p-4 bg-slate-800/30 rounded-2xl hover:bg-slate-800/50 transition-colors">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-bold">{u.firstName?.[0]}</div>
+                            <div>
+                              <p className="text-sm font-bold text-white">{u.firstName} {u.lastName}</p>
+                              <p className="text-xs text-slate-500">{u.email}</p>
+                            </div>
+                          </div>
+                          <ChevronRight size={16} className="text-slate-600" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] p-8">
+                    <h2 className="text-xl font-bold text-white mb-6">Activité Système</h2>
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                        <p className="text-sm"><span className="font-bold text-white">Serveur :</span> Opérationnel (100%)</p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                        <p className="text-sm"><span className="font-bold text-white">Base de données :</span> Connectée</p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-purple-500" />
+                        <p className="text-sm"><span className="font-bold text-white">Email Service :</span> Prêt</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'users' && (
+              <motion.div key="users" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-3xl font-black text-white">Gestion des Utilisateurs</h2>
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                    <input
+                      type="text"
+                      placeholder="Rechercher..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-12 pr-6 py-3 bg-slate-900 border border-slate-800 rounded-2xl text-white focus:ring-2 focus:ring-blue-600 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-slate-900 border border-slate-800 rounded-[2rem] overflow-hidden">
+                  <table className="w-full text-left">
+                    <thead className="bg-slate-950/50 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                      <tr>
+                        <th className="px-8 py-6">Utilisateur</th>
+                        <th className="px-8 py-6">Rôle</th>
+                        <th className="px-8 py-6">Vérifié</th>
+                        <th className="px-8 py-6">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800">
+                      {filteredUsers.map(u => (
+                        <tr key={u._id} className="hover:bg-slate-800/30 transition-colors">
+                          <td className="px-8 py-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center font-bold text-blue-400">
+                                {u.firstName?.[0]}
+                              </div>
+                              <div>
+                                <p className="text-sm font-bold text-white">{u.firstName} {u.lastName}</p>
+                                <p className="text-[10px] text-slate-500">{u.email}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-8 py-6">
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${u.role === 'admin' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-blue-500/10 text-blue-500'}`}>
+                              {u.role}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6">
+                            {u.isEmailVerified ? <CheckCircle size={18} className="text-green-500" /> : <XCircle size={18} className="text-slate-600" />}
+                          </td>
+                          <td className="px-8 py-6">
+                            <button onClick={() => handleDeleteUser(u._id)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
+                              <Trash2 size={18} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {filteredUsers.length === 0 && <div className="p-20 text-center text-slate-500">Aucun utilisateur trouvé</div>}
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'notifications' && (
+              <motion.div key="notif" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Email Panel */}
+                <div className="bg-slate-900 p-10 rounded-[2.5rem] border border-slate-800 shadow-2xl">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="p-4 bg-purple-600/20 text-purple-400 rounded-2xl"><Mail size={32} /></div>
+                    <h2 className="text-2xl font-black text-white">Email Marketing</h2>
+                  </div>
+                  <form onSubmit={handleSendEmail} className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-black uppercase text-slate-500 tracking-tighter">Destinataires</label>
+                      <select
+                        value={emailContent.recipients}
+                        onChange={(e) => setEmailContent({ ...emailContent, recipients: e.target.value })}
+                        className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none focus:border-purple-600 transition-colors"
+                      >
+                        <option value="all">Tous les utilisateurs</option>
+                        <option value="verified">Vérifiés uniquement</option>
+                        <option value="unverified">Non-vérifiés</option>
+                        <option value="specific">Email spécifique</option>
+                      </select>
+                    </div>
+                    {emailContent.recipients === 'specific' && (
+                      <input
+                        type="email"
+                        placeholder="email@example.com"
+                        value={emailContent.specificEmail}
+                        onChange={(e) => setEmailContent({ ...emailContent, specificEmail: e.target.value })}
+                        className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                      />
+                    )}
+                    <input
+                      type="text"
+                      placeholder="Sujet du message"
+                      value={emailContent.subject}
+                      onChange={(e) => setEmailContent({ ...emailContent, subject: e.target.value })}
+                      className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                    />
+                    <textarea
+                      placeholder="Contenu HTML ou texte brut..."
+                      rows="6"
+                      value={emailContent.body}
+                      onChange={(e) => setEmailContent({ ...emailContent, body: e.target.value })}
+                      className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none resize-none"
+                    ></textarea>
+                    <button className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-purple-900/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                      <Send size={20} /> ENVOYER MAINTENANT
+                    </button>
+                  </form>
+                </div>
+
+                {/* Broadcast Panel */}
+                <div className="bg-slate-900 p-10 rounded-[2.5rem] border border-slate-800 shadow-2xl">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="p-4 bg-orange-600/20 text-orange-400 rounded-2xl"><Bell size={32} /></div>
+                    <h2 className="text-2xl font-black text-white">Annonce Site</h2>
+                  </div>
+                  <form onSubmit={handleSendNotification} className="space-y-6">
+                    <input
+                      type="text"
+                      placeholder="Titre de l'alerte"
+                      value={notificationContent.title}
+                      onChange={(e) => setNotificationContent({ ...notificationContent, title: e.target.value })}
+                      className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                    />
+                    <select
+                      value={notificationContent.type}
+                      onChange={(e) => setNotificationContent({ ...notificationContent, type: e.target.value })}
+                      className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                    >
+                      <option value="info">💡 Information (Bleu)</option>
+                      <option value="announcement">📢 Annonce (Violet)</option>
+                      <option value="warning">⚠️ Alerte (Orange)</option>
+                      <option value="success">✅ Succès (Vert)</option>
+                    </select>
+                    <textarea
+                      placeholder="Message court pour la cloche..."
+                      rows="4"
+                      value={notificationContent.message}
+                      onChange={(e) => setNotificationContent({ ...notificationContent, message: e.target.value })}
+                      className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none resize-none"
+                    ></textarea>
+                    <button className="w-full py-5 bg-gradient-to-r from-orange-600 to-red-600 text-white font-black rounded-2xl shadow-xl shadow-orange-900/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                      <Megaphone size={20} /> DIFFUSER L'ANNONCE
+                    </button>
+                  </form>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'courses' && (
+              <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-[3rem] text-slate-600">
+                <BookOpen size={48} className="mb-4 opacity-20" />
+                <p className="font-bold">Module de gestion des cours en développement</p>
+              </div>
+            )}
+
+            {activeTab === 'settings' && (
+              <div className="max-w-xl bg-slate-900 p-10 rounded-[2.5rem] border border-slate-800">
+                <h2 className="text-2xl font-black text-white mb-8">Paramètres Admin</h2>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between p-6 bg-slate-800/20 rounded-2xl border border-slate-800">
+                    <div>
+                      <p className="font-bold text-white">Maintenance Site</p>
+                      <p className="text-xs text-slate-500">Désactiver l'accès aux cours</p>
+                    </div>
+                    <div className="w-12 h-6 bg-slate-800 rounded-full relative cursor-pointer">
+                      <div className="absolute left-1 top-1 w-4 h-4 bg-slate-600 rounded-full" />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-6 bg-slate-800/20 rounded-2xl border border-slate-800">
+                    <div>
+                      <p className="font-bold text-white">Inscriptions</p>
+                      <p className="text-xs text-slate-500">Autoriser les nouveaux comptes</p>
+                    </div>
+                    <div className="w-12 h-6 bg-blue-600 rounded-full relative cursor-pointer">
+                      <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </AnimatePresence>
         )}
-      </div>
+      </main>
     </div>
   );
 };
+
+const Megaphone = ({ size, className }) => <TrendingUp size={size} className={className} />; // Placeholder as Lucide Megaphone might be missing or different
 
 export default AdminPage;

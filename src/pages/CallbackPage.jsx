@@ -40,10 +40,18 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
                     localStorage.setItem('user', JSON.stringify(data));
                     localStorage.setItem('token', data.token);
 
-                    console.log('✅ CallbackPage: Redirection vers /dashboard...');
+                    console.log('✅ CallbackPage: Redirection...');
                     setUser({ ...data, token });
-                    setToast({ message: 'Connexion réussie !', type: 'success' });
-                    navigate('/dashboard');  // ← Redirection vers /dashboard
+                    setToast({ message: `Connexion réussie ${data.role === 'admin' ? '(Admin)' : ''}!`, type: 'success' });
+
+                    if (data.role === 'admin') {
+                        navigate('/admin');
+                    } else if (data.hasCompletedOnboarding) {
+                        navigate('/dashboard');
+                    } else {
+                        navigate('/onboarding');
+                    }
+
                     if (fetchProgressions) fetchProgressions();
                 })
                 .catch(err => {

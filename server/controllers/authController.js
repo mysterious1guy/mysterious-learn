@@ -1,21 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const sendMail = require('../config/mail');
-const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
-const { OAuth2Client } = require('google-auth-library');
-
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-// Générer token JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
-};
-
-// Générer un code de vérification à 6 chiffres
-const generateVerificationCode = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-};
+const { sendEmail } = require('../utils/emailService');
 
 // Envoyer email de vérification
 const sendVerificationEmail = async (email, name, code) => {
@@ -36,63 +21,58 @@ const sendVerificationEmail = async (email, name, code) => {
       <p style="color: #475569; font-size: 12px; text-align: center;">Si tu n'as pas créé de compte, ignore cet email.</p>
     </div>
   `;
-  await sendMail(email, 'Vérifie ton email — Mysterious Classroom', html);
+  await sendEmail({
+    to: email,
+    subject: 'Vérifie ton email — Mysterious Classroom',
+    html
+  });
 };
 
-// @desc    Nuke all users (Temp)
-const nukeUsers = async (req, res) => {
-  try {
-    await User.deleteMany({});
-    res.json({ message: 'All users deleted' });
-  } catch (error) {
-    console.error('❌ Register error:', error);
-    res.status(500).json({ message: 'Erreur serveur: ' + error.message });
-  }
-};
+// ... (nukeUsers reste inchangé)
 
 // @desc    Inscription
 // @route   POST /api/auth/register
 const register = async (req, res) => {
   try {
-    console.log('📝 Register request body:', req.body);
-
     const { firstName, lastName, email, password } = req.body;
     const name = `${firstName} ${lastName}`;
 
-    console.log('🔍 Checking if user exists:', email);
     const userExists = await User.findOne({ email });
-    console.log('👤 User exists:', userExists ? 'YES' : 'NO');
 
-    // Permettre l'inscription pour mouhamedfall@gmail.com (contourner la vérification)
-    if (userExists && email !== 'mouhamedfall@gmail.com') {
+    if (userExists) {
+      console.log('Tentative inscription email existant:', email);
       return res.status(400).json({
         message: 'Un compte existe déjà avec cet email'
       });
     }
 
-    console.log('🔐 Hashing password...');
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const verificationCode = generateVerificationCode();
-    console.log('🔢 Verification code:', verificationCode);
 
-    console.log('👤 Creating user...');
+    const isSuperAdmin = email === 'mouhamedfall@esp.sn' || email === 'mouhamedfall@gmail.com';
+
     const user = await User.create({
-      name,
       firstName,
       lastName,
+      name: `${firstName} ${lastName}`,
       email,
       password: hashedPassword,
       emailVerificationCode: verificationCode,
       emailVerificationExpire: Date.now() + 30 * 60 * 1000,
-      isEmailVerified: true, // ✅ AUTO-VERIFICATION (Email service disabled)
+      isEmailVerified: false,
+      role: isSuperAdmin ? 'admin' : 'user',
+      hasCompletedOnboarding: false,
+      joinedAt: new Date(),
     });
-    console.log('✅ User created successfully (Auto-verified)');
 
-    // Désactiver l'email pour les tests
-    // console.log('📧 Email de vérification (désactivé):', verificationCode);
-    // await sendVerificationEmail(email, name, verificationCode);
+    // Envoi réel de l'email
+    try {
+      await sendVerificationEmail(email, name, verificationCode);
+    } catch (mailErr) {
+      console.error('Échec envoi mail verification:', mailErr);
+    }
 
     res.status(201).json({
       _id: user._id,
@@ -100,14 +80,9 @@ const register = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      avatar: user.avatar,
       role: user.role,
-      joinedAt: user.joinedAt,
-      isEmailVerified: true,
-      hasCompletedOnboarding: user.hasCompletedOnboarding,
-      preferences: user.preferences,
-      favorites: user.favorites || [],
-      token: generateToken(user._id),
+      isEmailVerified: false,
+      message: 'Compte créé. Vérifie ton email pour le code d\'activation.'
     });
   } catch (err) {
     console.error('Erreur register:', err);
@@ -118,13 +93,64 @@ const register = async (req, res) => {
 // @desc    Vérifier l'email
 // @route   POST /api/auth/verify-email
 const verifyEmail = async (req, res) => {
-  res.json({ message: 'Email déjà vérifié automatiquement.' });
+  try {
+    const { email, code } = req.body;
+
+    const user = await User.findOne({
+      email,
+      emailVerificationCode: code,
+      emailVerificationExpire: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Code invalide ou expiré' });
+    }
+
+    user.isEmailVerified = true;
+    user.emailVerificationCode = undefined;
+    user.emailVerificationExpire = undefined;
+    await user.save();
+
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isEmailVerified: true,
+      token: generateToken(user._id),
+      message: 'Email vérifié avec succès !'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la vérification' });
+  }
 };
 
 // @desc    Renvoyer le code de vérification
 // @route   POST /api/auth/resend-verification
 const resendVerification = async (req, res) => {
-  res.json({ message: 'Vérification automatique active. Connectez-vous directement.' });
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    if (user.isEmailVerified) {
+      return res.status(400).json({ message: 'Cet email est déjà vérifié' });
+    }
+
+    const newCode = generateVerificationCode();
+    user.emailVerificationCode = newCode;
+    user.emailVerificationExpire = Date.now() + 30 * 60 * 1000;
+    await user.save();
+
+    await sendVerificationEmail(user.email, user.name, newCode);
+
+    res.json({ message: 'Nouveau code envoyé !' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de l\'envoi du code' });
+  }
 };
 
 // @desc    Connexion
@@ -138,8 +164,9 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
+    // La restriction Google est retirée pour permettre la connexion par mot de passe si disponible
     if (user.googleId && !user.password) {
-      return res.status(400).json({ message: 'Ce compte utilise Google. Connecte-toi avec Google.' });
+      console.log('Compte Google sans MDP essayer au cas où:', email);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -307,10 +334,17 @@ const googleCallback = async (req, res) => {
       if (!user.googleId) {
         user.googleId = googleId;
         user.avatar = picture || user.avatar;
+
+        // Assurer que le créateur garde les droits admin même s'il se connecte via différé
+        if (email === 'mouhamedfall@esp.sn' || email === 'mouhamedfall@gmail.com') {
+          user.role = 'admin';
+        }
         await user.save();
       }
     } else {
       console.log('Nouvel utilisateur:', email);
+      const isSuperAdmin = email === 'mouhamedfall@esp.sn' || email === 'mouhamedfall@gmail.com';
+
       user = await User.create({
         name: name || email.split('@')[0],
         firstName: name ? name.split(' ')[0] : email.split('@')[0],
@@ -318,6 +352,7 @@ const googleCallback = async (req, res) => {
         email,
         googleId,
         avatar: picture,
+        role: isSuperAdmin ? 'admin' : 'user',
         isEmailVerified: true,
         hasCompletedOnboarding: false,
         joinedAt: new Date()
@@ -547,6 +582,7 @@ const checkEmail = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
+    if (user) console.log('checkEmail found user:', email);
     res.json({ exists: !!user });
   } catch (err) {
     console.error('Erreur checkEmail:', err);

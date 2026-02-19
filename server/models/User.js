@@ -109,4 +109,24 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// Cascade delete: Supprimer les données associées quand un utilisateur est supprimé
+userSchema.pre('findOneAndDelete', async function (next) {
+  try {
+    const docQuery = this.getQuery();
+    const User = this.model;
+    const user = await User.findOne(docQuery);
+
+    if (user) {
+      // Supprimer les progressions
+      await mongoose.model('Progress').deleteMany({ user: user._id });
+      // Supprimer la 2FA
+      await mongoose.model('TwoFactorAuth').deleteOne({ userId: user._id });
+      // Possibilité d'étendre avec la suppression de commentaires, etc.
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = mongoose.model('User', userSchema);

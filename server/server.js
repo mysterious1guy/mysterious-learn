@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
-const connectDB = require('./config/db'); 
+const connectDB = require('./config/db');
 
 // 2. Connexion à MongoDB
 connectDB();
@@ -15,9 +15,9 @@ const app = express();
 app.set('trust proxy', 1);
 
 // 2. Middlewares
-app.use(cors({ 
-  origin: process.env.CLIENT_URL || '*', 
-  credentials: true 
+app.use(cors({
+  origin: process.env.CLIENT_URL || '*',
+  credentials: true
 }));
 
 // Middleware de logging pour débugger les boucles
@@ -38,29 +38,11 @@ app.use('/api/2fa', require('./routes/twoFactorRoutes'));
 app.use('/api/activity', require('./routes/activityRoutes'));
 app.use('/api/debug', require('./routes/debugRoutes'));
 app.use('/api/live-monitor', require('./routes/liveMonitorRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
 
-// Route pour Google OAuth callback (redirection vers frontend)
-app.get('/auth/callback', (req, res) => {
-  const { token, error } = req.query;
-  
-  console.log('� /auth/callback reçu:', { token: token ? 'REÇU' : 'MANQUANT', error });
-  
-  if (error) {
-    console.log('❌ Erreur dans callback:', error);
-    return res.redirect(`${process.env.CLIENT_URL}/auth?error=${error}`);
-  }
-  
-  if (token) {
-    console.log('✅ Token reçu, redirection vers frontend callback');
-    return res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
-  }
-  
-  console.log('❌ Pas de token, redirection vers auth avec erreur');
-  res.redirect(`${process.env.CLIENT_URL}/auth?error=no_token`);
-});
 
 // 4. Gestion des fichiers statiques
-const rootDir = path.resolve(__dirname, '..'); 
+const rootDir = path.resolve(__dirname, '..');
 app.use(express.static(path.join(rootDir, 'dist')));
 
 // Route de base pour tester l'API
