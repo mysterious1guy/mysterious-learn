@@ -180,6 +180,7 @@ function App() {
                 <AccountPage
                   user={user}
                   onUpdateUser={handleUpdateUser}
+                  onLogout={handleLogout}
                   onToggleFavorite={(id) => {
                     const newFavs = favorites.includes(id)
                       ? favorites.filter(f => f !== id)
