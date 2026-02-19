@@ -101,10 +101,18 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
             });
             const data = await response.json();
             if (response.ok) {
+                // Stocker les infos utilisateur dans localStorage pour le tracking
+                localStorage.setItem('user', JSON.stringify(data));
+                localStorage.setItem('token', data.token);
+                
                 setUser(data);
                 setToast({ message: 'Connexion réussie !', type: 'success' });
-                navigate('/account'); // Redirection vers la page compte
-                if (fetchProgressions) fetchProgressions();
+                
+                // Redirection vers le dashboard avec délai pour permettre au tracking de s'initialiser
+                setTimeout(() => {
+                    navigate('/dashboard');
+                    if (fetchProgressions) fetchProgressions();
+                }, 1500);
             } else {
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
             }
