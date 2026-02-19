@@ -111,7 +111,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 // Redirection immédiate vers le dashboard pour éviter le conflit avec le tracking
                 navigate('/dashboard');
                 
-                // Initialiser le tracking après un court délai
+                // Initialisation du tracking après un court délai
                 setTimeout(() => {
                     if (fetchProgressions) fetchProgressions();
                 }, 100);

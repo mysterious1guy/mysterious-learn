@@ -122,14 +122,7 @@ function App() {
             <Route path="/" element={<HomePage API_URL={API_URL} />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
-            <Route path="/auth" element={
-              <AuthPage
-                setUser={handleUpdateUser}
-                API_URL={API_URL}
-                setToast={setToast}
-                fetchProgressions={fetchProgressions}
-              />
-            } />
+            <Route path="/auth" element={<AuthPage setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
             {/* ✅ Nouvelle route pour le callback Google */}
             <Route path="/auth/callback" element={
               <CallbackPage
@@ -142,17 +135,7 @@ function App() {
 
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
             {/* Route Admin - uniquement pour cmouhamedfall@esp.sn */}
-            <Route path="/admin" element={
-              user && (user.email === 'cmouhamedfall@esp.sn' || user.role === 'admin') ? (
-                <AdminPage
-                  user={user}
-                  API_URL={API_URL}
-                  setToast={setToast}
-                />
-              ) : (
-                <AdminLoginPage setToast={setToast} />
-              )
-            } />
+            <Route path="/admin" element={<AdminLoginPage setToast={setToast} />} />
             
             <Route path="/dashboard" element={<DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
                     const newFavs = favorites.includes(id)
