@@ -19,6 +19,13 @@ app.use(cors({
   origin: process.env.CLIENT_URL || '*', 
   credentials: true 
 }));
+
+// Middleware de logging pour débugger les boucles
+app.use((req, res, next) => {
+  console.log(`🔄 ${new Date().toISOString()} ${req.method} ${req.url}`);
+  next();
+});
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -36,7 +43,7 @@ app.use('/api/live-monitor', require('./routes/liveMonitorRoutes'));
 app.get('/auth/callback', (req, res) => {
   const { token, error } = req.query;
   
-  console.log('🔍 Callback reçu:', { token: token ? 'REÇU' : 'MANQUANT', error });
+  console.log('� /auth/callback reçu:', { token: token ? 'REÇU' : 'MANQUANT', error });
   
   if (error) {
     console.log('❌ Erreur dans callback:', error);
