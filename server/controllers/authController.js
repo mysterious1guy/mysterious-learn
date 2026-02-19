@@ -1,6 +1,24 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const { OAuth2Client } = require('google-auth-library');
 const { sendEmail } = require('../utils/emailService');
+
+// Initialisation du client Google
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Générer un token JWT
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: '30d',
+  });
+};
+
+// Générer un code de vérification à 6 chiffres
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
 
 // Envoyer email de vérification
 const sendVerificationEmail = async (email, name, code) => {
@@ -40,9 +58,9 @@ const register = async (req, res) => {
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      console.log('Tentative inscription email existant:', email);
+      console.log('❌ Inscription bloquée : Email existe déjà dans la DB:', email, '(ID:', userExists._id, ')');
       return res.status(400).json({
-        message: 'Un compte existe déjà avec cet email'
+        message: 'Un compte existe déjà avec cet email.'
       });
     }
 
@@ -166,7 +184,10 @@ const login = async (req, res) => {
 
     // La restriction Google est retirée pour permettre la connexion par mot de passe si disponible
     if (user.googleId && !user.password) {
-      console.log('Compte Google sans MDP essayer au cas où:', email);
+      console.log('Compte Google sans MDP essayer de se connecter par MDP:', email);
+      return res.status(401).json({
+        message: 'Ce compte utilise Google. Veuillez vous connecter avec le bouton Google.'
+      });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -302,11 +323,10 @@ const googleCallback = async (req, res) => {
     console.log('🔥 CLIENT_URL:', process.env.CLIENT_URL);
     console.log('🔥 Redirect URI configuré:', `${process.env.CLIENT_URL}/api/auth/google/callback`);
 
-    const { OAuth2Client } = require('google-auth-library');
     const client = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      `${process.env.CLIENT_URL}/api/auth/google/callback`  // URL explicite
+      `${process.env.CLIENT_URL}/api/auth/google/callback`
     );
 
     console.log('🔥 OAuth2Client configuré, tentative getToken...');
@@ -582,7 +602,7 @@ const checkEmail = async (req, res) => {
     }
 
     const user = await User.findOne({ email });
-    if (user) console.log('checkEmail found user:', email);
+    if (user) console.log('checkEmail found user in DB:', email, '(ID:', user._id, ')');
     res.json({ exists: !!user });
   } catch (err) {
     console.error('Erreur checkEmail:', err);
