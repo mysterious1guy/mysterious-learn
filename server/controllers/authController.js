@@ -245,35 +245,46 @@ const googleAuth = async (req, res) => {
 
     console.log('Token Google vérifié pour:', email);
 
-    if (!email_verified) {
-      return res.status(401).json({
-        message: 'Votre email Google n\'est pas vérifié. Veuillez vérifier votre email sur Google.'
-      });
-    }
-
     if (!email || !email.includes('@')) {
       return res.status(401).json({
         message: 'Email Google invalide'
       });
     }
+    
+    // Permettre l'inscription pour mouhamedfall@gmail.com et mouhamedfall@esp.sn
+    if (!email_verified) {
+      return res.status(403).json({
+        message: 'Email non vérifié. Vérifie ton email avant de te connecter.',
+        needsVerification: true,
+        email: email
+      });
+    }
+    
+    // Exception pour les emails autorisés à s'inscrire même si compte existe
+    const allowedEmails = ['mouhamedfall@gmail.com', 'mouhamedfall@esp.sn'];
+    let existingUser = await User.findOne({ $or: [{ googleId }, { email }] });
 
-    let user = await User.findOne({ $or: [{ googleId }, { email }] });
+    if (existingUser && !allowedEmails.includes(email)) {
+      return res.status(400).json({ 
+        message: 'Un compte existe déjà avec cet email' 
+      });
+    }
 
-    if (user) {
-      console.log('Utilisateur existant trouvé:', user.email);
-      if (!user.googleId) {
-        user.googleId = googleId;
+    if (existingUser) {
+      console.log('Utilisateur existant trouvé:', existingUser.email);
+      if (!existingUser.googleId) {
+        existingUser.googleId = googleId;
       }
-      if (!user.isEmailVerified) {
-        user.isEmailVerified = true;
+      if (!existingUser.isEmailVerified) {
+        existingUser.isEmailVerified = true;
       }
-      if (picture && !user.avatar) {
-        user.avatar = picture;
+      if (picture && !existingUser.avatar) {
+        existingUser.avatar = picture;
       }
-      await user.save();
+      await existingUser.save();
     } else {
       console.log('Nouvel utilisateur Google:', email);
-      user = await User.create({
+      existingUser = await User.create({
         name: name || email.split('@')[0],
         email,
         googleId,
@@ -284,13 +295,16 @@ const googleAuth = async (req, res) => {
     }
 
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      avatar: user.avatar,
-      role: user.role,
-      joinedAt: user.joinedAt,
+      _id: existingUser._id,
+      name: existingUser.name,
+      email: existingUser.email,
+      avatar: existingUser.avatar,
+      role: existingUser.role,
+      joinedAt: existingUser.joinedAt,
       isEmailVerified: true,
+      lastSelectedCourse: existingUser.lastSelectedCourse,
+      favorites: existingUser.favorites || [],
+      token: generateToken(existingUser._id),
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],
       token: generateToken(user._id),
