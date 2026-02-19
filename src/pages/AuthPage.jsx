@@ -98,9 +98,16 @@ const AuthPage = ({ user, setUser, API_URL, setToast, fetchProgressions }) => {
         setIsLoading(true);
         console.log('🔐 AuthPage: Lancement Google OAuth');
 
+        const callbackUrl = `${window.location.origin}/api/auth/google/callback`;
+        // Ou en prod on force Render : 
+        const prodUrl = 'https://mysterious-classroom-free-courses.onrender.com/api/auth/google/callback';
+
+        // On utilise la bonne URL selon l'environnement
+        const redirectUri = import.meta.env.DEV ? callbackUrl : prodUrl;
+
         const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
             'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +
-            '&redirect_uri=' + encodeURIComponent('https://mysterious-classroom-free-courses.onrender.com/api/auth/google/callback') +
+            '&redirect_uri=' + encodeURIComponent(redirectUri) +
             '&response_type=code' +
             '&scope=email profile' +
             '&prompt=select_account';

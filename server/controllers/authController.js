@@ -327,11 +327,18 @@ const googleCallback = async (req, res) => {
     const token = generateToken(user._id);
 
     console.log('Token généré, redirection vers dashboard...');
-    res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
+    const clientUrl = process.env.NODE_ENV === 'production'
+      ? 'https://mysterious-classroom-free-courses.onrender.com'
+      : process.env.CLIENT_URL || 'http://localhost:5173';
+
+    res.redirect(`${clientUrl}/auth/callback?token=${token}`);
 
   } catch (error) {
     console.error('Erreur Google callback:', error);
-    res.redirect(`${process.env.CLIENT_URL}/auth?error=google_auth_failed`);
+    const clientUrl = process.env.NODE_ENV === 'production'
+      ? 'https://mysterious-classroom-free-courses.onrender.com'
+      : process.env.CLIENT_URL || 'http://localhost:5173';
+    res.redirect(`${clientUrl}/auth?error=google_auth_failed`);
   }
 };
 // ========== FIN NOUVELLE FONCTION ==========

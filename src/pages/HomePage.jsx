@@ -83,13 +83,14 @@ const HomePage = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-green-400 text-sm font-medium">
+                <div className="flex items-center justify-between mt-4 border-t border-slate-800 pt-4">
+                    <div className="flex items-center gap-2 text-emerald-400 text-sm font-medium bg-emerald-500/10 px-3 py-1 rounded-full">
+                        <Sparkles size={14} />
                         <span>100% Gratuit</span>
                     </div>
-                    <div className="flex items-center gap-2 text-blue-400 group-hover:text-blue-300 transition">
-                        <span className="text-sm font-medium">Commencer</span>
-                        <ArrowRight size={16} className="group-hover:translate-x-1 transition" />
+                    <div className="flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl transition-all shadow-lg shadow-blue-500/20 group-hover:shadow-blue-500/40">
+                        <span className="text-sm font-bold">S'inscrire pour voir</span>
+                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                     </div>
                 </div>
             </div>
@@ -112,32 +113,30 @@ const HomePage = () => {
                             <AnimatedLogo size="xlarge" />
                         </motion.div>
 
-                        {/* Titre avec typographie améliorée */}
+                        {/* Titre avec typographie améliorée, plus "Premium" et Glowing */}
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
-                            className="space-y-4"
+                            className="space-y-4 relative z-10"
                         >
-                            <h1 className="relative">
-                                <span className="text-6xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 block leading-none tracking-tight">
+                            <h1 className="relative inline-block px-4">
+                                <span className="text-5xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-500 to-indigo-600 block leading-tight tracking-tighter drop-shadow-[0_0_15px_rgba(56,189,248,0.5)]">
                                     MYSTERIOUS
                                 </span>
-                                <span className="text-5xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 block leading-none tracking-tight">
+                                <span className="text-4xl md:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-rose-500 block leading-tight tracking-[0.02em] drop-shadow-[0_0_15px_rgba(217,70,239,0.5)] -mt-2 md:-mt-4">
                                     CLASSROOM
                                 </span>
 
-                                {/* Effet de brillance */}
-                                <div className="absolute inset-0 text-6xl md:text-8xl lg:text-9xl font-black text-white/5 leading-none tracking-tight pointer-events-none">
-                                    MYSTERIOUS CLASSROOM
-                                </div>
+                                {/* Glow derrière le texte pour effet néon premium */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-[100px] -z-10 rounded-full" />
                             </h1>
 
                             <motion.p
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.8, delay: 0.4 }}
-                                className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed"
+                                className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto leading-relaxed mt-6 font-light"
                             >
                                 Découvrez une nouvelle façon d'apprendre avec des cours gratuits,
                                 interactifs et conçus par des passionnés.
