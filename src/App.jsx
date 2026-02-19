@@ -14,6 +14,7 @@ import CallbackPage from './pages/CallbackPage'; // ← AJOUTÉ
 import DashboardPage from './pages/DashboardPage';
 import AccountPage from './pages/AccountPage';
 import CoursePage from './pages/CoursePage';
+import AdminLoginPage from './pages/AdminLoginPage';
 import AdminPage from './pages/AdminPage';
 import TwoFactorSetupPage from './pages/TwoFactorSetupPage';
 
@@ -142,11 +143,15 @@ function App() {
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
             {/* Route Admin - uniquement pour cmouhamedfall@esp.sn */}
             <Route path="/admin" element={
-              <AdminPage
-                user={user}
-                API_URL={API_URL}
-                setToast={setToast}
-              />
+              user && (user.email === 'cmouhamedfall@esp.sn' || user.role === 'admin') ? (
+                <AdminPage
+                  user={user}
+                  API_URL={API_URL}
+                  setToast={setToast}
+                />
+              ) : (
+                <AdminLoginPage setToast={setToast} />
+              )
             } />
             
             <Route path="/dashboard" element={<DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
