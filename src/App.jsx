@@ -23,6 +23,7 @@ import { useCookies } from './hooks/useCookies';
 import { Toast } from './components/Toast';
 import Particles from './Particles';
 import { AnimatePresence } from 'framer-motion';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [user, setUser] = useLocalStorage('user', null);
@@ -132,17 +133,19 @@ function App() {
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
             {/* Route Admin - uniquement pour cmouhamedfall@esp.sn */}
             <Route path="/admin" element={
-              user && (user.email === 'cmouhamedfall@esp.sn' || user.role === 'admin') ? (
-                <AdminPage
-                  user={user}
-                  API_URL={API_URL}
-                  setToast={setToast}
-                />
-              ) : <Navigate to="/dashboard" />
+              <ProtectedRoute>
+                {user && (user.email === 'cmouhamedfall@esp.sn' || user.role === 'admin') ? (
+                  <AdminPage
+                    user={user}
+                    API_URL={API_URL}
+                    setToast={setToast}
+                  />
+                ) : <Navigate to="/dashboard" />}
+              </ProtectedRoute>
             } />
             
             <Route path="/dashboard" element={
-              user ? (
+              <ProtectedRoute>
                 <DashboardPage
                   user={user}
                   favorites={favorites}
@@ -156,17 +159,14 @@ function App() {
                   API_URL={API_URL}
                   setToast={setToast}
                 />
-              ) : <Navigate to="/auth" />
+              </ProtectedRoute>
             } />
 
             <Route path="/account" element={
-              user ? (
+              <ProtectedRoute>
                 <AccountPage
                   user={user}
                   onUpdateUser={handleUpdateUser}
-                  onLogout={handleLogout}
-                  progressions={progressions}
-                  favorites={favorites}
                   onToggleFavorite={(id) => {
                     const newFavs = favorites.includes(id)
                       ? favorites.filter(f => f !== id)
@@ -176,18 +176,28 @@ function App() {
                   API_URL={API_URL}
                   setToast={setToast}
                 />
-              ) : <Navigate to="/auth" />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/course/:courseId" element={
+              <ProtectedRoute>
+                <CoursePage
+                  user={user}
+                  API_URL={API_URL}
+                  setToast={setToast}
+                />
+              </ProtectedRoute>
             } />
 
             {/* Route 2FA Setup */}
             <Route path="/two-factor-setup" element={
-              user ? (
+              <ProtectedRoute>
                 <TwoFactorSetupPage
                   user={user}
                   API_URL={API_URL}
                   setToast={setToast}
                 />
-              ) : <Navigate to="/auth" />
+              </ProtectedRoute>
             } />
           </Route>
 
