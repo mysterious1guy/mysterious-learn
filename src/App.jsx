@@ -142,23 +142,16 @@ function App() {
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
             {/* Route Admin - uniquement pour cmouhamedfall@esp.sn */}
             <Route path="/admin" element={
-              <ProtectedRoute>
-                {user && (user.email === 'cmouhamedfall@esp.sn' || user.role === 'admin') ? (
-                  <AdminPage
-                    user={user}
-                    API_URL={API_URL}
-                    setToast={setToast}
-                  />
-                ) : <Navigate to="/dashboard" />}
-              </ProtectedRoute>
+              user && (user.email === 'cmouhamedfall@esp.sn' || user.role === 'admin') ? (
+                <AdminPage
+                  user={user}
+                  API_URL={API_URL}
+                  setToast={setToast}
+                />
+              ) : <Navigate to="/dashboard" />
             } />
             
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <DashboardPage
-                  user={user}
-                  favorites={favorites}
-                  toggleFavorite={(id) => {
+            <Route path="/dashboard" element={<DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
                     const newFavs = favorites.includes(id)
                       ? favorites.filter(f => f !== id)
                       : [...favorites, id];
@@ -167,9 +160,7 @@ function App() {
                   progressions={progressions}
                   API_URL={API_URL}
                   setToast={setToast}
-                />
-              </ProtectedRoute>
-            } />
+                />} />
 
             <Route path="/account" element={
               <ProtectedRoute>
