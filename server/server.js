@@ -26,6 +26,21 @@ app.use('/api/2fa', require('./routes/twoFactorRoutes'));
 app.use('/api/activity', require('./routes/activityRoutes'));
 app.use('/api/debug', require('./routes/debugRoutes'));
 
+// Route pour Google OAuth callback (redirection vers frontend)
+app.get('/auth/callback', (req, res) => {
+  const { token, error } = req.query;
+  
+  if (error) {
+    return res.redirect(`${process.env.CLIENT_URL}/auth?error=${error}`);
+  }
+  
+  if (token) {
+    return res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
+  }
+  
+  res.redirect(`${process.env.CLIENT_URL}/auth?error=no_token`);
+});
+
 // 4. Gestion des fichiers statiques
 const rootDir = path.resolve(); 
 app.use(express.static(path.join(rootDir, 'dist')));
