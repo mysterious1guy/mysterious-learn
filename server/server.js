@@ -25,6 +25,7 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/2fa', require('./routes/twoFactorRoutes'));
 app.use('/api/activity', require('./routes/activityRoutes'));
 app.use('/api/debug', require('./routes/debugRoutes'));
+app.use('/api/live-monitor', require('./routes/liveMonitorRoutes'));
 
 // Route pour Google OAuth callback (redirection vers frontend)
 app.get('/auth/callback', (req, res) => {

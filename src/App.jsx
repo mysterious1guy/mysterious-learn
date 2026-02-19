@@ -26,6 +26,7 @@ import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './components/ProtectedRoute';
 import DebugMonitor from './components/DebugMonitor';
 import OAuthDebugger from './components/OAuthDebugger';
+import LiveMonitor from './components/LiveMonitor';
 
 function App() {
   const [user, setUser] = useLocalStorage('user', null);
@@ -114,6 +115,9 @@ function App() {
         
         {/* OAuth Debugger - Toujours visible */}
         <OAuthDebugger />
+        
+        {/* Live Monitor - Toujours visible */}
+        <LiveMonitor API_URL={API_URL} />
 
         <Routes>
           <Route element={<AuthLayout />}>
