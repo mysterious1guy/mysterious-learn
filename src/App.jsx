@@ -157,7 +157,10 @@ function App() {
             {/* Route Admin - accès direct */}
             <Route path="/admin" element={<AdminPage user={user} API_URL={API_URL} setToast={setToast} />} />
             
-            <Route path="/dashboard" element={<DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
+            {/* Routes protégées - nécessitent une connexion */}
+            <Route path="/dashboard" element={
+              user ? (
+                <DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
                     const newFavs = favorites.includes(id)
                       ? favorites.filter(f => f !== id)
                       : [...favorites, id];
@@ -166,38 +169,54 @@ function App() {
                   progressions={progressions}
                   API_URL={API_URL}
                   setToast={setToast}
-                />} />
+                />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
+            } />
 
             <Route path="/account" element={
-              <AccountPage
-                user={user}
-                onUpdateUser={handleUpdateUser}
-                onToggleFavorite={(id) => {
-                  const newFavs = favorites.includes(id)
-                    ? favorites.filter(f => f !== id)
-                    : [...favorites, id];
-                  setFavorites(newFavs);
-                }}
-                API_URL={API_URL}
-                setToast={setToast}
-              />
+              user ? (
+                <AccountPage
+                  user={user}
+                  onUpdateUser={handleUpdateUser}
+                  onToggleFavorite={(id) => {
+                    const newFavs = favorites.includes(id)
+                      ? favorites.filter(f => f !== id)
+                      : [...favorites, id];
+                    setFavorites(newFavs);
+                  }}
+                  API_URL={API_URL}
+                  setToast={setToast}
+                />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
             } />
 
             <Route path="/course/:courseId" element={
-              <CoursePage
-                user={user}
-                API_URL={API_URL}
-                setToast={setToast}
-              />
+              user ? (
+                <CoursePage
+                  user={user}
+                  API_URL={API_URL}
+                  setToast={setToast}
+                />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
             } />
 
             {/* Route 2FA Setup */}
             <Route path="/two-factor-setup" element={
-              <TwoFactorSetupPage
-                user={user}
-                API_URL={API_URL}
-                setToast={setToast}
-              />
+              user ? (
+                <TwoFactorSetupPage
+                  user={user}
+                  API_URL={API_URL}
+                  setToast={setToast}
+                />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
             } />
           </Route>
 
