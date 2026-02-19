@@ -10,7 +10,7 @@ console.log(' AuthPage: Component loaded');
 const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     // DEBUG - Pour voir si le composant s'initialise
     console.log(' AuthPage: Component initializing');
-    
+
     const navigate = useNavigate();
     const [authMode, setAuthMode] = useState('signin');
     const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '' });
@@ -28,13 +28,13 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email) return '';
         if (!re.test(email)) return 'Format d\'email invalide';
-        
+
         // Validation plus stricte pour éviter les faux emails
         const domain = email.split('@')[1];
         if (!domain || domain.length < 4) return 'Domaine invalide';
         if (!domain.includes('.')) return 'Domaine doit contenir un point';
         if (domain.endsWith('@gmail.com') && email.split('@')[0].length < 3) return 'Nom d\'utilisateur Gmail trop court';
-        
+
         return '';
     };
     useEffect(() => {
@@ -82,14 +82,14 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         console.log('🔐 AuthPage: Initialisation mode:', authMode);
         console.log('🔐 AuthPage: User actuel:', user ? 'CONNECTÉ' : 'NON CONNECTÉ');
         console.log('🔐 AuthPage: URL actuelle:', window.location.pathname);
-        
+
         // Si utilisateur déjà connecté, rediriger vers dashboard
         if (user) {
             console.log('✅ AuthPage: Utilisateur déjà connecté, redirection vers /dashboard');
             navigate('/dashboard');
             return;
         }
-        
+
         console.log('🔐 AuthPage: Affichage page auth');
     }, [user, navigate, authMode]);
 
@@ -97,14 +97,14 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     const handleGoogleLogin = () => {
         setIsLoading(true);
         console.log('🔐 AuthPage: Lancement Google OAuth');
-        
+
         const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
             'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +
             '&redirect_uri=' + encodeURIComponent('https://mysterious-classroom-free-courses.onrender.com/api/auth/google/callback') +
             '&response_type=code' +
             '&scope=email profile' +
             '&prompt=select_account';
-            
+
         console.log('🔐 AuthPage: URL OAuth:', googleAuthUrl);
         window.location.href = googleAuthUrl;
     };
@@ -118,9 +118,9 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         }
         setIsLoading(true);
         setAuthError('');
-        
+
         console.log('🔐 AuthPage: Tentative connexion pour:', formData.email);
-        
+
         try {
             const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
@@ -128,20 +128,20 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 body: JSON.stringify({ email: formData.email, password: formData.password }),
             });
             const data = await response.json();
-            
+
             console.log('🔐 AuthPage: Réponse API:', response.ok ? 'OK' : 'ERREUR', data.message);
-            
+
             if (response.ok) {
                 console.log('✅ AuthPage: Connexion réussie, stockage...');
-                
+
                 // Stockage immédiat
                 localStorage.setItem('user', JSON.stringify(data));
                 localStorage.setItem('token', data.token);
-                
+
                 // Mise à jour du state
                 setUser(data);
                 setToast({ message: 'Connexion réussie !', type: 'success' });
-                
+
                 console.log('✅ AuthPage: Redirection vers /dashboard');
                 // Redirection directe sans délai
                 navigate('/dashboard');
@@ -166,9 +166,9 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         }
         setIsLoading(true);
         setAuthError('');
-        
+
         console.log('🔐 AuthPage: Tentative inscription pour:', formData.email);
-        
+
         try {
             const response = await fetch(`${API_URL}/auth/register`, {
                 method: 'POST',
@@ -176,25 +176,25 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 body: JSON.stringify(formData),
             });
             const data = await response.json();
-            
+
             console.log('🔐 AuthPage: Réponse API:', response.ok ? 'OK' : 'ERREUR', data.message);
-            
+
             if (response.ok) {
                 console.log('✅ AuthPage: Inscription réussie, stockage...');
-                
+
                 // Stockage immédiat
                 localStorage.setItem('user', JSON.stringify(data));
                 localStorage.setItem('token', data.token);
-                
+
                 // Mise à jour du state
                 setUser(data);
                 setToast({ message: 'Compte créé avec succès !', type: 'success' });
-                
+
                 console.log('✅ AuthPage: Redirection vers /dashboard');
                 navigate('/dashboard');
             } else {
                 console.log('❌ AuthPage: Échec inscription:', data.message);
-                
+
                 // Si le compte existe déjà et utilise Google
                 if (data.message && data.message.includes('existe déjà')) {
                     setAuthError('Ce compte existe déjà. Utilisez Google OAuth pour vous connecter.');
@@ -211,11 +211,11 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0f1e] to-black">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md bg-gray-800/50 backdrop-blur-lg border border-gray-700 p-8 rounded-[2.5rem] flex flex-col items-center shadow-2xl"
+                className="w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-slate-800/50 p-8 rounded-[2.5rem] flex flex-col items-center shadow-2xl shadow-blue-500/5"
             >
                 <CyberPet isPasswordFocused={isPasswordFocused} onSecret={petSecret} />
 
@@ -242,7 +242,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     <input
                                         type="text"
                                         placeholder="Prénom"
-                                        className="w-full bg-gray-900/50 border border-gray-700 rounded-2xl py-3 pl-10 pr-4 text-white focus:border-blue-500 outline-none transition"
+                                        className="w-full bg-slate-950/50 border border-slate-700/50 rounded-2xl py-3 pl-10 pr-4 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20 outline-none transition-all duration-300"
                                         value={formData.firstName}
                                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                                         onFocus={() => setIsPasswordFocused(false)}
@@ -254,7 +254,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                                     <input
                                         type="text"
                                         placeholder="Nom"
-                                        className="w-full bg-gray-900/50 border border-gray-700 rounded-2xl py-3 pl-10 pr-4 text-white focus:border-blue-500 outline-none transition"
+                                        className="w-full bg-slate-950/50 border border-slate-700/50 rounded-2xl py-3 pl-10 pr-4 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20 outline-none transition-all duration-300"
                                         value={formData.lastName}
                                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                                         onFocus={() => setIsPasswordFocused(false)}
@@ -271,7 +271,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                             type="email"
                             placeholder="Email"
                             required
-                            className={`w-full bg-gray-900/50 border rounded-2xl py-3 pl-10 pr-10 text-white focus:border-blue-500 outline-none transition ${formData.email && emailError ? 'border-red-500' : 'border-gray-700'
+                            className={`w-full bg-slate-950/50 border rounded-2xl py-3 pl-10 pr-10 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20 outline-none transition-all duration-300 ${formData.email && emailError ? 'border-red-500/50' : 'border-slate-700/50'
                                 }`}
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -298,7 +298,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                             type={showPassword ? "text" : "password"}
                             placeholder="Mot de passe"
                             required
-                            className="w-full bg-gray-900/50 border border-gray-700 rounded-2xl py-3 pl-10 pr-12 text-white focus:border-blue-500 outline-none transition"
+                            className="w-full bg-slate-950/50 border border-slate-700/50 rounded-2xl py-3 pl-10 pr-12 text-white focus:border-blue-400 focus:ring-1 focus:ring-blue-400/20 outline-none transition-all duration-300"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             onFocus={() => setIsPasswordFocused(true)}
@@ -387,8 +387,8 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                         type="submit"
                         disabled={isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms || emailExists)) || !!emailError}
                         className={`w-full font-bold py-3 rounded-2xl shadow-lg transition-all ${isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms || emailExists)) || emailError
-                            ? 'bg-gray-600 cursor-not-allowed opacity-50 text-gray-400'
-                            : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/30'
+                            ? 'bg-slate-800 cursor-not-allowed opacity-50 text-slate-400'
+                            : 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98]'
                             }`}
                     >
                         {isLoading ? (
@@ -415,7 +415,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 <button
                     onClick={handleGoogleLogin}
                     disabled={isLoading}
-                    className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-900 font-bold py-3 px-4 rounded-2xl shadow-lg transition-all border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 text-slate-900 font-bold py-3 px-4 rounded-2xl shadow-lg transition-all border border-gray-200 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
                 >
                     <img
                         src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"

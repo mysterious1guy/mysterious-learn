@@ -55,18 +55,18 @@ const nukeUsers = async (req, res) => {
 const register = async (req, res) => {
   try {
     console.log('📝 Register request body:', req.body);
-    
+
     const { firstName, lastName, email, password } = req.body;
     const name = `${firstName} ${lastName}`;
 
     console.log('🔍 Checking if user exists:', email);
     const userExists = await User.findOne({ email });
     console.log('👤 User exists:', userExists ? 'YES' : 'NO');
-    
+
     // Permettre l'inscription pour mouhamedfall@gmail.com (contourner la vérification)
     if (userExists && email !== 'mouhamedfall@gmail.com') {
-      return res.status(400).json({ 
-        message: 'Un compte existe déjà avec cet email' 
+      return res.status(400).json({
+        message: 'Un compte existe déjà avec cet email'
       });
     }
 
@@ -86,12 +86,12 @@ const register = async (req, res) => {
       password: hashedPassword,
       emailVerificationCode: verificationCode,
       emailVerificationExpire: Date.now() + 30 * 60 * 1000,
-      isEmailVerified: false,
+      isEmailVerified: true, // ✅ AUTO-VERIFICATION (Email service disabled)
     });
-    console.log('✅ User created successfully');
+    console.log('✅ User created successfully (Auto-verified)');
 
     // Désactiver l'email pour les tests
-    console.log('📧 Email de vérification (désactivé):', verificationCode);
+    // console.log('📧 Email de vérification (désactivé):', verificationCode);
     // await sendVerificationEmail(email, name, verificationCode);
 
     res.status(201).json({
@@ -101,7 +101,7 @@ const register = async (req, res) => {
       avatar: user.avatar,
       role: user.role,
       joinedAt: user.joinedAt,
-      isEmailVerified: false,
+      isEmailVerified: true,
       favorites: user.favorites || [],
       token: generateToken(user._id),
     });
@@ -114,81 +114,14 @@ const register = async (req, res) => {
 // @desc    Vérifier l'email
 // @route   POST /api/auth/verify-email
 const verifyEmail = async (req, res) => {
-  try {
-    const { email, code } = req.body;
-
-    const user = await User.findOne({ email }).select('+emailVerificationCode +emailVerificationExpire');
-    if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
-    }
-
-    if (user.isEmailVerified) {
-      return res.json({ message: 'Email déjà vérifié', isEmailVerified: true });
-    }
-
-    if (!user.emailVerificationCode || user.emailVerificationExpire < Date.now()) {
-      return res.status(400).json({ message: 'Code expiré. Demande un nouveau code.' });
-    }
-
-    if (user.emailVerificationCode !== code) {
-      return res.status(400).json({ message: 'Code incorrect' });
-    }
-
-    user.isEmailVerified = true;
-    user.emailVerificationCode = undefined;
-    user.emailVerificationExpire = undefined;
-    await user.save();
-
-    res.json({
-      message: 'Email vérifié avec succès !',
-      isEmailVerified: true,
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      avatar: user.avatar,
-      role: user.role,
-      joinedAt: user.joinedAt,
-      favorites: user.favorites || [],
-      token: generateToken(user._id),
-    });
-  } catch (err) {
-    console.error('Erreur verifyEmail:', err);
-    res.status(500).json({ message: 'Erreur serveur' });
-  }
+  // Fonction gardée mais rendue quasi-inutile par l'auto-vérification
+  res.json({ message: 'Email déjà vérifié automatiquement.' });
 };
 
 // @desc    Renvoyer le code de vérification
 // @route   POST /api/auth/resend-verification
 const resendVerification = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    // Vérifier si l'email existe déjà
-    const userExists = await User.findOne({ email });
-    
-    // Permettre l'inscription pour mouhamedfall@gmail.com (contourner la vérification)
-    if (userExists && email !== 'mouhamedfall@gmail.com') {
-      return res.status(400).json({ 
-        message: 'Un compte existe déjà avec cet email' 
-      });
-    }
-
-    if (userExists.isEmailVerified) {
-      return res.json({ message: 'Email déjà vérifié' });
-    }
-
-    const verificationCode = generateVerificationCode();
-    user.emailVerificationCode = verificationCode;
-    user.emailVerificationExpire = Date.now() + 30 * 60 * 1000;
-    await user.save();
-
-    await sendVerificationEmail(email, user.name, verificationCode);
-
-    res.json({ message: 'Nouveau code envoyé !' });
-  } catch (err) {
-    console.error('Erreur resendVerification:', err);
-    res.status(500).json({ message: 'Erreur serveur' });
-  }
+  res.json({ message: 'Vérification automatique active. Connectez-vous directement.' });
 };
 
 // @desc    Connexion
@@ -264,7 +197,7 @@ const googleAuth = async (req, res) => {
         message: 'Email Google invalide'
       });
     }
-    
+
     // Permettre l'inscription pour mouhamedfall@gmail.com et mouhamedfall@esp.sn
     if (!email_verified) {
       return res.status(403).json({
@@ -273,14 +206,14 @@ const googleAuth = async (req, res) => {
         email: email
       });
     }
-    
+
     // Exception pour les emails autorisés à s'inscrire même si compte existe
     const allowedEmails = ['mouhamedfall@gmail.com', 'mouhamedfall@esp.sn'];
     let existingUser = await User.findOne({ $or: [{ googleId }, { email }] });
 
     if (existingUser && !allowedEmails.includes(email)) {
-      return res.status(400).json({ 
-        message: 'Un compte existe déjà avec cet email' 
+      return res.status(400).json({
+        message: 'Un compte existe déjà avec cet email'
       });
     }
 
@@ -420,10 +353,10 @@ const getProfile = async (req, res) => {
 // @route   PUT /api/auth/profile
 const updateProfile = async (req, res) => {
   try {
-    const { 
-      name, 
-      email, 
-      avatar, 
+    const {
+      name,
+      email,
+      avatar,
       lastSelectedCourse,
       bio,
       location,
@@ -431,7 +364,7 @@ const updateProfile = async (req, res) => {
       firstName,
       lastName
     } = req.body;
-    
+
     const user = await User.findById(req.user._id);
 
     if (name) user.name = name;
@@ -471,10 +404,10 @@ const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
     const existingUser = await User.findOne({ email });
-    
+
     if (existingUser && email !== 'mouhamedfall@gmail.com') {
-      return res.status(400).json({ 
-        message: 'Un compte existe déjà avec cet email' 
+      return res.status(400).json({
+        message: 'Un compte existe déjà avec cet email'
       });
     }
 
@@ -587,7 +520,7 @@ const deleteAccount = async (req, res) => {
 const checkEmail = async (req, res) => {
   try {
     const { email } = req.body;
-    
+
     if (!email) {
       return res.status(400).json({ message: 'Email requis' });
     }

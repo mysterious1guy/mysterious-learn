@@ -22,11 +22,11 @@ const AdminLoginPage = ({ setToast }) => {
 
     try {
       console.log('🛡️ AdminLoginPage: Tentative connexion admin pour:', formData.email);
-      
+
       // Vérifier les identifiants admin
       if (formData.email === 'mouhamedfall@esp.sn' && formData.password === 'Mouha2007') {
         console.log('✅ AdminLoginPage: Connexion admin réussie');
-        
+
         // Créer un faux token pour l'admin
         const adminUser = {
           _id: 'admin123',
@@ -36,18 +36,18 @@ const AdminLoginPage = ({ setToast }) => {
           avatar: null,
           isEmailVerified: true
         };
-        
+
         const token = 'admin_token_' + Date.now();
-        
+
         localStorage.setItem('user', JSON.stringify(adminUser));
         localStorage.setItem('token', token);
         setToast({ message: 'Connexion admin réussie !', type: 'success' });
-        
+
         console.log('🛡️ AdminLoginPage: Connexion réussie, redirection vers /dashboard');
         navigate('/dashboard');
         return;
       }
-      
+
       // Pour les autres admins, connexion normale
       const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/login`, {
         method: 'POST',
@@ -64,11 +64,11 @@ const AdminLoginPage = ({ setToast }) => {
         localStorage.setItem('user', JSON.stringify(data));
         localStorage.setItem('token', data.token);
         setToast({ message: 'Connexion admin réussie !', type: 'success' });
-        
+
         console.log('🛡️ AdminLoginPage: Redirection vers /dashboard');
         navigate('/dashboard');
         return;
-      } 
+      }
       console.log('❌ AdminLoginPage: Échec connexion admin:', data.message);
       setToast({ message: data.message || 'Erreur de connexion admin', type: 'error' });
     } catch (error) {
@@ -80,7 +80,7 @@ const AdminLoginPage = ({ setToast }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0f1e] to-black flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -89,7 +89,7 @@ const AdminLoginPage = ({ setToast }) => {
       >
         {/* Header Admin */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-red-500 to-orange-500 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-500 rounded-full mb-4 shadow-lg shadow-blue-500/30">
             <Shield className="text-white" size={32} />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">Accès Admin</h1>
@@ -97,7 +97,7 @@ const AdminLoginPage = ({ setToast }) => {
         </div>
 
         {/* Formulaire */}
-        <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-8">
+        <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800/50 rounded-2xl p-8 shadow-2xl shadow-blue-500/5">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div>
@@ -111,8 +111,8 @@ const AdminLoginPage = ({ setToast }) => {
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full pl-10 pr-3 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full pl-10 pr-3 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all"
                   placeholder="admin@exemple.com"
                   required
                 />
@@ -131,8 +131,8 @@ const AdminLoginPage = ({ setToast }) => {
                 <input
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  className="w-full pl-10 pr-10 py-3 bg-gray-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  className="w-full pl-10 pr-10 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all"
                   placeholder="•••••••••"
                   required
                 />
@@ -154,7 +154,7 @@ const AdminLoginPage = ({ setToast }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:from-red-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg hover:from-blue-500 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/25"
             >
               {isLoading ? (
                 <>
@@ -183,7 +183,7 @@ const AdminLoginPage = ({ setToast }) => {
               Autres admins ?{' '}
               <button
                 onClick={() => navigate('/auth')}
-                className="text-orange-400 hover:text-orange-300 font-medium transition-colors"
+                className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
               >
                 Connexion normale
               </button>
