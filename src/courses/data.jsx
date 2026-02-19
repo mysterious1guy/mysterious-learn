@@ -28,6 +28,8 @@ export const coursesData = [
         longDesc: "L'algorithmique est l'art de concevoir des procédures pas à pas pour résoudre des problèmes. Maîtrise les bases : variables, boucles, conditions.",
         code: "// Pseudo-code\nSI reussite ALORS BRAVO",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
+        tags: ["Logique", "Bases"],
         students: 1234,
         lessons: [
           { id: 'algo1', title: "Les variables", duration: "10 min" },
@@ -44,6 +46,8 @@ export const coursesData = [
         longDesc: "Le C est le fondement du logiciel moderne. Apprends la gestion mémoire, les pointeurs et la compilation.",
         code: "int main() { return 0; }",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
+        tags: ["Système", "Mémoire"],
         students: 890,
         lessons: [
           { id: 'c1', title: "Syntaxe & Types", duration: "20 min" },
@@ -59,6 +63,8 @@ export const coursesData = [
         longDesc: "Le langage le plus populaire pour débuter, la data science et l'automatisation.",
         code: "print('Hello World')",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&q=80",
+        tags: ["Data", "Scripting"],
         students: 2100,
         lessons: [
           { id: 'py1', title: "Installation & Premier script", duration: "15 min" },
@@ -75,6 +81,8 @@ export const coursesData = [
         longDesc: "Conçu pour une productivité maximale et un plaisir d'écriture inégalé. Base de Ruby on Rails.",
         code: "puts 'Hello Ruby'",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
+        tags: ["Web", "Productivité"],
         students: 450,
         lessons: [
           { id: 'rb1', title: "L'esprit Ruby", duration: "10 min" },
@@ -91,6 +99,8 @@ export const coursesData = [
         longDesc: "Le niveau le plus bas avant le binaire. Comprends l'architecture des processeurs et des registres.",
         code: "MOV EAX, 1",
         level: "Expert",
+        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
+        tags: ["Hardware", "Bas niveau"],
         students: 120,
         lessons: [
           { id: 'asm1', title: "Registres & Mémoire", duration: "30 min" },
@@ -107,6 +117,8 @@ export const coursesData = [
         longDesc: "Le successeur du C, ajoutant l'orienté objet et la performance brute pour les jeux et systèmes.",
         code: "std::cout << \"Hello\";",
         level: "Avancé",
+        image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
+        tags: ["Jeux", "Performance"],
         students: 950,
         lessons: [
           { id: 'cpp1', title: "Classes & Héritage", duration: "25 min" },
@@ -123,6 +135,8 @@ export const coursesData = [
         longDesc: "Polyvalent et puissant, idéal pour le développement Windows, les jeux avec Unity et le backend.",
         code: "Console.WriteLine(\"Hi\");",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
+        tags: ["Microsoft", "Unity"],
         students: 1100,
         lessons: [
           { id: 'cs1', title: "Syntaxe & Types .NET", duration: "20 min" },
@@ -144,6 +158,8 @@ export const coursesData = [
         longDesc: "Apprends à baliser le contenu de tes pages pour un web sémantique et accessible.",
         code: "<h1>Hello</h1>",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+        tags: ["Frontend", "Structure"],
         students: 3450,
         lessons: [
           { id: 'html1', title: "Sémantique & Structure", duration: "10 min" },
@@ -160,6 +176,8 @@ export const coursesData = [
         longDesc: "Stylise tes applications avec Flexbox, Grid et des animations fluides.",
         code: "body { color: blue; }",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
+        tags: ["Style", "Responsive"],
         students: 2980,
         lessons: [
           { id: 'css1', title: "Flexbox & Grid", duration: "15 min" },
@@ -176,6 +194,8 @@ export const coursesData = [
         longDesc: "Maîtrise ES6+, les promesses et la manipulation du DOM.",
         code: "console.log('JS');",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=800&q=80",
+        tags: ["Logique", "Frontend"],
         students: 1870,
         lessons: [
           { id: 'js1', title: "ES6 Fundamentals", duration: "20 min" },
@@ -192,6 +212,8 @@ export const coursesData = [
         longDesc: "Évite les erreurs au runtime et améliore ton expérience de développement avec le typage statique.",
         code: "const x: number = 5;",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+        tags: ["Sécurité", "Scalabilité"],
         students: 1200,
         lessons: [
           { id: 'ts1', title: "Interfaces & Types", duration: "15 min" },
@@ -208,6 +230,8 @@ export const coursesData = [
         longDesc: "La bibliothèque UI la plus utilisée au monde par Meta.",
         code: "const App = () => <div>Hi</div>",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
+        tags: ["UI", "Meta"],
         students: 1560,
         lessons: [
           { id: 'react1', title: "Hooks (useState, useEffect)", duration: "20 min" },
@@ -224,6 +248,8 @@ export const coursesData = [
         longDesc: "Une alternative élégante et facile à apprendre pour construire des interfaces modernes.",
         code: "new Vue({ el: '#app' })",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1608306448197-e83633f1261c?w=800&q=80",
+        tags: ["Simplicité", "Frontend"],
         students: 950,
         lessons: [
           { id: 'vue1', title: "Composition API", duration: "15 min" },
@@ -240,6 +266,8 @@ export const coursesData = [
         longDesc: "Compile ton code en pur JavaScript efficace sans virtual DOM.",
         code: "let count = 0;",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+        tags: ["Performance", "Compilateur"],
         students: 600,
         lessons: [
           { id: 'svelte1', title: "Réactivité & Stores", duration: "12 min" },
@@ -256,6 +284,8 @@ export const coursesData = [
         longDesc: "Le standard pour la documentation, les README et le contenu structuré ultra-léger.",
         code: "# Titre\n**Gras**",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1585241936939-be05368a5bc3?w=800&q=80",
+        tags: ["Docs", "Rédaction"],
         students: 1800,
         lessons: [
           { id: 'md1', title: "Syntaxe de base", duration: "10 min" },
@@ -276,6 +306,8 @@ export const coursesData = [
         longDesc: "Le langage puissant et intuitif d'Apple pour créer des applications natives fluides.",
         code: "print('Hello Swift')",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1599658880436-125054692aa6?w=800&q=80",
+        tags: ["Apple", "iOS"],
         students: 780,
         lessons: [
           { id: 'sw1', title: "SwiftUI Basics", duration: "20 min" },
@@ -292,6 +324,8 @@ export const coursesData = [
         longDesc: "Le successeur de Java pour le développement Android, moderne, sûr et concis.",
         code: "println('Hello Kotlin')",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=800&q=80",
+        tags: ["Android", "Google"],
         students: 820,
         lessons: [
           { id: 'kt1', title: "Jetpack Compose", duration: "25 min" },
@@ -308,6 +342,8 @@ export const coursesData = [
         longDesc: "Crée des apps iOS, Android, Web et Desktop avec une seule base de code.",
         code: "void main() => print('Flutter');",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&q=80",
+        tags: ["Cross-platform", "UI"],
         students: 1100,
         lessons: [
           { id: 'dart1', title: "Widgets & State", duration: "18 min" },
@@ -329,6 +365,8 @@ export const coursesData = [
         longDesc: "Gère des milliers de connexions simultanées avec l'event loop de Node.",
         code: "const http = require('http');",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&q=80",
+        tags: ["Backend", "JavaScript"],
         students: 1300,
         lessons: [
           { id: 'node1', title: "Express API & Middleware", duration: "22 min" },
@@ -344,6 +382,8 @@ export const coursesData = [
         longDesc: "Développé par Google pour la performance système et les microservices.",
         code: "package main\nfunc main() {}",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1649180556628-9ba704115795?w=800&q=80",
+        tags: ["Google", "Cloud"],
         students: 670,
         lessons: [
           { id: 'go1', title: "Goroutines & Channels", duration: "20 min" },
@@ -359,6 +399,8 @@ export const coursesData = [
         longDesc: "Performance du C++ sans les plantages mémoires. Devenu favori des développeurs.",
         code: "fn main() { println!(\"Hi\"); }",
         level: "Avancé",
+        image: "https://images.unsplash.com/photo-1549605658-29ea39485b04?w=800&q=80",
+        tags: ["Système", "Sûr"],
         students: 520,
         lessons: [
           { id: 'rust1', title: "Ownership & Borrowing", duration: "30 min" },
@@ -374,6 +416,8 @@ export const coursesData = [
         longDesc: "Le standard de l'industrie pour les applications backend critiques.",
         code: "public class Main { }",
         level: "Avancé",
+        image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+        tags: ["Entreprise", "Backend"],
         students: 1800,
         lessons: [
           { id: 'java1', title: "POO & Interfaces", duration: "25 min" },
@@ -389,6 +433,8 @@ export const coursesData = [
         longDesc: "Plus rapide et moderne que jamais. Idéal pour Laravel et WordPress.",
         code: "<?php echo 'Hi'; ?>",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1599507593499-a3f7d7d97663?w=800&q=80",
+        tags: ["Web", "Laravel"],
         students: 1400,
         lessons: [{ id: 'php1', title: "Laravel Intro", duration: "20 min" }]
       },
@@ -401,6 +447,8 @@ export const coursesData = [
         longDesc: "Basé sur la VM Erlang, parfait pour les systèmes temps réel et hautement disponibles.",
         code: "def hello, do: :world",
         level: "Avancé",
+        image: "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=800&q=80",
+        tags: ["Fonctionnel", "Temps réel"],
         students: 310,
         lessons: [{ id: 'ex1', title: "Processus", duration: "25 min" }]
       }
@@ -418,6 +466,8 @@ export const coursesData = [
         longDesc: "Apprends à requêter des bases de données relationnelles complexes.",
         code: "SELECT * FROM users;",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
+        tags: ["Bases de données", "Requêtes"],
         students: 2200,
         lessons: [
           { id: 'sql1', title: "Requêtes JOIN & Unions", duration: "15 min" },
@@ -433,6 +483,8 @@ export const coursesData = [
         longDesc: "Stocke tes données sous forme de documents JSON pour plus de scalabilité.",
         code: "db.users.find()",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
+        tags: ["NoSQL", "JSON"],
         students: 900,
         lessons: [
           { id: 'mongo1', title: "Documents & Schémas", duration: "12 min" },
@@ -448,6 +500,8 @@ export const coursesData = [
         longDesc: "Le standard pour l'analyse de données, les graphiques et les bio-statistiques.",
         code: "summary(my_data)",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+        tags: ["Statistiques", "Data Science"],
         students: 430,
         lessons: [{ id: 'r1', title: "Dataframes", duration: "18 min" }]
       },
@@ -460,6 +514,8 @@ export const coursesData = [
         longDesc: "Combine la facilité de Python et la rapidité du C pour la science des données.",
         code: "f(x) = 2x + 1",
         level: "Avancé",
+        image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80",
+        tags: ["Maths", "Haute Performance"],
         students: 280,
         lessons: [{ id: 'jl1', title: "Vectorisation", duration: "20 min" }]
       }
@@ -477,6 +533,8 @@ export const coursesData = [
         longDesc: "L'outil indispensable pour tout développeur : branches, commits et travail en équipe.",
         code: "git commit -m \"fix\"",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
+        tags: ["Collab", "Version Control"],
         students: 2500,
         lessons: [{ id: 'git1', title: "Workflow", duration: "15 min" }]
       },
@@ -489,6 +547,8 @@ export const coursesData = [
         longDesc: "Automatise tes tâches et gère tes serveurs comme un pro.",
         code: "ls -la /var/www",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
+        tags: ["Terminal", "Automatisation"],
         students: 1500,
         lessons: [{ id: 'bash1', title: "Scripts Basics", duration: "15 min" }]
       },
@@ -501,6 +561,8 @@ export const coursesData = [
         longDesc: "Emballe tes applications pour qu'elles tournent partout sans frottement.",
         code: "docker build -t app .",
         level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800&q=80",
+        tags: ["DevOps", "Containers"],
         students: 1100,
         lessons: [{ id: 'docker1', title: "Images & Containers", duration: "20 min" }]
       },
@@ -513,6 +575,8 @@ export const coursesData = [
         longDesc: "Indispensables pour la configuration Cloud, les API et le DevOps.",
         code: "apiVersion: v1",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80",
+        tags: ["Config", "API"],
         students: 1900,
         lessons: [{ id: 'json1', title: "Structure & Schémas", duration: "10 min" }]
       }
@@ -530,6 +594,8 @@ export const coursesData = [
         longDesc: "L'outil roi pour prototyper des interfaces web et mobiles modernes en collaboration.",
         code: "Auto-layout: On",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
+        tags: ["UI/UX", "Prototypage"],
         students: 1200,
         lessons: [{ id: 'figma1', title: "Composants", duration: "20 min" }]
       },
@@ -542,6 +608,8 @@ export const coursesData = [
         longDesc: "Apprends à coder visuellement pour créer des œuvres d'art numériques et des animations.",
         code: "ellipse(50, 50, 80, 80);",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1509343256512-d77a5cb3791b?w=800&q=80",
+        tags: ["Art", "Créatif"],
         students: 350,
         lessons: [{ id: 'proc1', title: "Formes & Couleurs", duration: "15 min" }]
       }
@@ -559,6 +627,8 @@ export const coursesData = [
         longDesc: "Langage puissant tournant sur la JVM, alliant le meilleur de deux mondes.",
         code: "val x = List(1, 2, 3)",
         level: "Avancé",
+        image: "https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=800&q=80",
+        tags: ["JVM", "Mixte"],
         students: 420,
         lessons: [{ id: 'sc1', title: "Immuabilité", duration: "25 min" }]
       },
@@ -571,6 +641,8 @@ export const coursesData = [
         longDesc: "Explore les monades et le typage fort pour une sécurité mathématique du code.",
         code: "f x = x * 2",
         level: "Expert",
+        image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&q=80",
+        tags: ["Maths", "Fonctionnel"],
         students: 150,
         lessons: [{ id: 'hs1', title: "Monades", duration: "40 min" }]
       },
@@ -583,6 +655,8 @@ export const coursesData = [
         longDesc: "Léger et rapide, idéal pour l'embarqué et le scripting de jeux vidéo comme Roblox.",
         code: "print('Hello Lua')",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?w=800&q=80",
+        tags: ["Jeux", "Script"],
         students: 600,
         lessons: [{ id: 'lua1', title: "Tables & Scripts", duration: "15 min" }]
       },
@@ -595,6 +669,8 @@ export const coursesData = [
         longDesc: "L'un des plus vieux langages, pionnier de l'IA et de la métaprogrammation.",
         code: "(print \"Hello\")",
         level: "Expert",
+        image: "https://images.unsplash.com/photo-1550439062-609e1531270e?w=800&q=80",
+        tags: ["IA", "Historique"],
         students: 90,
         lessons: [{ id: 'lisp1', title: "S-Expressions", duration: "35 min" }]
       }
@@ -612,6 +688,8 @@ export const coursesData = [
         longDesc: "Le langage de la blockchain pour créer des applications décentralisées (dApps).",
         code: "contract MyToken {}",
         level: "Avancé",
+        image: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&q=80",
+        tags: ["Blockchain", "Web3"],
         students: 750,
         lessons: [{ id: 'sol1', title: "Web3 Basics", duration: "25 min" }]
       },
@@ -624,6 +702,8 @@ export const coursesData = [
         longDesc: "Donne vie à tes objets en connectant le monde physique au code.",
         code: "void setup() {}",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1555412654-72a95a495858?w=800&q=80",
+        tags: ["IoT", "Hardware"],
         students: 800,
         lessons: [{ id: 'ard1', title: "Circuits & LED", duration: "20 min" }]
       },
@@ -636,6 +716,8 @@ export const coursesData = [
         longDesc: "Une alternative moderne au C pour la programmation système sans overhead.",
         code: "const std = @import(\"std\");",
         level: "Avancé",
+        image: "https://images.unsplash.com/photo-1592424002053-21f369ad7fdb?w=800&q=80",
+        tags: ["Système", "Moderne"],
         students: 200,
         lessons: [{ id: 'zig1', title: "Comptime", duration: "30 min" }]
       },
@@ -648,6 +730,8 @@ export const coursesData = [
         longDesc: "Idéal pour les plus jeunes ou les débutants totaux pour comprendre la logique par blocs.",
         code: "quand drapeau cliqué",
         level: "Débutant",
+        image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&q=80",
+        tags: ["Enfants", "Logique"],
         students: 5000,
         lessons: [{ id: 'scratch1', title: "Logique par blocs", duration: "10 min" }]
       }
