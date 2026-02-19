@@ -97,11 +97,15 @@ const register = async (req, res) => {
     res.status(201).json({
       _id: user._id,
       name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       avatar: user.avatar,
       role: user.role,
       joinedAt: user.joinedAt,
       isEmailVerified: true,
+      hasCompletedOnboarding: user.hasCompletedOnboarding,
+      preferences: user.preferences,
       favorites: user.favorites || [],
       token: generateToken(user._id),
     });
@@ -114,7 +118,6 @@ const register = async (req, res) => {
 // @desc    Vérifier l'email
 // @route   POST /api/auth/verify-email
 const verifyEmail = async (req, res) => {
-  // Fonction gardée mais rendue quasi-inutile par l'auto-vérification
   res.json({ message: 'Email déjà vérifié automatiquement.' });
 };
 
@@ -144,22 +147,18 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    if (!user.isEmailVerified) {
-      return res.status(403).json({
-        message: 'Email non vérifié. Vérifie ton email avant de te connecter.',
-        needsVerification: true,
-        email: user.email,
-      });
-    }
-
     res.json({
       _id: user._id,
       name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       avatar: user.avatar,
       role: user.role,
       joinedAt: user.joinedAt,
-      isEmailVerified: true,
+      isEmailVerified: user.isEmailVerified,
+      hasCompletedOnboarding: user.hasCompletedOnboarding,
+      preferences: user.preferences,
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],
       token: generateToken(user._id),
@@ -207,15 +206,8 @@ const googleAuth = async (req, res) => {
       });
     }
 
-    // Exception pour les emails autorisés à s'inscrire même si compte existe
-    const allowedEmails = ['mouhamedfall@gmail.com', 'mouhamedfall@esp.sn'];
+    // Si l'utilisateur existe déjà avec cet email, on fusionne ou on le connecte
     let existingUser = await User.findOne({ $or: [{ googleId }, { email }] });
-
-    if (existingUser && !allowedEmails.includes(email)) {
-      return res.status(400).json({
-        message: 'Un compte existe déjà avec cet email'
-      });
-    }
 
     if (existingUser) {
       console.log('Utilisateur existant trouvé:', existingUser.email);
@@ -233,10 +225,13 @@ const googleAuth = async (req, res) => {
       console.log('Nouvel utilisateur Google:', email);
       existingUser = await User.create({
         name: name || email.split('@')[0],
+        firstName: name ? name.split(' ')[0] : email.split('@')[0],
+        lastName: name && name.split(' ').length > 1 ? name.split(' ').slice(1).join(' ') : 'User',
         email,
         googleId,
         avatar: picture || null,
         isEmailVerified: true,
+        hasCompletedOnboarding: false,
         joinedAt: new Date(),
       });
     }
@@ -244,17 +239,18 @@ const googleAuth = async (req, res) => {
     res.json({
       _id: existingUser._id,
       name: existingUser.name,
+      firstName: existingUser.firstName,
+      lastName: existingUser.lastName,
       email: existingUser.email,
       avatar: existingUser.avatar,
       role: existingUser.role,
       joinedAt: existingUser.joinedAt,
       isEmailVerified: true,
+      hasCompletedOnboarding: existingUser.hasCompletedOnboarding,
+      preferences: existingUser.preferences,
       lastSelectedCourse: existingUser.lastSelectedCourse,
       favorites: existingUser.favorites || [],
       token: generateToken(existingUser._id),
-      lastSelectedCourse: user.lastSelectedCourse,
-      favorites: user.favorites || [],
-      token: generateToken(user._id),
     });
   } catch (err) {
     console.error('Erreur Google Auth:', err);
@@ -317,10 +313,13 @@ const googleCallback = async (req, res) => {
       console.log('Nouvel utilisateur:', email);
       user = await User.create({
         name: name || email.split('@')[0],
+        firstName: name ? name.split(' ')[0] : email.split('@')[0],
+        lastName: name && name.split(' ').length > 1 ? name.split(' ').slice(1).join(' ') : 'User',
         email,
         googleId,
         avatar: picture,
         isEmailVerified: true,
+        hasCompletedOnboarding: false,
         joinedAt: new Date()
       });
     }
@@ -362,7 +361,9 @@ const updateProfile = async (req, res) => {
       location,
       phone,
       firstName,
-      lastName
+      lastName,
+      preferences,
+      hasCompletedOnboarding
     } = req.body;
 
     const user = await User.findById(req.user._id);
@@ -378,16 +379,29 @@ const updateProfile = async (req, res) => {
     if (firstName !== undefined) user.firstName = firstName;
     if (lastName !== undefined) user.lastName = lastName;
 
+    // Nouveaux champs onboarding/preferences
+    if (preferences !== undefined) {
+      if (!user.preferences) user.preferences = {};
+      if (preferences.theme !== undefined) user.preferences.theme = preferences.theme;
+      if (preferences.language !== undefined) user.preferences.language = preferences.language;
+      if (preferences.soundEnabled !== undefined) user.preferences.soundEnabled = preferences.soundEnabled;
+    }
+    if (hasCompletedOnboarding !== undefined) user.hasCompletedOnboarding = hasCompletedOnboarding;
+
     await user.save();
 
     res.json({
       _id: user._id,
       name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       avatar: user.avatar,
       role: user.role,
       joinedAt: user.joinedAt,
       isEmailVerified: user.isEmailVerified,
+      hasCompletedOnboarding: user.hasCompletedOnboarding,
+      preferences: user.preferences,
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],
       token: generateToken(user._id),
