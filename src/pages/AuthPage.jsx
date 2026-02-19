@@ -108,11 +108,13 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
                 setUser(data);
                 setToast({ message: 'Connexion réussie !', type: 'success' });
                 
-                // Redirection vers le dashboard avec délai pour permettre au tracking de s'initialiser
+                // Redirection immédiate vers le dashboard pour éviter le conflit avec le tracking
+                navigate('/dashboard');
+                
+                // Initialiser le tracking après un court délai
                 setTimeout(() => {
-                    navigate('/dashboard');
                     if (fetchProgressions) fetchProgressions();
-                }, 1500);
+                }, 100);
             } else {
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
             }
