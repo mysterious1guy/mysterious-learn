@@ -23,16 +23,26 @@ const AdminLoginPage = ({ setToast }) => {
     try {
       console.log('🛡️ AdminLoginPage: Tentative connexion admin pour:', formData.email);
       
-      // Vérifier si c'est un admin Google
-      if (formData.email === 'mouhamedfall@esp.sn') {
-        console.log('🛡️ AdminLoginPage: Admin Google détecté, redirection OAuth');
-        const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
-          'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +
-          '&redirect_uri=' + encodeURIComponent(window.location.origin + '/api/auth/google/callback') +
-          '&response_type=code' +
-          '&scope=email profile' +
-          '&prompt=select_account';
-        window.location.href = googleAuthUrl;
+      // Vérifier les identifiants admin
+      if (formData.email === 'mouhamedfall@esp.sn' && formData.password === 'Mouha2007') {
+        console.log('✅ AdminLoginPage: Connexion admin réussie');
+        
+        // Créer un faux token pour l'admin
+        const adminUser = {
+          _id: 'admin123',
+          name: 'Admin Principal',
+          email: 'mouhamedfall@esp.sn',
+          role: 'admin',
+          avatar: null,
+          isEmailVerified: true
+        };
+        
+        const token = 'admin_token_' + Date.now();
+        
+        localStorage.setItem('user', JSON.stringify(adminUser));
+        localStorage.setItem('token', token);
+        setToast({ message: 'Connexion admin réussie !', type: 'success' });
+        navigate('/admin');
         return;
       }
       
@@ -163,7 +173,7 @@ const AdminLoginPage = ({ setToast }) => {
               Admin principal : mouhamedfall@esp.sn
             </p>
             <p className="text-gray-400 text-sm mb-4">
-              Connexion obligatoire via Google OAuth
+              Mot de passe : Mouha2007
             </p>
             <p className="text-gray-400 text-sm">
               Autres admins ?{' '}

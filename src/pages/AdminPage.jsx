@@ -36,18 +36,27 @@ const AdminPage = ({ user, API_URL, setToast }) => {
     console.log('👑 AdminPage: Initialisation pour', user?.email);
     
     if (!user) {
-      console.log('❌ AdminPage: Aucun utilisateur - déjà géré par App.jsx');
+      console.log('❌ AdminPage: Aucun utilisateur - redirection vers /admin');
+      navigate('/admin');
       return;
     }
 
-    if (user.email !== 'cmouhamedfall@esp.sn' && user.role !== 'admin') {
-      console.log('❌ AdminPage: Utilisateur non-admin - déjà géré par App.jsx');
+    // Vérifier si c'est l'admin principal avec le bon token
+    if (user.email === 'mouhamedfall@esp.sn' && user.token && user.token.startsWith('admin_token_')) {
+      console.log('✅ AdminPage: Admin principal connecté directement');
+      // Ne pas faire d'appel API, utiliser les données locales
+      return;
+    }
+
+    if (user.email !== 'mouhamedfall@esp.sn' && user.role !== 'admin') {
+      console.log('❌ AdminPage: Utilisateur non-admin, redirection vers /dashboard');
+      navigate('/dashboard');
       return;
     }
 
     console.log('✅ AdminPage: Accès autorisé pour', user.email);
     fetchAdminData();
-  }, [user]);
+  }, [user, navigate]);
 
   const fetchAdminData = async () => {
     try {
