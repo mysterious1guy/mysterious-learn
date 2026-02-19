@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import AnimatedLogo from '../components/AnimatedLogo';
 import Footer from '../components/Footer';
 
-const HomePage = ({ API_URL }) => {
+const HomePage = () => {
     const navigate = useNavigate();
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,7 +16,8 @@ const HomePage = ({ API_URL }) => {
 
     const fetchCourses = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/courses`);
+            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+            const response = await fetch(`${API_URL}/courses`);
             if (response.ok) {
                 const coursesData = await response.json();
                 setCourses(coursesData);

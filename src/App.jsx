@@ -109,7 +109,7 @@ function App() {
 
         <Routes>
           <Route element={<AuthLayout />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage API_URL={API_URL} />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/auth" element={
