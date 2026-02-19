@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { X, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { safeGetUserName } from '../utils/userUtils';
 import GuideAvatar from './GuideAvatar';
 
 // --- 1. CONFIGURATION DE L'ONBOARDING ---
 const ONBOARDING_STEPS = [
     {
+        title: "Bienvenue, Voyageur du Code ! ",
         title: "Bienvenue, Voyageur du Code ! 🎩",
         content: "Je suis ton Guide Mystérieux. Je vais te montrer comment dompter cette plateforme créée par Mouhamed pour faire de toi un expert.",
         target: "brand-logo",
@@ -109,7 +111,7 @@ const AIAssistant = ({ user, currentView, onAction }) => {
     const [chatInput, setChatInput] = useState("");
     const [isThinking, setIsThinking] = useState(false);
     const [chatHistory, setChatHistory] = useState([
-        { role: 'assistant', text: `Bonjour ${user && user.firstName ? user.firstName : 'ami'} ! Je suis ton Guide Mystérieux. Pose-moi n'importe quelle question sur le code ou le site !` }
+        { role: 'assistant', text: `Bonjour ${safeGetUserName(user, 'ami')} ! Je suis ton Guide Mystérieux. Pose-moi n'importe quelle question sur le code ou le site !` }
     ]);
     const chatEndRef = useRef(null);
 
@@ -131,7 +133,8 @@ const AIAssistant = ({ user, currentView, onAction }) => {
     }, [user, currentView]);
 
     const handleFinishOnboarding = () => {
-        localStorage.setItem(`hasSeenOnboarding_${user && user.id ? user.id : 'guest'}`, 'true');
+        const userId = user && user.id ? user.id : 'guest';
+        localStorage.setItem(`hasSeenOnboarding_${userId}`, 'true');
         setShowOnboarding(false);
     };
 
