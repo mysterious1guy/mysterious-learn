@@ -47,4 +47,4 @@ const deleteUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, deleteUser, deleteUserProfile };
+module.exports = { getUsers, deleteUserProfile };
