@@ -22,6 +22,7 @@ const ProtectedRoute = ({ children, redirectTo = '/auth' }) => {
         const token = localStorage.getItem('token') || userCookie;
 
         if (!token || !storedUser) {
+          console.log('❌ ProtectedRoute: Token ou utilisateur manquant');
           setLoading(false);
           return false;
         }
@@ -34,8 +35,13 @@ const ProtectedRoute = ({ children, redirectTo = '/auth' }) => {
           const tokenData = JSON.parse(atob(token.split('.')[1]));
           const now = Date.now() / 1000;
           
+          console.log('🔍 ProtectedRoute: Token expiré?', tokenData.exp < now);
+          console.log('⏰ Token exp:', new Date(tokenData.exp * 1000));
+          console.log('🕐 Maintenant:', new Date(now * 1000));
+          
           if (tokenData.exp < now) {
             // Token expiré
+            console.log('❌ ProtectedRoute: Token expiré, nettoyage...');
             localStorage.removeItem('user');
             localStorage.removeItem('token');
             document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -45,9 +51,11 @@ const ProtectedRoute = ({ children, redirectTo = '/auth' }) => {
 
           setUser(parsedUser);
           setLoading(false);
+          console.log('✅ ProtectedRoute: Auth validé pour:', parsedUser.email);
           return true;
         } catch (tokenError) {
           // Token invalide
+          console.log('❌ ProtectedRoute: Token invalide:', tokenError.message);
           localStorage.removeItem('user');
           localStorage.removeItem('token');
           document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
@@ -55,7 +63,7 @@ const ProtectedRoute = ({ children, redirectTo = '/auth' }) => {
           return false;
         }
       } catch (error) {
-        console.error('Erreur vérification auth:', error);
+        console.error('❌ ProtectedRoute: Erreur vérification auth:', error);
         setLoading(false);
         return false;
       }
@@ -76,6 +84,7 @@ const ProtectedRoute = ({ children, redirectTo = '/auth' }) => {
   }
 
   if (!user) {
+    console.log('🔄 ProtectedRoute: Redirection vers', redirectTo);
     return <Navigate to={redirectTo} replace />;
   }
 
