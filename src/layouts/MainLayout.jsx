@@ -10,6 +10,9 @@ const MainLayout = ({ user, onLogout }) => {
 
   const handleAIAction = (action, data) => {
     switch(action) {
+      case 'NAVIGATE_ADMIN':
+        window.location.href = '/admin';
+        break;
       case 'NAVIGATE_SETTINGS':
         window.location.href = '/account';
         break;
@@ -43,6 +46,7 @@ const MainLayout = ({ user, onLogout }) => {
         user={user}
         currentView={location.pathname.split('/')[1] || 'home'}
         onAction={handleAIAction}
+        isAdmin={user?.email === 'cmouhamedfall@esp.sn' || user?.role === 'admin'}
       />
 
       <main className="relative z-10 pt-16">

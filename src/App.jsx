@@ -14,6 +14,7 @@ import CallbackPage from './pages/CallbackPage'; // ← AJOUTÉ
 import DashboardPage from './pages/DashboardPage';
 import AccountPage from './pages/AccountPage';
 import CoursePage from './pages/CoursePage';
+import AdminPage from './pages/AdminPage';
 
 // Hooks et composants
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -128,6 +129,17 @@ function App() {
           </Route>
 
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
+            {/* Route Admin - uniquement pour cmouhamedfall@esp.sn */}
+            <Route path="/admin" element={
+              user && (user.email === 'cmouhamedfall@esp.sn' || user.role === 'admin') ? (
+                <AdminPage
+                  user={user}
+                  API_URL={API_URL}
+                  setToast={setToast}
+                />
+              ) : <Navigate to="/dashboard" />
+            } />
+            
             <Route path="/dashboard" element={
               user ? (
                 <DashboardPage

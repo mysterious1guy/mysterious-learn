@@ -23,7 +23,7 @@ const protect = async (req, res, next) => {
 
 // Optionnel : vérifier si admin
 const admin = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
+  if (req.user && (req.user.role === 'admin' || req.user.email === 'cmouhamedfall@esp.sn')) {
     next();
   } else {
     res.status(403).json({ message: 'Accès interdit (admin)' });
