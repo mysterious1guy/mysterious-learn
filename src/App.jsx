@@ -115,9 +115,6 @@ function App() {
         
         {/* OAuth Debugger - Toujours visible */}
         <OAuthDebugger />
-        
-        {/* Live Monitor - Toujours visible */}
-        <LiveMonitor API_URL={API_URL} />
 
         <Routes>
           <Route element={<AuthLayout />}>
