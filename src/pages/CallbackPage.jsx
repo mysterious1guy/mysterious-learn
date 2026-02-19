@@ -6,17 +6,23 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
     const location = useLocation();
 
     useEffect(() => {
+        console.log('🔥 CallbackPage: Initialisation...');
         const params = new URLSearchParams(location.search);
         const token = params.get('token');
         const error = params.get('error');
+        
+        console.log('🔥 CallbackPage: Token:', token ? 'REÇU' : 'MANQUANT');
+        console.log('🔥 CallbackPage: Error:', error || 'AUCUN');
 
         if (error) {
+            console.log('❌ CallbackPage: Erreur détectée, redirection vers /auth');
             setToast({ message: 'Erreur de connexion Google', type: 'error' });
             navigate('/auth');
             return;
         }
 
         if (token) {
+            console.log('✅ CallbackPage: Token valide, récupération profil...');
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
             fetch(`${API_URL}/auth/profile`, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -26,17 +32,19 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
                     return res.json();
                 })
                 .then(data => {
+                    console.log('✅ CallbackPage: Profil récupéré, stockage...');
                     // Stocker les infos utilisateur dans localStorage pour le tracking
                     localStorage.setItem('user', JSON.stringify(data));
                     localStorage.setItem('token', data.token);
                     
+                    console.log('✅ CallbackPage: Redirection vers /dashboard...');
                     setUser({ ...data, token });
                     setToast({ message: 'Connexion réussie !', type: 'success' });
                     navigate('/dashboard');  // ← Redirection vers /dashboard
                     if (fetchProgressions) fetchProgressions();
                 })
                 .catch(err => {
-                    console.error(err);
+                    console.error('❌ CallbackPage: Erreur récupération profil:', err);
                     setToast({ message: 'Erreur de récupération du profil', type: 'error' });
                     navigate('/auth');
                 });
