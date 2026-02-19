@@ -77,7 +77,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         setIsLoading(true);
         const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
             'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +
-            '&redirect_uri=' + window.location.origin + '/auth/callback' + // URL CORRECTE
+            '&redirect_uri=' + encodeURIComponent(window.location.origin + '/auth/callback') + // URL ENCODÉE
             '&response_type=code' +
             '&scope=email profile' +
             '&prompt=select_account';
