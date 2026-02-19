@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Users,
@@ -22,6 +23,7 @@ import {
 } from 'lucide-react';
 
 const AdminPage = ({ user, API_URL, setToast }) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
