@@ -1,32 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 
 <head>
   <meta charset="UTF-8" />
-  <title>Mysterious Classroom</title>
-
-  <!-- FAVICON = LOGO -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mysterious Classroom — L'apprentissage immersif</title>
+  <meta name="description"
+    content="Mysterious Classroom — Plongez dans l'univers immersif de l'apprentissage du code. Cours de Python, JavaScript, C, Algorithmique et plus encore." />
 
-  <!-- POLICE -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Bebas+Neue&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Cinzel Decorative + Inter + Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
 
-  <link rel="stylesheet" href="style.css" />
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
-  <div class="container">
-    <img src="mysterious-logo.png" alt="Mysterious Classroom Logo" class="logo">
-
-    <h1 class="mysterious-title">MYSTERIOUS CLASSROOM</h1>
-
-    <p class="subtitle">Entre dans une nouvelle façon d’apprendre</p>
-
-    <button id="startBtn">Commencer l’aventure</button>
-  </div>
-
-  <script src="script.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>

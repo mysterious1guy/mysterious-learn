@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { motion, useState } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { ArrowLeft, LogOut, User, Mail, Edit2, Save, X } from 'lucide-react';
 
 const AccountPage = ({ user, onUpdateUser, onLogout, progressions, favorites, onToggleFavorite, API_URL, setToast }) => {
