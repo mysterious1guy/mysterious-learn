@@ -63,7 +63,7 @@ function App() {
       firstName,
       lastName
     };
-    
+
     setUser(updatedUser);
   };
 
@@ -107,14 +107,14 @@ function App() {
     console.log('🌐 App: Initialisation globale');
     console.log('🌐 App: User actuel:', user ? 'CONNECTÉ' : 'NON CONNECTÉ');
     console.log('🌐 App: URL actuelle:', window.location.pathname);
-    
+
     // Logger chaque changement de route
     const handleRouteChange = () => {
       console.log('🔄 App: Changement de route vers:', window.location.pathname);
     };
-    
+
     window.addEventListener('popstate', handleRouteChange);
-    
+
     return () => {
       window.removeEventListener('popstate', handleRouteChange);
     };
@@ -131,7 +131,7 @@ function App() {
 
         {/* Debug Monitor - Uniquement en développement */}
         {import.meta.env.DEV && <DebugMonitor API_URL={API_URL} />}
-        
+
         {/* OAuth Debugger - Toujours visible */}
         <OAuthDebugger />
 
@@ -140,7 +140,7 @@ function App() {
             <Route path="/" element={<HomePage API_URL={API_URL} />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
-            <Route path="/auth" element={<AuthPage setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
+            <Route path="/auth" element={<AuthPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
             {/* ✅ Nouvelle route pour le callback Google */}
             <Route path="/auth/callback" element={
               <CallbackPage
@@ -149,23 +149,23 @@ function App() {
                 fetchProgressions={fetchProgressions}
               />
             } />
-            {/* Route Admin - accès direct */}
-            <Route path="/admin" element={<AdminLoginPage setToast={setToast} />} />
+            {/* Route Admin Login */}
+            <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />
           </Route>
 
           <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
-            {/* Route Admin - accès direct */}
+            {/* Route Admin - Dashboard */}
             <Route path="/admin" element={<AdminPage user={user} API_URL={API_URL} setToast={setToast} />} />
-            
+
             {/* Routes protégées - nécessitent une connexion */}
             <Route path="/dashboard" element={
               user ? (
                 <DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
-                    const newFavs = favorites.includes(id)
-                      ? favorites.filter(f => f !== id)
-                      : [...favorites, id];
-                    setFavorites(newFavs);
-                  }}
+                  const newFavs = favorites.includes(id)
+                    ? favorites.filter(f => f !== id)
+                    : [...favorites, id];
+                  setFavorites(newFavs);
+                }}
                   progressions={progressions}
                   API_URL={API_URL}
                   setToast={setToast}

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  Mail, 
-  Bell, 
-  BookOpen, 
-  Settings, 
+import {
+  Users,
+  Mail,
+  Bell,
+  BookOpen,
+  Settings,
   Crown,
   Eye,
   Edit,
@@ -34,10 +34,10 @@ const AdminPage = ({ user, API_URL, setToast }) => {
 
   useEffect(() => {
     console.log('👑 AdminPage: Initialisation pour', user?.email);
-    
+
     if (!user) {
-      console.log('❌ AdminPage: Aucun utilisateur - redirection vers /admin');
-      navigate('/admin');
+      console.log('❌ AdminPage: Aucun utilisateur - redirection vers /admin/login');
+      navigate('/admin/login');
       return;
     }
 
@@ -70,7 +70,7 @@ const AdminPage = ({ user, API_URL, setToast }) => {
   const fetchAdminData = async () => {
     try {
       setLoading(true);
-      
+
       // Récupérer les stats
       const [usersRes, coursesRes] = await Promise.all([
         fetch(`${API_URL}/api/admin/users`),
@@ -260,9 +260,8 @@ const AdminPage = ({ user, API_URL, setToast }) => {
                     <p className="text-gray-400 text-sm">{user.email}</p>
                   </div>
                 </div>
-                <span className={`px-2 py-1 rounded text-xs ${
-                  user.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
-                }`}>
+                <span className={`px-2 py-1 rounded text-xs ${user.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                  }`}>
                   {user.verified ? 'Vérifié' : 'En attente'}
                 </span>
               </div>
@@ -336,9 +335,8 @@ const AdminPage = ({ user, API_URL, setToast }) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-300">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      user.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
-                    }`}>
+                    <span className={`px-2 py-1 rounded text-xs ${user.verified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                      }`}>
                       {user.verified ? 'Vérifié' : 'En attente'}
                     </span>
                   </td>
@@ -353,7 +351,7 @@ const AdminPage = ({ user, API_URL, setToast }) => {
                       <button className="p-1 text-yellow-400 hover:text-yellow-300 transition">
                         <Edit size={16} />
                       </button>
-                      <button 
+                      <button
                         onClick={() => deleteUser(user._id)}
                         className="p-1 text-red-400 hover:text-red-300 transition"
                       >
@@ -390,7 +388,7 @@ const AdminPage = ({ user, API_URL, setToast }) => {
               <input
                 type="text"
                 value={notificationContent.title}
-                onChange={(e) => setNotificationContent({...notificationContent, title: e.target.value})}
+                onChange={(e) => setNotificationContent({ ...notificationContent, title: e.target.value })}
                 className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
                 placeholder="Titre de la notification"
               />
@@ -399,7 +397,7 @@ const AdminPage = ({ user, API_URL, setToast }) => {
               <label className="block text-sm font-medium text-gray-300 mb-2">Message</label>
               <textarea
                 value={notificationContent.message}
-                onChange={(e) => setNotificationContent({...notificationContent, message: e.target.value})}
+                onChange={(e) => setNotificationContent({ ...notificationContent, message: e.target.value })}
                 className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none h-32"
                 placeholder="Contenu de la notification"
               />
@@ -408,7 +406,7 @@ const AdminPage = ({ user, API_URL, setToast }) => {
               <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
               <select
                 value={notificationContent.type}
-                onChange={(e) => setNotificationContent({...notificationContent, type: e.target.value})}
+                onChange={(e) => setNotificationContent({ ...notificationContent, type: e.target.value })}
                 className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
               >
                 <option value="info">Information</option>
@@ -438,7 +436,7 @@ const AdminPage = ({ user, API_URL, setToast }) => {
               <label className="block text-sm font-medium text-gray-300 mb-2">Destinataires</label>
               <select
                 value={emailContent.recipients}
-                onChange={(e) => setEmailContent({...emailContent, recipients: e.target.value})}
+                onChange={(e) => setEmailContent({ ...emailContent, recipients: e.target.value })}
                 className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
               >
                 <option value="all">Tous les utilisateurs</option>
@@ -451,7 +449,7 @@ const AdminPage = ({ user, API_URL, setToast }) => {
               <input
                 type="text"
                 value={emailContent.subject}
-                onChange={(e) => setEmailContent({...emailContent, subject: e.target.value})}
+                onChange={(e) => setEmailContent({ ...emailContent, subject: e.target.value })}
                 className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none"
                 placeholder="Sujet de l'email"
               />
@@ -460,7 +458,7 @@ const AdminPage = ({ user, API_URL, setToast }) => {
               <label className="block text-sm font-medium text-gray-300 mb-2">Contenu</label>
               <textarea
                 value={emailContent.body}
-                onChange={(e) => setEmailContent({...emailContent, body: e.target.value})}
+                onChange={(e) => setEmailContent({ ...emailContent, body: e.target.value })}
                 className="w-full px-4 py-2 bg-gray-700/50 border border-gray-600 rounded-lg text-white focus:border-blue-500 focus:outline-none h-32"
                 placeholder="Contenu de l'email"
               />

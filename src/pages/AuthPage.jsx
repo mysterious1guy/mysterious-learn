@@ -7,7 +7,7 @@ import CyberPet from '../CyberPet';
 // DEBUG - Pour voir si le composant charge
 console.log(' AuthPage: Component loaded');
 
-const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
+const AuthPage = ({ user, setUser, API_URL, setToast, fetchProgressions }) => {
     // DEBUG - Pour voir si le composant s'initialise
     console.log(' AuthPage: Component initializing');
 
