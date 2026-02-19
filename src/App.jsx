@@ -24,6 +24,7 @@ import { Toast } from './components/Toast';
 import Particles from './Particles';
 import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './components/ProtectedRoute';
+import DebugMonitor from './components/DebugMonitor';
 
 function App() {
   const [user, setUser] = useLocalStorage('user', null);
@@ -106,6 +107,9 @@ function App() {
         <AnimatePresence>
           {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </AnimatePresence>
+
+        {/* Debug Monitor - Uniquement en développement */}
+        {import.meta.env.DEV && <DebugMonitor API_URL={API_URL} />}
 
         <Routes>
           <Route element={<AuthLayout />}>
