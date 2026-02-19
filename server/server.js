@@ -22,6 +22,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/2fa', require('./routes/twoFactorRoutes'));
 
 // 4. Gestion des fichiers statiques
 const rootDir = path.resolve(); 

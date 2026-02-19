@@ -15,6 +15,7 @@ import DashboardPage from './pages/DashboardPage';
 import AccountPage from './pages/AccountPage';
 import CoursePage from './pages/CoursePage';
 import AdminPage from './pages/AdminPage';
+import TwoFactorSetupPage from './pages/TwoFactorSetupPage';
 
 // Hooks et composants
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -172,6 +173,17 @@ function App() {
                       : [...favorites, id];
                     setFavorites(newFavs);
                   }}
+                  API_URL={API_URL}
+                  setToast={setToast}
+                />
+              ) : <Navigate to="/auth" />
+            } />
+
+            {/* Route 2FA Setup */}
+            <Route path="/two-factor-setup" element={
+              user ? (
+                <TwoFactorSetupPage
+                  user={user}
                   API_URL={API_URL}
                   setToast={setToast}
                 />
