@@ -68,8 +68,8 @@ app.get('/api/status', (req, res) => {
   res.json({ message: 'L\'API Mysterious Learn est en ligne' });
 });
 
-// 5. La "Route Secours" pour le frontend
-app.get(/^(?!\/api).+/, (req, res) => {
+// 5. La "Route Secours" pour le frontend (SPA)
+app.get('*', (req, res) => {
   res.sendFile(path.join(rootDir, 'dist', 'index.html'));
 });
 
