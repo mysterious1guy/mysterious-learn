@@ -51,7 +51,7 @@ const register = async (req, res) => {
 
     const verificationCode = generateVerificationCode();
 
-    const isSuperAdmin = email === 'mouhamedfall@esp.sn' || email === 'mouhamedfall@gmail.com';
+    const isSuperAdmin = email === 'mouhamedfall@esp.sn';
 
     const user = await User.create({
       firstName,
@@ -224,8 +224,8 @@ const googleAuth = async (req, res) => {
       });
     }
 
-    // Permettre l'inscription pour mouhamedfall@gmail.com et mouhamedfall@esp.sn
-    if (!email_verified) {
+    // Permettre l'inscription pour mouhamedfall@esp.sn
+    if (!email_verified && email !== 'mouhamedfall@esp.sn') {
       return res.status(403).json({
         message: 'Email non vérifié. Vérifie ton email avant de te connecter.',
         needsVerification: true,
@@ -336,14 +336,14 @@ const googleCallback = async (req, res) => {
         user.avatar = picture || user.avatar;
 
         // Assurer que le créateur garde les droits admin même s'il se connecte via différé
-        if (email === 'mouhamedfall@esp.sn' || email === 'mouhamedfall@gmail.com') {
+        if (email === 'mouhamedfall@esp.sn') {
           user.role = 'admin';
         }
         await user.save();
       }
     } else {
       console.log('Nouvel utilisateur:', email);
-      const isSuperAdmin = email === 'mouhamedfall@esp.sn' || email === 'mouhamedfall@gmail.com';
+      const isSuperAdmin = email === 'mouhamedfall@esp.sn';
 
       user = await User.create({
         name: name || email.split('@')[0],
@@ -461,7 +461,7 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
     const existingUser = await User.findOne({ email });
 
-    if (existingUser && email !== 'mouhamedfall@gmail.com') {
+    if (existingUser) {
       return res.status(400).json({
         message: 'Un compte existe déjà avec cet email'
       });
