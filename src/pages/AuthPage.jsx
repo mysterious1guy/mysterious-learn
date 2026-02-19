@@ -205,7 +205,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 via-[#0f172a] to-gray-900">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
