@@ -42,7 +42,9 @@ const AdminLoginPage = ({ setToast }) => {
         localStorage.setItem('user', JSON.stringify(adminUser));
         localStorage.setItem('token', token);
         setToast({ message: 'Connexion admin réussie !', type: 'success' });
-        navigate('/admin');
+        
+        console.log('🛡️ AdminLoginPage: Connexion réussie, redirection vers /dashboard');
+        navigate('/dashboard');
         return;
       }
       
@@ -62,11 +64,13 @@ const AdminLoginPage = ({ setToast }) => {
         localStorage.setItem('user', JSON.stringify(data));
         localStorage.setItem('token', data.token);
         setToast({ message: 'Connexion admin réussie !', type: 'success' });
-        navigate('/admin');
-      } else {
-        console.log('❌ AdminLoginPage: Échec connexion admin:', data.message);
-        setToast({ message: data.message || 'Erreur de connexion admin', type: 'error' });
-      }
+        
+        console.log('🛡️ AdminLoginPage: Redirection vers /dashboard');
+        navigate('/dashboard');
+        return;
+      } 
+      console.log('❌ AdminLoginPage: Échec connexion admin:', data.message);
+      setToast({ message: data.message || 'Erreur de connexion admin', type: 'error' });
     } catch (error) {
       console.error('❌ AdminLoginPage: Erreur:', error);
       setToast({ message: 'Erreur de connexion admin', type: 'error' });
