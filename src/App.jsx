@@ -102,6 +102,24 @@ function App() {
     }
   }, [user]);
 
+  // Global logging pour diagnostic
+  useEffect(() => {
+    console.log('🌐 App: Initialisation globale');
+    console.log('🌐 App: User actuel:', user ? 'CONNECTÉ' : 'NON CONNECTÉ');
+    console.log('🌐 App: URL actuelle:', window.location.pathname);
+    
+    // Logger chaque changement de route
+    const handleRouteChange = () => {
+      console.log('🔄 App: Changement de route vers:', window.location.pathname);
+    };
+    
+    window.addEventListener('popstate', handleRouteChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+    };
+  }, [user]);
+
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">

@@ -7,6 +7,9 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
 
     useEffect(() => {
         console.log('🔥 CallbackPage: Initialisation...');
+        console.log('🔥 CallbackPage: URL actuelle:', window.location.href);
+        console.log('🔥 CallbackPage: User actuel:', user ? 'CONNECTÉ' : 'NON CONNECTÉ');
+        
         const params = new URLSearchParams(location.search);
         const token = params.get('token');
         const error = params.get('error');

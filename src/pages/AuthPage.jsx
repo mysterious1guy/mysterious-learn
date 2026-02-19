@@ -72,6 +72,21 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         else setPasswordStrength(3);
     }, [formData.password]);
 
+    useEffect(() => {
+        console.log('🔐 AuthPage: Initialisation mode:', authMode);
+        console.log('🔐 AuthPage: User actuel:', user ? 'CONNECTÉ' : 'NON CONNECTÉ');
+        console.log('🔐 AuthPage: URL actuelle:', window.location.pathname);
+        
+        // Si utilisateur déjà connecté, rediriger vers dashboard
+        if (user) {
+            console.log('✅ AuthPage: Utilisateur déjà connecté, redirection vers /dashboard');
+            navigate('/dashboard');
+            return;
+        }
+        
+        console.log('🔐 AuthPage: Affichage page auth');
+    }, [user, navigate, authMode]);
+
     // Google Login - REDIRECTION CORRECTE
     const handleGoogleLogin = () => {
         setIsLoading(true);
