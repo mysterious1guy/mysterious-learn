@@ -3,7 +3,7 @@ const Course = require('../models/Course');
 const nodemailer = require('nodemailer');
 
 // Configuration email
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
   secure: false,
