@@ -58,6 +58,14 @@ const AdminPage = ({ user, API_URL, setToast }) => {
     fetchAdminData();
   }, [user, navigate]);
 
+  // Redirection automatique vers le dashboard pour les admins connectés
+  useEffect(() => {
+    if (user && (user.email === 'mouhamedfall@esp.sn' || user.role === 'admin')) {
+      console.log('👑 AdminPage: Redirection automatique vers /dashboard');
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
   const fetchAdminData = async () => {
     try {
       setLoading(true);
