@@ -103,7 +103,7 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         window.location.href = googleAuthUrl;
     };
 
-    // Connexion email
+    // Connexion email - SIMPLIFIÉ
     const handleLogin = async (e) => {
         e.preventDefault();
         if (emailError) {
@@ -127,21 +127,18 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
             
             if (response.ok) {
                 console.log('✅ AuthPage: Connexion réussie, stockage...');
-                // Stocker les infos utilisateur dans localStorage pour le tracking
+                
+                // Stockage immédiat
                 localStorage.setItem('user', JSON.stringify(data));
                 localStorage.setItem('token', data.token);
                 
+                // Mise à jour du state
                 setUser(data);
                 setToast({ message: 'Connexion réussie !', type: 'success' });
                 
                 console.log('✅ AuthPage: Redirection vers /dashboard');
-                // Redirection immédiate vers le dashboard pour éviter le conflit avec le tracking
+                // Redirection directe sans délai
                 navigate('/dashboard');
-                
-                // Initialisation du tracking après un court délai
-                setTimeout(() => {
-                    if (fetchProgressions) fetchProgressions();
-                }, 100);
             } else {
                 console.log('❌ AuthPage: Échec connexion:', data.message);
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
