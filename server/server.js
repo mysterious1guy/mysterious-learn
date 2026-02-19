@@ -31,14 +31,19 @@ app.use('/api/live-monitor', require('./routes/liveMonitorRoutes'));
 app.get('/auth/callback', (req, res) => {
   const { token, error } = req.query;
   
+  console.log('🔍 Callback reçu:', { token: token ? 'REÇU' : 'MANQUANT', error });
+  
   if (error) {
+    console.log('❌ Erreur dans callback:', error);
     return res.redirect(`${process.env.CLIENT_URL}/auth?error=${error}`);
   }
   
   if (token) {
+    console.log('✅ Token reçu, redirection vers frontend callback');
     return res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
   }
   
+  console.log('❌ Pas de token, redirection vers auth avec erreur');
   res.redirect(`${process.env.CLIENT_URL}/auth?error=no_token`);
 });
 

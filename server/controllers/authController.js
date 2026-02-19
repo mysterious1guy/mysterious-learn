@@ -376,6 +376,7 @@ const googleCallback = async (req, res) => {
 
     const token = generateToken(user._id);
 
+    console.log('Token généré, redirection vers dashboard...');
     res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${token}`);
 
   } catch (error) {
