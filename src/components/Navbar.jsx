@@ -1,9 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { Menu, BarChart3 } from 'lucide-react';
 import MysteriousGeometricLogo from '../MysteriousGeometricLogo';
 import SearchBar from './SearchBar';
 
-const Navbar = ({ user, onMenuClick }) => {
+const Navbar = ({ user, onMenuClick, onShowUsageMonitor }) => {
   return (
     <nav className="fixed top-0 left-0 right-0 p-4 border-b border-gray-800 bg-gray-900/80 backdrop-blur-md z-40">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
@@ -47,6 +47,18 @@ const Navbar = ({ user, onMenuClick }) => {
               </div>
             )}
           </Link>
+          
+          {/* Bouton moniteur d'utilisation */}
+          <button
+            onClick={onShowUsageMonitor}
+            className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded-lg transition"
+            title="Voir mes statistiques d'utilisation"
+          >
+            <BarChart3 size={16} className="text-gray-400" />
+            <span className="text-sm font-medium hidden md:block">
+              Moniteur
+            </span>
+          </button>
         </div>
       </div>
     </nav>

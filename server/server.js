@@ -23,6 +23,7 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/2fa', require('./routes/twoFactorRoutes'));
+app.use('/api/activity', require('./routes/activityRoutes'));
 app.use('/api/debug', require('./routes/debugRoutes'));
 
 // 4. Gestion des fichiers statiques

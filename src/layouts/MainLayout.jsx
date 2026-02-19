@@ -4,9 +4,12 @@ import Navbar from '../components/Navbar';
 import MobileMenu from '../components/MobileMenu';
 import AIAssistant from '../components/AIAssistant';
 import Footer from '../components/Footer';
+import ActivityTracker from '../components/ActivityTracker';
+import UsageMonitor from '../components/UsageMonitor';
 
 const MainLayout = ({ user, onLogout }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showUsageMonitor, setShowUsageMonitor] = useState(false);
   const location = useLocation();
 
   const handleAIAction = (action, data) => {
@@ -20,6 +23,9 @@ const MainLayout = ({ user, onLogout }) => {
       case 'NAVIGATE_DASHBOARD':
         window.location.href = '/dashboard';
         break;
+      case 'OPEN_USAGE_MONITOR':
+        setShowUsageMonitor(true);
+        break;
       case 'OPEN_COURSE':
         // Logique pour ouvrir un cours spécifique
         console.log('Opening course:', data);
@@ -31,9 +37,12 @@ const MainLayout = ({ user, onLogout }) => {
 
   return (
     <>
+      <ActivityTracker user={user} API_URL={import.meta.env.VITE_API_URL || 'http://localhost:5000/api'} />
+      
       <Navbar 
         user={user}
         onMenuClick={() => setMobileMenuOpen(true)}
+        onShowUsageMonitor={() => setShowUsageMonitor(true)}
       />
       
       <MobileMenu
@@ -55,6 +64,14 @@ const MainLayout = ({ user, onLogout }) => {
       </main>
       
       <Footer />
+
+      {/* Moniteur d'utilisation */}
+      <UsageMonitor
+        user={user}
+        API_URL={import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}
+        isVisible={showUsageMonitor}
+        onClose={() => setShowUsageMonitor(false)}
+      />
     </>
   );
 };
