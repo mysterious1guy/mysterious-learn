@@ -1,13 +1,18 @@
-require('dotenv').config();
+// 1. Importations
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
 const connectDB = require('./config/db'); 
 
-// 1. Connexion à MongoDB
+// 2. Connexion à MongoDB
 connectDB();
 
 const app = express();
+
+// Configuration pour Render/Proxy
+app.set('trust proxy', 1);
 
 // 2. Middlewares
 app.use(cors({ 

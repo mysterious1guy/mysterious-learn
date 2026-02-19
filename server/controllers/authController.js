@@ -328,16 +328,20 @@ const googleCallback = async (req, res) => {
   const { code } = req.query;
 
   try {
-    console.log('Google callback reçu avec code:', code);
+    console.log('🔥 Google callback reçu avec code:', code ? 'CODE_REÇU' : 'CODE_MANQUANT');
+    console.log('🔥 CLIENT_URL:', process.env.CLIENT_URL);
+    console.log('🔥 Redirect URI configuré:', `${process.env.CLIENT_URL}/api/auth/google/callback`);
 
     const { OAuth2Client } = require('google-auth-library');
     const client = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET
+      process.env.GOOGLE_CLIENT_SECRET,
+      `${process.env.CLIENT_URL}/api/auth/google/callback`  // URL explicite
     );
 
+    console.log('🔥 OAuth2Client configuré, tentative getToken...');
     const { tokens } = await client.getToken(code);
-    console.log('Tokens reçus de Google');
+    console.log('🔥 Tokens reçus de Google:', tokens.access_token ? 'ACCESS_TOKEN_OK' : 'ACCESS_TOKEN_MISSING');
 
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
