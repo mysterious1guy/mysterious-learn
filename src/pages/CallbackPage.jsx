@@ -26,9 +26,13 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
                     return res.json();
                 })
                 .then(data => {
+                    // Stocker les infos utilisateur dans localStorage pour le tracking
+                    localStorage.setItem('user', JSON.stringify(data));
+                    localStorage.setItem('token', data.token);
+                    
                     setUser({ ...data, token });
                     setToast({ message: 'Connexion réussie !', type: 'success' });
-                    navigate('/account');  // ← Redirection vers /account
+                    navigate('/dashboard');  // ← Redirection vers /dashboard
                     if (fetchProgressions) fetchProgressions();
                 })
                 .catch(err => {
