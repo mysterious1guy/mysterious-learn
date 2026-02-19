@@ -87,15 +87,19 @@ const AuthPage = ({ setUser, API_URL, setToast, fetchProgressions }) => {
         console.log('🔐 AuthPage: Affichage page auth');
     }, [user, navigate, authMode]);
 
-    // Google Login - REDIRECTION CORRECTE
+    // Google Login - CORRECTION REDIRECT URI
     const handleGoogleLogin = () => {
         setIsLoading(true);
+        console.log('🔐 AuthPage: Lancement Google OAuth');
+        
         const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' +
             'client_id=' + import.meta.env.VITE_GOOGLE_CLIENT_ID +
-            '&redirect_uri=' + encodeURIComponent(window.location.origin + '/api/auth/google/callback') + // BONNE ROUTE API
+            '&redirect_uri=' + encodeURIComponent('https://mysterious-classroom-free-courses.onrender.com/api/auth/google/callback') +
             '&response_type=code' +
             '&scope=email profile' +
             '&prompt=select_account';
+            
+        console.log('🔐 AuthPage: URL OAuth:', googleAuthUrl);
         window.location.href = googleAuthUrl;
     };
 
