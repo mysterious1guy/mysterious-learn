@@ -7,9 +7,8 @@ import GuideAvatar from './GuideAvatar';
 // --- 1. CONFIGURATION DE L'ONBOARDING ---
 const ONBOARDING_STEPS = [
     {
-        title: "Bienvenue, Voyageur du Code ! ",
         title: "Bienvenue, Voyageur du Code ! 🎩",
-        content: "Je suis ton Guide Mystérieux. Je vais te montrer comment dompter cette plateforme créée par Mouhamed pour faire de toi un expert.",
+        content: "Je suis ton Guide Mystérieux. Je vais te montrer comment dompter cette plateforme créée par Mouhamed Fall.",
         target: "brand-logo",
         position: "center"
     },

@@ -4,37 +4,69 @@ const path = require('path');
 // Données de cours intégrées directement en fallback
 const FALLBACK_COURSES = [
   {
-    "_id": "course_1",
-    "id": "course_1",
-    "title": "Introduction à l'Algorithmique",
-    "description": "Apprenez les bases fondamentales de l'algorithmique avec des exemples concrets et des exercices pratiques.",
-    "category": "Théorie",
+    "_id": "algo_pilot",
+    "id": "algo_pilot",
+    "title": "Algorithmique : Penser comme un Pro",
+    "description": "Ne tape plus de code au hasard. Apprends à décomposer les problèmes de manière logique. C'est la compétence la plus précieuse d'un développeur.",
+    "category": "Fondamentaux",
     "level": "Débutant",
-    "duration": "8h",
-    "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
-    "rating": 4.8,
-    "students": 2341,
+    "duration": "5h",
+    "image": "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
+    "rating": 4.9,
+    "students": 4250,
     "language": "Français",
-    "tags": ["algorithmique", "programmation", "bases"],
+    "tags": ["algorithmique", "logique", "bases"],
     "chapters": [
       {
         "id": "ch1",
-        "title": "Introduction aux Algorithmes",
-        "description": "Découvrez ce qu'est un algorithme et son importance",
-        "content": "Un algorithme est une suite finie d'instructions...",
-        "objectives": ["Comprendre la notion d'algorithme", "Analyser des problèmes simples"],
-        "exercises": [
+        "title": "1. L'Art de la Recette",
+        "description": "Comprendre ce qu'est un algorithme sans écrire une seule ligne de code technique.",
+        "duration": "15 min",
+        "objectives": ["Comprendre le concept d'instruction", "Distinguer les entrées des sorties"],
+        "modules": [
           {
-            "id": "ex1",
-            "title": "Votre premier algorithme",
-            "description": "Écrivez un algorithme pour trouver le maximum",
-            "solution": "function findMax(array) { let max = array[0]; ... }"
+            "id": "m1_1",
+            "type": "text",
+            "title": "Qu'est-ce qu'un algorithme ?",
+            "content": "### La cuisine du code\n\nOublie les mathématiques compliquées. Un algorithme, c'est **exactement comme une recette de cuisine**.\n\nQuand tu veux faire des crêpes, tu suis des étapes dans un ordre précis :\n1. Mettre de la farine.\n2. Ajouter des œufs.\n3. Verser le lait.\n\nSi tu verses le lait avant de mettre la poêle, ça va faire un désastre. En programmation, c'est pareil. L'ordinateur est extrêmement bête, il a besoin d'instructions **claires, ordonnées et finies**."
+          },
+          {
+            "id": "m1_2",
+            "type": "quiz",
+            "title": "Test de logique",
+            "question": "Si tu instructs un robot de te faire du thé, quelle est la MEILLEURE suite d'instructions ?",
+            "options": [
+              "Faire chauffer l'eau. Boire. Mettre le sachet.",
+              "Mettre l'eau dans la tasse. Ajouter le sachet. Servir.",
+              "Faire chauffer l'eau. Mettre le sachet dans la tasse. Verser l'eau chaude. Attendre. Servir."
+            ],
+            "answerIndex": 2,
+            "explanation": "Exactement ! L'ordre chronologique et logique est indispensable en algorithmique."
           }
-        ],
-        "resources": [
+        ]
+      },
+      {
+        "id": "ch2",
+        "title": "2. Les Variables : Tes boîtes à souvenirs",
+        "description": "Comment l'ordinateur se souvient-il des choses ?",
+        "duration": "25 min",
+        "objectives": ["Déclarer une variable", "Modifier son contenu", "Comprendre les types simples"],
+        "modules": [
           {
-            "title": "Documentation MDN",
-            "url": "https://developer.mozilla.org/fr/docs/Web/JavaScript"
+            "id": "m2_1",
+            "type": "text",
+            "title": "La boîte mémoire",
+            "content": "Imagine que tu joues à un jeu vidéo. Où est enregistré ton score ? Dans une **variable**.\n\nUne variable est simplement une **boîte** qui porte une étiquette (le nom) et qui contient quelque chose (la valeur).\n\nEn Pseudo-code, on l'écrit souvent ainsi :\n```\nVariable score = 0\nVariable pseudo = \"Gamer99\"\n```\nLe contenu de cette boîte peut changer (varier) au cours du temps, d'où le nom *variable*."
+          },
+          {
+            "id": "m2_2",
+            "type": "code",
+            "title": "À toi de jouer !",
+            "description": "Changeons de score ! Crée une variable nommée `score` et donne-lui la valeur `100`.",
+            "language": "javascript",
+            "initialCode": "// Modifie la ligne en dessous\nlet score = 0;\n",
+            "solution": "let score = 100;",
+            "testRegex": "let\\s+score\\s*=\\s*100;?"
           }
         ]
       }
@@ -120,10 +152,10 @@ const FALLBACK_COURSES = [
 const getAllCoursesFallback = async (req, res) => {
   try {
     console.log('🔄 Using hardcoded fallback courses data');
-    
+
     // Utiliser les données intégrées directement
     let filteredCourses = FALLBACK_COURSES;
-    
+
     // Filtrage
     const { category, level, search } = req.query;
     if (category) {
@@ -133,12 +165,12 @@ const getAllCoursesFallback = async (req, res) => {
       filteredCourses = filteredCourses.filter(course => course.level === level);
     }
     if (search) {
-      filteredCourses = filteredCourses.filter(course => 
+      filteredCourses = filteredCourses.filter(course =>
         course.title.toLowerCase().includes(search.toLowerCase()) ||
         course.description.toLowerCase().includes(search.toLowerCase())
       );
     }
-    
+
     console.log(`📊 Returning ${filteredCourses.length} courses`);
     res.json(filteredCourses);
   } catch (error) {
@@ -150,10 +182,10 @@ const getAllCoursesFallback = async (req, res) => {
 const getCourseByIdFallback = async (req, res) => {
   try {
     console.log('🔄 Using hardcoded fallback for course by ID');
-    
+
     // Utiliser les données intégrées directement
     const course = FALLBACK_COURSES.find(c => c._id === req.params.id || c.id === req.params.id);
-    
+
     if (course) {
       res.json(course);
     } else {
@@ -168,7 +200,7 @@ const getCourseByIdFallback = async (req, res) => {
 const getCategoriesFallback = async (req, res) => {
   try {
     console.log('🔄 Using hardcoded fallback for categories');
-    
+
     // Utiliser les données intégrées directement
     const categories = [...new Set(FALLBACK_COURSES.map(course => course.category))];
     res.json(categories);
