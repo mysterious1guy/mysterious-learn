@@ -72,6 +72,10 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                 setTimeout(() => {
                     navigate(data.role === 'admin' ? '/admin' : '/dashboard');
                 }, 1000);
+            } else if (response.status === 403 && data.unverified) {
+                setAuthMode('verification');
+                setFormData({ ...formData, email: data.email });
+                setToast({ message: data.message, type: 'warning' });
             } else {
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
             }

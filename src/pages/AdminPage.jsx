@@ -9,6 +9,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
+import { formatTimeAgo } from '../utils/dateUtils';
 
 const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const navigate = useNavigate();
@@ -30,6 +31,9 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const [showAIBrainModal, setShowAIBrainModal] = useState(false);
   const [aiBrainFormData, setAIBrainFormData] = useState({ title: '', content: '', category: 'general', tags: '', source: '' });
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
+  const [selectedUserStats, setSelectedUserStats] = useState(null);
+  const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
+  const [loadingStats, setLoadingStats] = useState(false);
   const fileInputRef = useRef(null);
   const configAvatarRef = useRef(null);
 
@@ -283,6 +287,28 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     });
   };
 
+  const handleViewUserStats = async (userId) => {
+    setLoadingStats(true);
+    setIsStatsModalOpen(true);
+    setSelectedUserStats(null);
+    try {
+      const res = await fetch(`${API_URL}/activity/user-stats/${userId}`, {
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const targetUser = users.find(u => u._id === userId);
+        setSelectedUserStats({ ...data, user: targetUser });
+      } else {
+        setToast({ message: "Erreur récupération stats", type: 'error' });
+      }
+    } catch (err) {
+      setToast({ message: "Erreur réseau", type: 'error' });
+    } finally {
+      setLoadingStats(false);
+    }
+  };
+
   const filteredUsers = users.filter(u =>
     u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     `${u.firstName} ${u.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
@@ -338,7 +364,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
             {isSidebarOpen && (
               <div className="flex-1 overflow-hidden">
                 <p className="text-xs font-bold text-white truncate">{user?.firstName} {user?.lastName}</p>
-                <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
+                <p className="text-[10px] text-white/60 truncate">{user?.email}</p>
               </div>
             )}
           </div>
@@ -377,7 +403,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       <div className={`p-3 bg-${s.color}-600/20 text-${s.color}-400 rounded-2xl w-fit mb-4`}>
                         <s.icon size={24} />
                       </div>
-                      <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">{s.label}</p>
+                      <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{s.label}</p>
                       <p className="text-3xl font-black text-white mt-1">{s.value}</p>
                     </div>
                   ))}
@@ -388,15 +414,22 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     <h2 className="text-xl font-bold text-white mb-6">Utilisateurs Récents</h2>
                     <div className="space-y-4">
                       {users.slice(-5).reverse().map(u => (
-                        <div key={u._id} className="flex items-center justify-between p-4 bg-slate-800/30 rounded-2xl hover:bg-slate-800/50 transition-colors">
+                        <div
+                          key={u._id}
+                          onClick={() => handleViewUserStats(u._id)}
+                          className="flex items-center justify-between p-4 bg-slate-800/30 rounded-2xl hover:bg-slate-800/50 transition-colors cursor-pointer group"
+                        >
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center font-bold">{u.firstName?.[0]}</div>
                             <div>
                               <p className="text-sm font-bold text-white">{u.firstName} {u.lastName}</p>
-                              <p className="text-xs text-slate-500">{u.email}</p>
+                              <div className="flex items-center gap-2">
+                                <Activity size={10} className={u.lastLogin && (new Date() - new Date(u.lastLogin)) < 300000 ? "text-green-500 animate-pulse" : "text-slate-600"} />
+                                <p className="text-[10px] text-white/60">Actif {formatTimeAgo(u.lastLogin)}</p>
+                              </div>
                             </div>
                           </div>
-                          <ChevronRight size={16} className="text-slate-600" />
+                          <ChevronRight size={16} className="text-slate-600 group-hover:text-blue-400 transition-colors" />
                         </div>
                       ))}
                     </div>
@@ -428,7 +461,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                 <div className="flex justify-between items-center mb-8">
                   <h2 className="text-3xl font-black text-white">Gestion des Utilisateurs</h2>
                   <div className="relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60" size={18} />
                     <input
                       type="text"
                       placeholder="Rechercher..."
@@ -441,7 +474,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
                 <div className="bg-slate-900 border border-slate-800 rounded-[2rem] overflow-hidden">
                   <table className="w-full text-left">
-                    <thead className="bg-slate-950/50 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                    <thead className="bg-slate-950/50 text-white/60 text-xs font-bold uppercase tracking-widest">
                       <tr>
                         <th className="px-8 py-6">Utilisateur</th>
                         <th className="px-8 py-6">Rôle</th>
@@ -459,9 +492,17 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                               </div>
                               <div>
                                 <p className="text-sm font-bold text-white">{u.firstName} {u.lastName}</p>
-                                <p className="text-[10px] text-slate-500">{u.email}</p>
+                                <p className="text-[10px] text-white/60">{u.email} • {formatTimeAgo(u.lastLogin)}</p>
                               </div>
                             </div>
+                          </td>
+                          <td className="px-8 py-6">
+                            <button
+                              onClick={() => handleViewUserStats(u._id)}
+                              className="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold text-blue-400 flex items-center gap-2 transition-colors"
+                            >
+                              <Activity size={14} /> Voir Actvité
+                            </button>
                           </td>
                           <td className="px-8 py-6">
                             <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${u.role === 'admin' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-blue-500/10 text-blue-500'}`}>
@@ -480,7 +521,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       ))}
                     </tbody>
                   </table>
-                  {filteredUsers.length === 0 && <div className="p-20 text-center text-slate-500">Aucun utilisateur trouvé</div>}
+                  {filteredUsers.length === 0 && <div className="p-20 text-center text-white/60">Aucun utilisateur trouvé</div>}
                 </div>
               </motion.div>
             )}
@@ -495,7 +536,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                   </div>
                   <form onSubmit={handleSendEmail} className="space-y-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-black uppercase text-slate-500 tracking-tighter">Destinataires</label>
+                      <label className="text-xs font-black uppercase text-white/60 tracking-tighter">Destinataires</label>
                       <select
                         value={emailContent.recipients}
                         onChange={(e) => setEmailContent({ ...emailContent, recipients: e.target.value })}
@@ -587,13 +628,13 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
                   {/* Liste des annonces */}
                   <div className="mt-12 space-y-4">
-                    <h3 className="text-sm font-black uppercase text-slate-500 tracking-widest pl-2">Annonces Actives</h3>
+                    <h3 className="text-sm font-black uppercase text-white/60 tracking-widest pl-2">Annonces Actives</h3>
                     <div className="space-y-3">
                       {notifications.map(n => (
                         <div key={n._id} className="flex items-center justify-between p-4 bg-slate-950/50 border border-slate-800 rounded-2xl group transition-all hover:border-slate-700">
                           <div className="flex-1 min-w-0 pr-4">
                             <p className="text-sm font-bold text-white truncate">{n.title}</p>
-                            <p className="text-[10px] text-slate-500 truncate">{n.message}</p>
+                            <p className="text-[10px] text-white/60 truncate">{n.message}</p>
                           </div>
                           <button
                             onClick={() => handleDeleteNotification(n._id)}
@@ -631,7 +672,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       </div>
                       <h3 className="text-lg font-bold text-white mb-2">{course.title}</h3>
                       <p className="text-sm text-slate-400 mb-6 line-clamp-2 flex-grow">{course.description}</p>
-                      <div className="flex items-center justify-between text-xs font-bold text-slate-500 pt-4 border-t border-slate-800">
+                      <div className="flex items-center justify-between text-xs font-bold text-white/60 pt-4 border-t border-slate-800">
                         <div className="flex items-center gap-1"><BookOpen size={14} /> {course.chapters?.length || 0} chap.</div>
                         <div className="flex items-center gap-1"><Users size={14} /> {course.level || 'Tous'}</div>
                       </div>
@@ -651,7 +692,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2 relative z-10">Algorithmique</h3>
                     <p className="text-sm text-slate-400 mb-6 line-clamp-2 flex-grow relative z-10">Mondial Algo Grimoire - Le cours interactif ultime pour comprendre la logique.</p>
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-500 pt-4 border-t border-slate-800 relative z-10">
+                    <div className="flex items-center justify-between text-xs font-bold text-white/60 pt-4 border-t border-slate-800 relative z-10">
                       <div className="flex items-center gap-1"><BookOpen size={14} /> 7 modules</div>
                       <div className="flex items-center gap-1"><Users size={14} /> Débutant</div>
                     </div>
@@ -683,7 +724,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       <LayoutDashboard size={20} /> Identité du Site
                     </h3>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Nom du Site</label>
+                      <label className="text-xs font-bold text-white/60 uppercase">Nom du Site</label>
                       <input
                         type="text"
                         value={config.siteName}
@@ -692,7 +733,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase">Texte du Pied de Page</label>
+                      <label className="text-xs font-bold text-white/60 uppercase">Texte du Pied de Page</label>
                       <textarea
                         value={config.footerText}
                         onChange={(e) => setConfig({ ...config, footerText: e.target.value })}
@@ -722,7 +763,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                         <input ref={configAvatarRef} type="file" hidden accept="image/*" onChange={handleConfigAvatarChange} />
                       </div>
                       <div className="flex-1">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Avatar (Initiales ou Image)</label>
+                        <label className="text-xs font-bold text-white/60 uppercase">Avatar (Initiales ou Image)</label>
                         <input
                           type="text"
                           value={config.creatorAvatar}
@@ -734,7 +775,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Nom</label>
+                        <label className="text-xs font-bold text-white/60 uppercase">Nom</label>
                         <input
                           type="text"
                           value={config.creatorName}
@@ -743,7 +784,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Titre</label>
+                        <label className="text-xs font-bold text-white/60 uppercase">Titre</label>
                         <input
                           type="text"
                           value={config.creatorTitle}
@@ -812,15 +853,15 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                 {/* AI Statistics/Status */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl">
-                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Documents Globaux</p>
+                    <p className="text-xs font-black text-white/60 uppercase tracking-widest mb-1">Documents Globaux</p>
                     <p className="text-3xl font-black text-white">{aiKnowledge.length}</p>
                   </div>
                   <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl">
-                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">État du Cerveau</p>
+                    <p className="text-xs font-black text-white/60 uppercase tracking-widest mb-1">État du Cerveau</p>
                     <p className="text-lg font-bold text-green-400">Opérationnel 🧠</p>
                   </div>
                   <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl">
-                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Vision IA</p>
+                    <p className="text-xs font-black text-white/60 uppercase tracking-widest mb-1">Vision IA</p>
                     <p className="text-lg font-bold text-yellow-500">Prêt pour Analyse 📸</p>
                   </div>
                 </div>
@@ -828,7 +869,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                 {/* Documents Table */}
                 <div className="bg-slate-900 border border-slate-800 rounded-[2rem] overflow-hidden">
                   <table className="w-full text-left">
-                    <thead className="bg-slate-950/50 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                    <thead className="bg-slate-950/50 text-white/60 text-xs font-bold uppercase tracking-widest">
                       <tr>
                         <th className="px-8 py-6">Titre / Source</th>
                         <th className="px-8 py-6">Catégorie</th>
@@ -842,7 +883,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                         <tr key={doc._id} className="hover:bg-slate-800/30 transition-colors">
                           <td className="px-8 py-6">
                             <p className="text-sm font-bold text-white">{doc.title}</p>
-                            <p className="text-[10px] text-slate-500">{doc.source || 'Interne'}</p>
+                            <p className="text-[10px] text-white/60">{doc.source || 'Interne'}</p>
                           </td>
                           <td className="px-8 py-6">
                             <span className="px-2 py-1 bg-slate-800 text-[10px] rounded uppercase font-bold text-slate-300">
@@ -856,7 +897,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                               ))}
                             </div>
                           </td>
-                          <td className="px-8 py-6 text-xs text-slate-500">
+                          <td className="px-8 py-6 text-xs text-white/60">
                             {new Date(doc.updatedAt).toLocaleDateString()}
                           </td>
                           <td className="px-8 py-6">
@@ -896,13 +937,13 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] w-full max-w-3xl p-10 max-h-[90vh] overflow-y-auto">
                       <div className="flex justify-between items-center mb-8">
                         <h2 className="text-2xl font-black text-white">Document de Connaissance</h2>
-                        <button onClick={() => setShowAIBrainModal(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
+                        <button onClick={() => setShowAIBrainModal(false)} className="text-white/60 hover:text-white"><X size={24} /></button>
                       </div>
 
                       <form onSubmit={handleSaveAIKnowledge} className="space-y-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div className="space-y-2">
-                            <label className="text-xs font-black uppercase text-slate-500">Titre</label>
+                            <label className="text-xs font-black uppercase text-white/60">Titre</label>
                             <input
                               type="text"
                               required
@@ -913,7 +954,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                             />
                           </div>
                           <div className="space-y-2">
-                            <label className="text-xs font-black uppercase text-slate-500">Catégorie</label>
+                            <label className="text-xs font-black uppercase text-white/60">Catégorie</label>
                             <select
                               value={aiBrainFormData.category}
                               onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, category: e.target.value })}
@@ -928,7 +969,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-xs font-black uppercase text-slate-500">Tags (séparés par des virgules)</label>
+                          <label className="text-xs font-black uppercase text-white/60">Tags (séparés par des virgules)</label>
                           <input
                             type="text"
                             value={aiBrainFormData.tags}
@@ -939,7 +980,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-xs font-black uppercase text-slate-500">Contenu de la connaissance</label>
+                          <label className="text-xs font-black uppercase text-white/60">Contenu de la connaissance</label>
                           <textarea
                             required
                             rows="8"
@@ -951,7 +992,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-xs font-black uppercase text-slate-500">Source (Lien ou Auteur)</label>
+                          <label className="text-xs font-black uppercase text-white/60">Source (Lien ou Auteur)</label>
                           <input
                             type="text"
                             value={aiBrainFormData.source}
@@ -978,7 +1019,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                   <div className="flex items-center justify-between p-6 bg-slate-800/20 rounded-2xl border border-slate-800">
                     <div>
                       <p className="font-bold text-white">Maintenance Site</p>
-                      <p className="text-xs text-slate-500">Désactiver l'accès aux cours</p>
+                      <p className="text-xs text-white/60">Désactiver l'accès aux cours</p>
                     </div>
                     <div className="w-12 h-6 bg-slate-800 rounded-full relative cursor-pointer">
                       <div className="absolute left-1 top-1 w-4 h-4 bg-slate-600 rounded-full" />
@@ -987,7 +1028,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                   <div className="flex items-center justify-between p-6 bg-slate-800/20 rounded-2xl border border-slate-800">
                     <div>
                       <p className="font-bold text-white">Inscriptions</p>
-                      <p className="text-xs text-slate-500">Autoriser les nouveaux comptes</p>
+                      <p className="text-xs text-white/60">Autoriser les nouveaux comptes</p>
                     </div>
                     <div className="w-12 h-6 bg-blue-600 rounded-full relative cursor-pointer">
                       <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
@@ -1006,6 +1047,98 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
         title={confirmModal.title}
         message={confirmModal.message}
       />
+
+      {/* User Activity Modal */}
+      <AnimatePresence>
+        {isStatsModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsStatsModalOpen(false)}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-8 border-b border-slate-800 flex justify-between items-center">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-blue-600/20 text-blue-400 rounded-2xl">
+                    <Activity size={24} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white">Activité de l'élève</h2>
+                    <p className="text-sm text-white/60">{selectedUserStats?.user?.firstName} {selectedUserStats?.user?.lastName}</p>
+                  </div>
+                </div>
+                <button onClick={() => setIsStatsModalOpen(false)} className="p-2 hover:bg-slate-800 rounded-xl text-white/60">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-8">
+                {loadingStats ? (
+                  <div className="py-20 flex flex-col items-center gap-4 text-white/60">
+                    <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                    <p className="animate-pulse">Calcul des statistiques...</p>
+                  </div>
+                ) : selectedUserStats ? (
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="bg-slate-950/50 p-6 rounded-3xl border border-slate-800/50">
+                      <p className="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-1">Sessions Totales</p>
+                      <p className="text-2xl font-black text-white">{selectedUserStats.totalSessions}</p>
+                    </div>
+                    <div className="bg-slate-950/50 p-6 rounded-3xl border border-slate-800/50">
+                      <p className="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-1">Temps Appris</p>
+                      <p className="text-2xl font-black text-white">{selectedUserStats.totalTime} min</p>
+                    </div>
+                    <div className="bg-slate-950/50 p-6 rounded-3xl border border-slate-800/50">
+                      <p className="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-1">Cours Consultés</p>
+                      <p className="text-2xl font-black text-white">{selectedUserStats.coursesViewed}</p>
+                    </div>
+                    <div className="bg-slate-950/50 p-6 rounded-3xl border border-slate-800/50">
+                      <p className="text-[10px] font-black uppercase text-slate-600 tracking-widest mb-1">Série (Streak)</p>
+                      <p className="text-2xl font-black text-orange-500 flex items-center gap-2">
+                        {selectedUserStats.streak} jours <span className="text-lg">🔥</span>
+                      </p>
+                    </div>
+
+                    <div className="col-span-2 bg-blue-600/10 p-6 rounded-3xl border border-blue-500/20 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-bold text-blue-400">Niveau Déclaré</p>
+                        <p className="text-lg font-black text-white uppercase tracking-tighter">
+                          {selectedUserStats.user?.programmingLevel || "Non défini"}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs font-bold text-white/60">Dernier passage</p>
+                        <p className="text-sm font-bold text-white">{formatTimeAgo(selectedUserStats.lastLogin)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-20 text-center text-slate-600 italic">
+                    Impossible de charger les données.
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6 bg-slate-950/30 text-center">
+                <button
+                  onClick={() => setIsStatsModalOpen(false)}
+                  className="px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all"
+                >
+                  Fermer
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

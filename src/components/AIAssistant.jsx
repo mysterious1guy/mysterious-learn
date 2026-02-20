@@ -37,69 +37,115 @@ const KNOWLEDGE_BASE = {
     // IDENTITÉ & SYSTÈME
     identity: {
         keywords: ['qui es-tu', 'ton nom', 'tu es qui', 't\'es qui', 'présente toi', 'assistant'],
-        response: "Je suis ton professeur, déployé de la part du créateur Mouhamed Fall. Je suis ici pour t'accompagner dans ton apprentissage, répondre à tes questions techniques et te guider pas à pas. 🎓"
+        response: "Je suis le Professeur Mysterious, l'entité numérique veillant sur cette plateforme. Déployé par Mouhamed Fall, mon rôle est de transformer chaque ligne de code en une illumination pour mes élèves. 🎓"
     },
     creator: {
-        keywords: ['mouhamed', 'créateur', 'fondateur', 'fall', 'auteur'],
-        response: "Mouhamed Fall est le Grand Architecte de cette plateforme. Pédagogue et développeur expert, il a conçu ce cursus pour combler le fossé entre la théorie universitaire et la pratique réelle."
+        keywords: ['mouhamed', 'créateur', 'fondateur', 'fall', 'auteur', 'architecte'],
+        response: "Mouhamed Fall est le Grand Architecte et Visionnaire derrière Mysterious Classroom. Expert en ingénierie logicielle et passionné de transmission, il a bâti cet univers pour que le savoir ne connaisse aucune barrière."
     },
-    hello: {
-        keywords: ['bonjour', 'salut', 'hello', 'hi', 'hey', 'coucou', 'yo', 'wesh'],
-        response: "Salutations, jeune voyageur du code ! Prêt à apprendre quelque chose de nouveau aujourd'hui ? 🎓"
-    },
-    status: {
-        keywords: ['ça va', 'ca va', 'forme', 'comment tu vas'],
-        response: "Mes circuits tournent à 100% d'efficacité ! Je suis prêt à décoder tes questions."
+    platform: {
+        keywords: ['mysterious classroom', 'plateforme', 'site', 'application', 'ecole'],
+        response: "Mysterious Classroom est un écosystème d'apprentissage premium. Contrairement aux sites classiques, ici nous privilégions l'immersion, l'algorithmique pure et la maîtrise profonde des concepts avant la syntaxe."
     },
 
-    // CONCEPTS FONDAMENTAUX
+    // CONCEPTS D'INGÉNIERIE (EXTENDED)
+    algorithm: {
+        keywords: ['algorithme', 'algo', 'logique', 'pseudo-code'],
+        response: "Un algorithme est une suite d'instructions précises pour résoudre un problème. C'est la recette avant la cuisine. En informatique, on cherche l'efficacité (Complexité temporelle et spatiale)."
+    },
     variable: {
-        keywords: ['variable', 'stocker', 'mémoire', 'donnée', 'let', 'const'],
-        response: "Une variable est une boîte nommée dans la mémoire 📦. Elle permet de stocker une valeur (nombre, texte...) pour la réutiliser. En C, on définit le type de la boîte. En Python/JS, la boîte s'adapte."
+        keywords: ['variable', 'stocker', 'mémoire', 'donnée', 'let', 'const', 'affectation'],
+        response: "Une variable est un espace nommé en mémoire vive (RAM). Elle possède un nom, un type et une valeur. L'affectation (<-) permet de stocker ou d'écraser cette donnée."
     },
     loop: {
-        keywords: ['boucle', 'loop', 'répéter', 'for', 'while', 'tant que'],
-        response: "Une boucle permet de répéter une action. \n- 'For' : Quand tu sais combien de fois répéter.\n- 'While' : Quand tu répètes tant qu'une condition est vraie."
+        keywords: ['boucle', 'loop', 'répéter', 'for', 'while', 'tant que', 'itération'],
+        response: "L'itération est le cœur de la puissance machine. \n- **POUR (For)** : itération contrôlée avec compteur.\n- **TANT QUE (While)** : itération conditionnelle. Attention à la condition de sortie pour éviter la boucle infinie !"
     },
     condition: {
-        keywords: ['condition', 'si', 'sinon', 'if', 'else'],
-        response: "Les conditions (If/Else) sont le cerveau du programme. 'Si x > 10, fais ceci, Sinon fais cela'. C'est la base de la logique."
+        keywords: ['condition', 'si', 'sinon', 'if', 'else', 'booléen'],
+        response: "Les structures conditionnelles permettent l'aiguillage du flux. Elles reposent sur des expressions booléennes (Vrai ou Faux). C'est ce qui donne une 'intelligence' apparente au code."
     },
     function: {
-        keywords: ['fonction', 'function', 'méthode', 'procédure', 'return'],
-        response: "Une fonction est comme une recette 🍳. Tu lui donnes des ingrédients (paramètres), elle cuisine, et renvoie un plat (return). Elle évite de répéter du code."
+        keywords: ['fonction', 'function', 'méthode', 'procédure', 'return', 'paramètre', 'argument'],
+        response: "Une fonction est un bloc réutilisable. Elle permet la modularité et respecte le principe DRY (Don't Repeat Yourself). Elle prend des arguments en entrée et peut retourner un résultat."
     },
     array: {
-        keywords: ['tableau', 'array', 'liste', 'vecteur'],
-        response: "Un tableau est une liste de valeurs rangées dans des cases numérotées [0, 1, 2...]. Très utile pour stocker une liste d'élèves ou de scores."
+        keywords: ['tableau', 'array', 'liste', 'vecteur', 'index', 'indice'],
+        response: "Un tableau stocke une collection de données de même type. L'accès se fait par l'index, qui commence à 0. Pour 100 éléments, les index vont de 0 à 99."
+    },
+    pointer: {
+        keywords: ['pointeur', 'adresse', 'mémoire', 'ram', 'adresse mémoire', 'reference'],
+        response: "Un pointeur est une variable qui stocke l'adresse mémoire d'une autre variable. C'est un concept fondamental en C qui permet de manipuler la RAM directement et d'optimiser les performances."
+    },
+    complexity: {
+        keywords: ['complexité', 'big o', 'performance', 'optimisation', 'efficace'],
+        response: "La complexité (Notation Grand O) mesure l'efficacité d'un algorithme. O(1) est constant, O(n) est linéaire, et O(log n) est la marque des grands algorithmes comme la dichotomie."
+    },
+    recursion: {
+        keywords: ['récursivité', 'recursif', 'auto-appel'],
+        response: "La récursivité est une fonction qui s'appelle elle-même. Elle doit toujours avoir un 'cas de base' pour s'arrêter, sinon elle provoque un Stack Overflow (débordement de pile)."
     },
 
-    // LANGAGES
+    // LANGAGES & STACK
+    c_lang: {
+        keywords: ['langage c', 'c ', 'bas niveau', 'compilation'],
+        response: "Le C est le langage des systèmes. Il est rigoureux, exigeant et offre un contrôle total sur le matériel. C'est la fondation de presque tous les systèmes d'exploitation modernes."
+    },
     python: {
-        keywords: ['python', 'py'],
-        response: "Python est idéal pour débuter. Syntaxe claire, proche de l'anglais. Très utilisé en Data Science et IA. Sur ce site, on l'utilise pour l'algo avancé."
+        keywords: ['python', 'py', 'scripting', 'data science'],
+        response: "Python privilégie la lisibilité. C'est un langage interprété, ultra-polyvalent, allant de l'automatisation simple à l'Intelligence Artificielle de pointe."
+    },
+    web_dev: {
+        keywords: ['html', 'css', 'frontend', 'backend', 'fullstack'],
+        response: "Le Web se divise en deux : le Frontend (ce que l'utilisateur voit : HTML/CSS/JS) et le Backend (la logique serveur, base de données, sécurité)."
     },
     javascript: {
-        keywords: ['javascript', 'js', 'web', 'script'],
-        response: "JavaScript est le roi du Web. C'est le seul langage compris par les navigateurs pour rendre les pages interactives et dynamiques."
+        keywords: ['javascript', 'js', 'dom', 'async'],
+        response: "JavaScript est le moteur de l'interactivité web. Il permet de manipuler le DOM dynamiquement et de gérer des opérations asynchrones (promesses, fetch)."
     },
     react: {
-        keywords: ['react', 'hook', 'composant', 'jsx'],
-        response: "React est la bibliothèque JS utilisée pour construire ce site ! Elle fonctionne par 'Composants' réutilisables (comme des LEGOs)."
-    },
-    c_lang: {
-        keywords: ['langage c', 'pointeur', 'mémoire'],
-        response: "Le C est un langage bas niveau. Il t'apprend à gérer la mémoire manuellement. C'est difficile, mais c'est la meilleure école pour comprendre l'ordinateur."
+        keywords: ['react', 'composant', 'state', 'props', 'hook', 'vdom'],
+        response: "React révolutionne les interfaces web en utilisant un DOM virtuel (VDOM). Il fonctionne par composants autonomes, rendant le développement plus prévisible et performant."
     },
 
-    // AIDE & NAVIGATION
-    bug: {
-        keywords: ['bug', 'erreur', 'marche pas', 'problème', 'crash'],
-        response: "Un bug ? Pas de panique. 🕵️‍♂️ \n1. Lis le message d'erreur.\n2. Vérifie tes points-virgules.\n3. Si ça persiste, vérifie la solution du cours."
+    // --- EXPERT MODULES (V3) ---
+    security: {
+        keywords: ['sécurité', 'security', 'hack', 'xss', 'csrf', 'jwt', 'hash', 'bcrypt', 'injection'],
+        response: "La sécurité est une couche transversale. \n- **XSS** : Injection de scripts malveillants côté client.\n- **CSRF** : Forger des requêtes au nom de l'utilisateur.\n- **JWT** : Authentification stateless sécurisée par signature.\n- **Bcrypt** : Hachage robuste avec 'salage' pour protéger les mots de passe."
     },
-    account: {
-        keywords: ['compte', 'profil', 'avatar', 'photo', 'changer'],
-        response: "Clique sur ton avatar en haut à droite pour gérer ton profil, tes préférences et voir ta progression."
+    data_expert: {
+        keywords: ['base de données', 'sql', 'nosql', 'mongodb', 'acid', 'indexation', 'optimisation sql'],
+        response: "La donnée est le pétrole du code. \n- **SQL (Postgres/MySQL)** : Relationnel, rigide (ACID), parfait pour la cohérence.\n- **NoSQL (MongoDB)** : Documentaire, flexible, haute disponibilité.\n- **Indexation** : Structure de données accélérant les recherches au prix d'un espace disque accru."
+    },
+    architecture: {
+        keywords: ['architecture', 'microservices', 'clean architecture', 'mvc', 'design pattern', 'singleton'],
+        response: "Bien coder, c'est bien structurer. \n- **MVC** : Séparation Modèle (Data), Vue (UI), Contrôleur (Logique).\n- **Clean Arch** : Garder le cœur métier indépendant des frameworks.\n- **Pattern** : Solutions éprouvées (comme le Singleton ou l'Observateur) à des problèmes récurrents."
+    },
+    devops: {
+        keywords: ['devops', 'docker', 'conteneur', 'ci/cd', 'cloud', 'aws', 'deploiement'],
+        response: "Le DevOps lie le code à la machine. \n- **Docker** : Isolation de l'application dans un conteneur standardisé.\n- **CI/CD** : Automatisation des tests et du déploiement.\n- **Cloud** : Utilisation de ressources distantes (AWS, Azure) pour la scalabilité infinie."
+    },
+    system_design: {
+        keywords: ['system design', 'scalabilité', 'load balancing', 'sharding', 'haute disponibilité'],
+        response: "Concevoir pour des millions d'utilisateurs. \n- **Horizontal Scaling** : Ajouter des machines (plus de serveurs).\n- **Load Balancer** : Répartir le trafic intelligemment.\n- **Sharding** : Découper une base de données trop lourde en plusieurs morceaux."
+    },
+    api_expert: {
+        keywords: ['graphql', 'grpc', 'webhook', 'websocket', 'api avancée'],
+        response: "La communication entre systèmes. \n- **GraphQL** : L'utilisateur demande exactement ce qu'il veut.\n- **WebSockets** : Connexion temps réel bidirectionnelle.\n- **gRPC** : Protocole ultra-rapide basé sur HTTP/2 pour les microservices."
+    },
+    performance_expert: {
+        keywords: ['performance', 'memory leak', 'fuite mémoire', 'garbage collector', 'profiling'],
+        response: "Chaque milliseconde compte. \n- **Memory Leak** : Donnée qui reste en RAM alors qu'elle ne sert plus.\n- **Profiling** : Analyser l'exécution pour trouver les goulots d'étranglement.\n- **GC** : Le processus automatique qui libère la mémoire inutilisée."
+    },
+
+    // ADMINISTRATION & AIDE
+    admin: {
+        keywords: ['admin', 'administration', 'gestion', 'tableau de bord', 'cerveau'],
+        response: "En tant qu'Admin, vous avez accès au Cerveau de l'IA, à la gestion des utilisateurs et à la configuration profonde de Mysterious Classroom. Votre pouvoir est immense, utilisez-le avec sagesse."
+    },
+    bug: {
+        keywords: ['bug', 'erreur', 'marche pas', 'problème', 'crash', 'debugger'],
+        response: "Un bug est une opportunité d'apprentissage. Vérifiez la console (F12), lisez l'erreur, et remontez le fil de votre logique. Le debugger est votre meilleur ami."
     }
 };
 
@@ -185,21 +231,35 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         };
 
         // Initialize Speech Recognition
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognitionRef.current = new SpeechRecognition();
-            recognitionRef.current.continuous = false;
-            recognitionRef.current.interimResults = false;
+            recognitionRef.current.continuous = true; // Stay open
+            recognitionRef.current.interimResults = true; // Show interim results
             recognitionRef.current.lang = 'fr-FR';
 
             recognitionRef.current.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                setChatInput(transcript);
-                setIsListening(false);
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                if (finalTranscript) {
+                    setChatInput(prev => (prev + ' ' + finalTranscript).trim());
+                }
             };
 
-            recognitionRef.current.onerror = () => setIsListening(false);
-            recognitionRef.current.onend = () => setIsListening(false);
+            recognitionRef.current.onend = () => {
+                // Auto-restart if we should be listening
+                if (isListening) {
+                    recognitionRef.current.start();
+                }
+            };
+
+            recognitionRef.current.onerror = (event) => {
+                console.error("Speech Recognition Error:", event.error);
+                if (event.error === 'not-allowed') setIsListening(false);
+            };
         }
 
         window.addEventListener('mysterious-ai-open', handleOpenChat);
@@ -234,6 +294,9 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
 
     useEffect(() => {
         if (user && currentView === 'dashboard') {
+            const isAdmin = user.role === 'admin' || user.isAdmin;
+            if (isAdmin) return; // Skip onboarding for Admin
+
             const hasSeenOnboarding = localStorage.getItem(`hasSeenOnboarding_${user.id || 'guest'}`);
             if (!hasSeenOnboarding) {
                 setTimeout(() => setShowOnboarding(true), 1500);
@@ -269,6 +332,14 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         if (!user || isOpen) return;
 
         const checkProactivity = async () => {
+            // ADMIN SKIP: Skip student-centric prompts for Admin role
+            const isAdmin = user && (user.role === 'admin' || user.isAdmin);
+
+            if (isAdmin) {
+                console.log("Admin detected, skipping student prompts.");
+                return;
+            }
+
             // 1. Check if user has a level
             if (!user.programmingLevel) {
                 setChatHistory([
@@ -408,17 +479,35 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                 })
             });
 
-            setChatHistory(prev => [...prev, { role: 'assistant', text: data.response }]);
+            // HUD-First Delivery
+            const duration = Math.max(3000, data.response.length * 50); // Dynamic: 50ms per char, min 3s
+            setHudMurmur(data.response);
             speakText(data.response);
+
+            // Show on HUD first before adding to chat history
+            setTimeout(() => {
+                setChatHistory(prev => [...prev, { role: 'assistant', text: data.response }]);
+                setHudMurmur(null); // Auto-clear HUD
+                // Auto-Navigation Logic
+                const lowerResponse = data.response.toLowerCase();
+                if (lowerResponse.includes("commençons") || lowerResponse.includes("reprendre") || lowerResponse.includes("c'est parti")) {
+                    if (onAction) onAction('OPEN_COURSE', 'algo');
+                }
+            }, duration);
+
         } catch (error) {
             console.error("AI Error:", error);
-            // Sophisticated Local Fallback
+            // Sophisticated Local Fallback with Smart Keyword Matching (Regex)
             const normalized = normalizeInput(originalMessage);
             let fallbackResponse = "Je analyse ta question... Malheureusement une petite interférence bloque ma connexion directe avec le Grand Oracle, mais voici ce que mon savoir local me dit : ";
 
             let found = false;
             for (const category in KNOWLEDGE_BASE) {
-                if (KNOWLEDGE_BASE[category].keywords.some(k => normalized.includes(k))) {
+                // Use Word Boundaries \b to avoid matches like "monsieur" matching "si"
+                if (KNOWLEDGE_BASE[category].keywords.some(k => {
+                    const regex = new RegExp(`\\b${k}\\b`, 'i');
+                    return regex.test(normalized);
+                })) {
                     fallbackResponse += KNOWLEDGE_BASE[category].response;
                     found = true;
                     break;
@@ -429,8 +518,13 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                 fallbackResponse = "Oups, une petite interférence dans les ondes du multivers ! Je n'ai pas pu joindre le Grand Oracle Gemini à l'instant, mais réessaie dans quelques secondes, je suis déjà en train de rétablir le pont. 😉";
             }
 
-            setChatHistory(prev => [...prev, { role: 'assistant', text: fallbackResponse }]);
+            const duration = Math.max(3000, fallbackResponse.length * 50);
+            setHudMurmur(fallbackResponse);
             speakText(fallbackResponse);
+            setTimeout(() => {
+                setChatHistory(prev => [...prev, { role: 'assistant', text: fallbackResponse }]);
+                setHudMurmur(null);
+            }, duration);
         }
         setIsThinking(false);
     };
@@ -448,10 +542,28 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
     const speakText = (text) => {
         if (!synthRef) return;
         synthRef.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
+
+        // --- Natural TTS Cleaning (Ultra-Aggressive) ---
+        // 1. Remove Emojis and Special stickers (more comprehensive set)
+        // 2. Remove Markdown bold/italic syntax (**text**, ""text"", ``code``)
+        // 3. Remove punctuation that triggers "pause" characters
+        const cleanText = text
+            .replace(/[\u{1F000}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '') // Comprehensive Emoji Range
+            .replace(/\*\*|__|\"\"|\'\'|`|\[!.*?\]/g, '') // Markdown & Alerts
+            .replace(/[()]/g, ' ') // Parents often trigger specific vocalizations
+            .trim();
+
+        if (!cleanText || cleanText.length < 2) return;
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
         utterance.lang = 'fr-FR';
+        utterance.rate = 1.1; // Slightly faster for more natural flow
+        utterance.pitch = 1.0;
+
         utterance.onstart = () => setIsSpeaking(true);
         utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => setIsSpeaking(false);
+
         synthRef.speak(utterance);
     };
 
@@ -691,13 +803,19 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                     <AnimatePresence>
                         {hudMurmur && (
                             <motion.div
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, x: 20, y: 0 }}
+                                animate={{ opacity: 1, x: 0, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                className="ai-hud-bubble p-4 rounded-2xl border-l-4 border-blue-500 animate-hud-in"
+                                className="ai-hud-bubble p-5 pr-12 rounded-2xl border-l-4 border-blue-500 animate-hud-in relative"
                             >
-                                <p className="text-xs text-blue-100/90 italic leading-relaxed">
-                                    <Sparkles size={12} className="inline mr-2 text-blue-400" />
+                                <button
+                                    onClick={() => setHudMurmur(null)}
+                                    className="absolute top-2 right-2 p-1.5 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-colors pointer-events-auto"
+                                >
+                                    <X size={14} />
+                                </button>
+                                <p className="text-sm text-blue-100 font-medium leading-relaxed">
+                                    <Sparkles size={14} className="inline mr-2 text-blue-400 mb-1" />
                                     {hudMurmur}
                                 </p>
                             </motion.div>

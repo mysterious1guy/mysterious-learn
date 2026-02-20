@@ -44,12 +44,12 @@ const TheoryViewer = ({ title, content, onComplete }) => {
       if (trimmed.startsWith('## ')) return <h2 key={idx} className="text-xl md:text-2xl font-semibold text-purple-400 mb-3 mt-5">{trimmed.replace('## ', '')}</h2>;
       if (trimmed.startsWith('### ')) return <h3 key={idx} className="text-lg md:text-xl font-bold text-pink-400 mb-2 mt-4">{trimmed.replace('### ', '')}</h3>;
       if (trimmed.startsWith('> ')) return (
-        <blockquote key={idx} className="border-l-4 border-yellow-500 pl-4 italic text-gray-300 my-3 bg-gray-800/30 p-3 rounded-r text-sm">
+        <blockquote key={idx} className="border-l-4 border-yellow-500 pl-4 italic text-white my-3 bg-gray-800/30 p-3 rounded-r text-sm">
           {renderRichText(trimmed.replace('> ', ''))}
         </blockquote>
       );
       if (trimmed.startsWith('* ')) {
-        return <li key={idx} className="ml-4 md:ml-6 list-disc text-gray-300 mb-1 text-sm md:text-base">{renderRichText(trimmed.replace('* ', ''))}</li>;
+        return <li key={idx} className="ml-4 md:ml-6 list-disc text-white mb-1 text-sm md:text-base">{renderRichText(trimmed.replace('* ', ''))}</li>;
       }
       if (trimmed === '') return <div key={idx} className="h-3"></div>;
 
@@ -72,7 +72,7 @@ const TheoryViewer = ({ title, content, onComplete }) => {
         );
       }
 
-      return <p key={idx} className="text-gray-300 leading-relaxed mb-4 text-base md:text-lg">{renderRichText(line)}</p>;
+      return <p key={idx} className="text-white leading-relaxed mb-4 text-base md:text-lg">{renderRichText(line)}</p>;
     });
   };
 

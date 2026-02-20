@@ -26,7 +26,7 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
                 <div className="p-4 border-b border-gray-800 flex items-center gap-3">
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-800 rounded-lg transition text-gray-400 hover:text-white"
+                        className="p-2 hover:bg-gray-800 rounded-lg transition text-white/80 hover:text-white"
                     >
                         <ArrowLeft size={20} />
                     </button>
@@ -41,7 +41,7 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
                                 <button
                                     key={lesson.id}
                                     onClick={() => setActiveLesson(lesson)}
-                                    className={`w-full text-left p-3 rounded-lg flex items-center gap-3 transition ${activeLesson?.id === lesson.id ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50' : 'hover:bg-gray-900 text-gray-400'}`}
+                                    className={`w-full text-left p-3 rounded-lg flex items-center gap-3 transition ${activeLesson?.id === lesson.id ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50' : 'hover:bg-gray-900 text-white/80'}`}
                                 >
                                     {isLessonCompleted(lesson.id) ? (
                                         <CheckCircle size={16} className="text-green-500" />
@@ -64,7 +64,7 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
                     <h2 className="text-xl font-bold">{activeLesson ? activeLesson.title : 'Sélectionnez une leçon'}</h2>
 
                     <div className="flex items-center gap-4">
-                        <div className="text-sm text-gray-400">
+                        <div className="text-sm text-white/80">
                             Progression: {Math.round((completedLessons.length / (course.lessons?.length || 1)) * 100)}%
                         </div>
                     </div>
@@ -82,7 +82,7 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
                         >
                             <div className="prose prose-invert max-w-none">
                                 <h1>{activeLesson.title}</h1>
-                                <p className="lead text-xl text-gray-300">
+                                <p className="lead text-xl text-white">
                                     {course.desc}
                                 </p>
 
@@ -90,7 +90,7 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
                                     <h3 className="flex items-center gap-2 text-blue-400 font-bold mb-2">
                                         <BookOpen size={20} /> À propos de cette leçon
                                     </h3>
-                                    <p className="text-gray-300">
+                                    <p className="text-white">
                                         Cette leçon fait partie du cursus <strong>{course.name}</strong>.
                                         Dans ce module, nous allons explorer les concepts fondamentaux de "{activeLesson.title}".
                                     </p>
@@ -98,7 +98,7 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
 
                                 <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
                                     <h3 className="text-lg font-bold mb-4">Contenu en construction 🚧</h3>
-                                    <p className="text-gray-400">
+                                    <p className="text-white/80">
                                         Le contenu détaillé de cette leçon est en cours de rédaction par nos experts.
                                         Revenez bientôt pour découvrir la théorie, les exercices et les quiz !
                                     </p>
@@ -111,7 +111,7 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
                             {/* Zone de validation */}
                             <div className="flex items-center justify-between pt-8 border-t border-gray-800 mt-12">
                                 <button
-                                    className="px-6 py-3 rounded-xl border border-gray-700 text-gray-400 hover:text-white hover:border-gray-500 transition"
+                                    className="px-6 py-3 rounded-xl border border-gray-700 text-white/80 hover:text-white hover:border-gray-500 transition"
                                     disabled // Placeholder for now
                                 >
                                     <ChevronRight className="rotate-180 inline mr-2" size={16} />

@@ -233,6 +233,15 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
+    // Restriction : Bloquer tant que l'email n'est pas vérifié (sauf admin)
+    if (!user.isEmailVerified && user.role !== 'admin') {
+      return res.status(403).json({
+        message: 'Veuillez vérifier votre email avant de vous connecter.',
+        unverified: true,
+        email: user.email
+      });
+    }
+
     // Mettre à jour lastLogin
     user.lastLogin = Date.now();
     await user.save();
@@ -393,8 +402,9 @@ const googleCallback = async (req, res) => {
 
     if (user) {
       console.log('Utilisateur existant:', email);
-      if (!user.googleId) {
-        user.googleId = googleId;
+      if (!user.googleId || !user.isEmailVerified) {
+        user.googleId = googleId || user.googleId;
+        user.isEmailVerified = true;
         user.avatar = picture || user.avatar;
 
         // Assurer que le créateur garde les droits admin même s'il se connecte via différé
