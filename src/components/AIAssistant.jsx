@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Bot, Sparkles, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, Sparkles, ChevronLeft, ChevronRight, Mic, MicOff, Volume2, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { safeGetUserName } from '../utils/userUtils';
 import GuideAvatar from './GuideAvatar';
@@ -114,6 +114,12 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
     ]);
     const chatEndRef = useRef(null);
     const [dynamicKnowledge, setDynamicKnowledge] = useState(null);
+    const [isListening, setIsListening] = useState(false);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [showPoster, setShowPoster] = useState(false);
+    const [currentPoster, setCurrentPoster] = useState(null);
+    const recognitionRef = useRef(null);
+    const synthRef = window.speechSynthesis;
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
     useEffect(() => {
@@ -166,6 +172,24 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
             }
         };
 
+        // Initialize Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognitionRef.current = new SpeechRecognition();
+            recognitionRef.current.continuous = false;
+            recognitionRef.current.interimResults = false;
+            recognitionRef.current.lang = 'fr-FR';
+
+            recognitionRef.current.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                setChatInput(transcript);
+                setIsListening(false);
+            };
+
+            recognitionRef.current.onerror = () => setIsListening(false);
+            recognitionRef.current.onend = () => setIsListening(false);
+        }
+
         window.addEventListener('mysterious-ai-open', handleOpenChat);
         window.addEventListener('mysterious-ai-suggest', handleSuggest);
         return () => {
@@ -173,6 +197,26 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
             window.removeEventListener('mysterious-ai-suggest', handleSuggest);
         };
     }, []);
+
+    // Proactive Posters Logic
+    useEffect(() => {
+        if (!isOpen && currentView !== 'home') {
+            const interval = setInterval(() => {
+                if (Math.random() > 0.7 && !showPoster) {
+                    const tips = [
+                        { title: "💡 Astuce de Pro", text: "Le typage des variables évite 90% des bugs en production !" },
+                        { title: "🚀 Saviez-vous ?", text: "L'algorithmique est un art millénaire, bien plus vieux que l'électricité." },
+                        { title: "🎯 Objectif", text: "Maîtriser les boucles permet de déléguer les tâches répétitives à la machine." }
+                    ];
+                    const randomTip = tips[Math.floor(Math.random() * tips.length)];
+                    setCurrentPoster(randomTip);
+                    setShowPoster(true);
+                    setTimeout(() => setShowPoster(false), 8000);
+                }
+            }, 30000);
+            return () => clearInterval(interval);
+        }
+    }, [isOpen, currentView, showPoster]);
 
     useEffect(() => {
         if (user && currentView === 'dashboard') {
@@ -233,10 +277,19 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                     const data = await res.json();
                     if (data.completedLessons && data.completedLessons.length > 0) {
                         const lastLessonId = data.completedLessons[data.completedLessons.length - 1];
+                        // Map ID to readable name
+                        const lessonNames = {
+                            'algo_m_1_1': "Qu'est-ce qu'un Algorithme ?",
+                            'algo_m_2_1': "Les Variables",
+                            'algo_m_3_1': "Les Conditions",
+                            'algo_m_4_1': "Les Boucles"
+                        };
+                        const readableName = lessonNames[lastLessonId] || lastLessonId;
+
                         setChatHistory([
                             {
                                 role: 'assistant',
-                                text: `Bon retour, ${user.firstName} ! Content d'enfin te revoir. Tu en étais à ta leçon : "${lastLessonId}". Souhaites-tu reprendre ton ascension ?`,
+                                text: `Bon retour, ${user.firstName} ! Content d'enfin te revoir. Tu en étais à ta leçon : "${readableName}". Souhaites-tu reprendre ton ascension ?`,
                                 type: 'resume_prompt',
                                 lessonId: lastLessonId
                             }
@@ -311,6 +364,7 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
             if (res.ok) {
                 const data = await res.json();
                 setChatHistory(prev => [...prev, { role: 'assistant', text: data.response }]);
+                speakText(data.response);
             } else {
                 throw new Error("Erreur AI");
             }
@@ -318,6 +372,26 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
             setChatHistory(prev => [...prev, { role: 'assistant', text: "Mes circuits sont un peu fatigués... Réessaye dans un instant !" }]);
         }
         setIsThinking(false);
+    };
+
+    const toggleListening = () => {
+        if (!recognitionRef.current) return;
+        if (isListening) {
+            recognitionRef.current.stop();
+        } else {
+            recognitionRef.current.start();
+            setIsListening(true);
+        }
+    };
+
+    const speakText = (text) => {
+        if (!synthRef) return;
+        synthRef.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'fr-FR';
+        utterance.onstart = () => setIsSpeaking(true);
+        utterance.onend = () => setIsSpeaking(false);
+        synthRef.speak(utterance);
     };
 
     return (
@@ -486,16 +560,42 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                                     />
                                     <button
                                         type="button"
-                                        className="absolute left-2 top-1.5 p-2 text-gray-400 hover:text-blue-400 transition-colors"
-                                        title="Analyser une image"
+                                        onClick={toggleListening}
+                                        className={`absolute left-2 top-1.5 p-2 transition-colors ${isListening ? 'text-red-500 animate-pulse' : 'text-gray-400 hover:text-blue-400'}`}
+                                        title="Utiliser la recherche vocale"
                                     >
-                                        <Camera size={18} />
+                                        {isListening ? <MicOff size={18} /> : <Mic size={18} />}
                                     </button>
                                     <button type="submit" className="absolute right-2 top-1.5 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition">
                                         <ChevronRight size={18} />
                                     </button>
                                 </div>
                             </form>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Proactive Poster Markup */}
+                <AnimatePresence>
+                    {showPoster && currentPoster && (
+                        <motion.div
+                            initial={{ opacity: 0, x: 100, scale: 0.9 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            exit={{ opacity: 0, x: 100, scale: 0.9 }}
+                            className="fixed bottom-32 right-8 w-64 bg-slate-800 border border-blue-500/50 rounded-2xl p-4 shadow-2xl z-[100] backdrop-blur-md"
+                        >
+                            <div className="flex justify-between items-start mb-2">
+                                <div className="flex items-center gap-2 text-blue-400">
+                                    <Info size={16} />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">{currentPoster.title}</span>
+                                </div>
+                                <button onClick={() => setShowPoster(false)} className="text-slate-500 hover:text-white">
+                                    <X size={14} />
+                                </button>
+                            </div>
+                            <p className="text-xs text-slate-200 leading-relaxed">
+                                {currentPoster.text}
+                            </p>
                         </motion.div>
                     )}
                 </AnimatePresence>

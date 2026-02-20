@@ -868,7 +868,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                   </h3>
                   <p className="text-gray-400">
                     {deleteStep === 1
-                      ? 'Êtes-vous absolument sûr de vouloir supprimer votre compte "Mysterious Learner" ?'
+                      ? 'Êtes-vous absolument sûr de vouloir supprimer votre compte "Mysterious Classroom" ?'
                       : 'Toutes vos progressions, favoris et données personnelles seront supprimés pour toujours.'}
                   </p>
                 </div>

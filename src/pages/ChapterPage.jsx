@@ -85,11 +85,11 @@ const ChapterPage = ({ user, API_URL, setToast }) => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white relative flex flex-col">
+        <div className="min-h-screen course-theme-light bg-slate-50 text-slate-900 relative flex flex-col transition-colors duration-500">
             {chapterCompleted && <Confetti width={windowDimensions.width} height={windowDimensions.height} recycle={false} numberOfPieces={500} />}
 
             {/* Navbar Minimaliste */}
-            <div className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800 px-4 py-4 md:px-8 flex items-center justify-between">
+            <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-4 md:px-8 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => navigate(`/course/${courseId}`)}
@@ -139,7 +139,7 @@ const ChapterPage = ({ user, API_URL, setToast }) => {
                             key="completed"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="text-center space-y-6 bg-slate-900 border border-slate-800 p-8 md:p-12 rounded-3xl"
+                            className="text-center space-y-6 bg-white border border-slate-200 p-8 md:p-12 rounded-3xl shadow-xl"
                         >
                             <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full flex items-center justify-center mx-auto shadow-xl shadow-yellow-500/20 mb-6">
                                 <Trophy className="w-10 h-10 text-white" />

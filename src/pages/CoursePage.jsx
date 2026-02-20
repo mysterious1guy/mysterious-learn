@@ -69,7 +69,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
+        <div className="min-h-screen course-theme-light bg-slate-50 transition-colors duration-500">
             <div className="max-w-6xl mx-auto p-6 pt-24">
                 {/* Header */}
                 <button

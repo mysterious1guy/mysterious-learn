@@ -116,32 +116,40 @@ Dès la prochaine leçon, nous allons plonger dans le concept de "Variables", qu
                         professorSpeech: "Imagine que ton cerveau est comme une étagère vide. Pour ne rien oublier, tu as besoin de boîtes. Ces boîtes, ce sont nos variables !",
                         duration: '15 min',
                         content: `
-# 📦 Les Variables
+# 📦 Les Variables : Ton Premier Super-Pouvoir
 
-L'ordinateur est un poisson rouge. Si vous ne mettez pas une information dans une boîte clairement nommée, il l'oublie à la seconde suivante.
+Imagine que ton ordinateur est un immense entrepôt vide. Pour ne rien perdre, il utilise des **boîtes magiques**. Ces boîtes, ce sont les **Variables**.
 
-Ces "boîtes", on les appelle des **Variables**. 
+## Pourquoi "Magique" ?
+Parce qu'une variable n'est pas juste un espace de stockage ; c'est un concept avec 3 règles d'or :
 
-## Les 3 règles d'une variable :
-Chaque variable que vous créez possède obligatoirement :
-1. **Un Nom (Identifiant)** : Pour pouvoir la rappeler plus tard. (ex: \`scoreJoueur\`).
-2. **Une Valeur** : Son contenu actuel. (ex: \`42\`).
-3. **Un Type** : L'étiquette sur la boîte qui dit "Ici, on ne stocke que des nombres" ou "Ici, on ne stocke que du texte".
+1.  **Une Étiquette (Le Nom)** : Pour retrouver ta boîte au milieu de milliards d'autres. 
+    *(Ex: \`pseudoJoueur\`, \`nombreDeVies\`)*
+2.  **Une Valeur (Le Contenu)** : Ce qu'il y a à l'intérieur à un instant T.
+    *(Ex: \`"Héros"\`, \`3\`)*
+3.  **Un Format (Le Type)** : On ne met pas de la soupe dans une boîte à chaussures.
+    *(Ex: Nombre entier, Texte, etc.)*
 
-> **Pourquoi "Variable" ?** Parce que son contenu peut *varier* (changer) au cours du temps. Si je gagne un point, la boîte \`scoreJoueur\` qui contenait 42 va se vider et je vais mettre 43 à la place.
+> [!TIP]
+> **Le mot "Variable" vient du fait que le contenu peut changer.** 
+> Si tu perds une vie, on ouvre la boîte \`nombreDeVies\`, on retire \`3\` et on met \`2\` à la place. C'est tout !
 
-## L'Affectation (L'Opération de Base)
-L'action Ranger une valeur dans une boîte s'appelle l'**affectation**. On utilise souvent le symbole \`<-\` ou \`=\`.
+---
+
+## L'Affectation : L'Action de Ranger
+Déposer une valeur dans une boîte s'appelle l'**affectation**. En algorithmique, on utilise une flèche \`<-\` pour montrer que la valeur "entre" dans la boîte.
 
 \`\`\`
 VARIABLES
     score : Entier
 
 DÉBUT
-    score <- 10  // Je mets 10 dans la boîte score
-    score <- 20  // J'écrase le 10, la boîte contient maintenant 20
+    score <- 0      // On initialise à zéro
+    score <- 100    // On écrase le zéro avec 100
 FIN
 \`\`\`
+
+*Simple, non ? Sans variables, l'ordinateur oublierait tout en moins d'une seconde. C'est la base de toute l'informatique !*
             `
                     },
                     {

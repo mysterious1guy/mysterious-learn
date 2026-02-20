@@ -25,7 +25,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [config, setConfig] = useState(null);
+  const [config, setConfig] = useState({ creatorName: '', siteName: '', maintenanceMode: false });
   const [showAIBrainModal, setShowAIBrainModal] = useState(false);
   const [aiBrainFormData, setAIBrainFormData] = useState({ title: '', content: '', category: 'general', tags: '', source: '' });
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
@@ -42,27 +42,45 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
   const fetchData = async () => {
     setLoading(true);
+    console.log('AdminPage: Fetching initial data...');
     try {
       const headers = { Authorization: `Bearer ${user.token}` };
-      const [usersRes, statsRes, coursesRes, notificationsRes, configRes] = await Promise.all([
-        fetch(`${API_URL}/admin/users`, { headers }),
-        fetch(`${API_URL}/admin/stats`, { headers }),
-        fetch(`${API_URL}/courses`, { headers }),
-        fetch(`${API_URL}/admin/notifications`, { headers }),
-        fetch(`${API_URL}/site-config`, { headers })
-      ]);
+      const endpoints = [
+        { key: 'users', url: `${API_URL}/admin/users` },
+        { key: 'stats', url: `${API_URL}/admin/stats` },
+        { key: 'courses', url: `${API_URL}/courses` },
+        { key: 'notifications', url: `${API_URL}/admin/notifications` },
+        { key: 'config', url: `${API_URL}/site-config` },
+        { key: 'ai', url: `${API_URL}/ai/knowledge` }
+      ];
 
-      if (usersRes.ok) setUsers(await usersRes.json());
-      if (statsRes.ok) setStats(await statsRes.json());
-      if (coursesRes.ok) setCourses(await coursesRes.json());
-      if (notificationsRes.ok) setNotifications(await notificationsRes.json());
-      if (configRes.ok) setConfig(await configRes.json());
+      const results = await Promise.allSettled(
+        endpoints.map(e => fetch(e.url, { headers }))
+      );
 
-      // Fetch AI Knowledge
-      const aiRes = await fetch(`${API_URL}/ai/knowledge`, { headers });
-      if (aiRes.ok) setAiKnowledge(await aiRes.json());
+      // Process results individually
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        const endpoint = endpoints[i];
+
+        if (result.status === 'fulfilled' && result.value.ok) {
+          const data = await result.value.json();
+          switch (endpoint.key) {
+            case 'users': setUsers(data); break;
+            case 'stats': setStats(data); break;
+            case 'courses': setCourses(data); break;
+            case 'notifications': setNotifications(data); break;
+            case 'config': setConfig(data); break;
+            case 'ai': setAiKnowledge(data); break;
+            default: break;
+          }
+        } else {
+          console.warn(`AdminPage: Failed to fetch ${endpoint.key}`, result.reason || 'Status not OK');
+        }
+      }
     } catch (err) {
-      setToast({ message: 'Erreur de connexion au serveur', type: 'error' });
+      console.error('AdminPage: Critical fetch error', err);
+      setToast({ message: 'Erreur de connexion partielle au serveur', type: 'warning' });
     } finally {
       setLoading(false);
     }

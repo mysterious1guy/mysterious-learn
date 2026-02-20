@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, AlertCircle, Play, ChevronRight } from 'lucide-react';
+import { CheckCircle, AlertCircle, Play, ChevronRight, Terminal } from 'lucide-react';
+import TerminalWindow from './TerminalWindow';
 
 const InteractiveModule = ({ moduleData, onComplete }) => {
     const [completed, setCompleted] = useState(false);
@@ -9,11 +10,17 @@ const InteractiveModule = ({ moduleData, onComplete }) => {
     if (moduleData.type === 'text') {
         return (
             <div className="space-y-6">
-                <h3 className="text-2xl font-bold text-white">{moduleData.title}</h3>
-                <div
-                    className="prose prose-invert prose-blue max-w-none text-slate-300 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: moduleData.content.replace(/\n/g, '<br/>') }}
-                />
+                <h3 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <Terminal className="text-blue-500" size={24} />
+                    {moduleData.title}
+                </h3>
+
+                <TerminalWindow title="Théorie et Concepts">
+                    <div
+                        className="prose prose-slate max-w-none text-slate-300 leading-relaxed font-mono text-sm"
+                        dangerouslySetInnerHTML={{ __html: moduleData.content.replace(/\n/g, '<br/>') }}
+                    />
+                </TerminalWindow>
 
                 {!completed ? (
                     <button
@@ -159,17 +166,14 @@ const InteractiveModule = ({ moduleData, onComplete }) => {
                     <p className="text-slate-300">{moduleData.description}</p>
                 </div>
 
-                <div className="rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
-                    <div className="px-4 py-2 border-b border-slate-800 flex justify-between items-center bg-slate-900">
-                        <span className="text-xs font-mono text-slate-400 uppercase">{moduleData.language || 'javascript'}</span>
-                    </div>
+                <TerminalWindow title={`${moduleData.language || 'javascript'} - Practice Mode`} showCursor={false}>
                     <textarea
                         value={code}
                         onChange={(e) => setCode(e.target.value)}
-                        className="w-full h-48 bg-transparent text-slate-300 font-mono p-4 focus:outline-none resize-none"
+                        className="w-full h-48 bg-transparent text-blue-400 font-mono p-2 focus:outline-none resize-none"
                         spellCheck="false"
                     />
-                </div>
+                </TerminalWindow>
 
                 <div className="flex items-center gap-4">
                     <button

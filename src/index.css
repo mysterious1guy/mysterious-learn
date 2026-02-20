@@ -11,6 +11,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   width: 100%;
+  font-size: 15px; /* Légère réduction pour Windows */
+}
+
+@media (min-width: 1024px) {
+  body {
+    font-size: 14px; /* Adaptation plus fine sur grand écran */
+  }
 }
 
 /* Premium Brand Font */
@@ -24,7 +31,7 @@ body {
 .brand-font-secondary {
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .text-glow-blue {
@@ -342,4 +349,65 @@ body {
 
 .animation-delay-400 {
   animation-delay: 400ms;
+}
+
+/* --- THEME TERMINAL --- */
+.terminal-window {
+  background: #0d0d0d;
+  border-radius: 12px;
+  border: 1px solid #333;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.terminal-header {
+  background: #1a1a1a;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #333;
+}
+
+.terminal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminal-content {
+  padding: 20px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: #d1d1d1;
+  line-height: 1.6;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.2em;
+  background: #60a5fa;
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+/* Thème Cours (Blanc Grisâtre) */
+.course-theme-light {
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+
+.course-theme-light .text-white {
+  color: #1e293b !important;
+}
+
+.course-theme-light .text-gray-400,
+.course-theme-light .text-slate-400 {
+  color: #64748b !important;
+}
+
+.course-theme-light .bg-slate-950,
+.course-theme-light .bg-gray-950 {
+  background-color: #f1f5f9 !important;
 }

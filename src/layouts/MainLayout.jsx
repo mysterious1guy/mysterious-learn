@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import MobileMenu from '../components/MobileMenu';
@@ -11,6 +11,7 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showUsageMonitor, setShowUsageMonitor] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   const pathParts = location.pathname.split('/');
@@ -32,7 +33,7 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
         setShowUsageMonitor(true);
         break;
       case 'OPEN_COURSE':
-        console.log('Opening course:', data);
+        navigate(`/course/${data}`);
         break;
       default:
         break;
@@ -58,13 +59,15 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
         onLogout={onLogout}
       />
 
-      <AIAssistant
-        user={user}
-        currentView={currentView}
-        courseId={courseId}
-        onAction={handleAIAction}
-        isAdmin={user?.email === 'mouhamedfall@esp.sn' || user?.role === 'admin'}
-      />
+      {location.pathname !== '/' && (
+        <AIAssistant
+          user={user}
+          currentView={currentView}
+          courseId={courseId}
+          onAction={handleAIAction}
+          isAdmin={user?.email === 'mouhamedfall@esp.sn' || user?.role === 'admin'}
+        />
+      )}
 
       <main className="relative z-10 pt-16">
         <Outlet />

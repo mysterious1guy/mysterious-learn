@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, BarChart3, Crown } from 'lucide-react';
 import MysteriousGeometricLogo from '../MysteriousGeometricLogo';
 import SearchBar from './SearchBar';
 import NotificationBell from './NotificationBell';
 
 const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) => {
+  const location = useLocation();
+  const isCoursePage = location.pathname.startsWith('/course/') || location.pathname.startsWith('/chapter/');
   return (
     <nav className="fixed top-0 left-0 right-0 p-2 sm:p-4 border-b border-gray-800 bg-gray-900/80 backdrop-blur-md z-40">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
@@ -25,7 +27,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
         </div>
 
         <div className="flex-1 max-w-md mx-4 hidden md:block">
-          {user && <SearchBar onSearch={onSearch} />}
+          {user && !isCoursePage && <SearchBar onSearch={onSearch} />}
         </div>
 
         <div className="flex items-center gap-1 sm:gap-4 ml-auto">

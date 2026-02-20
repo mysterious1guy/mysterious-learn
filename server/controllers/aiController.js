@@ -125,8 +125,19 @@ const aiChat = async (req, res) => {
 
         res.json({ response: responseText });
     } catch (error) {
-        console.error("Erreur Gemini:", error);
-        res.status(500).json({ message: 'Le cerveau du Professeur est momentanément indisponible.' });
+        console.error("CRITICAL Gemini Error:", {
+            message: error.message,
+            stack: error.stack,
+            userName: user?.name,
+            courseId
+        });
+
+        // Return a more descriptive error message if it's an API key issue
+        if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('403')) {
+            return res.status(500).json({ message: "Erreur de configuration du cerveau (Clé API). Contactez l'administrateur." });
+        }
+
+        res.status(500).json({ message: 'Le cerveau du Professeur est momentanément saturé. Réessaye dans quelques secondes.' });
     }
 };
 
