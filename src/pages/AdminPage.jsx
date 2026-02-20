@@ -157,13 +157,13 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
   const handleUpdateRole = async (userId, newRole) => {
     try {
-      const res = await fetch(`${API_URL}/admin/users/role`, {
+      const res = await fetch(`${API_URL}/admin/users/${userId}/role`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`
         },
-        body: JSON.stringify({ userId, role: newRole })
+        body: JSON.stringify({ role: newRole })
       });
       if (res.ok) {
         setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
