@@ -13,6 +13,7 @@ const HomePage = ({ API_URL }) => {
     const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0 });
     const [courseStats, setCourseStats] = useState({});
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [config, setConfig] = useState(null);
 
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -40,10 +41,23 @@ const HomePage = ({ API_URL }) => {
                     setCourseStats(cStatsData);
                 }
             } catch (err) {
-                console.error('Erreur fetch stats:', err);
+                console.error('Erreur fetch stats/config:', err);
             }
         };
         fetchStats();
+
+        const fetchConfig = async () => {
+            try {
+                const res = await fetch(`${API_URL}/site-config`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setConfig(data);
+                }
+            } catch (err) {
+                console.error('Erreur fetch site config:', err);
+            }
+        };
+        fetchConfig();
     }, [API_URL]);
 
     // Extracting courses to showcase
@@ -184,18 +198,27 @@ const HomePage = ({ API_URL }) => {
                         className="bg-slate-900/80 backdrop-blur-2xl border border-slate-800 rounded-[3rem] p-10 md:p-16 text-center space-y-10 relative"
                     >
                         <div className="absolute -top-12 left-1/2 -translate-x-1/2">
-                            <div className="w-24 h-24 p-1.5 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full shadow-2xl">
-                                <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center">
-                                    <span className="text-3xl font-black bg-gradient-to-tr from-blue-400 to-purple-400 bg-clip-text text-transparent">MF</span>
+                            <div className="w-24 h-24 p-1.5 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full shadow-2xl overflow-hidden">
+                                <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center overflow-hidden">
+                                    {config?.creatorAvatar && config.creatorAvatar.length > 2 ? (
+                                        <img src={config.creatorAvatar} alt="Créateur" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span className="text-3xl font-black bg-gradient-to-tr from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                                            {config?.creatorAvatar || 'MF'}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
                         <div className="space-y-4">
                             <h3 className="text-xs font-black uppercase tracking-[0.5em] text-blue-400">LE CRÉATEUR</h3>
-                            <h2 className="text-4xl md:text-6xl font-black text-white">Mouhamed FALL</h2>
-                            <p className="text-slate-400 text-lg md:text-xl font-medium max-w-xl mx-auto">
-                                "Je crois en un monde où la technologie est accessible à tous. Mysterious Classroom est ma contribution pour rendre l'apprentissage du code gratuit, fun et interactif."
+                            <h2 className="text-4xl md:text-6xl font-black text-white">{config?.creatorName || 'Mouhamed FALL'}</h2>
+                            <p className="text-slate-400 text-lg md:text-xl font-medium max-w-xl mx-auto italic">
+                                "{config?.creatorBio && config.creatorBio.length > 0
+                                    ? config.creatorBio[config.creatorBio.length - 1]
+                                    : "Je crois en un monde où la technologie est accessible à tous. Mysterious Classroom est ma contribution pour rendre l'apprentissage du code gratuit, fun et interactif."
+                                }"
                             </p>
                         </div>
 
