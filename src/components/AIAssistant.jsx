@@ -118,6 +118,8 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [showPoster, setShowPoster] = useState(false);
     const [currentPoster, setCurrentPoster] = useState(null);
+    const [hudPrompts, setHudPrompts] = useState(null);
+    const [hudMurmur, setHudMurmur] = useState(null);
     const recognitionRef = useRef(null);
     const synthRef = window.speechSynthesis;
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -161,14 +163,24 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
 
         const handleSuggest = (e) => {
             if (e.detail?.text) {
-                setChatHistory(prev => [...prev, {
-                    role: 'assistant',
-                    text: e.detail.text,
-                    type: e.detail.type || 'standard'
-                }]);
-                // We don't necessarily open the chat here, just add to history
-                // Unless the detail says so
-                if (e.detail?.forceOpen) setIsOpen(true);
+                if (e.detail?.type === 'murmur') {
+                    setHudMurmur(e.detail.text);
+                    setTimeout(() => setHudMurmur(null), 8000);
+                } else {
+                    setChatHistory(prev => [...prev, {
+                        role: 'assistant',
+                        text: e.detail.text,
+                        type: e.detail.type || 'standard'
+                    }]);
+                    if (e.detail?.forceOpen) setIsOpen(true);
+                }
+            }
+        };
+
+        const handleMurmur = (e) => {
+            if (e.detail?.text) {
+                setHudMurmur(e.detail.text);
+                setTimeout(() => setHudMurmur(null), 8000);
             }
         };
 
@@ -192,9 +204,11 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
 
         window.addEventListener('mysterious-ai-open', handleOpenChat);
         window.addEventListener('mysterious-ai-suggest', handleSuggest);
+        window.addEventListener('mysterious-ai-murmur', handleMurmur);
         return () => {
             window.removeEventListener('mysterious-ai-open', handleOpenChat);
             window.removeEventListener('mysterious-ai-suggest', handleSuggest);
+            window.removeEventListener('mysterious-ai-murmur', handleMurmur);
         };
     }, []);
 
@@ -277,7 +291,6 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                     const data = await res.json();
                     if (data.completedLessons && data.completedLessons.length > 0) {
                         const lastLessonId = data.completedLessons[data.completedLessons.length - 1];
-                        // Map ID to readable name
                         const lessonNames = {
                             'algo_m_1_1': "Qu'est-ce qu'un Algorithme ?",
                             'algo_m_1_2': "Quiz : Nature de l'Algo",
@@ -301,26 +314,23 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                         };
                         const readableName = lessonNames[lastLessonId] || lastLessonId;
 
-                        setChatHistory([
-                            {
-                                role: 'assistant',
-                                text: `Bon retour, ${user.firstName} ! Content d'enfin te revoir. Tu en étais à ta leçon : "${readableName}". Souhaites-tu reprendre ton ascension ?`,
-                                type: 'resume_prompt',
-                                lessonId: lastLessonId,
-                                id: Date.now()
-                            }
-                        ]);
-                        setIsOpen(true);
+                        setHudPrompts({
+                            title: `Bon retour, ${user.firstName} !`,
+                            text: `Contenu d'enfin te revoir. Tu en étais à ta leçon : "${readableName}". Souhaites-tu reprendre ton ascension ?`,
+                            actions: [
+                                { label: "🚀 Reprendre", type: 'primary', onClick: () => { if (onAction) onAction('OPEN_COURSE', 'algo'); setHudPrompts(null); } },
+                                { label: "Plus tard", type: 'secondary', onClick: () => setHudPrompts(null) }
+                            ]
+                        });
                     } else {
-                        setChatHistory([
-                            {
-                                role: 'assistant',
-                                text: `Bonjour ${user.firstName} ! Tu n'as pas encore commencé de cours. Prêt à lancer ton premier algorithme aujourd'hui ?`,
-                                type: 'start_prompt',
-                                id: Date.now()
-                            }
-                        ]);
-                        setIsOpen(true);
+                        setHudPrompts({
+                            title: `Bonjour ${user.firstName} !`,
+                            text: `Tu n'as pas encore commencé de cours. Prêt à lancer ton premier algorithme aujourd'hui ?`,
+                            actions: [
+                                { label: "🔥 Commencer l'Algorithme", type: 'primary', onClick: () => { if (onAction) onAction('OPEN_COURSE', 'algo'); setHudPrompts(null); } },
+                                { label: "Plus tard", type: 'secondary', onClick: () => setHudPrompts(null) }
+                            ]
+                        });
                     }
                 }
             } catch (error) {
@@ -389,7 +399,19 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                 throw new Error("Erreur AI");
             }
         } catch (error) {
-            setChatHistory(prev => [...prev, { role: 'assistant', text: "Mes circuits sont un peu fatigués... Réessaye dans un instant !" }]);
+            // Smart Local Fallback Knowledge
+            const normalized = normalizeInput(originalMessage);
+            let fallbackResponse = "Mes circuits sont un peu fatigués... Réessaye dans un instant !";
+
+            // Keyword based fallback
+            for (const category in KNOWLEDGE_BASE) {
+                if (KNOWLEDGE_BASE[category].keywords.some(k => normalized.includes(k))) {
+                    fallbackResponse = KNOWLEDGE_BASE[category].response;
+                    break;
+                }
+            }
+            setChatHistory(prev => [...prev, { role: 'assistant', text: fallbackResponse }]);
+            speakText(fallbackResponse);
         }
         setIsThinking(false);
     };
@@ -644,6 +666,56 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                         <div className="absolute top-0 right-0 w-4 h-4 bg-blue-500 rounded-full border-2 border-[#0f172a] animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
                     )}
                 </motion.button>
+
+                {/* --- AI HUD OVERLAY --- */}
+                <div className="ai-hud-container">
+                    <AnimatePresence>
+                        {hudMurmur && (
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                className="ai-hud-bubble p-4 rounded-2xl border-l-4 border-blue-500 animate-hud-in"
+                            >
+                                <p className="text-xs text-blue-100/90 italic leading-relaxed">
+                                    <Sparkles size={12} className="inline mr-2 text-blue-400" />
+                                    {hudMurmur}
+                                </p>
+                            </motion.div>
+                        )}
+
+                        {hudPrompts && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                className="ai-hud-bubble p-6 rounded-[2rem] shadow-2xl animate-hud-in max-w-sm"
+                            >
+                                <h4 className="text-white font-black mb-2 text-sm uppercase tracking-widest flex items-center gap-2">
+                                    <Bot size={16} className="text-blue-400" />
+                                    {hudPrompts.title}
+                                </h4>
+                                <p className="text-gray-300 text-xs mb-6 leading-relaxed">
+                                    {hudPrompts.text}
+                                </p>
+                                <div className="flex gap-2">
+                                    {hudPrompts.actions.map((action, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={action.onClick}
+                                            className={`flex-1 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all ${action.type === 'primary'
+                                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 hover:bg-blue-500'
+                                                : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                                                }`}
+                                        >
+                                            {action.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
             </div>
         </>
     );

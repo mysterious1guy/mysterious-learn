@@ -72,7 +72,13 @@ const TheoryViewer = ({ title, content, onComplete }) => {
             </p>
           </div>
           <button
-            onClick={() => onComplete(true)}
+            onClick={() => {
+              const event = new CustomEvent('mysterious-ai-murmur', {
+                detail: { text: "Bravo ! Passons à la suite. La curiosité est ton meilleur atout." }
+              });
+              window.dispatchEvent(event);
+              onComplete(true);
+            }}
             className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 active:scale-95"
           >
             J'ai compris !
@@ -93,6 +99,12 @@ const QuizViewer = ({ data, onComplete }) => {
     const correct = data.options.find(opt => opt.id === selected)?.correct;
     onComplete(correct);
     setShowExplanation(true);
+
+    // AI Murmur on Quiz result
+    const event = new CustomEvent('mysterious-ai-murmur', {
+      detail: { text: correct ? "Excellent ! Ton raisonnement est parfaitement logique." : "Pas tout à fait... Mais comme on dit : 'On ne perd jamais, soit on gagne, soit on apprend !'" }
+    });
+    window.dispatchEvent(event);
   };
 
   return (
