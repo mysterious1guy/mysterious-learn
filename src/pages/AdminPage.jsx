@@ -5,7 +5,8 @@ import {
   Users, Mail, Bell, BookOpen, Settings, Crown, Eye, Edit, Trash2, Send,
   BarChart3, UserPlus, UserMinus, Camera, Upload, AlertTriangle, TrendingUp,
   Activity, LayoutDashboard, Database, Shield, LogOut, Search, Filter,
-  CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone, Save
+  CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone, Save,
+  Sparkles
 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 
