@@ -134,6 +134,8 @@ En programmation, on ne peut rien faire sans stocker des données temporairement
 
 > [!CAUTION]
 > On ne peut mettre qu'un seul objet à la fois dans une variable. Si vous mettez une nouvelle valeur, l'ancienne est écrasée à jamais !
+
+[VISUALIZER] {"codeStr": "age <- 25\nnom <- \\"Alice\\"\nage <- age + 1", "steps": [{"line": 1, "state": {"age": 25}, "explanation": "On crée une boîte nommée 'age' et on y range la valeur 25."}, {"line": 2, "state": {"age": 25, "nom": "\\"Alice\\""}, "explanation": "On crée une boîte 'nom' pour stocker du texte."}, {"line": 3, "state": {"age": 26, "nom": "\\"Alice\\""}, "explanation": "On prend l'ancienne valeur de 'age' (25), on ajoute 1, et on range la nouvelle valeur (26) dans la même boîte."}]}
 `
                     },
                     {
@@ -251,6 +253,8 @@ FINSI
 
 > [!NOTE]
 > La condition doit toujours avoir un résultat **Booléen** (Vrai ou Faux).
+
+[VISUALIZER] {"codeStr": "age <- 16\nSI age >= 18 ALORS\n    acces <- VRAI\nSINON\n    acces <- FAUX\nFINSI", "steps": [{"line": 1, "state": {"age": 16}, "explanation": "L'âge est initialisé à 16."}, {"line": 2, "state": {"age": 16}, "explanation": "L'ordinateur évalue la condition : 16 est-il supérieur ou égal à 18 ? C'est FAUX."}, {"line": 4, "state": {"age": 16}, "explanation": "Puisque c'est FAUX, on saute directement au bloc SINON."}, {"line": 5, "state": {"age": 16, "acces": false}, "explanation": "La variable 'acces' reçoit la valeur booléenne FAUX."}]}
 `
                     }
                 ]
@@ -287,6 +291,8 @@ FINPOUR
 
 > [!IMPORTANT]
 > **i** est une variable de contrôle (le compteur) qui s'incrémente automatiquement à chaque tour.
+
+[VISUALIZER] {"codeStr": "somme <- 0\nPOUR i ALLANT DE 1 A 3\n    somme <- somme + 10\nFINPOUR", "steps": [{"line": 1, "state": {"somme": 0}, "explanation": "On initialise l'accumulateur 'somme' à 0."}, {"line": 2, "state": {"somme": 0, "i": 1}, "explanation": "La boucle démarre. Le compteur 'i' prend la valeur 1."}, {"line": 3, "state": {"somme": 10, "i": 1}, "explanation": "On ajoute 10 à la somme. (0 + 10 = 10)"}, {"line": 2, "state": {"somme": 10, "i": 2}, "explanation": "Fin du premier tour. 'i' s'incrémente et passe à 2. C'est inférieur ou égal à 3, on continue."}, {"line": 3, "state": {"somme": 20, "i": 2}, "explanation": "On ajoute 10 à la somme. (10 + 10 = 20)"}, {"line": 2, "state": {"somme": 20, "i": 3}, "explanation": "'i' passe à 3. C'est le dernier tour !"}, {"line": 3, "state": {"somme": 30, "i": 3}, "explanation": "On ajoute encore 10. (20 + 10 = 30)"}, {"line": 4, "state": {"somme": 30, "i": 3}, "explanation": "La boucle est terminée car l'itération maximale a été atteinte."}]}
 `
                     }
                 ]

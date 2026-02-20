@@ -9,8 +9,9 @@ import {
   TrendingUp, Clock, Filter, Search, Repeat, Zap, Sparkles
 } from 'lucide-react';
 
-import { algoCourseData as courseData } from './algoCourseContent';
 import CourseClassroom from '../../components/CourseClassroom';
+import LogicVisualizer from '../../components/LogicVisualizer';
+import { algoCourseData as courseData } from './algoCourseContent';
 
 // =====================================================================
 // COMPOSANTS INTERACTIFS
@@ -117,6 +118,17 @@ const TheoryViewer = ({ title, content, onComplete }) => {
             </div>
           </div>
         );
+      }
+
+      if (trimmed.startsWith('[VISUALIZER]')) {
+        try {
+          const jsonStr = trimmed.replace('[VISUALIZER]', '').trim();
+          const visualizerData = JSON.parse(jsonStr);
+          return <LogicVisualizer key={idx} {...visualizerData} />;
+        } catch (e) {
+          console.error("Invalid Visualizer JSON", e);
+          return null;
+        }
       }
 
       return <p key={idx} className="text-slate-700 leading-relaxed mb-6 text-base md:text-lg font-medium">{renderRichText(line)}</p>;
