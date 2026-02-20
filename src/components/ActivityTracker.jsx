@@ -16,7 +16,7 @@ const ActivityTracker = ({ user, API_URL }) => {
 
   const startTracking = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/activity/login`, {
+      const response = await fetch(`${API_URL}/activity/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -29,7 +29,7 @@ const ActivityTracker = ({ user, API_URL }) => {
         setSessionId(data.sessionId);
         setStartTime(Date.now());
         setIsTracking(true);
-        
+
         // Stocker l'ID de session pour le tracking
         localStorage.setItem('activitySessionId', data.sessionId);
       }
@@ -42,9 +42,9 @@ const ActivityTracker = ({ user, API_URL }) => {
     if (!sessionId || !isTracking) return;
 
     setCurrentPage(page);
-    
+
     // Envoyer l'activité de page au backend
-    fetch(`${API_URL}/api/activity/track`, {
+    fetch(`${API_URL}/activity/track`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -63,7 +63,7 @@ const ActivityTracker = ({ user, API_URL }) => {
   const trackInteraction = (action, target, metadata = {}) => {
     if (!sessionId || !isTracking) return;
 
-    fetch(`${API_URL}/api/activity/track`, {
+    fetch(`${API_URL}/activity/track`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -83,7 +83,7 @@ const ActivityTracker = ({ user, API_URL }) => {
   const trackCourseProgress = (courseId, exerciseId, timeSpent, score, completed) => {
     if (!sessionId || !isTracking) return;
 
-    fetch(`${API_URL}/api/activity/course-progress`, {
+    fetch(`${API_URL}/activity/course-progress`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -105,7 +105,7 @@ const ActivityTracker = ({ user, API_URL }) => {
       const endTime = Date.now();
       const duration = Math.round((endTime - startTime) / (1000 * 60)); // en minutes
 
-      await fetch(`${API_URL}/api/activity/logout`, {
+      await fetch(`${API_URL}/activity/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -132,7 +132,7 @@ const ActivityTracker = ({ user, API_URL }) => {
 
     // Écouter les changements de route
     window.addEventListener('popstate', handleRouteChange);
-    
+
     // Tracker la page initiale
     handleRouteChange();
 
@@ -166,7 +166,7 @@ const ActivityTracker = ({ user, API_URL }) => {
   // Tracker le scroll
   useEffect(() => {
     let scrollTimeout;
-    
+
     const handleScroll = () => {
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {

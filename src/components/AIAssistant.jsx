@@ -136,6 +136,10 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         }
     }, [courseId, API_URL]);
 
+    const scrollToBottom = () => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
     useEffect(() => {
         scrollToBottom();
     }, [chatHistory, isThinking]);
