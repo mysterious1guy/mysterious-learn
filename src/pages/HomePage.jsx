@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, Users, Star, BookOpen, Sparkles, Zap, Code2, Heart, Mail, ExternalLink, Github, Twitter, Linkedin } from 'lucide-react';
 import AnimatedLogo from '../components/AnimatedLogo';
@@ -8,8 +9,24 @@ import CourseCarousel from '../components/CourseCarousel';
 // Use local data for showcasing on landing
 import { coursesData } from '../courses/data';
 
-const HomePage = () => {
+const HomePage = ({ API_URL }) => {
     const navigate = useNavigate();
+    const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0 });
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await fetch(`${API_URL}/auth/stats`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setStats(data);
+                }
+            } catch (err) {
+                console.error('Erreur fetch stats:', err);
+            }
+        };
+        fetchStats();
+    }, [API_URL]);
 
     // Extracting courses to showcase
     const featuredCourses = [];
@@ -78,6 +95,29 @@ const HomePage = () => {
                                 COMMENCER MAINTENANT
                                 <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
                             </button>
+                        </motion.div>
+
+                        {/* Real Stats Bar */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.6 }}
+                            className="flex justify-center gap-12 pt-8"
+                        >
+                            <div className="text-center group">
+                                <p className="text-4xl font-black text-white group-hover:text-blue-400 transition-colors">{stats.totalUsers}+</p>
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Membres</p>
+                            </div>
+                            <div className="w-px h-12 bg-slate-800 hidden md:block" />
+                            <div className="text-center group">
+                                <p className="text-4xl font-black text-white group-hover:text-purple-400 transition-colors">{stats.activeUsers}</p>
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Actifs</p>
+                            </div>
+                            <div className="w-px h-12 bg-slate-800 hidden md:block" />
+                            <div className="text-center group">
+                                <p className="text-4xl font-black text-white group-hover:text-pink-400 transition-colors">25+</p>
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Cours gratuits</p>
+                            </div>
                         </motion.div>
                     </div>
                 </div>

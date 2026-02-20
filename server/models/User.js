@@ -102,7 +102,25 @@ const userSchema = new mongoose.Schema(
     completedModules: {
       type: [String],
       default: [],
-    }
+    },
+    // Email Change Verification
+    pendingEmail: {
+      type: String,
+      lowercase: true,
+      validate: [validator.isEmail, 'Email invalide'],
+    },
+    emailChangeCode: {
+      type: String,
+      select: false,
+    },
+    emailChangeCodeExpire: {
+      type: Date,
+      select: false,
+    },
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,

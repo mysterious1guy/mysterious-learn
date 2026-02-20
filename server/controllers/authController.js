@@ -46,6 +46,31 @@ const sendVerificationEmail = async (email, name, code) => {
   });
 };
 
+// Envoyer code de changement d'email
+const sendEmailChangeCode = async (email, name, code) => {
+  const html = `
+    <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; padding: 40px; border-radius: 16px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="font-size: 28px; background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">MYSTERIOUS CLASSROOM</h1>
+      </div>
+      <h2 style="color: #fff; font-size: 22px;">Confirmation de changement d'email 👋</h2>
+      <p style="color: #94a3b8; line-height: 1.8;">Bonjour ${name}, vous avez demandé à associer cet email à votre compte Mysterious Classroom.</p>
+      <p style="color: #94a3b8; line-height: 1.8;">Veuillez entrer ce code de confirmation :</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <div style="display: inline-block; padding: 20px 40px; background: linear-gradient(135deg, #2563eb, #7c3aed); border-radius: 12px; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: white;">
+          ${code}
+        </div>
+      </div>
+      <p style="color: #64748b; font-size: 13px; text-align: center;">Ce code expire dans 15 minutes.</p>
+    </div>
+  `;
+  await sendEmail({
+    to: email,
+    subject: "Code de confirmation — Changement d'email",
+    html
+  });
+};
+
 // ... (nukeUsers reste inchangé)
 
 // @desc    Inscription
@@ -194,6 +219,10 @@ const login = async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
+
+    // Mettre à jour lastLogin
+    user.lastLogin = Date.now();
+    await user.save();
 
     res.json({
       _id: user._id,
@@ -609,6 +638,74 @@ const checkEmail = async (req, res) => {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };
+const requestEmailChange = async (req, res) => {
+  try {
+    const { newEmail } = req.body;
+    const user = await User.findById(req.user._id);
+
+    if (newEmail === user.email) {
+      return res.status(400).json({ message: "C'est déjà votre email actuel" });
+    }
+
+    const emailExists = await User.findOne({ email: newEmail });
+    if (emailExists) {
+      return res.status(400).json({ message: "Cet email est déjà utilisé par un autre compte" });
+    }
+
+    const verificationCode = generateVerificationCode();
+    user.pendingEmail = newEmail;
+    user.emailChangeCode = verificationCode;
+    user.emailChangeCodeExpire = Date.now() + 15 * 60 * 1000;
+    await user.save();
+
+    await sendEmailChangeCode(newEmail, user.name, verificationCode);
+
+    res.json({ message: "Un code de confirmation a été envoyé à votre nouvel email" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+const confirmEmailChange = async (req, res) => {
+  try {
+    const { code } = req.body;
+    const user = await User.findById(req.user._id).select('+emailChangeCode +emailChangeCodeExpire');
+
+    if (!user.emailChangeCode || user.emailChangeCode !== code || user.emailChangeCodeExpire < Date.now()) {
+      return res.status(400).json({ message: "Code invalide ou expiré" });
+    }
+
+    user.email = user.pendingEmail;
+    user.pendingEmail = undefined;
+    user.emailChangeCode = undefined;
+    user.emailChangeCodeExpire = undefined;
+    await user.save();
+
+    res.json({
+      message: "Email mis à jour avec succès",
+      email: user.email
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
+const getAppStats = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const activeUsers = await User.countDocuments({
+      lastLogin: { $gt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+    });
+    res.json({
+      totalUsers,
+      activeUsers: activeUsers || totalUsers
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
 
 module.exports = {
   register,
@@ -623,5 +720,8 @@ module.exports = {
   deleteAccount,
   forgotPassword,
   resetPassword,
-  checkEmail, // ← AJOUTÉ
+  checkEmail,
+  requestEmailChange,
+  confirmEmailChange,
+  getAppStats,
 };

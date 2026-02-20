@@ -14,7 +14,10 @@ const {
   forgotPassword,
   resetPassword,
   nukeUsers,
-  checkEmail, // ← AJOUTÉ
+  checkEmail,
+  requestEmailChange,
+  confirmEmailChange,
+  getAppStats,
 } = require('../controllers/authController');
 
 const router = express.Router();
@@ -32,5 +35,11 @@ router.delete('/profile', protect, deleteAccount);
 router.post('/change-password', protect, changePassword);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password/:token', resetPassword);
+
+// Nouvelles routes de sécurité et stats
+router.post('/request-email-change', protect, requestEmailChange);
+router.post('/confirm-email-change', protect, confirmEmailChange);
+router.get('/stats', getAppStats);
+router.post('/profile-picture', protect, updateProfile); // Utilise updateProfile pour l'instant car il gère déjà l'avatar
 
 module.exports = router;

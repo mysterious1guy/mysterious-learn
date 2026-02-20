@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Layouts
 import MainLayout from './layouts/MainLayout';
@@ -27,9 +28,6 @@ import { Toast } from './components/Toast';
 import Particles from './Particles';
 import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './components/ProtectedRoute';
-import DebugMonitor from './components/DebugMonitor';
-import OAuthDebugger from './components/OAuthDebugger';
-import LiveMonitor from './components/LiveMonitor';
 
 function App() {
   const [user, setUser] = useLocalStorage('user', null);
@@ -123,158 +121,154 @@ function App() {
   }, [user]);
 
   return (
-    <Router>
-      <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white">
-        <Particles theme="dark" />
+    <ThemeProvider>
+      <Router>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
+          <Particles theme="dark" />
 
-        <AnimatePresence>
-          {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-        </AnimatePresence>
+          <AnimatePresence>
+            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+          </AnimatePresence>
 
-        {/* Debug Monitor - Uniquement en développement */}
-        {import.meta.env.DEV && <DebugMonitor API_URL={API_URL} />}
+          <Routes>
+            <Route element={<AuthLayout />}>
+              <Route path="/" element={<HomePage API_URL={API_URL} />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/auth" element={
+                user ? <Navigate to={user.hasCompletedOnboarding ? "/dashboard" : "/onboarding"} replace /> :
+                  <AuthPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
+              } />
+              {/* ✅ Nouvelle route pour le callback Google */}
+              <Route path="/auth/callback" element={
+                <CallbackPage
+                  setUser={handleUpdateUser}
+                  setToast={setToast}
+                  fetchProgressions={fetchProgressions}
+                />
+              } />
+              {/* Route Admin Login */}
+              <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />
 
-        {/* OAuth Debugger - Toujours visible */}
-        <OAuthDebugger />
-
-        <Routes>
-          <Route element={<AuthLayout />}>
-            <Route path="/" element={<HomePage API_URL={API_URL} />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/auth" element={
-              user ? <Navigate to={user.hasCompletedOnboarding ? "/dashboard" : "/onboarding"} replace /> :
-                <AuthPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
-            } />
-            {/* ✅ Nouvelle route pour le callback Google */}
-            <Route path="/auth/callback" element={
-              <CallbackPage
-                setUser={handleUpdateUser}
-                setToast={setToast}
-                fetchProgressions={fetchProgressions}
-              />
-            } />
-            {/* Route Admin Login */}
-            <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />
-
-            {/* Onboarding Flow: Requires auth, but not explicitly MainLayout yet */}
-            <Route path="/onboarding" element={
-              user ? (
-                user.hasCompletedOnboarding ? (
-                  <Navigate to="/dashboard" replace />
+              {/* Onboarding Flow: Requires auth, but not explicitly MainLayout yet */}
+              <Route path="/onboarding" element={
+                user ? (
+                  user.hasCompletedOnboarding ? (
+                    <Navigate to="/dashboard" replace />
+                  ) : (
+                    <OnboardingPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
+                  )
                 ) : (
-                  <OnboardingPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
+                  <Navigate to="/auth" replace />
                 )
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            } />
-          </Route>
+              } />
+            </Route>
 
-          <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
-            {/* Route Admin - Dashboard */}
-            <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
+            <Route element={<MainLayout user={user} onLogout={handleLogout} />}>
+              {/* Route Admin - Dashboard */}
+              <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
 
-            {/* Routes protégées - nécessitent une connexion et un onboarding complété */}
-            <Route path="/dashboard" element={
-              user ? (
-                user.hasCompletedOnboarding ? (
-                  <DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
-                    const newFavs = favorites.includes(id)
-                      ? favorites.filter(f => f !== id)
-                      : [...favorites, id];
-                    setFavorites(newFavs);
-                  }}
-                    progressions={progressions}
-                    API_URL={API_URL}
-                    setToast={setToast}
-                  />
-                ) : (
-                  <Navigate to="/onboarding" replace />
-                )
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            } />
-
-            <Route path="/account" element={
-              user ? (
-                user.hasCompletedOnboarding ? (
-                  <AccountPage
-                    user={user}
-                    onUpdateUser={handleUpdateUser}
-                    onLogout={handleLogout}
-                    onToggleFavorite={(id) => {
+              {/* Routes protégées - nécessitent une connexion et un onboarding complété */}
+              <Route path="/dashboard" element={
+                user ? (
+                  user.hasCompletedOnboarding ? (
+                    <DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
                       const newFavs = favorites.includes(id)
                         ? favorites.filter(f => f !== id)
                         : [...favorites, id];
                       setFavorites(newFavs);
                     }}
-                    API_URL={API_URL}
-                    setToast={setToast}
-                  />
+                      progressions={progressions}
+                      API_URL={API_URL}
+                      setToast={setToast}
+                    />
+                  ) : (
+                    <Navigate to="/onboarding" replace />
+                  )
                 ) : (
-                  <Navigate to="/onboarding" replace />
+                  <Navigate to="/auth" replace />
                 )
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            } />
+              } />
 
-            <Route path="/course/:courseId" element={
-              user ? (
-                user.hasCompletedOnboarding ? (
-                  <CoursePage
-                    user={user}
-                    API_URL={API_URL}
-                    setToast={setToast}
-                  />
+              <Route path="/account" element={
+                user ? (
+                  user.hasCompletedOnboarding ? (
+                    <AccountPage
+                      user={user}
+                      onUpdateUser={handleUpdateUser}
+                      onLogout={handleLogout}
+                      onToggleFavorite={(id) => {
+                        const newFavs = favorites.includes(id)
+                          ? favorites.filter(f => f !== id)
+                          : [...favorites, id];
+                        setFavorites(newFavs);
+                      }}
+                      API_URL={API_URL}
+                      setToast={setToast}
+                    />
+                  ) : (
+                    <Navigate to="/onboarding" replace />
+                  )
                 ) : (
-                  <Navigate to="/onboarding" replace />
+                  <Navigate to="/auth" replace />
                 )
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            } />
+              } />
 
-            <Route path="/course/:courseId/chapter/:chapterIndex" element={
-              user ? (
-                user.hasCompletedOnboarding ? (
-                  <ChapterPage
-                    user={user}
-                    API_URL={API_URL}
-                    setToast={setToast}
-                  />
+              <Route path="/course/:courseId" element={
+                user ? (
+                  user.hasCompletedOnboarding ? (
+                    <CoursePage
+                      user={user}
+                      API_URL={API_URL}
+                      setToast={setToast}
+                    />
+                  ) : (
+                    <Navigate to="/onboarding" replace />
+                  )
                 ) : (
-                  <Navigate to="/onboarding" replace />
+                  <Navigate to="/auth" replace />
                 )
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            } />
+              } />
 
-            {/* Route 2FA Setup */}
-            <Route path="/two-factor-setup" element={
-              user ? (
-                user.hasCompletedOnboarding ? (
-                  <TwoFactorSetupPage
-                    user={user}
-                    API_URL={API_URL}
-                    setToast={setToast}
-                  />
+              <Route path="/course/:courseId/chapter/:chapterIndex" element={
+                user ? (
+                  user.hasCompletedOnboarding ? (
+                    <ChapterPage
+                      user={user}
+                      API_URL={API_URL}
+                      setToast={setToast}
+                    />
+                  ) : (
+                    <Navigate to="/onboarding" replace />
+                  )
                 ) : (
-                  <Navigate to="/onboarding" replace />
+                  <Navigate to="/auth" replace />
                 )
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            } />
-          </Route>
+              } />
 
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </div>
-    </Router>
+              {/* Route 2FA Setup */}
+              <Route path="/two-factor-setup" element={
+                user ? (
+                  user.hasCompletedOnboarding ? (
+                    <TwoFactorSetupPage
+                      user={user}
+                      API_URL={API_URL}
+                      setToast={setToast}
+                    />
+                  ) : (
+                    <Navigate to="/onboarding" replace />
+                  )
+                ) : (
+                  <Navigate to="/auth" replace />
+                )
+              } />
+            </Route>
+
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

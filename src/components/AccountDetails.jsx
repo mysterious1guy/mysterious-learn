@@ -6,9 +6,14 @@ import {
   Settings, HelpCircle, LogOut, ChevronRight, Star, BookOpen,
   Award, Target, TrendingUp, Users, Clock, CheckCircle
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites, API_URL, setToast }) => {
+  const { theme, setTheme } = useTheme();
   const [isEditing, setIsEditing] = useState(false);
+  const [showEmailOtp, setShowEmailOtp] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [pendingEmail, setPendingEmail] = useState('');
   const [editForm, setEditForm] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
@@ -73,6 +78,30 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   const handleSave = async () => {
     setIsLoading(true);
     try {
+      const isEmailChanged = editForm.email !== user.email;
+
+      if (isEmailChanged) {
+        const res = await fetch(`${API_URL}/auth/request-email-change`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          },
+          body: JSON.stringify({ newEmail: editForm.email })
+        });
+
+        if (res.ok) {
+          setPendingEmail(editForm.email);
+          setShowEmailOtp(true);
+          setToast({ message: 'Code envoyé au nouvel email', type: 'info' });
+          return; // On attend la confirmation OTP
+        } else {
+          const errData = await res.json();
+          setToast({ message: errData.message || 'Erreur email', type: 'error' });
+          return;
+        }
+      }
+
       const response = await fetch(`${API_URL}/auth/profile`, {
         method: 'PUT',
         headers: {
@@ -90,6 +119,37 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       } else {
         const error = await response.json();
         setToast({ message: error.message || 'Erreur lors de la mise à jour', type: 'error' });
+      }
+    } catch (err) {
+      setToast({ message: 'Erreur réseau', type: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirmEmailChange = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/auth/confirm-email-change`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ code: otpCode })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        // Mettre à jour l'utilisateur localement
+        onUpdateUser({ ...user, email: data.email });
+        setToast({ message: 'Email mis à jour !', type: 'success' });
+        setShowEmailOtp(false);
+        setIsEditing(false);
+        setOtpCode('');
+      } else {
+        const errData = await res.json();
+        setToast({ message: errData.message || 'Code invalide', type: 'error' });
       }
     } catch (err) {
       setToast({ message: 'Erreur réseau', type: 'error' });
@@ -117,26 +177,36 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   const handleProfilePictureUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const formData = new FormData();
-      formData.append('profilePicture', file);
-
-      try {
-        const response = await fetch(`${API_URL}/auth/profile-picture`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${user.token}`
-          },
-          body: formData
-        });
-
-        if (response.ok) {
-          const updatedUser = await response.json();
-          onUpdateUser(updatedUser);
-          setToast({ message: 'Photo de profil mise à jour!', type: 'success' });
-        }
-      } catch (err) {
-        setToast({ message: 'Erreur lors de l\'upload', type: 'error' });
+      if (file.size > 500000) { // Limite 500kb pour le Base64
+        setToast({ message: 'Image trop lourde (max 500kb)', type: 'error' });
+        return;
       }
+
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result;
+        try {
+          const response = await fetch(`${API_URL}/auth/profile`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${user.token}`
+            },
+            body: JSON.stringify({ avatar: base64String })
+          });
+
+          if (response.ok) {
+            const updatedUser = await response.json();
+            onUpdateUser(updatedUser);
+            setToast({ message: 'Photo de profil mise à jour!', type: 'success' });
+          } else {
+            setToast({ message: 'Échec de la mise à jour', type: 'error' });
+          }
+        } catch (err) {
+          setToast({ message: 'Erreur réseau', type: 'error' });
+        }
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -427,10 +497,13 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <p className="text-white">Thème</p>
               <p className="text-sm text-gray-400">Apparence de l'interface</p>
             </div>
-            <select className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none">
+            <select
+              value={theme}
+              onChange={(e) => setTheme(e.target.value)}
+              className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+            >
               <option value="dark">Sombre</option>
               <option value="light">Clair</option>
-              <option value="auto">Auto</option>
             </select>
           </div>
         </div>
@@ -488,8 +561,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition ${activeTab === tab.id
-                  ? 'bg-blue-500 text-white'
-                  : 'text-gray-400 hover:text-white hover:bg-gray-700'
+                ? 'bg-blue-500 text-white'
+                : 'text-gray-400 hover:text-white hover:bg-gray-700'
                 }`}
             >
               <Icon size={16} />
@@ -525,7 +598,29 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           Déconnexion
         </button>
 
-        <button className="px-6 py-3 bg-gray-700/50 text-gray-300 rounded-xl hover:bg-gray-700 transition flex items-center gap-2">
+        <button
+          onClick={() => {
+            const data = {
+              user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                joinedAt: user.joinedAt,
+              },
+              progressions,
+              favorites
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `mysterious-classroom-data.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            setToast({ message: 'Données exportées !', type: 'success' });
+          }}
+          className="px-6 py-3 bg-gray-700/50 text-gray-300 rounded-xl hover:bg-gray-700 transition flex items-center gap-2"
+        >
           <Download size={18} />
           Exporter mes données
         </button>
