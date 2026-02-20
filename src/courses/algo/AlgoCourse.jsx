@@ -236,7 +236,7 @@ const CodeEditor = ({ lesson, onComplete }) => {
   );
 };
 
-const ProfessorBubble = ({ text, isThinking }) => (
+const ProfessorBubble = ({ text, isThinking, onAskQuestion }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.9, y: 10 }}
     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -245,11 +245,24 @@ const ProfessorBubble = ({ text, isThinking }) => (
     <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
       <Sparkles size={24} />
     </div>
-    <div className="bg-white/5 border border-white/10 p-5 rounded-3xl rounded-tl-none backdrop-blur-md relative">
+    <div className="bg-white/5 border border-white/10 p-5 rounded-3xl rounded-tl-none backdrop-blur-md relative group">
       <div className="absolute top-0 -left-2 w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-white/10 border-b-[8px] border-b-transparent" />
       <p className="text-gray-200 text-sm md:text-base leading-relaxed italic">
         {isThinking ? "..." : text}
       </p>
+
+      {/* Bouton d'action discret */}
+      {!isThinking && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1, scale: 1.05 }}
+          onClick={onAskQuestion}
+          className="mt-3 flex items-center gap-2 px-3 py-1.5 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-500/20 transition-all"
+        >
+          <HelpCircle size={12} />
+          Poser une question
+        </motion.button>
+      )}
     </div>
   </motion.div>
 );
@@ -314,6 +327,31 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
         setLoadingProgress(false);
       });
   }, [user, API_URL]);
+
+  // Proactivité : Suggérer des questions si l'utilisateur stagne
+  useEffect(() => {
+    if (loadingProgress || isTransitioning) return;
+
+    const proactiveTimer = setTimeout(() => {
+      // Déclencher un événement mystérieux pour l'IA
+      const event = new CustomEvent('mysterious-ai-suggest', {
+        detail: {
+          text: `Je vois que tu étudies attentivement cette partie sur "${currentLesson?.title}". Est-ce qu'il y a quelque chose qui n'est pas clair pour toi ? Je suis là pour t'expliquer différemly si besoin !`,
+          forceOpen: true
+        }
+      });
+      window.dispatchEvent(event);
+    }, 45000); // 45 secondes d'inactivité/lecture sur la leçon
+
+    return () => clearTimeout(proactiveTimer);
+  }, [activeLessonId, loadingProgress, isTransitioning]);
+
+  const handleAskQuestion = () => {
+    const event = new CustomEvent('mysterious-ai-open', {
+      detail: { message: `J'ai une question sur la leçon "${currentLesson?.title}" : ` }
+    });
+    window.dispatchEvent(event);
+  };
 
   const goToNextLesson = () => {
     if (isLastLesson) return;
@@ -498,7 +536,11 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.2, type: 'spring' }}
             >
-              <ProfessorBubble text={currentLesson?.professorSpeech || "C'est parti ! Apprenons ensemble."} isThinking={isTransitioning} />
+              <ProfessorBubble
+                text={currentLesson?.professorSpeech || "C'est parti ! Apprenons ensemble."}
+                isThinking={isTransitioning}
+                onAskQuestion={handleAskQuestion}
+              />
             </motion.div>
 
             <AnimatePresence mode="wait">

@@ -136,13 +136,39 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         }
     }, [courseId, API_URL]);
 
-    const scrollToBottom = () => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
     useEffect(() => {
         scrollToBottom();
     }, [chatHistory, isThinking]);
+
+    // Handle external triggers (e.g., from Course page)
+    useEffect(() => {
+        const handleOpenChat = (e) => {
+            setIsOpen(true);
+            if (e.detail?.message) {
+                setChatInput(e.detail.message);
+            }
+        };
+
+        const handleSuggest = (e) => {
+            if (e.detail?.text) {
+                setChatHistory(prev => [...prev, {
+                    role: 'assistant',
+                    text: e.detail.text,
+                    type: e.detail.type || 'standard'
+                }]);
+                // We don't necessarily open the chat here, just add to history
+                // Unless the detail says so
+                if (e.detail?.forceOpen) setIsOpen(true);
+            }
+        };
+
+        window.addEventListener('mysterious-ai-open', handleOpenChat);
+        window.addEventListener('mysterious-ai-suggest', handleSuggest);
+        return () => {
+            window.removeEventListener('mysterious-ai-open', handleOpenChat);
+            window.removeEventListener('mysterious-ai-suggest', handleSuggest);
+        };
+    }, []);
 
     useEffect(() => {
         if (user && currentView === 'dashboard') {
