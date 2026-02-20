@@ -70,10 +70,6 @@ const TwoFactorSetupPage = ({ user, API_URL, setToast }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setToast({
-          message: data.simulated ? 'Code affiché dans la console (dev)' : 'SMS envoyé avec succès',
-          type: 'success'
-        });
         setStep(2);
       } else {
         setToast({ message: data.message, type: 'error' });
@@ -107,7 +103,6 @@ const TwoFactorSetupPage = ({ user, API_URL, setToast }) => {
 
       if (response.ok) {
         setBackupCodes(data.backupCodes);
-        setToast({ message: '2FA activée avec succès !', type: 'success' });
         setStep(3);
       } else {
         setToast({ message: data.message, type: 'error' });
@@ -140,7 +135,6 @@ const TwoFactorSetupPage = ({ user, API_URL, setToast }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setToast({ message: '2FA désactivée', type: 'success' });
         setStep(1);
         fetchTwoFactorStatus();
       } else {
@@ -175,7 +169,6 @@ const TwoFactorSetupPage = ({ user, API_URL, setToast }) => {
 
       if (response.ok) {
         setBackupCodes(data.backupCodes);
-        setToast({ message: 'Codes regénérés', type: 'success' });
       } else {
         setToast({ message: data.message, type: 'error' });
       }

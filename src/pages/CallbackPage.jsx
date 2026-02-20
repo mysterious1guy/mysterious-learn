@@ -42,7 +42,6 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
 
                     console.log('✅ CallbackPage: Redirection...');
                     setUser({ ...data, token });
-                    setToast({ message: `Connexion réussie ${data.role === 'admin' ? '(Admin)' : ''}!`, type: 'success' });
 
                     if (data.role === 'admin') {
                         navigate('/admin');

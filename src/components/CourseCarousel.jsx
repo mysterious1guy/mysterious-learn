@@ -45,8 +45,8 @@ const CourseCarousel = ({ courses }) => {
             opacity: 0,
             scale: 0.9,
             transition: {
-                x: { type: 'spring', stiffness: 300, damping: 30 },
-                opacity: { duration: 0.4 }
+                x: { type: 'spring', stiffness: 300, damping: 30, restDelta: 0.5 },
+                opacity: { duration: 0.3 }
             }
         })
     };

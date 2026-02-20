@@ -110,12 +110,10 @@ const register = async (req, res) => {
       joinedAt: new Date(),
     });
 
-    // Envoi réel de l'email
-    try {
-      await sendVerificationEmail(email, name, verificationCode);
-    } catch (mailErr) {
+    // Envoi de l'email en arrière-plan pour ne pas bloquer la réponse
+    sendVerificationEmail(email, name, verificationCode).catch(mailErr => {
       console.error('Échec envoi mail verification:', mailErr);
-    }
+    });
 
     res.status(201).json({
       _id: user._id,
@@ -460,7 +458,7 @@ const updateProfile = async (req, res) => {
     const user = await User.findById(req.user._id);
 
     if (name) user.name = name;
-    if (email) user.email = email;
+    // user.email cannot be updated directly here for security reasons (requires re-verification)
     if (avatar) user.avatar = avatar;
     if (lastSelectedCourse !== undefined) user.lastSelectedCourse = lastSelectedCourse;
     if (req.body.favorites !== undefined) user.favorites = req.body.favorites;

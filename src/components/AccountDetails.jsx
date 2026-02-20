@@ -29,6 +29,14 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     notifications: user?.notifications || true,
     privacy: user?.privacy || 'public'
   });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteStep, setDeleteStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [userStats, setUserStats] = useState({
     totalSessions: 0,
@@ -65,15 +73,15 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       setToast({ message: "Les comptes administrateurs ne peuvent pas être supprimés.", type: 'error' });
       return;
     }
-    if (!confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
-      return;
-    }
 
-    if (!confirm('Dernière confirmation : Toutes vos données seront définitivement perdues. Confirmer ?')) {
-      return;
-    }
+    // Déclencher l'affichage du modal au lieu du confirm()
+    setShowDeleteModal(true);
+    setDeleteStep(1);
+  };
 
+  const confirmAccountDeletion = async () => {
     setIsLoading(true);
+    setShowDeleteModal(false);
     try {
       console.log('🗑️ AccountDetails: Suppression du compte pour:', user.email);
 
@@ -111,6 +119,30 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   const handleSave = async () => {
     setIsLoading(true);
     try {
+      // 1. D'abord, sauvegarder les autres informations du profil (nom, bio, etc.)
+      // On retire l'email du corps de la requête pour updateProfile car il est géré à part
+      const { email, ...otherFields } = editForm;
+
+      const profileResponse = await fetch(`${API_URL}/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify(otherFields)
+      });
+
+      if (!profileResponse.ok) {
+        const error = await profileResponse.json();
+        setToast({ message: error.message || 'Erreur lors de la mise à jour du profil', type: 'error' });
+        setIsLoading(false);
+        return;
+      }
+
+      const updatedUser = await profileResponse.json();
+      onUpdateUser(updatedUser);
+
+      // 2. Ensuite, si l'email a été changé, lancer la procédure de vérification
       const isEmailChanged = editForm.email !== user.email;
 
       if (isEmailChanged) {
@@ -127,32 +159,13 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           setNewEmail(editForm.email);
           setShowEmailModal(true);
           setOtpSent(true);
-          setToast({ message: 'Code envoyé au nouvel email', type: 'info' });
-          return;
+          setToast({ message: 'Code de vérification envoyé au nouvel email', type: 'info' });
         } else {
           const errData = await res.json();
-          setToast({ message: errData.message || 'Erreur email', type: 'error' });
-          return;
+          setToast({ message: `Profil mis à jour mais erreur email: ${errData.message}`, type: 'error' });
         }
-      }
-
-      const response = await fetch(`${API_URL}/auth/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}`
-        },
-        body: JSON.stringify(editForm)
-      });
-
-      if (response.ok) {
-        const updatedUser = await response.json();
-        onUpdateUser(updatedUser);
-        setToast({ message: 'Profil mis à jour avec succès!', type: 'success' });
-        setIsEditing(false);
       } else {
-        const error = await response.json();
-        setToast({ message: error.message || 'Erreur lors de la mise à jour', type: 'error' });
+        setIsEditing(false);
       }
     } catch (err) {
       setToast({ message: 'Erreur réseau', type: 'error' });
@@ -185,6 +198,40 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       } else {
         const errData = await res.json();
         setToast({ message: errData.message || 'Code invalide', type: 'error' });
+      }
+    } catch (err) {
+      setToast({ message: 'Erreur réseau', type: 'error' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setToast({ message: 'Les nouveaux mots de passe ne correspondent pas', type: 'error' });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/auth/change-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setToast({ message: 'Mot de passe modifié avec succès', type: 'success' });
+        setShowPasswordChange(false);
+        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        setToast({ message: data.message || 'Échec de la modification', type: 'error' });
       }
     } catch (err) {
       setToast({ message: 'Erreur réseau', type: 'error' });
@@ -258,8 +305,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       <div className="flex items-center gap-6">
         <div className="relative">
           <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-3xl font-bold text-white overflow-hidden">
-            {user?.profilePicture ? (
-              <img src={user.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+            {user?.avatar ? (
+              <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`
             )}
@@ -347,16 +394,22 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
           <div>
             <label className="block text-sm text-gray-400 mb-1">Email</label>
-            {isEditing ? (
+            <div className="flex gap-2">
               <input
                 type="email"
                 value={editForm.email}
                 onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                disabled={!isEditing}
+                className={`w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500 ${!isEditing ? 'opacity-60' : ''}`}
+                placeholder="Votre email"
               />
-            ) : (
-              <p className="text-white">{user?.email}</p>
-            )}
+              {isEditing && (
+                <div className="flex items-center text-xs text-yellow-500 bg-yellow-500/10 px-2 rounded-lg border border-yellow-500/20">
+                  <Shield size={12} className="mr-1" />
+                  Nécessite vérification
+                </div>
+              )}
+            </div>
           </div>
 
           <div>
@@ -456,32 +509,90 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
         <h4 className="text-lg font-semibold mb-4">Sécurité du compte</h4>
         <div className="space-y-4">
-          <button className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition">
+          <button
+            onClick={() => setShowPasswordChange(!showPasswordChange)}
+            className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
+          >
             <div className="flex items-center gap-3">
               <Lock className="text-gray-400" size={20} />
               <div className="text-left">
                 <p className="text-white">Changer le mot de passe</p>
-                <p className="text-sm text-gray-400">Rejoint le: {new Date(user.createdAt).toLocaleDateString()}</p>
+                <p className="text-sm text-gray-400">Dernière modification: Inconnue</p>
               </div>
             </div>
-            <ChevronRight className="text-gray-400" size={20} />
+            <ChevronRight className={`text-gray-400 transition-transform ${showPasswordChange ? 'rotate-90' : ''}`} size={20} />
           </button>
 
+          <AnimatePresence>
+            {showPasswordChange && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <form onSubmit={handleChangePassword} className="p-4 bg-gray-800/50 rounded-lg border border-gray-700 space-y-4 mt-2">
+                  <div className="space-y-2">
+                    <label className="text-sm text-gray-400">Mot de passe actuel</label>
+                    <input
+                      type="password"
+                      required
+                      value={passwordForm.currentPassword}
+                      onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                      className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-400">Nouveau mot de passe</label>
+                      <input
+                        type="password"
+                        required
+                        value={passwordForm.newPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                        className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm text-gray-400">Confirmer le nouveau</label>
+                      <input
+                        type="password"
+                        required
+                        value={passwordForm.confirmPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                        className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition disabled:opacity-50"
+                  >
+                    Mettre à jour le mot de passe
+                  </button>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <button
-            disabled
-            className="w-full flex items-center justify-between p-4 bg-gray-800/50 rounded-lg cursor-not-allowed opacity-60"
+            onClick={() => navigate('/2fa-setup')}
+            className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
           >
             <div className="flex items-center gap-3">
-              <Shield className="text-gray-500" size={20} />
+              <Shield className="text-blue-500" size={20} />
               <div className="text-left">
-                <p className="text-gray-400">Authentification à deux facteurs</p>
+                <p className="text-white">Authentification à deux facteurs</p>
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                  <p className="text-xs text-red-400 font-medium">Service SMS désactivé</p>
+                  <span className={`w-2 h-2 rounded-full ${user.twoFactorEnabled ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                  <p className={`text-xs ${user.twoFactorEnabled ? 'text-green-400' : 'text-red-400'} font-medium`}>
+                    {user.twoFactorEnabled ? 'Activée' : 'Service SMS désactivé (Mode test dispo)'}
+                  </p>
                 </div>
               </div>
             </div>
-            <Lock size={16} className="text-gray-600" />
+            <ChevronRight className="text-gray-400" size={20} />
           </button>
 
           <button className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition">
@@ -510,7 +621,31 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <p className="text-sm text-gray-400">Recevoir des emails de notification</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" defaultChecked={user?.notifications} />
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={user?.preferences?.notifications ?? true}
+                onChange={async (e) => {
+                  const val = e.target.checked;
+                  try {
+                    const res = await fetch(`${API_URL}/auth/profile`, {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                      },
+                      body: JSON.stringify({ preferences: { ...user.preferences, notifications: val } })
+                    });
+                    if (res.ok) {
+                      const updated = await res.json();
+                      onUpdateUser(updated);
+                      setToast({ message: 'Préférences mises à jour', type: 'success' });
+                    }
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+              />
               <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
             </label>
           </div>
@@ -520,7 +655,30 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <p className="text-white">Langue</p>
               <p className="text-sm text-gray-400">Choisir la langue de l'interface</p>
             </div>
-            <select className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none">
+            <select
+              value={user?.preferences?.language || 'fr'}
+              onChange={async (e) => {
+                const val = e.target.value;
+                try {
+                  const res = await fetch(`${API_URL}/auth/profile`, {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${user.token}`
+                    },
+                    body: JSON.stringify({ preferences: { ...user.preferences, language: val } })
+                  });
+                  if (res.ok) {
+                    const updated = await res.json();
+                    onUpdateUser(updated);
+                    setToast({ message: 'Langue mise à jour', type: 'success' });
+                  }
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
+              className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+            >
               <option value="fr">Français</option>
               <option value="en">English</option>
               <option value="es">Español</option>
@@ -534,7 +692,22 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
             </div>
             <select
               value={theme}
-              onChange={(e) => setTheme(e.target.value)}
+              onChange={async (e) => {
+                const val = e.target.value;
+                setTheme(val);
+                try {
+                  await fetch(`${API_URL}/auth/profile`, {
+                    method: 'PUT',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': `Bearer ${user.token}`
+                    },
+                    body: JSON.stringify({ preferences: { ...user.preferences, theme: val } })
+                  });
+                } catch (err) {
+                  console.error(err);
+                }
+              }}
               className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
             >
               <option value="dark">Sombre</option>
@@ -557,7 +730,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
             </div>
             <div className="flex-1">
               <p className="text-white">Dernière connexion</p>
-              <p className="text-sm text-gray-400">{formatTimeAgo(user.lastLogin)}</p>
+              <p className="text-sm text-gray-400">{user?.lastLogin ? formatTimeAgo(user.lastLogin) : 'Première connexion'}</p>
             </div>
           </div>
 
@@ -669,6 +842,65 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           {isLoading ? 'Suppression...' : 'Supprimer mon compte'}
         </button>
       </div>
+
+      {/* Modal de confirmation de suppression */}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
+            >
+              {/* Effet de fond */}
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-red-500/10 blur-[60px] rounded-full" />
+
+              <div className="relative z-10 text-center space-y-6">
+                <div className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-2 group">
+                  <Trash2 className="text-red-500 transition-transform group-hover:scale-110" size={32} />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-black text-white brand-font">
+                    {deleteStep === 1 ? 'Action irréversible' : 'Dernière chance'}
+                  </h3>
+                  <p className="text-gray-400">
+                    {deleteStep === 1
+                      ? 'Êtes-vous absolument sûr de vouloir supprimer votre compte "Mysterious Learner" ?'
+                      : 'Toutes vos progressions, favoris et données personnelles seront supprimés pour toujours.'}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 pt-2">
+                  {deleteStep === 1 ? (
+                    <button
+                      onClick={() => setDeleteStep(2)}
+                      className="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-red-500/25"
+                    >
+                      Oui, je comprends
+                    </button>
+                  ) : (
+                    <button
+                      onClick={confirmAccountDeletion}
+                      className="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-red-500/25"
+                    >
+                      Confirmer la suppression
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white font-bold rounded-2xl transition-all"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

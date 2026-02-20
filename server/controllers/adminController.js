@@ -56,19 +56,23 @@ const sendEmailToUsers = async (req, res) => {
       users = await User.find({});
     }
 
-    const emailPromises = users.map(user =>
-      sendEmail({
-        to: user.email,
-        subject: subject,
-        text: body
-      })
+    const results = await Promise.allSettled(
+      users.map(user =>
+        sendEmail({
+          to: user.email,
+          subject: subject,
+          text: body
+        })
+      )
     );
 
-    await Promise.all(emailPromises);
+    const successful = results.filter(r => r.status === 'fulfilled').length;
+    const failed = results.filter(r => r.status === 'rejected').length;
 
     res.json({
-      message: `Email envoyé à ${users.length} utilisateur(s)`,
-      sentCount: users.length
+      message: `Email envoyé à ${successful} utilisateur(s). Échecs: ${failed}`,
+      sentCount: successful,
+      failedCount: failed
     });
   } catch (error) {
     console.error('Erreur email:', error);

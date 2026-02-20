@@ -72,7 +72,7 @@ function App() {
     setUser(null);
     setProgressions({});
     removeUserCookie();
-    setToast({ message: 'Déconnexion réussie', type: 'info' });
+    window.location.href = '/'; // Redirect to home on logout
   };
 
   const fetchProgressions = async () => {

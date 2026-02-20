@@ -12,6 +12,18 @@ const HomePage = ({ API_URL }) => {
     const navigate = useNavigate();
     const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0 });
     const [courseStats, setCourseStats] = useState({});
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            const { clientX, clientY } = e;
+            const x = (clientX / window.innerWidth - 0.5) * 20;
+            const y = (clientY / window.innerHeight - 0.5) * 20;
+            setMousePosition({ x, y });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeMouseMoveListener?.() || window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -52,8 +64,14 @@ const HomePage = ({ API_URL }) => {
         <div className="min-h-screen bg-slate-950 font-sans selection:bg-blue-500/30">
             {/* Background Effects */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-                <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full" />
-                <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full" />
+                <motion.div
+                    style={{ x: mousePosition.x * 2, y: mousePosition.y * 2 }}
+                    className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full"
+                />
+                <motion.div
+                    style={{ x: mousePosition.x * -2, y: mousePosition.y * -2 }}
+                    className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full"
+                />
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]" />
             </div>
 
@@ -63,6 +81,7 @@ const HomePage = ({ API_URL }) => {
                     <div className="text-center space-y-10">
                         {/* Logo animé */}
                         <motion.div
+                            style={{ x: mousePosition.x * -1, y: mousePosition.y * -1 }}
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}
@@ -78,12 +97,18 @@ const HomePage = ({ API_URL }) => {
                             className="space-y-6"
                         >
                             <h1 className="flex flex-col items-center">
-                                <span className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 leading-[0.8]">
+                                <motion.span
+                                    style={{ x: mousePosition.x * 0.5, y: mousePosition.y * 0.5 }}
+                                    className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 leading-[0.8]"
+                                >
                                     MYSTERIOUS
-                                </span>
-                                <span className="text-4xl md:text-7xl lg:text-8xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-2 drop-shadow-[0_0_30px_rgba(147,51,234,0.3)]">
+                                </motion.span>
+                                <motion.span
+                                    style={{ x: mousePosition.x * -0.5, y: mousePosition.y * -0.5 }}
+                                    className="text-4xl md:text-7xl lg:text-8xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-2 drop-shadow-[0_0_30px_rgba(147,51,234,0.3)]"
+                                >
                                     CLASSROOM
-                                </span>
+                                </motion.span>
                             </h1>
 
                             <p className="text-slate-400 text-lg md:text-2xl max-w-2xl mx-auto font-medium leading-relaxed">
@@ -176,9 +201,9 @@ const HomePage = ({ API_URL }) => {
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {[
-                                { icon: Sparkles, label: "Étudiant", value: "ESP Dakar" },
-                                { icon: Heart, label: "Passion", value: "Code depuis la 5ème" },
-                                { icon: Code2, label: "Focus", value: "Full-Stack Dev" }
+                                { icon: Sparkles, label: "Statut", value: "Étudiant L1" },
+                                { icon: Heart, label: "Passion", value: "Code & Partage" },
+                                { icon: Code2, label: "Focus", value: "Apprentissage" }
                             ].map((item, i) => (
                                 <div key={i} className="p-6 bg-slate-950/50 rounded-3xl border border-slate-800/50 group hover:border-blue-500/30 transition-colors">
                                     <item.icon size={24} className="mx-auto mb-3 text-blue-500 group-hover:scale-110 transition-transform" />

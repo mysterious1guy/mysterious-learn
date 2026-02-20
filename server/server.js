@@ -39,6 +39,7 @@ app.use('/api/activity', require('./routes/activityRoutes'));
 app.use('/api/debug', require('./routes/debugRoutes'));
 app.use('/api/live-monitor', require('./routes/liveMonitorRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/site-config', require('./routes/siteConfigRoutes'));
 
 // 4. Gestion des fichiers statiques
 const rootDir = path.resolve(__dirname, '..');

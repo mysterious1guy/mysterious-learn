@@ -16,8 +16,8 @@ const trackLogin = async (req, res) => {
     });
 
     if (activeSession) {
-      return res.status(400).json({ 
-        message: 'Session déjà active' 
+      return res.status(400).json({
+        message: 'Session déjà active'
       });
     }
 
@@ -42,7 +42,7 @@ const trackLogin = async (req, res) => {
       isOnline: true
     });
 
-    res.json({ 
+    res.json({
       message: 'Connexion enregistrée',
       sessionId: activity._id
     });
@@ -63,23 +63,23 @@ const trackLogout = async (req, res) => {
     if (activity) {
       const logoutTime = new Date();
       const duration = Math.round((logoutTime - activity.loginTime) / (1000 * 60)); // en minutes
-      
+
       activity.logoutTime = logoutTime;
       activity.duration = duration;
       activity.sessionData.totalTime = duration;
-      
+
       await activity.save();
     }
 
     // Mettre à jour le statut de l'utilisateur
     await User.findByIdAndUpdate(userId, {
       isOnline: false,
-      totalSessionTime: mongoose.Types.Decimal128 ? 
-        { $add: ['$totalSessionTime', duration] } : 
+      totalSessionTime: mongoose.Types.Decimal128 ?
+        { $add: ['$totalSessionTime', duration] } :
         { $inc: { totalSessionTime: duration } }
     });
 
-    res.json({ 
+    res.json({
       message: 'Déconnexion enregistrée',
       sessionDuration: duration
     });
@@ -177,7 +177,7 @@ const trackCourseProgress = async (req, res) => {
 const getUserStats = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { period = '7days' } = req.query; // 7days, 30days, 90days, all
+    const { period = '24h' } = req.query; // 24h, 7days, 30days, 90days, all
 
     let dateFilter = {};
     if (period !== 'all') {
@@ -187,7 +187,7 @@ const getUserStats = async (req, res) => {
       dateFilter = { loginTime: { $gte: startDate } };
     }
 
-    const activities = await UserActivity.find({ 
+    const activities = await UserActivity.find({
       userId,
       ...dateFilter
     }).sort({ loginTime: -1 });
@@ -196,7 +196,7 @@ const getUserStats = async (req, res) => {
     const stats = {
       totalSessions: activities.length,
       totalTime: activities.reduce((sum, act) => sum + (act.duration || 0), 0),
-      averageSessionTime: activities.length > 0 ? 
+      averageSessionTime: activities.length > 0 ?
         Math.round(activities.reduce((sum, act) => sum + (act.duration || 0), 0) / activities.length) : 0,
       coursesViewed: activities.reduce((set, act) => {
         act.coursesViewed.forEach(course => set.add(course.courseId.toString()));
@@ -218,7 +218,7 @@ const getUserStats = async (req, res) => {
 // @route   GET /api/activity/global-stats
 const getGlobalStats = async (req, res) => {
   try {
-    const { period = '7days' } = req.query;
+    const { period = '24h' } = req.query;
 
     let dateFilter = {};
     if (period !== 'all') {
@@ -229,12 +229,12 @@ const getGlobalStats = async (req, res) => {
     }
 
     const activities = await UserActivity.find(dateFilter);
-    
+
     const stats = {
       totalUsers: await User.countDocuments(),
       activeUsers: await User.countDocuments({ isOnline: true }),
       totalSessions: activities.length,
-      averageSessionTime: activities.length > 0 ? 
+      averageSessionTime: activities.length > 0 ?
         Math.round(activities.reduce((sum, act) => sum + (act.duration || 0), 0) / activities.length) : 0,
       mostActiveUsers: await getMostActiveUsers(activities),
       popularCourses: await getPopularCourses(activities),
@@ -251,28 +251,28 @@ const getGlobalStats = async (req, res) => {
 // Fonctions utilitaires
 const calculateStreak = (activities) => {
   if (activities.length === 0) return 0;
-  
+
   let streak = 0;
   const sortedActivities = activities.sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime));
-  
+
   for (let i = 0; i < sortedActivities.length - 1; i++) {
     const current = new Date(sortedActivities[i].loginTime);
     const next = new Date(sortedActivities[i + 1].loginTime);
     const diffDays = Math.floor((next - current) / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays <= 1) {
       streak++;
     } else {
       break;
     }
   }
-  
+
   return streak;
 };
 
 const getMostActiveUsers = async (activities) => {
   const userTimeMap = {};
-  
+
   activities.forEach(activity => {
     const userId = activity.userId.toString();
     userTimeMap[userId] = (userTimeMap[userId] || 0) + (activity.duration || 0);
@@ -289,7 +289,7 @@ const getMostActiveUsers = async (activities) => {
 
 const getPopularCourses = async (activities) => {
   const courseViews = {};
-  
+
   activities.forEach(activity => {
     activity.coursesViewed.forEach(course => {
       const courseId = course.courseId.toString();
@@ -306,7 +306,7 @@ const getPopularCourses = async (activities) => {
 
 const getPeakHours = (activities) => {
   const hourCounts = Array(24).fill(0);
-  
+
   activities.forEach(activity => {
     const hour = new Date(activity.loginTime).getHours();
     hourCounts[hour]++;

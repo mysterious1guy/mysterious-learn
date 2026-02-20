@@ -41,7 +41,6 @@ const AdminLoginPage = ({ setToast }) => {
 
         localStorage.setItem('user', JSON.stringify(adminUser));
         localStorage.setItem('token', token);
-        setToast({ message: 'Connexion admin réussie !', type: 'success' });
 
         console.log('🛡️ AdminLoginPage: Connexion réussie, redirection vers /admin');
         navigate('/admin');
@@ -63,7 +62,6 @@ const AdminLoginPage = ({ setToast }) => {
         console.log('✅ AdminLoginPage: Connexion admin réussie');
         localStorage.setItem('user', JSON.stringify(data));
         localStorage.setItem('token', data.token);
-        setToast({ message: 'Connexion admin réussie !', type: 'success' });
 
         console.log('🛡️ AdminLoginPage: Redirection vers /admin');
         navigate('/admin');

@@ -18,6 +18,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     const [emailError, setEmailError] = useState('');
     const [emailExists, setEmailExists] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState(0);
+    const [petSecret, setPetSecret] = useState(null);
 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,11 +64,14 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
             });
             const data = await response.json();
             if (response.ok) {
+                setPetSecret({ type: 'excited' });
                 localStorage.setItem('user', JSON.stringify(data));
                 localStorage.setItem('token', data.token);
                 setUser(data);
-                setToast({ message: 'Connexion réussie !', type: 'success' });
-                navigate(data.role === 'admin' ? '/admin' : '/dashboard');
+                // Delay to see the pet reaction
+                setTimeout(() => {
+                    navigate(data.role === 'admin' ? '/admin' : '/dashboard');
+                }, 1000);
             } else {
                 setAuthError(data.message || 'Email ou mot de passe incorrect');
             }
@@ -158,7 +162,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
             >
                 <div className="bg-slate-900/80 backdrop-blur-2xl border border-slate-800/50 p-8 rounded-[2.5rem] shadow-2xl">
                     <div className="flex justify-center mb-6">
-                        <CyberPet isPasswordFocused={isPasswordFocused} />
+                        <CyberPet isPasswordFocused={isPasswordFocused} onSecret={petSecret} />
                     </div>
 
                     <h2 className="text-3xl font-black text-white text-center mb-8 tracking-tight">

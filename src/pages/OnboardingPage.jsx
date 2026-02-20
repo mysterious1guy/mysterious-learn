@@ -60,7 +60,6 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
             const data = await response.json();
             if (response.ok) {
                 setUser({ ...user, ...data });
-                setToast({ message: "Onboarding terminé ! Bienvenue.", type: "success" });
                 navigate('/dashboard');
             } else {
                 setToast({ message: data.message || "Erreur lors de la sauvegarde", type: "error" });

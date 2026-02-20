@@ -5,7 +5,7 @@ import { Clock, TrendingUp, Calendar, Award, Target, BarChart3, Activity } from 
 const UsageMonitor = ({ user, API_URL, isVisible, onClose }) => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [period, setPeriod] = useState('7days');
+  const [period, setPeriod] = useState('24h');
 
   useEffect(() => {
     if (isVisible && user) {
@@ -17,7 +17,7 @@ const UsageMonitor = ({ user, API_URL, isVisible, onClose }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      
+
       const response = await fetch(`${API_URL}/api/activity/user-stats/${user._id}?period=${period}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -74,18 +74,17 @@ const UsageMonitor = ({ user, API_URL, isVisible, onClose }) => {
         </div>
 
         {/* Sélecteur de période */}
-        <div className="flex gap-2 mb-6">
-          {['7days', '30days', '90days', 'all'].map((p) => (
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          {['24h', '7days', '30days', '90days', 'all'].map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
-                period === p
+              className={`px-4 py-2 rounded-lg font-medium transition whitespace-nowrap ${period === p
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              }`}
+                }`}
             >
-              {p === '7days' ? '7 jours' : p === '30days' ? '30 jours' : p === '90days' ? '90 jours' : 'Tout'}
+              {p === '24h' ? '24 heures' : p === '7days' ? '7 jours' : p === '30days' ? '30 jours' : p === '90days' ? '90 jours' : 'Tout'}
             </button>
           ))}
         </div>

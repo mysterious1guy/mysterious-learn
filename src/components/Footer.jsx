@@ -1,9 +1,27 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Twitter, Linkedin, Mail, Heart, Code, Sparkles } from 'lucide-react';
 import AnimatedLogo from './AnimatedLogo';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [config, setConfig] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const res = await fetch(`${API_URL}/site-config`);
+        if (res.ok) {
+          const data = await res.json();
+          setConfig(data);
+        }
+      } catch (err) {
+        console.error('Erreur fetch site-config:', err);
+      }
+    };
+    fetchConfig();
+  }, [API_URL]);
 
   const socialLinks = [
     { icon: Github, href: '#', label: 'GitHub' },
@@ -11,6 +29,22 @@ const Footer = () => {
     { icon: Linkedin, href: '#', label: 'LinkedIn' },
     { icon: Mail, href: 'mailto:mouhamedfa2007@gmail.com', label: 'Email' }
   ];
+
+  const defaultConfig = {
+    siteName: 'Mysterious Classroom',
+    creatorName: 'Mouhamed FALL',
+    creatorTitle: 'Étudiant en informatique',
+    creatorBio: [
+      'Première année - École Supérieure Polytechnique de Dakar (ESP)',
+      "Passionné d'informatique depuis la 5ème",
+      '18 ans, développeur full-stack'
+    ],
+    creatorAvatar: 'MF',
+    technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'TailwindCSS', 'Framer Motion', 'JWT', 'Twilio'],
+    footerText: "Plateforme d'apprentissage innovante créée avec passion pour l'éducation technologique et le partage des connaissances."
+  };
+
+  const c = config || defaultConfig;
 
   return (
     <footer className="relative bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent border-t border-gray-800">
@@ -29,12 +63,11 @@ const Footer = () => {
           >
             <div className="flex items-center gap-3">
               <AnimatedLogo size="medium" />
-              <h3 className="text-xl font-bold text-white">Mysterious Classroom</h3>
+              <h3 className="text-xl font-bold text-white">{c.siteName}</h3>
             </div>
 
             <p className="text-gray-400 text-sm leading-relaxed">
-              Plateforme d'apprentissage innovante créée avec passion pour l'éducation
-              technologique et le partage des connaissances.
+              {c.footerText}
             </p>
 
             <div className="flex gap-3">
@@ -68,27 +101,27 @@ const Footer = () => {
             <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">MF</span>
+                  {c.creatorAvatar?.length <= 2 ? (
+                    <span className="text-white font-bold text-lg">{c.creatorAvatar}</span>
+                  ) : (
+                    <img src={c.creatorAvatar} alt="Creator" className="w-full h-full rounded-full object-cover" />
+                  )}
                 </div>
                 <div>
-                  <h5 className="text-white font-medium">Mouhamed FALL</h5>
-                  <p className="text-gray-400 text-sm">Étudiant en informatique</p>
+                  <h5 className="text-white font-medium">{c.creatorName}</h5>
+                  <p className="text-gray-400 text-sm">{c.creatorTitle}</p>
                 </div>
               </div>
 
               <div className="space-y-2 text-sm text-gray-400">
-                <p className="flex items-center gap-2">
-                  <Sparkles size={14} className="text-yellow-400" />
-                  Première année - École Supérieure Polytechnique de Dakar (ESP)
-                </p>
-                <p className="flex items-center gap-2">
-                  <Heart size={14} className="text-red-400" />
-                  Passionné d'informatique depuis la 5ème
-                </p>
-                <p className="flex items-center gap-2">
-                  <Code size={14} className="text-green-400" />
-                  18 ans, développeur full-stack
-                </p>
+                {c.creatorBio.map((line, i) => (
+                  <p key={i} className="flex items-center gap-2">
+                    {i === 0 && <Sparkles size={14} className="text-yellow-400" />}
+                    {i === 1 && <Heart size={14} className="text-red-400" />}
+                    {i === 2 && <Code size={14} className="text-green-400" />}
+                    {line}
+                  </p>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -106,10 +139,7 @@ const Footer = () => {
             </h4>
 
             <div className="grid grid-cols-2 gap-2">
-              {[
-                'React', 'Node.js', 'MongoDB', 'Express',
-                'TailwindCSS', 'Framer Motion', 'JWT', 'Twilio'
-              ].map((tech, index) => (
+              {c.technologies.map((tech, index) => (
                 <motion.div
                   key={tech}
                   className="bg-gray-800/30 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
@@ -132,10 +162,10 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
               <p className="text-gray-400 text-sm">
-                © {currentYear} Mysterious Classroom. Plateforme créée par Mouhamed Fall.
+                © {currentYear} {c.siteName}. Plateforme créée par {c.creatorName}.
               </p>
               <p className="text-gray-500 text-xs mt-1">
-                Mouhamed Fall • ESP (École Supérieure Polytechnique de Dakar) • 18 ans
+                {c.creatorName} • {c.creatorTitle} • 18 ans
               </p>
             </div>
 

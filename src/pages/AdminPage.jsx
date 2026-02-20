@@ -5,8 +5,9 @@ import {
   Users, Mail, Bell, BookOpen, Settings, Crown, Eye, Edit, Trash2, Send,
   BarChart3, UserPlus, UserMinus, Camera, Upload, AlertTriangle, TrendingUp,
   Activity, LayoutDashboard, Database, Shield, LogOut, Search, Filter,
-  CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone
+  CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone, Save
 } from 'lucide-react';
+import ConfirmModal from '../components/ConfirmModal';
 
 const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const navigate = useNavigate();
@@ -23,7 +24,10 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [config, setConfig] = useState(null);
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
   const fileInputRef = useRef(null);
+  const configAvatarRef = useRef(null);
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
@@ -37,17 +41,19 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     setLoading(true);
     try {
       const headers = { Authorization: `Bearer ${user.token}` };
-      const [usersRes, statsRes, coursesRes, notificationsRes] = await Promise.all([
+      const [usersRes, statsRes, coursesRes, notificationsRes, configRes] = await Promise.all([
         fetch(`${API_URL}/admin/users`, { headers }),
         fetch(`${API_URL}/admin/stats`, { headers }),
         fetch(`${API_URL}/courses`, { headers }),
-        fetch(`${API_URL}/admin/notifications`, { headers })
+        fetch(`${API_URL}/admin/notifications`, { headers }),
+        fetch(`${API_URL}/site-config`, { headers })
       ]);
 
       if (usersRes.ok) setUsers(await usersRes.json());
       if (statsRes.ok) setStats(await statsRes.json());
       if (coursesRes.ok) setCourses(await coursesRes.json());
       if (notificationsRes.ok) setNotifications(await notificationsRes.json());
+      if (configRes.ok) setConfig(await configRes.json());
     } catch (err) {
       setToast({ message: 'Erreur de connexion au serveur', type: 'error' });
     } finally {
@@ -66,12 +72,14 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
         },
         body: JSON.stringify(emailContent)
       });
+      const data = await res.json();
       if (res.ok) {
-        setToast({ message: 'Emails envoyés !', type: 'success' });
         setEmailContent({ subject: '', body: '', recipients: 'all', specificEmail: '' });
+      } else {
+        setToast({ message: data.message || "Échec de l'envoi", type: 'error' });
       }
     } catch (err) {
-      setToast({ message: "Échec de l'envoi", type: 'error' });
+      setToast({ message: "Erreur réseau lors de l'envoi", type: 'error' });
     }
   };
 
@@ -87,7 +95,6 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
         body: JSON.stringify(notificationContent)
       });
       if (res.ok) {
-        setToast({ message: 'Notification diffusée !', type: 'success' });
         setNotificationContent({ title: '', message: '', type: 'info', sendEmail: false });
         fetchData(); // Rafraîchir la liste
       }
@@ -97,41 +104,54 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   };
 
   const handleDeleteNotification = async (id) => {
-    if (!window.confirm('Supprimer cette annonce ?')) return;
-    try {
-      const res = await fetch(`${API_URL}/admin/notifications/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-      if (res.ok) {
-        setNotifications(notifications.filter(n => n._id !== id));
-        setToast({ message: 'Annonce supprimée', type: 'success' });
+    setConfirmModal({
+      isOpen: true,
+      title: "Supprimer l'annonce",
+      message: "Êtes-vous sûr de vouloir supprimer cette annonce ? Cette action est immédiate.",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API_URL}/admin/notifications/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${user.token}` }
+          });
+          if (res.ok) {
+            setNotifications(notifications.filter(n => n._id !== id));
+            setConfirmModal({ ...confirmModal, isOpen: false });
+          }
+        } catch (err) {
+          setToast({ message: 'Erreur suppression', type: 'error' });
+        }
       }
-    } catch (err) {
-      setToast({ message: 'Erreur suppression', type: 'error' });
-    }
+    });
   };
 
   const handleDeleteUser = async (id) => {
-    if (!window.confirm('Supprimer définitivement cet utilisateur ?')) return;
-    try {
-      const target = users.find(u => u._id === id);
-      if (target?.role === 'admin') {
-        setToast({ message: 'Impossible de supprimer un admin', type: 'error' });
-        return;
-      }
+    setConfirmModal({
+      isOpen: true,
+      title: "Supprimer l'utilisateur",
+      message: "Voulez-vous vraiment supprimer cet utilisateur ? Toutes ses données seront perdues.",
+      onConfirm: async () => {
+        try {
+          const target = users.find(u => u._id === id);
+          if (target?.role === 'admin') {
+            setToast({ message: 'Impossible de supprimer un admin', type: 'error' });
+            setConfirmModal({ ...confirmModal, isOpen: false });
+            return;
+          }
 
-      const res = await fetch(`${API_URL}/admin/users/${id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-      if (res.ok) {
-        setUsers(users.filter(u => u._id !== id));
-        setToast({ message: 'Utilisateur supprimé', type: 'success' });
+          const res = await fetch(`${API_URL}/admin/users/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${user.token}` }
+          });
+          if (res.ok) {
+            setUsers(users.filter(u => u._id !== id));
+            setConfirmModal({ ...confirmModal, isOpen: false });
+          }
+        } catch (err) {
+          setToast({ message: 'Erreur suppression', type: 'error' });
+        }
       }
-    } catch (err) {
-      setToast({ message: 'Erreur suppression', type: 'error' });
-    }
+    });
   };
 
   const handleAvatarChange = async (e) => {
@@ -150,11 +170,41 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
       if (res.ok) {
         const data = await res.json();
         onUpdateUser({ avatar: data.avatar });
-        setToast({ message: 'Avatar mis à jour !', type: 'success' });
       }
     } catch (err) {
       setToast({ message: "Erreur lors de l'envoi", type: 'error' });
     }
+  };
+
+  const handleUpdateConfig = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${API_URL}/site-config`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify(config)
+      });
+      if (res.ok) {
+        setToast({ message: 'Configuration mise à jour !', type: 'success' });
+      } else {
+        setToast({ message: 'Échec de la mise à jour', type: 'error' });
+      }
+    } catch (err) {
+      setToast({ message: 'Erreur réseau', type: 'error' });
+    }
+  };
+
+  const handleConfigAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setConfig({ ...config, creatorAvatar: reader.result });
+    };
+    reader.readAsDataURL(file);
   };
 
   const filteredUsers = users.filter(u =>
@@ -167,6 +217,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     { id: 'users', label: 'Utilisateurs', icon: Users },
     { id: 'notifications', label: 'Communications', icon: Bell },
     { id: 'courses', label: 'Gestion des cours', icon: BookOpen },
+    { id: 'config', label: 'Configuration Site', icon: LayoutDashboard },
     { id: 'settings', label: 'Paramètres', icon: Settings },
   ];
 
@@ -491,6 +542,130 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
               </div>
             )}
 
+            {activeTab === 'config' && config && (
+              <motion.div key="config" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8 max-w-4xl">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-3xl font-black text-white">Configuration du Site</h2>
+                  <button onClick={handleUpdateConfig} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 transition-all flex items-center gap-2">
+                    <Save size={18} /> ENREGISTRER
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Infos Site */}
+                  <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 space-y-6">
+                    <h3 className="text-lg font-bold flex items-center gap-2 text-blue-400">
+                      <LayoutDashboard size={20} /> Identité du Site
+                    </h3>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Nom du Site</label>
+                      <input
+                        type="text"
+                        value={config.siteName}
+                        onChange={(e) => setConfig({ ...config, siteName: e.target.value })}
+                        className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none focus:border-blue-600"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-500 uppercase">Texte du Pied de Page</label>
+                      <textarea
+                        value={config.footerText}
+                        onChange={(e) => setConfig({ ...config, footerText: e.target.value })}
+                        rows="3"
+                        className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none focus:border-blue-600 resize-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Infos Créateur */}
+                  <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 space-y-6">
+                    <h3 className="text-lg font-bold flex items-center gap-2 text-purple-400">
+                      <Database size={20} /> Infos Créateur
+                    </h3>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="relative group">
+                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center overflow-hidden border-2 border-slate-700">
+                          {config.creatorAvatar?.length <= 2 ? (
+                            <span className="text-xl font-bold">{config.creatorAvatar}</span>
+                          ) : (
+                            <img src={config.creatorAvatar} alt="Creator" className="w-full h-full object-cover" />
+                          )}
+                        </div>
+                        <button onClick={() => configAvatarRef.current.click()} className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-full transition-opacity">
+                          <Camera size={16} />
+                        </button>
+                        <input ref={configAvatarRef} type="file" hidden accept="image/*" onChange={handleConfigAvatarChange} />
+                      </div>
+                      <div className="flex-1">
+                        <label className="text-xs font-bold text-slate-500 uppercase">Avatar (Initiales ou Image)</label>
+                        <input
+                          type="text"
+                          value={config.creatorAvatar}
+                          onChange={(e) => setConfig({ ...config, creatorAvatar: e.target.value })}
+                          placeholder="MF ou URL..."
+                          className="w-full p-2 bg-slate-950 border border-slate-800 rounded-xl outline-none mt-1"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase">Nom</label>
+                        <input
+                          type="text"
+                          value={config.creatorName}
+                          onChange={(e) => setConfig({ ...config, creatorName: e.target.value })}
+                          className="w-full p-3 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase">Titre</label>
+                        <input
+                          type="text"
+                          value={config.creatorTitle}
+                          onChange={(e) => setConfig({ ...config, creatorTitle: e.target.value })}
+                          className="w-full p-3 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bio & Bio lines */}
+                  <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 space-y-4 md:col-span-2">
+                    <h3 className="text-lg font-bold text-yellow-500">Parcours Créateur (Points listés)</h3>
+                    {config.creatorBio.map((line, index) => (
+                      <div key={index} className="flex gap-2">
+                        <input
+                          type="text"
+                          value={line}
+                          onChange={(e) => {
+                            const newBio = [...config.creatorBio];
+                            newBio[index] = e.target.value;
+                            setConfig({ ...config, creatorBio: newBio });
+                          }}
+                          className="flex-1 p-3 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                        />
+                        <button
+                          onClick={() => {
+                            const newBio = config.creatorBio.filter((_, i) => i !== index);
+                            setConfig({ ...config, creatorBio: newBio });
+                          }}
+                          className="p-3 text-red-500 hover:bg-red-500/10 rounded-xl"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => setConfig({ ...config, creatorBio: [...config.creatorBio, 'Nouveau point...'] })}
+                      className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300"
+                    >
+                      <UserPlus size={16} /> Ajouter une ligne
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {activeTab === 'settings' && (
               <div className="max-w-xl bg-slate-900 p-10 rounded-[2.5rem] border border-slate-800">
                 <h2 className="text-2xl font-black text-white mb-8">Paramètres Admin</h2>
@@ -519,6 +694,13 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
           </AnimatePresence>
         )}
       </main>
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ ...confirmModal, isOpen: false })}
+        onConfirm={confirmModal.onConfirm}
+        title={confirmModal.title}
+        message={confirmModal.message}
+      />
     </div>
   );
 };
