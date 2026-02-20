@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
+  User, Mail, Phone, Lock, Shield, Globe, Bell,
   Camera, CheckCircle, ChevronRight, Edit2, LogOut,
   Save, Trash2, ShieldCheck, Download, BookOpen, Target, Award, Clock,
   Settings, TrendingUp, X
