@@ -8,7 +8,7 @@ import GuideAvatar from './GuideAvatar';
 const ONBOARDING_STEPS = [
     {
         title: "Bienvenue, Voyageur du Code ! 🎩",
-        content: "Je suis ton Guide Mystérieux. Je vais te montrer comment dompter cette plateforme créée par Mouhamed Fall.",
+        content: "Je suis ton professeur. Je vais te montrer comment dompter cette plateforme créée par Mouhamed Fall.",
         target: "brand-logo",
         position: "center"
     },
@@ -342,7 +342,7 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                                 <div className="flex items-center gap-3">
                                     <GuideAvatar isOpen={true} isThinking={isThinking} size="w-10 h-10" />
                                     <div>
-                                        <h3 className="font-bold text-white text-sm">Guide Mystérieux</h3>
+                                        <h3 className="font-bold text-white text-sm">Professeur Mysterious</h3>
                                         <div className="flex items-center gap-1.5">
                                             <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
                                             <span className="text-[10px] text-gray-500 uppercase tracking-widest font-black">En ligne</span>

@@ -10,17 +10,20 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     const [loading, setLoading] = useState(true);
     const [expandedChapter, setExpandedChapter] = useState(null);
 
+    const normalizedCourseId = courseId?.toLowerCase();
+
     useEffect(() => {
-        if (courseId !== 'algo') {
+        if (normalizedCourseId !== 'algo' && normalizedCourseId) {
             fetchCourse();
         } else {
             setLoading(false);
         }
-    }, [courseId]);
+    }, [normalizedCourseId]);
 
     const fetchCourse = async () => {
+        if (normalizedCourseId === 'algo') return;
         try {
-            const response = await fetch(`${API_URL}/courses/${courseId}`);
+            const response = await fetch(`${API_URL}/courses/${normalizedCourseId}`);
             if (response.ok) {
                 const courseData = await response.json();
                 setCourse(courseData);
@@ -53,7 +56,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
         );
     }
 
-    if (!course && courseId !== 'algo') {
+    if (!course && normalizedCourseId !== 'algo') {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-white">Cours non trouvé</div>
@@ -61,7 +64,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
         );
     }
 
-    if (courseId === 'algo') {
+    if (normalizedCourseId === 'algo') {
         return <AlgoCourse onClose={() => navigate('/dashboard')} user={user} API_URL={API_URL} />;
     }
 
