@@ -27,6 +27,8 @@ La plus grande erreur est de confondre **Apprendre à Programmer** et **Apprendr
 > [!IMPORTANT]
 > **L'Algorithme est Universel** : Que vous utilisiez Python, Java ou C++, la logique reste identique. Un langage n'est qu'une traduction.
 
+[?] Mais alors, c'est quoi le code ? | Le code n'est que la traduction de votre algorithme (qui est universel) dans une syntaxe spécifique compréhensible par l'ordinateur. L'algorithme est l'âme, le code est le corps.
+
 ## Pourquoi la machine a-t-elle besoin de nous ?
 Un ordinateur est une machine incroyablement rapide, mais **totalement idiote**. Elle ne devine rien. Elle n'a aucune intuition.
 
@@ -42,6 +44,8 @@ Vous devez lui dire :
 
 ## Définition
 Un **algorithme** est une suite d'instructions finies, précises et ordonnées permettant de résoudre un problème ou d'accomplir une tâche.
+
+[?] Pourquoi les algorithmes sont-ils si importants aujourd'hui ? | Ils contrôlent tout : de ce que vous voyez sur vos réseaux sociaux (algorithme de recommandation) à la trajectoire des fusées SpaceX. Maîtriser l'algorithmique, c'est maîtriser le monde moderne.
 `
                     },
                     {
@@ -87,6 +91,8 @@ FIN
 
 > [!TIP]
 > Toujours commencer par réfléchir sur papier. Si ton algorithme n'est pas clair dans ta tête, il ne le sera jamais pour la machine.
+
+[?] Et si je me trompe dans mon pseudo-code ? | Ce n'est pas grave ! L'avantage du pseudo-code, c'est qu'il n'y a pas de compilateur pour crier à l'erreur de syntaxe. L'important est que la **logique** (l'ordre des étapes) soit cohérente.
 `
                     }
                 ]

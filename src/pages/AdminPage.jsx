@@ -155,6 +155,28 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     });
   };
 
+  const handleUpdateRole = async (userId, newRole) => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/role`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ userId, role: newRole })
+      });
+      if (res.ok) {
+        setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
+        setToast({ message: 'Rôle mis à jour !', type: 'success' });
+      } else {
+        const data = await res.json();
+        setToast({ message: data.message || "Erreur de mise à jour", type: 'error' });
+      }
+    } catch (err) {
+      setToast({ message: 'Erreur réseau', type: 'error' });
+    }
+  };
+
   const handleDeleteUser = async (id) => {
     setConfirmModal({
       isOpen: true,
@@ -472,56 +494,94 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                   </div>
                 </div>
 
-                <div className="bg-slate-900 border border-slate-800 rounded-[2rem] overflow-hidden">
-                  <table className="w-full text-left">
-                    <thead className="bg-slate-950/50 text-white/60 text-xs font-bold uppercase tracking-widest">
+                <div className="bg-slate-900 border border-slate-800 rounded-[2rem] overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead className="bg-slate-950/50 text-white/60 text-[10px] font-black uppercase tracking-widest border-b border-slate-800">
                       <tr>
-                        <th className="px-8 py-6">Utilisateur</th>
-                        <th className="px-8 py-6">Rôle</th>
-                        <th className="px-8 py-6">Vérifié</th>
-                        <th className="px-8 py-6">Actions</th>
+                        <th className="px-8 py-6 w-[40%]">Élève / Identité</th>
+                        <th className="px-8 py-6 w-[20%] text-center">Rôle</th>
+                        <th className="px-8 py-6 w-[15%] text-center">Vérifié</th>
+                        <th className="px-8 py-6 w-[15%] text-center">Activité</th>
+                        <th className="px-8 py-6 w-[10%] text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800">
+                    <tbody className="divide-y divide-slate-800/50">
                       {filteredUsers.map(u => (
-                        <tr key={u._id} className="hover:bg-slate-800/30 transition-colors">
+                        <tr key={u._id} className="hover:bg-blue-600/[0.02] transition-colors group">
                           <td className="px-8 py-6">
                             <div className="flex items-center gap-4">
-                              <div className="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center font-bold text-blue-400">
-                                {u.firstName?.[0]}
+                              <div className="w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex items-center justify-center font-bold text-blue-400 border border-slate-700 shadow-inner group-hover:border-blue-500/50 transition-colors">
+                                {u.firstName?.[0] || 'U'}
                               </div>
-                              <div>
-                                <p className="text-sm font-bold text-white">{u.firstName} {u.lastName}</p>
-                                <p className="text-[10px] text-white/60">{u.email} • {formatTimeAgo(u.lastLogin)}</p>
+                              <div className="min-w-0">
+                                <p className="text-sm font-black text-white truncate">{u.firstName} {u.lastName}</p>
+                                <p className="text-[10px] text-white/40 truncate flex items-center gap-1.5">
+                                  <Mail size={10} /> {u.email}
+                                </p>
                               </div>
                             </div>
                           </td>
                           <td className="px-8 py-6">
+                            <div className="flex justify-center">
+                              <select
+                                value={u.role}
+                                onChange={(e) => handleUpdateRole(u._id, e.target.value)}
+                                disabled={u._id === user.id} // Don't allow self-demotion easily here
+                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all cursor-pointer outline-none appearance-none text-center min-w-[100px]
+                                  ${u.role === 'admin'
+                                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.1)]'
+                                    : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-slate-600'
+                                  } ${u._id === user.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                              >
+                                <option value="user">USER</option>
+                                <option value="admin">ADMIN</option>
+                              </select>
+                            </div>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex justify-center">
+                              {u.isEmailVerified ? (
+                                <div className="p-1.5 bg-green-500/10 text-green-500 rounded-lg" title="Email Vérifié">
+                                  <CheckCircle size={18} />
+                                </div>
+                              ) : (
+                                <div className="p-1.5 bg-slate-800 text-slate-500 rounded-lg" title="Non Vérifié">
+                                  <XCircle size={18} />
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex justify-center">
+                              <button
+                                onClick={() => handleViewUserStats(u._id)}
+                                className="p-2.5 bg-slate-800 hover:bg-slate-700 rounded-xl text-blue-400 transition-all hover:scale-110 active:scale-90 border border-slate-700"
+                                title="Statistiques d'apprentissage"
+                              >
+                                <TrendingUp size={16} />
+                              </button>
+                            </div>
+                          </td>
+                          <td className="px-8 py-6 text-right">
                             <button
-                              onClick={() => handleViewUserStats(u._id)}
-                              className="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold text-blue-400 flex items-center gap-2 transition-colors"
+                              onClick={() => handleDeleteUser(u._id)}
+                              disabled={u.role === 'admin'}
+                              className={`p-2.5 bg-slate-900 border border-slate-800 rounded-xl transition-all 
+                                ${u.role === 'admin' ? 'opacity-20 cursor-not-allowed' : 'text-slate-500 hover:text-red-500 hover:border-red-500/30 hover:bg-red-500/5'}`}
                             >
-                              <Activity size={14} /> Voir Actvité
-                            </button>
-                          </td>
-                          <td className="px-8 py-6">
-                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${u.role === 'admin' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-blue-500/10 text-blue-500'}`}>
-                              {u.role}
-                            </span>
-                          </td>
-                          <td className="px-8 py-6">
-                            {u.isEmailVerified ? <CheckCircle size={18} className="text-green-500" /> : <XCircle size={18} className="text-slate-600" />}
-                          </td>
-                          <td className="px-8 py-6">
-                            <button onClick={() => handleDeleteUser(u._id)} className="p-2 text-slate-600 hover:text-red-500 transition-colors">
-                              <Trash2 size={18} />
+                              <Trash2 size={16} />
                             </button>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-                  {filteredUsers.length === 0 && <div className="p-20 text-center text-white/60">Aucun utilisateur trouvé</div>}
+                  {filteredUsers.length === 0 && (
+                    <div className="p-24 text-center">
+                      <Users size={48} className="mx-auto text-slate-800 mb-4" />
+                      <p className="text-white/40 font-bold">Aucun voyageur ne correspond à cette recherche.</p>
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -1013,27 +1073,119 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
             )}
 
             {activeTab === 'settings' && (
-              <div className="max-w-xl bg-slate-900 p-10 rounded-[2.5rem] border border-slate-800">
-                <h2 className="text-2xl font-black text-white mb-8">Paramètres Admin</h2>
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between p-6 bg-slate-800/20 rounded-2xl border border-slate-800">
-                    <div>
-                      <p className="font-bold text-white">Maintenance Site</p>
-                      <p className="text-xs text-white/60">Désactiver l'accès aux cours</p>
-                    </div>
-                    <div className="w-12 h-6 bg-slate-800 rounded-full relative cursor-pointer">
-                      <div className="absolute left-1 top-1 w-4 h-4 bg-slate-600 rounded-full" />
+              <div className="max-w-4xl space-y-8">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="p-4 bg-blue-600/20 text-blue-400 rounded-3xl"><Settings size={32} /></div>
+                  <h2 className="text-3xl font-black text-white">Paramètres Avancés du Système</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* AI Engine Behavior */}
+                  <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 space-y-8 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-3xl -mr-16 -mt-16 group-hover:bg-blue-600/10 transition-colors" />
+                    <h3 className="text-sm font-black uppercase text-blue-400 tracking-[0.2em] flex items-center gap-2">
+                      <Bot size={18} /> Cerveau de l'IA (LLM)
+                    </h3>
+
+                    <div className="space-y-6">
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-end">
+                          <label className="text-xs font-bold text-white/80">Créativité / Température</label>
+                          <span className="text-[10px] font-mono text-blue-400">0.7 (Équilibré)</span>
+                        </div>
+                        <input type="range" className="w-full accent-blue-600" min="0" max="100" defaultValue="70" />
+                        <p className="text-[9px] text-white/40 italic">Une valeur plus haute rend le Professeur plus imprévisible mais plus "humain".</p>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
+                        <div className="space-y-1">
+                          <p className="text-xs font-bold text-white">Mémoire Multi-Session</p>
+                          <p className="text-[10px] text-white/40">L'IA se souvient des discussions passées.</p>
+                        </div>
+                        <div className="w-12 h-6 bg-blue-600 rounded-full relative cursor-pointer shadow-[0_0_10px_rgba(37,99,235,0.4)]">
+                          <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between p-6 bg-slate-800/20 rounded-2xl border border-slate-800">
-                    <div>
-                      <p className="font-bold text-white">Inscriptions</p>
-                      <p className="text-xs text-white/60">Autoriser les nouveaux comptes</p>
-                    </div>
-                    <div className="w-12 h-6 bg-blue-600 rounded-full relative cursor-pointer">
-                      <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+
+                  {/* Gamification & Logic */}
+                  <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 space-y-8 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/5 blur-3xl -mr-16 -mt-16 group-hover:bg-purple-600/10 transition-colors" />
+                    <h3 className="text-sm font-black uppercase text-purple-400 tracking-[0.2em] flex items-center gap-2">
+                      <Sparkles size={18} /> Expérience & Gamification
+                    </h3>
+
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
+                        <div className="space-y-1">
+                          <p className="text-xs font-bold text-white">Système de Streaks (Séries)</p>
+                          <p className="text-[10px] text-white/40">Encourager la connexion quotidienne.</p>
+                        </div>
+                        <div className="w-12 h-6 bg-purple-600 rounded-full relative cursor-pointer">
+                          <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
+                        <div className="space-y-1">
+                          <p className="text-xs font-bold text-white">Badges Automatiques</p>
+                          <p className="text-[10px] text-white/40">Génération de succès via l'IA.</p>
+                        </div>
+                        <div className="w-12 h-6 bg-slate-800 rounded-full relative cursor-pointer">
+                          <div className="absolute left-1 top-1 w-4 h-4 bg-slate-500 rounded-full" />
+                        </div>
+                      </div>
                     </div>
                   </div>
+
+                  {/* UI & Theme Force */}
+                  <div className="bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 space-y-8 md:col-span-2 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-amber-600/5 blur-[100px] -mr-32 -mt-32" />
+                    <h3 className="text-sm font-black uppercase text-amber-500 tracking-[0.2em] flex items-center gap-2">
+                      <LayoutDashboard size={18} /> Apparence & Accessibilité Globale
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="p-5 bg-slate-950/50 rounded-3xl border border-slate-800/50 space-y-4">
+                        <p className="text-xs font-bold text-white/80">Force du Thème</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button className="py-2 bg-slate-800 rounded-xl text-[10px] font-bold text-white border border-blue-500/50">AUTO</button>
+                          <button className="py-2 bg-slate-900/50 rounded-xl text-[10px] font-bold text-white/40 border border-slate-800">FORCER DARK</button>
+                        </div>
+                      </div>
+
+                      <div className="p-5 bg-slate-950/50 rounded-3xl border border-slate-800/50 space-y-4">
+                        <p className="text-xs font-bold text-white/80">Mode Ultra-Immersif</p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[9px] text-white/40">Filtres CRT & Ambient</p>
+                          <div className="w-10 h-5 bg-slate-800 rounded-full relative">
+                            <div className="absolute left-1 top-1 w-3 h-3 bg-slate-600 rounded-full" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-5 bg-red-600/10 rounded-3xl border border-red-500/20 space-y-4">
+                        <p className="text-xs font-bold text-red-500">Mode Maintenance</p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[9px] text-red-500/60 font-bold uppercase">ALERTE ROUGE</p>
+                          <div className="w-10 h-5 bg-slate-800 rounded-full relative cursor-pointer">
+                            <div className="absolute left-1 top-1 w-3 h-3 bg-slate-600 rounded-full" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-8 bg-blue-600 text-white rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl shadow-blue-900/40 border border-blue-400/30">
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-black italic">"Le contrôle est une illusion, la maîtrise est un art."</h3>
+                    <p className="text-blue-100/80 text-sm font-medium">Certains de ces réglages sont expérimentaux et affectent tous les utilisateurs de Mysterious Classroom.</p>
+                  </div>
+                  <button onClick={handleUpdateConfig} className="px-10 py-4 bg-white text-blue-600 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl">
+                    APPLIQUER LES CHANGEMENTS
+                  </button>
                 </div>
               </div>
             )}

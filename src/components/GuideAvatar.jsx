@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
+const GuideAvatar = ({ state = 'idle', size = "w-24 h-24" }) => {
+    // states: 'spawning', 'idle', 'thinking', 'speaking', 'dancing'
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isBlinking, setIsBlinking] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
 
     // Track mouse
     useEffect(() => {
@@ -17,7 +17,7 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
-    // Subtle life
+    // Subtle life (blinking)
     useEffect(() => {
         const blinkInterval = setInterval(() => {
             if (Math.random() > 0.8) {
@@ -28,33 +28,70 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
         return () => clearInterval(blinkInterval);
     }, []);
 
-    const focusX = mousePos.x * 5;
-    const focusY = mousePos.y * 3;
+    const focusX = state === 'dancing' ? Math.sin(Date.now() / 200) * 10 : mousePos.x * 5;
+    const focusY = state === 'dancing' ? Math.cos(Date.now() / 200) * 10 : mousePos.y * 3;
+
+    // Define animation states
+    const variants = {
+        spawning: {
+            scale: [0, 1.2, 1],
+            rotate: [180, -10, 0],
+            opacity: [0, 1, 1],
+            transition: { duration: 1.5, type: "spring", bounce: 0.5 }
+        },
+        idle: {
+            y: [0, -8, 0],
+            rotate: [0, 2, -2, 0],
+            transition: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+        },
+        thinking: {
+            y: [0, -5, 0],
+            scale: [1, 1.05, 1],
+            rotate: [-2, 2, -2],
+            transition: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+        },
+        speaking: {
+            y: [0, -12, 0],
+            scale: [1, 1.1, 1],
+            rotate: [-1, 1, -1],
+            transition: { duration: 0.5, repeat: Infinity, ease: "easeInOut" }
+        },
+        dancing: {
+            y: [0, -20, 0, -10, 0],
+            x: [-10, 10, -10, 10, 0],
+            rotate: [-15, 15, -15, 15, 0],
+            scale: [1, 1.2, 0.9, 1.1, 1],
+            transition: { duration: 1.5, repeat: Infinity, ease: "easeInOut" }
+        }
+    };
 
     return (
-        <div
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className={`relative ${size} flex items-center justify-center pointer-events-auto cursor-pointer select-none`}
+        <motion.div
+            initial="spawning"
+            animate={state}
+            variants={variants}
+            className={`relative ${size} flex items-center justify-center pointer-events-auto select-none drop-shadow-2xl z-[9000] cursor-pointer`}
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
         >
-            {/* Halo / Aura */}
+            {/* Halo / Aura depending on state */}
             <motion.div
-                className="absolute inset-[-40%] rounded-full opacity-40 blur-3xl shadow-[0_0_100px_rgba(59,130,246,0.3)]"
-                style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%)' }}
-                animate={{
-                    scale: isThinking || isHovered ? [1, 1.2, 1] : [1, 1.1, 1],
-                    opacity: isThinking ? [0.4, 0.7, 0.4] : [0.2, 0.4, 0.2]
+                className="absolute inset-[-50%] rounded-full opacity-60 blur-3xl"
+                style={{
+                    background: state === 'dancing' ? 'radial-gradient(circle, rgba(168, 85, 247, 0.8) 0%, transparent 70%)' :
+                        state === 'speaking' ? 'radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, transparent 70%)' :
+                            state === 'thinking' ? 'radial-gradient(circle, rgba(245, 158, 11, 0.8) 0%, transparent 70%)' :
+                                'radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%)'
                 }}
-                transition={{ duration: 3, repeat: Infinity }}
+                animate={{
+                    scale: state === 'speaking' || state === 'dancing' ? [1, 1.4, 1] : [1, 1.1, 1],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
             />
 
-            <motion.div
-                animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="w-full h-full relative z-10"
-            >
+            <div className="w-full h-full relative z-10 transition-transform">
                 {/* ADVANCED PROFESSOR SVG */}
-                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.4)]">
+                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.5)]">
                     <defs>
                         <linearGradient id="suitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stopColor="#1e293b" />
@@ -69,6 +106,10 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
                             <stop offset="0%" stopColor="#1e293b" />
                             <stop offset="50%" stopColor="#334155" />
                             <stop offset="100%" stopColor="#1e293b" />
+                        </linearGradient>
+                        <linearGradient id="hatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#2d3748" />
+                            <stop offset="100%" stopColor="#1a202c" />
                         </linearGradient>
                         <filter id="innerShadow">
                             <feOffset dx="0" dy="1" />
@@ -88,12 +129,12 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
                     <motion.circle
                         cx="50" cy="50" r="46"
                         fill="none"
-                        stroke="#3b82f6"
-                        strokeWidth="1"
-                        strokeDasharray="4 8"
+                        stroke={state === 'dancing' ? '#a855f7' : '#3b82f6'}
+                        strokeWidth="2"
+                        strokeDasharray="4 12"
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                        opacity="0.3"
+                        transition={{ duration: state === 'dancing' ? 10 : 30, repeat: Infinity, ease: "linear" }}
+                        opacity={state === 'idle' ? "0.3" : "0.8"}
                     />
 
                     <g clipPath="url(#avatarClip)">
@@ -108,7 +149,7 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
                         <path d="M 62 82 L 55 88 L 55 80 Z" fill="#e2e8f0" />
 
                         {/* SILK TIE (Cravate) */}
-                        <path d="M 47 85 L 53 85 L 55 92 L 50 100 L 45 92 Z" fill="#3b82f6" filter="url(#innerShadow)" />
+                        <path d="M 47 85 L 53 85 L 55 92 L 50 100 L 45 92 Z" fill={state === 'dancing' ? '#a855f7' : '#3b82f6'} filter="url(#innerShadow)" />
                         <path d="M 48 85 L 52 85 L 50 89 Z" fill="#2563eb" />
 
                         {/* HEAD GROUP */}
@@ -137,11 +178,29 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
                                 d="M 32 42 Q 32 20 50 16 Q 68 20 68 42 L 71 38 Q 71 12 50 8 Q 29 12 29 38 Z"
                                 fill="url(#hairGrad)"
                             />
+
+                            {/* Academic Hat (Mortarboard) - PREMIUM */}
+                            <g>
+                                {/* Hat Base */}
+                                <path d="M 32 30 Q 50 24 68 30 L 68 38 Q 50 32 32 38 Z" fill="url(#hatGrad)" />
+                                {/* Hat Top (Rhombus) */}
+                                <path
+                                    d="M 22 25 L 50 12 L 78 25 L 50 38 Z"
+                                    fill="url(#hatGrad)"
+                                    stroke="rgba(255,255,255,0.05)"
+                                    strokeWidth="0.5"
+                                />
+                                {/* Tassel (Frange) */}
+                                <path d="M 50 25 L 75 32 L 75 42" fill="none" stroke="#fbbf24" strokeWidth="1" strokeLinecap="round" />
+                                <circle cx="75" cy="42" r="2.5" fill="#d97706" />
+                            </g>
+
+                            {/* Glasses Arms */}
                             <path d="M 34 22 Q 40 16 48 18" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.6" />
                             <path d="M 52 18 Q 60 16 66 22" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.6" />
 
                             {/* Eyes (High Res Detail) */}
-                            {!isBlinking ? (
+                            {!isBlinking && state !== 'dancing' ? (
                                 <>
                                     <g>
                                         <circle cx="42" cy="47" r="4" fill="#ffffff" />
@@ -171,26 +230,51 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
                             {/* Nose Bridge */}
                             <path d="M 49 53 L 50 58 L 51 53" fill="none" stroke="#b45309" strokeWidth="0.5" opacity="0.3" />
 
-                            {/* Mouth - Slight Confidence Smile */}
-                            <path d="M 43 68 Q 50 72 57 68" fill="none" stroke="#b45309" strokeWidth="2" strokeLinecap="round" />
+                            {/* Mouth - Dynamic based on state */}
+                            {state === 'speaking' ? (
+                                <ellipse cx="50" cy="68" rx="4" ry="2" fill="#78350f" />
+                            ) : state === 'dancing' ? (
+                                <path d="M 43 65 Q 50 75 57 65" fill="none" stroke="#b45309" strokeWidth="2" strokeLinecap="round" />
+                            ) : (
+                                <path d="M 43 68 Q 50 72 57 68" fill="none" stroke="#b45309" strokeWidth="2" strokeLinecap="round" />
+                            )}
                         </motion.g>
                     </g>
 
-                    {/* Floating Ornaments (Reduced for Focus) */}
-                    {isThinking && (
-                        <motion.g
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                        >
-                            <circle cx="88" cy="35" r="2.5" fill="#3b82f6" opacity="0.5">
-                                <animate attributeName="r" values="2.5;4;2.5" dur="1.8s" repeatCount="indefinite" />
-                            </circle>
-                        </motion.g>
-                    )}
+                    {/* Floating Ornaments */}
+                    <AnimatePresence>
+                        {state === 'thinking' && (
+                            <motion.g
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                <circle cx="88" cy="35" r="3" fill="#fbbf24" opacity="0.8">
+                                    <animate attributeName="r" values="3;5;3" dur="1.2s" repeatCount="indefinite" />
+                                </circle>
+                                <circle cx="12" cy="65" r="2" fill="#fbbf24" opacity="0.6">
+                                    <animate attributeName="r" values="2;4;2" dur="1.5s" repeatCount="indefinite" />
+                                </circle>
+                            </motion.g>
+                        )}
+                        {state === 'dancing' && (
+                            <motion.g
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                <path d="M 85 20 l 5 10 l -10 0 Z" fill="#a855f7">
+                                    <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="0.5s" repeatCount="indefinite" />
+                                </path>
+                                <path d="M 15 20 l 5 10 l -10 0 Z" fill="#ec4899">
+                                    <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="0.5s" begin="0.25s" repeatCount="indefinite" />
+                                </path>
+                            </motion.g>
+                        )}
+                    </AnimatePresence>
                 </svg>
-            </motion.div>
-        </div>
+            </div>
+        </motion.div>
     );
 };
 

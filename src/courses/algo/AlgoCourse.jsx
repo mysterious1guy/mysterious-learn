@@ -10,10 +10,51 @@ import {
 } from 'lucide-react';
 
 import { algoCourseData as courseData } from './algoCourseContent';
+import CourseClassroom from '../../components/CourseClassroom';
 
 // =====================================================================
 // COMPOSANTS INTERACTIFS
 // =====================================================================
+
+const InteractiveInsight = ({ prompt, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="my-6">
+      <button
+        onClick={() => {
+          setIsOpen(!isOpen);
+          if (!isOpen) {
+            const event = new CustomEvent('mysterious-ai-murmur', {
+              detail: { text: "Excellente curiosité ! Découvrir par soi-même vaut mille explications." }
+            });
+            window.dispatchEvent(event);
+          }
+        }}
+        className={`w-full text-left p-5 rounded-2xl border transition-all flex items-center justify-between ${isOpen ? 'bg-blue-50 border-blue-200 rounded-b-none' : 'bg-white border-slate-200 hover:bg-slate-50 shadow-sm'}`}
+      >
+        <span className="font-bold text-blue-700 flex items-center gap-3">
+          <HelpCircle size={20} className={isOpen ? 'text-blue-500' : 'text-slate-400'} />
+          {prompt}
+        </span>
+        <ChevronDown size={20} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="p-6 bg-slate-50 border border-t-0 border-blue-200 rounded-b-2xl">
+              <p className="text-slate-700 font-medium ">{answer}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const TheoryViewer = ({ title, content, onComplete }) => {
   const renderRichText = (text) => {
@@ -50,6 +91,12 @@ const TheoryViewer = ({ title, content, onComplete }) => {
       );
       if (trimmed.startsWith('* ')) {
         return <li key={idx} className="ml-4 md:ml-8 list-disc text-slate-700 mb-2 text-sm md:text-base font-medium">{renderRichText(trimmed.replace('* ', ''))}</li>;
+      }
+      if (trimmed.startsWith('[?] ')) {
+        const parts = trimmed.replace('[?] ', '').split('|');
+        if (parts.length >= 2) {
+          return <InteractiveInsight key={idx} prompt={parts[0].trim()} answer={parts.slice(1).join('|').trim()} />;
+        }
       }
       if (trimmed === '') return <div key={idx} className="h-3"></div>;
 
@@ -294,8 +341,8 @@ const ProfessorBubble = ({ text, isThinking, onAskQuestion }) => (
           onClick={onAskQuestion}
           className="mt-3 flex items-center gap-2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-100 transition-all"
         >
-          <HelpCircle size={12} />
-          Poser une question
+          <Sparkles size={12} />
+          Demander un Indice
         </motion.button>
       )}
     </div>
@@ -310,6 +357,7 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const [loadingProgress, setLoadingProgress] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showAdminMenu, setShowAdminMenu] = useState(false);
+  const [showClassroomIntro, setShowClassroomIntro] = useState(true);
 
   const isAdmin = user?.role === 'admin';
 
@@ -385,8 +433,15 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   }, [activeLessonId, loadingProgress, isTransitioning]);
 
   const handleAskQuestion = () => {
-    const event = new CustomEvent('mysterious-ai-open', {
-      detail: { message: `J'ai une question sur la leçon "${currentLesson?.title}" : ` }
+    const hints = [
+      "Réfléchis en pseudo-code d'abord !",
+      "Un ordinateur est bête, sois très précis.",
+      "Décortique le problème en sous-problèmes plus simples.",
+      "N'oublie pas de vérifier tes conditions de boucle."
+    ];
+    const randomHint = hints[Math.floor(Math.random() * hints.length)];
+    const event = new CustomEvent('mysterious-ai-murmur', {
+      detail: { text: "Petit indice : " + randomHint }
     });
     window.dispatchEvent(event);
   };
@@ -530,6 +585,16 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
         <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-6" />
         <p className="font-mono text-xs tracking-widest text-blue-600 uppercase font-black text-center">Consultation du grimoire...</p>
       </div>
+    );
+  }
+
+  if (showClassroomIntro) {
+    return (
+      <CourseClassroom
+        courseTitle="L'Art de l'Algorithmique"
+        courseDescription="Plonge dans les fondations du code. Oublie les langages éphémères, apprends la pure logique machine."
+        onEnter={() => setShowClassroomIntro(false)}
+      />
     );
   }
 
