@@ -7,6 +7,7 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
     const [isBlinking, setIsBlinking] = useState(false);
     const [headTilt, setHeadTilt] = useState(0);
     const [eyePattern, setEyePattern] = useState('standard');
+    const [isHovered, setIsHovered] = useState(false);
     const containerRef = useRef(null);
 
     // Track mouse and global clicks
@@ -61,14 +62,18 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
     const focusY = (mousePos.y * 0.7 + clickPos.y * 0.3) * 8;
 
     return (
-        <div className={`relative ${size} flex items-center justify-center pointer-events-none select-none`}>
+        <div
+            onMouseEnter={() => { setIsHovered(true); setEyePattern('happy'); }}
+            onMouseLeave={() => { setIsHovered(false); setEyePattern('standard'); }}
+            className={`relative ${size} flex items-center justify-center pointer-events-auto cursor-pointer select-none`}
+        >
             {/* VIBRANT HALO / AURA BACKGROUND */}
             <motion.div
-                className="absolute inset-[-20%] rounded-full opacity-40 blur-2xl"
-                style={{ background: 'radial-gradient(circle, #fbbf24 0%, #3b82f6 50%, transparent 100%)' }}
+                className="absolute inset-[-40%] rounded-full opacity-60 blur-3xl"
+                style={{ background: 'radial-gradient(circle, rgba(251, 191, 36, 0.4) 0%, rgba(59, 130, 246, 0.2) 50%, transparent 70%)' }}
                 animate={{
-                    scale: isThinking ? [1, 1.4, 1] : [1, 1.15, 1],
-                    opacity: isThinking ? [0.4, 0.7, 0.4] : [0.3, 0.5, 0.3]
+                    scale: isThinking || isHovered ? [1, 1.3, 1] : [1, 1.1, 1],
+                    opacity: isThinking ? [0.6, 0.9, 0.6] : [0.4, 0.6, 0.4]
                 }}
                 transition={{ duration: isThinking ? 0.8 : 3, repeat: Infinity }}
             />
@@ -76,7 +81,7 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
             <motion.div
                 animate={{
                     y: [0, -8, 0],
-                    rotate: headTilt
+                    rotate: headTilt + (isHovered ? 5 : 0)
                 }}
                 transition={{
                     y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
@@ -84,77 +89,68 @@ const GuideAvatar = ({ isOpen, isThinking, size = "w-16 h-16" }) => {
                 }}
                 className="w-full h-full relative z-10"
             >
-                <svg viewBox="0 0 100 100" className="w-full h-full">
+                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]">
                     <defs>
-                        {/* Golden Neon Gradient */}
+                        {/* Golden Neon Gradient - More vibrant for Professeur */}
                         <linearGradient id="goldNeon" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#fde047" />
-                            <stop offset="50%" stopColor="#fbbf24" />
-                            <stop offset="100%" stopColor="#b45309" />
-                        </linearGradient>
-
-                        {/* Cyan Digital Gradient */}
-                        <linearGradient id="cyanNeon" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="#22d3ee" />
-                            <stop offset="100%" stopColor="#0891b2" />
+                            <stop offset="0%" stopColor="#fff1b8" />
+                            <stop offset="40%" stopColor="#fbbf24" />
+                            <stop offset="100%" stopColor="#d97706" />
                         </linearGradient>
 
                         <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feGaussianBlur stdDeviation="2.5" result="blur" />
                             <feComposite in="SourceGraphic" in2="blur" operator="over" />
                         </filter>
-
-                        <radialGradient id="eyeRef">
-                            <stop offset="0%" stopColor="white" stopOpacity="1" />
-                            <stop offset="100%" stopColor="white" stopOpacity="0" />
-                        </radialGradient>
                     </defs>
 
-                    {/* MAIN BODY - Polished Gold Shell */}
+                    {/* MAIN BODY - Premium Gold Shell */}
                     <path
                         d="M 20 80 Q 50 100 80 80 L 88 40 Q 88 10 50 10 Q 12 10 12 40 Z"
                         fill="url(#goldNeon)"
                         stroke="#b45309"
                         strokeWidth="1.5"
-                        filter="drop-shadow(0 0 5px rgba(251, 191, 36, 0.5))"
                     />
 
-                    {/* VISOR - High Contrast Black/Cyan */}
+                    {/* VISOR - Black Glass */}
                     <rect
                         x="18" y="32" width="64" height="38" rx="14"
                         fill="#0c0a09"
-                        stroke="#22d3ee"
-                        strokeWidth="2"
+                        stroke="#fbbf24"
+                        strokeWidth="1.5"
+                        opacity="0.95"
                     />
 
                     {/* INTERACTIVE EYES */}
                     <motion.g
                         animate={{ x: focusX, y: focusY }}
-                        transition={{ type: 'spring', stiffness: 180, damping: 18 }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                     >
                         {isBlinking ? (
                             <g filter="url(#neonGlow)">
-                                <rect x="32" y="48" width="14" height="2" rx="1" fill="#22d3ee" />
-                                <rect x="54" y="48" width="14" height="2" rx="1" fill="#22d3ee" />
+                                <rect x="32" y="48" width="14" height="2" rx="1" fill="#fbbf24" />
+                                <rect x="54" y="48" width="14" height="2" rx="1" fill="#fbbf24" />
                             </g>
                         ) : (
                             <g filter="url(#neonGlow)">
                                 {eyePattern === 'standard' && (
                                     <>
-                                        {/* Stylized Hexagonal Eyes */}
-                                        <path d="M 32 45 L 42 45 L 45 50 L 42 55 L 32 55 L 29 50 Z" fill="#22d3ee" />
-                                        <path d="M 55 45 L 65 45 L 68 50 L 65 55 L 55 55 L 52 50 Z" fill="#22d3ee" />
-                                        {/* Eye Shine */}
-                                        <circle cx="36" cy="48" r="2" fill="url(#eyeRef)" opacity="0.8" />
-                                        <circle cx="59" cy="48" r="2" fill="url(#eyeRef)" opacity="0.8" />
+                                        <path d="M 32 45 L 42 45 L 45 50 L 42 55 L 32 55 L 29 50 Z" fill="#fbbf24" />
+                                        <path d="M 55 45 L 65 45 L 68 50 L 65 55 L 55 55 L 52 50 Z" fill="#fbbf24" />
+                                        <circle cx="36" cy="48" r="1.5" fill="white" opacity="0.8" />
+                                        <circle cx="59" cy="48" r="1.5" fill="white" opacity="0.8" />
                                     </>
                                 )}
                                 {eyePattern === 'curious' && (
                                     <>
-                                        <circle cx="37" cy="50" r="6" fill="none" stroke="#22d3ee" strokeWidth="2.5" />
-                                        <circle cx="60" cy="50" r="6" fill="none" stroke="#22d3ee" strokeWidth="2.5" />
-                                        <circle cx="37" cy="50" r="2" fill="#22d3ee" />
-                                        <circle cx="60" cy="50" r="2" fill="#22d3ee" />
+                                        <circle cx="37" cy="50" r="5" fill="none" stroke="#fbbf24" strokeWidth="2.5" />
+                                        <circle cx="60" cy="50" r="5" fill="none" stroke="#fbbf24" strokeWidth="2.5" />
+                                    </>
+                                )}
+                                {eyePattern === 'happy' && (
+                                    <>
+                                        <path d="M 30 52 Q 37 42 44 52" fill="none" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" />
+                                        <path d="M 53 52 Q 60 42 67 52" fill="none" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round" />
                                     </>
                                 )}
                             </g>

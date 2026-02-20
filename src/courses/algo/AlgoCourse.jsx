@@ -35,13 +35,23 @@ const TheoryViewer = ({ title, content, onComplete }) => {
       if (line.includes('FONCTION ') || line.includes('SI ') || line.includes('POUR ') ||
         line.includes('TANT QUE ') || line.includes('FIN ') || line.includes('//')) {
         return (
-          <div key={idx} className="font-mono text-xs md:text-sm text-green-400 bg-gray-950 px-3 py-1 rounded border-l-4 border-blue-600 my-2 overflow-x-auto">
-            {line}
+          <div key={idx} className="my-6">
+            <div className="flex items-center gap-2 px-4 py-2 bg-gray-950 border border-white/10 rounded-t-xl border-b-0">
+              <div className="flex gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+                <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+              </div>
+              <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest ml-2">Console Professeur</span>
+            </div>
+            <div className="font-mono text-sm md:text-base text-blue-300 bg-black/90 px-6 py-4 rounded-b-xl border border-white/10 border-t-0 shadow-2xl overflow-x-auto">
+              {line}
+            </div>
           </div>
         );
       }
 
-      return <p key={idx} className="text-gray-300 leading-relaxed mb-3 text-sm md:text-base">{line}</p>;
+      return <p key={idx} className="text-gray-300 leading-relaxed mb-4 text-base md:text-lg">{line}</p>;
     });
   };
 
@@ -350,6 +360,34 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
     }, 400);
   };
 
+  const goToPreviousLesson = () => {
+    if (currentIndex === 0) return;
+    setIsTransitioning(true);
+
+    const prevLesson = allLessons[currentIndex - 1];
+
+    // Trouver module et chapitre
+    let prevMod = null;
+    let prevChap = null;
+    for (const mod of courseData) {
+      for (const chap of mod.chapters) {
+        if (chap.lessons.find(l => l.id === prevLesson.id)) {
+          prevMod = mod;
+          prevChap = chap;
+          break;
+        }
+      }
+      if (prevMod) break;
+    }
+
+    setTimeout(() => {
+      setActiveModuleId(prevMod.id);
+      setActiveChapterId(prevChap.id);
+      setActiveLessonId(prevLesson.id);
+      setIsTransitioning(false);
+    }, 400);
+  };
+
   const handleLessonCompletion = async (success) => {
     if (success && !completedLessons.includes(activeLessonId)) {
       setCompletedLessons(prev => [...prev, activeLessonId]);
@@ -453,9 +491,15 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
       </header>
 
       <div className="flex-1 flex flex-col overflow-hidden relative">
-        <main className="flex-1 overflow-y-auto custom-scrollbar relative px-4 py-8 md:px-0">
-          <div className="max-w-4xl mx-auto">
-            <ProfessorBubble text={currentLesson?.professorSpeech || "C'est parti ! Apprenons ensemble."} isThinking={isTransitioning} />
+        <main className="flex-1 overflow-y-auto custom-scrollbar relative px-4 py-8 md:px-0 scroll-smooth">
+          <div className="max-w-5xl mx-auto px-4">
+            <motion.div
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2, type: 'spring' }}
+            >
+              <ProfessorBubble text={currentLesson?.professorSpeech || "C'est parti ! Apprenons ensemble."} isThinking={isTransitioning} />
+            </motion.div>
 
             <AnimatePresence mode="wait">
               {!isTransitioning && (
@@ -476,15 +520,29 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
         </main>
 
         {/* Footer Navigation - Floating Button */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-6">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-6 flex gap-4">
+          <button
+            onClick={goToPreviousLesson}
+            disabled={currentIndex === 0 || isTransitioning}
+            className={`
+              w-20 p-5 rounded-3xl font-black transition-all flex items-center justify-center shadow-2xl
+              ${currentIndex === 0 || isTransitioning
+                ? 'bg-gray-800 text-gray-600 opacity-50 cursor-not-allowed'
+                : 'bg-white/5 text-white hover:bg-white/10 active:scale-95'
+              }
+            `}
+          >
+            <ArrowLeft size={24} />
+          </button>
+
           <button
             onClick={goToNextLesson}
             disabled={!completedLessons.includes(activeLessonId) || isLastLesson || isTransitioning}
             className={`
-              w-full p-5 rounded-3xl font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-2xl
+              flex-1 p-5 rounded-3xl font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-2xl
               ${!completedLessons.includes(activeLessonId) || isLastLesson || isTransitioning
                 ? 'bg-gray-800 text-gray-600 opacity-50 cursor-not-allowed border border-white/5'
-                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:scale-105 active:scale-95 shadow-blue-500/20'
+                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:scale-[1.02] active:scale-95 shadow-blue-500/20'
               }
             `}
           >
