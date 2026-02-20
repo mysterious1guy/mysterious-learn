@@ -15,12 +15,22 @@ body {
 .brand-font {
   font-family: 'Outfit', sans-serif;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
 }
 
 .brand-font-secondary {
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.text-glow-blue {
+  text-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
+}
+
+.text-glow-purple {
+  text-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
 }
 
 /* Effet de verre (Glassmorphism) */

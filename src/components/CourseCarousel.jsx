@@ -54,7 +54,7 @@ const CourseCarousel = ({ courses }) => {
     const currentCourse = courses[currentIndex];
 
     return (
-        <div className="relative w-full max-w-5xl mx-auto h-[500px] mt-12 mb-20 px-4 group">
+        <div className="relative w-full max-w-5xl mx-auto h-[500px] mt-12 mb-20 px-4 group overflow-hidden">
             <AnimatePresence initial={false} custom={direction}>
                 <motion.div
                     key={currentIndex}

@@ -4,7 +4,7 @@ import {
   User, Mail, Phone, Lock, Shield, Globe, Bell,
   Camera, CheckCircle, ChevronRight, Edit2, LogOut,
   Save, Trash2, ShieldCheck, Download, BookOpen, Target, Award, Clock,
-  Settings, TrendingUp, X
+  Settings, TrendingUp, X, Star
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { formatTimeAgo } from '../utils/dateUtils';

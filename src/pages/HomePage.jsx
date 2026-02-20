@@ -99,13 +99,13 @@ const HomePage = ({ API_URL }) => {
                             <h1 className="flex flex-col items-center">
                                 <motion.span
                                     style={{ x: mousePosition.x * 0.5, y: mousePosition.y * 0.5 }}
-                                    className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50 leading-[0.8]"
+                                    className="text-7xl md:text-9xl lg:text-[11rem] brand-font text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-blue-500/20 text-glow-blue"
                                 >
                                     MYSTERIOUS
                                 </motion.span>
                                 <motion.span
                                     style={{ x: mousePosition.x * -0.5, y: mousePosition.y * -0.5 }}
-                                    className="text-4xl md:text-7xl lg:text-8xl font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-2 drop-shadow-[0_0_30px_rgba(147,51,234,0.3)]"
+                                    className="text-5xl md:text-8xl lg:text-9xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-4 text-glow-purple drop-shadow-[0_0_50px_rgba(168,85,247,0.4)]"
                                 >
                                     CLASSROOM
                                 </motion.span>
