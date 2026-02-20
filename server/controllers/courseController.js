@@ -105,11 +105,24 @@ const getCategories = async (req, res) => {
 // @route   GET /api/courses/:courseId/progress
 const getProgress = async (req, res) => {
   try {
-    const progress = await Progress.findOne({
+    let progress = await Progress.findOne({
       user: req.user._id,
       courseId: req.params.courseId,
     });
-    res.json(progress || { completedLessons: [], progress: 0 });
+
+    if (!progress) {
+      // Créer une progression vide pour compter l'étudiant
+      progress = new Progress({
+        user: req.user._id,
+        courseId: req.params.courseId,
+        completedLessons: [],
+        progress: 0,
+        lastAccessed: Date.now()
+      });
+      await progress.save();
+    }
+
+    res.json(progress);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Erreur serveur' });

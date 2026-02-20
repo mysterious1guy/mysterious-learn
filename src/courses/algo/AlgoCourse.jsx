@@ -256,6 +256,9 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const currentChapter = currentModule?.chapters.find(c => c.id === activeChapterId);
   const currentLesson = currentChapter?.lessons.find(l => l.id === activeLessonId);
 
+  // Nouveau state pour l'animation de changement de module
+  const [showModuleCelebration, setShowModuleCelebration] = useState(false);
+
   const totalLessons = courseData.reduce((acc, mod) => acc + mod.chapters.reduce((acc2, chap) => acc2 + chap.lessons.length, 0), 0);
   const progress = Math.round((completedLessons.length / totalLessons) * 100);
 
@@ -305,17 +308,43 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const goToNextLesson = () => {
     if (isLastLesson) return;
     setIsTransitioning(true);
+
+    const nextLesson = allLessons[currentIndex + 1];
+
+    // Vérifier si on change de module
+    let nextMod = null;
+    for (const mod of courseData) {
+      for (const chap of mod.chapters) {
+        if (chap.lessons.find(l => l.id === nextLesson.id)) {
+          nextMod = mod;
+          break;
+        }
+      }
+      if (nextMod) break;
+    }
+
+    const changedModule = nextMod && nextMod.id !== activeModuleId;
+
     setTimeout(() => {
-      const nextLesson = allLessons[currentIndex + 1];
-      for (const mod of courseData) {
-        for (const chap of mod.chapters) {
+      if (nextMod) {
+        // Si on change de module, on peut afficher une petite célébration
+        if (changedModule) {
+          setShowModuleCelebration(true);
+          setTimeout(() => setShowModuleCelebration(false), 3000);
+        }
+
+        // Trouver le chapitre
+        let nextChap = null;
+        for (const chap of nextMod.chapters) {
           if (chap.lessons.find(l => l.id === nextLesson.id)) {
-            setActiveModuleId(mod.id);
-            setActiveChapterId(chap.id);
-            setActiveLessonId(nextLesson.id);
+            nextChap = chap;
             break;
           }
         }
+
+        setActiveModuleId(nextMod.id);
+        setActiveChapterId(nextChap.id);
+        setActiveLessonId(nextLesson.id);
       }
       setIsTransitioning(false);
     }, 400);
@@ -358,6 +387,28 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
       {/* Dynamic Background */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)] pointer-events-none" />
 
+      {/* Module Celebration Overlay */}
+      <AnimatePresence>
+        {showModuleCelebration && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.5 }}
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center pointer-events-none"
+          >
+            <div className="bg-blue-600/90 backdrop-blur-xl p-8 rounded-[40px] border border-white/20 shadow-2xl flex flex-col items-center gap-4">
+              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center animate-bounce">
+                <Trophy size={40} className="text-yellow-400" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-2xl font-black italic tracking-tighter uppercase">Nouveau Module !</h3>
+                <p className="text-blue-100 font-medium">{currentModule?.title}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <header className="h-16 md:h-20 bg-[#0a0c12]/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-6 shrink-0 z-50">
         <div className="flex items-center gap-4">
@@ -365,11 +416,19 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
             <ArrowLeft size={20} />
           </button>
           <div className="h-8 w-px bg-white/10 hidden md:block" />
-          <h1 className="font-bold text-sm md:text-base tracking-tight flex items-center gap-3">
-            <span className="text-blue-500 font-black italic">ALGO</span>
-            <span className="opacity-50 hidden sm:inline">|</span>
-            <span className="truncate max-w-[150px] md:max-w-none">{currentLesson?.title}</span>
-          </h1>
+          <div className="flex flex-col">
+            <h1 className="font-bold text-sm md:text-base tracking-tight flex items-center gap-2">
+              <span className="text-blue-500 font-black italic hidden sm:inline">ALGO</span>
+              <span className="opacity-50 hidden sm:inline">|</span>
+              <span className="truncate max-w-[150px] md:max-w-none">{currentLesson?.title}</span>
+            </h1>
+            {/* Breadcrumb for mobile clarity */}
+            <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+              <span className="text-purple-400/80">{currentModule?.title.split(':')[0]}</span>
+              <ChevronRight size={10} className="opacity-30" />
+              <span className="truncate max-w-[100px]">{currentChapter?.title}</span>
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center gap-6">
