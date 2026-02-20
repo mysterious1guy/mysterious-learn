@@ -8,6 +8,18 @@ import { useEffect } from 'react';
 const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL, searchQuery = '' }) => {
     const navigate = useNavigate();
     const [courseStats, setCourseStats] = useState({});
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            const { clientX, clientY } = e;
+            const x = (clientX / window.innerWidth - 0.5) * 15;
+            const y = (clientY / window.innerHeight - 0.5) * 15;
+            setMousePosition({ x, y });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -36,16 +48,26 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-900 via-[#0a0f1e] to-black pb-20">
             {/* Header */}
-            <div className="pt-24 pb-12 px-6 lg:px-12">
+            <div className="pt-24 pb-12 px-6 lg:px-12 relative overflow-hidden">
+                {/* Background Blobs */}
+                <motion.div
+                    style={{ x: mousePosition.x * 0.8, y: mousePosition.y * 0.8 }}
+                    className="absolute top-10 right-[10%] w-64 h-64 bg-blue-500/10 blur-[100px] rounded-full -z-10"
+                />
+                <motion.div
+                    style={{ x: mousePosition.x * -0.5, y: mousePosition.y * -0.5 }}
+                    className="absolute top-20 left-[5%] w-48 h-48 bg-purple-500/10 blur-[80px] rounded-full -z-10"
+                />
+
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="max-w-7xl mx-auto"
                 >
-                    <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 mb-4">
+                    <h1 className="text-4xl md:text-5xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-4">
                         Bienvenue, {user?.firstName} ! 👋
                     </h1>
-                    <p className="text-gray-400 text-lg">
+                    <p className="text-gray-400 text-lg font-medium opacity-80">
                         Prêt à continuer ton apprentissage mystérieux ?
                     </p>
                 </motion.div>
@@ -62,7 +84,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                         className="pl-6 lg:pl-12"
                     >
                         <div className="flex items-center gap-3 mb-6">
-                            <h2 className="text-2xl font-bold text-white">{category.title}</h2>
+                            <h2 className="text-2xl brand-font-secondary text-white uppercase tracking-wider opacity-80">{category.title}</h2>
                             <div className="h-px flex-1 bg-gradient-to-r from-gray-800 to-transparent ml-4" />
                         </div>
 

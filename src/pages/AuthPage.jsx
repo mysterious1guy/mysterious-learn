@@ -165,7 +165,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                         <CyberPet isPasswordFocused={isPasswordFocused} onSecret={petSecret} />
                     </div>
 
-                    <h2 className="text-3xl font-black text-white text-center mb-8 tracking-tight">
+                    <h2 className="text-3xl brand-font text-white text-center mb-8 tracking-tight">
                         {authMode === 'verification' ? 'Vérification' : (authMode === 'signin' ? 'Connexion' : 'Inscription')}
                     </h2>
 

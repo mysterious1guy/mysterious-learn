@@ -89,7 +89,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
 
                 {/* Header - Progress */}
                 <div className="mb-12">
-                    <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-8 text-center">
+                    <h1 className="text-3xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-8 text-center uppercase tracking-wider">
                         Bienvenue sur Mysterious Classroom
                     </h1>
 

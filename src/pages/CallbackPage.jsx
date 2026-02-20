@@ -73,7 +73,7 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
                         <span className="text-2xl">✨</span>
                     </div>
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-2">Connexion en cours...</h2>
+                <h2 className="text-2xl brand-font text-white mb-2">Connexion en cours...</h2>
                 <p className="text-slate-400">Nous préparons votre espace personnel</p>
             </div>
         </div>

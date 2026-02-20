@@ -90,7 +90,7 @@ const AdminLoginPage = ({ setToast }) => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-tr from-blue-600 to-cyan-500 rounded-full mb-4 shadow-lg shadow-blue-500/30">
             <Shield className="text-white" size={32} />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Accès Admin</h1>
+          <h1 className="text-3xl brand-font text-white mb-2">Accès Admin</h1>
           <p className="text-gray-400">Connexion sécurisée pour administrateurs</p>
         </div>
 
@@ -110,7 +110,7 @@ const AdminLoginPage = ({ setToast }) => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-3 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all"
+                  className="w-full pl-10 pr-3 py-3 bg-slate-950/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all"
                   placeholder="admin@exemple.com"
                   required
                 />
@@ -130,7 +130,7 @@ const AdminLoginPage = ({ setToast }) => {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-10 py-3 bg-slate-950/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all"
+                  className="w-full pl-10 pr-10 py-3 bg-slate-950/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/50 transition-all"
                   placeholder="•••••••••"
                   required
                 />
@@ -152,7 +152,7 @@ const AdminLoginPage = ({ setToast }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center items-center gap-2 py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg hover:from-blue-500 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/25"
+              className="w-full flex justify-center items-center gap-2 py-4 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl hover:from-blue-500 hover:to-cyan-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-500/25 font-bold"
             >
               {isLoading ? (
                 <>
