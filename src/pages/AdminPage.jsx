@@ -6,7 +6,7 @@ import {
   BarChart3, UserPlus, UserMinus, Camera, Upload, AlertTriangle, TrendingUp,
   Activity, LayoutDashboard, Database, Shield, LogOut, Search, Filter,
   CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone, Save,
-  Sparkles
+  Sparkles, Bot
 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { formatTimeAgo } from '../utils/dateUtils';
@@ -346,12 +346,16 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
-    { id: 'users', label: 'Utilisateurs', icon: Users },
-    { id: 'notifications', label: 'Communications', icon: Bell },
+    ...(user?.adminTier === 'owner' ? [
+      { id: 'users', label: 'Utilisateurs', icon: Users },
+      { id: 'notifications', label: 'Communications', icon: Bell }
+    ] : []),
     { id: 'courses', label: 'Gestion des cours', icon: BookOpen },
     { id: 'ai-brain', label: 'Cerveau de l\'IA', icon: Sparkles },
-    { id: 'config', label: 'Configuration Site', icon: LayoutDashboard },
-    { id: 'settings', label: 'Paramètres', icon: Settings },
+    ...(user?.adminTier === 'owner' ? [
+      { id: 'config', label: 'Configuration Site', icon: LayoutDashboard },
+      { id: 'settings', label: 'Paramètres', icon: Settings }
+    ] : [])
   ];
 
   return (

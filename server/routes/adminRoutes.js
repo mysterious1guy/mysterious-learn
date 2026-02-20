@@ -1,5 +1,5 @@
 const express = require('express');
-const { protect, admin } = require('../middleware/authMiddleware');
+const { protect, admin, ownerAdmin } = require('../middleware/authMiddleware');
 const {
   getAllUsers,
   deleteUser,
@@ -14,23 +14,21 @@ const {
 
 const router = express.Router();
 
-// Toutes les routes admin nécessitent une authentification et des droits admin
 router.use(protect);
-router.use(admin);
 
-// Routes utilisateurs
-router.get('/users', getAllUsers);
-router.delete('/users/:id', deleteUser);
-router.put('/users/:id/role', updateUserRole);
-router.put('/users/:id/ban', toggleUserBan);
+// Routes utilisateurs (Owner Only)
+router.get('/users', ownerAdmin, getAllUsers);
+router.delete('/users/:id', ownerAdmin, deleteUser);
+router.put('/users/:id/role', ownerAdmin, updateUserRole);
+router.put('/users/:id/ban', ownerAdmin, toggleUserBan);
 
-// Routes communications
-router.post('/send-email', sendEmailToUsers);
-router.post('/send-notification', sendNotificationToUsers);
-router.get('/notifications', getAllNotifications);
-router.delete('/notifications/:id', deleteNotification);
+// Routes communications (Owner Only for sending/deleting)
+router.post('/send-email', ownerAdmin, sendEmailToUsers);
+router.post('/send-notification', ownerAdmin, sendNotificationToUsers);
+router.delete('/notifications/:id', ownerAdmin, deleteNotification);
 
-// Routes statistiques
-router.get('/stats', getAdminStats);
+// Accessible by standard Admin
+router.get('/notifications', admin, getAllNotifications);
+router.get('/stats', admin, getAdminStats);
 
 module.exports = router;

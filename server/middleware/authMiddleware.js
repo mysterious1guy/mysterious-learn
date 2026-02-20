@@ -21,7 +21,6 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Optionnel : vérifier si admin
 const admin = (req, res, next) => {
   if (req.user && (req.user.role === 'admin' || req.user.email === 'mouhamedfall@esp.sn')) {
     next();
@@ -30,4 +29,12 @@ const admin = (req, res, next) => {
   }
 };
 
-module.exports = { protect, admin };
+const ownerAdmin = (req, res, next) => {
+  if (req.user && (req.user.role === 'admin' || req.user.email === 'mouhamedfall@esp.sn') && req.user.adminTier === 'owner') {
+    next();
+  } else {
+    res.status(403).json({ message: 'Accès interdit. Privilèges insuffisants (requis: Owner).' });
+  }
+};
+
+module.exports = { protect, admin, ownerAdmin };
