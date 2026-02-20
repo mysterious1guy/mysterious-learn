@@ -280,9 +280,24 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                         // Map ID to readable name
                         const lessonNames = {
                             'algo_m_1_1': "Qu'est-ce qu'un Algorithme ?",
+                            'algo_m_1_2': "Quiz : Nature de l'Algo",
+                            'algo_m_1_3': "Anatomie d'un Algorithme",
                             'algo_m_2_1': "Les Variables",
-                            'algo_m_3_1': "Les Conditions",
-                            'algo_m_4_1': "Les Boucles"
+                            'algo_m_2_2': "Quiz : Mutabilité",
+                            'algo_m_2_3': "Types de Données",
+                            'algo_m_2_4': "Pratique : Variables",
+                            'algo_m_3_1': "L'Art du Choix (SI)",
+                            'algo_m_3_2': "Pratique : SI",
+                            'algo_m_4_1': "Boucle TANT QUE",
+                            'algo_m_4_2': "Boucle POUR",
+                            'algo_m_4_3': "Pratique : Boucles",
+                            'algo_m_5_1': "Concept du Tableau",
+                            'algo_m_5_2': "Quiz : Indexation",
+                            'algo_m_5_3': "Parcourir un Tableau",
+                            'algo_m_6_1': "Les Fonctions",
+                            'algo_m_6_2': "Pratique : Fonctions",
+                            'algo_m_7_1': "Dichotomie",
+                            'algo_m_7_2': "Tri à Bulles"
                         };
                         const readableName = lessonNames[lastLessonId] || lastLessonId;
 
@@ -291,7 +306,8 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                                 role: 'assistant',
                                 text: `Bon retour, ${user.firstName} ! Content d'enfin te revoir. Tu en étais à ta leçon : "${readableName}". Souhaites-tu reprendre ton ascension ?`,
                                 type: 'resume_prompt',
-                                lessonId: lastLessonId
+                                lessonId: lastLessonId,
+                                id: Date.now()
                             }
                         ]);
                         setIsOpen(true);
@@ -300,7 +316,8 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                             {
                                 role: 'assistant',
                                 text: `Bonjour ${user.firstName} ! Tu n'as pas encore commencé de cours. Prêt à lancer ton premier algorithme aujourd'hui ?`,
-                                type: 'start_prompt'
+                                type: 'start_prompt',
+                                id: Date.now()
                             }
                         ]);
                         setIsOpen(true);
@@ -327,10 +344,13 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                 body: JSON.stringify({ level })
             });
             if (res.ok) {
-                setChatHistory(prev => [...prev,
-                { role: 'user', text: `Je suis ${level === 'beginner' ? 'débutant' : level}.` },
-                { role: 'assistant', text: `C'est noté ! Je vais adapter ma pédagogie pour ton profil ${level}. Je te conseille de commencer par le cours d'Algorithmique pour poser des bases solides.` }
-                ]);
+                setChatHistory(prev => {
+                    const next = prev.map(m => m.type === 'level_selection' ? { ...m, type: null } : m);
+                    return [...next,
+                    { role: 'user', text: `Je suis ${level === 'beginner' ? 'débutant' : level}.` },
+                    { role: 'assistant', text: `C'est noté ! Je vais adapter ma pédagogie pour ton profil ${level}. Je te conseille de commencer par le cours d'Algorithmique pour poser des bases solides.` }
+                    ];
+                });
             }
         } catch (error) {
             console.error("Erreur niveau:", error);
@@ -510,13 +530,21 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                                         {msg.role === 'assistant' && msg.type === 'resume_prompt' && (
                                             <div className="flex gap-2 mt-3">
                                                 <button
-                                                    onClick={() => onAction && onAction('OPEN_COURSE', 'algo')}
+                                                    onClick={() => {
+                                                        // Hide buttons
+                                                        setChatHistory(prev => prev.map(m => m.id === msg.id ? { ...m, type: null } : m));
+                                                        if (onAction) onAction('OPEN_COURSE', 'algo');
+                                                    }}
                                                     className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-500/20"
                                                 >
                                                     🚀 Reprendre
                                                 </button>
                                                 <button
-                                                    onClick={() => setChatHistory(prev => [...prev, { role: 'assistant', text: "Très bien, je reste à ta disposition si tu changes d'avis !" }])}
+                                                    onClick={() => {
+                                                        // Hide buttons
+                                                        setChatHistory(prev => prev.map(m => m.id === msg.id ? { ...m, type: null } : m));
+                                                        setChatHistory(prev => [...prev, { role: 'assistant', text: "Très bien, je reste à ta disposition si tu changes d'avis !" }]);
+                                                    }}
                                                     className="px-4 py-2 bg-gray-700 text-gray-300 rounded-xl text-xs font-bold"
                                                 >
                                                     Plus tard
@@ -527,7 +555,11 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                                         {msg.role === 'assistant' && msg.type === 'start_prompt' && (
                                             <div className="mt-3">
                                                 <button
-                                                    onClick={() => onAction && onAction('OPEN_COURSE', 'algo')}
+                                                    onClick={() => {
+                                                        // Hide buttons
+                                                        setChatHistory(prev => prev.map(m => m.id === msg.id ? { ...m, type: null } : m));
+                                                        if (onAction) onAction('OPEN_COURSE', 'algo');
+                                                    }}
                                                     className="px-6 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold"
                                                 >
                                                     🔥 Commencer l'Algorithme
