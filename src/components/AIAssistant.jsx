@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Info, ChevronLeft, Volume2, Mic, MicOff } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
-import OracleCore from './OracleCore';
+import GuideAvatar from './GuideAvatar';
 
 // Configuration de l'onboarding
 const ONBOARDING_STEPS = [
@@ -202,7 +202,7 @@ const AIAssistant = ({ user, currentView, courseId }) => {
                     className="pointer-events-auto hover:scale-110 transition-transform cursor-grab active:cursor-grabbing"
                     whileDrag={{ scale: 1.2, filter: 'brightness(1.5)' }}
                 >
-                    <OracleCore state={avatarState} size="w-32 h-32" />
+                    <GuideAvatar state={avatarState} size="w-32 h-32" />
                 </motion.div>
             </motion.div>
 
