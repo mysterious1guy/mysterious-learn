@@ -2,14 +2,19 @@ import { useState, useEffect, useRef } from 'react';
 import { Bell, Info, AlertTriangle, CheckCircle, Megaphone, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const NotificationBell = ({ API_URL }) => {
+const NotificationBell = ({ user, API_URL }) => {
     const [notifications, setNotifications] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 
     const fetchNotifications = async () => {
+        if (!user?.token) return;
         try {
-            const response = await fetch(`${API_URL}/notifications`);
+            const response = await fetch(`${API_URL}/notifications`, {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`
+                }
+            });
             const data = await response.json();
             if (response.ok) {
                 setNotifications(data);
@@ -20,11 +25,15 @@ const NotificationBell = ({ API_URL }) => {
     };
 
     useEffect(() => {
-        fetchNotifications();
+        if (user?.token) {
+            fetchNotifications();
+        }
         // Refresh notifications every 2 minutes
-        const interval = setInterval(fetchNotifications, 120000);
+        const interval = setInterval(() => {
+            if (user?.token) fetchNotifications();
+        }, 120000);
         return () => clearInterval(interval);
-    }, [API_URL]);
+    }, [API_URL, user?.token]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
