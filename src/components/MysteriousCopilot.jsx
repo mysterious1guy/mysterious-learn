@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2 } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
 
-const MysteriousCopilot = ({ isOpen, onClose, user }) => {
+const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const [messages, setMessages] = useState([
         { role: 'system', content: `Initialisation du Système Core... Bonjour ${safeGetUserName(user, 'Voyageur')}. Je suis l'Oracle. Prêt à décoder les mystères de l'algorithmique ?` }
     ]);
@@ -45,8 +45,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user }) => {
         setIsTyping(true);
 
         try {
-            // Use the same endpoint the app currently uses for AI chat
-            const response = await fetch('/api/ai/chat', {
+            // Use the API_URL for AI chat
+            const response = await fetch(`${API_URL || '/api'}/ai/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,10 +105,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user }) => {
                                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
                                 <div className={`max-w-[85%] rounded-2xl p-4 shadow-lg ${msg.role === 'user'
-                                        ? 'bg-blue-600 text-white rounded-tr-sm border border-blue-500/50'
-                                        : msg.type === 'suggestion'
-                                            ? 'bg-amber-900/40 text-amber-100 border border-amber-500/30 rounded-tl-sm'
-                                            : 'bg-slate-900/80 text-slate-200 border border-white/5 rounded-tl-sm'
+                                    ? 'bg-blue-600 text-white rounded-tr-sm border border-blue-500/50'
+                                    : msg.type === 'suggestion'
+                                        ? 'bg-amber-900/40 text-amber-100 border border-amber-500/30 rounded-tl-sm'
+                                        : 'bg-slate-900/80 text-slate-200 border border-white/5 rounded-tl-sm'
                                     }`}>
                                     {msg.role !== 'user' && (
                                         <div className="flex items-center gap-2 mb-2 opacity-70">
@@ -139,7 +139,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user }) => {
 
                     {/* Input Area */}
                     <div className="p-4 bg-slate-950/80 border-t border-white/10 backdrop-blur-md">
-                        <form onSubmit={handleSend} className="relative flex items-center">
+                        <form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); handleSend(e); }} className="relative flex items-center">
                             <input
                                 type="text"
                                 value={input}

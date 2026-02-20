@@ -113,7 +113,7 @@ const TheoryViewer = ({ title, content, onComplete }) => {
               </div>
               <span className="text-[10px] font-black font-mono text-slate-400 uppercase tracking-[0.2em] ml-3">Terminal Professeur</span>
             </div>
-            <div className="font-mono text-sm md:text-base text-blue-700 bg-white px-8 py-6 rounded-b-[2rem] border border-slate-200 border-t-0 shadow-lg shadow-blue-500/5 group-hover:shadow-blue-500/10 transition-all overflow-x-auto">
+            <div className="font-mono text-sm md:text-base text-blue-700 bg-white px-4 md:px-8 py-4 md:py-6 rounded-b-[2rem] border border-slate-200 border-t-0 shadow-lg shadow-blue-500/5 group-hover:shadow-blue-500/10 transition-all overflow-x-auto max-w-full">
               {line}
             </div>
           </div>
@@ -136,8 +136,8 @@ const TheoryViewer = ({ title, content, onComplete }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-12 pb-24 h-full">
-      <div className="bg-white/40 p-6 md:p-10 rounded-3xl border border-slate-200 backdrop-blur-sm shadow-sm">
+    <div className="max-w-4xl mx-auto p-0 md:p-8 pb-24 h-full">
+      <div className="bg-white/40 p-4 md:p-8 rounded-3xl border border-slate-200 backdrop-blur-sm shadow-sm">
         <div className="flex items-center gap-3 mb-8 border-b border-slate-100 pb-4">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900">{title}</h2>
         </div>
@@ -497,17 +497,10 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
         </div>
       </header>
 
-      {/* Draggable Map Area */}
-      <div className="flex-1 relative overflow-hidden cursor-move">
-        <motion.div
-          drag
-          dragConstraints={{
-            top: -canvasHeight + window.innerHeight - 100,
-            left: -canvasWidth + window.innerWidth - 100,
-            right: 100,
-            bottom: 100
-          }}
-          className="absolute origin-top-left"
+      {/* Scrollable Map Area */}
+      <div className="flex-1 relative overflow-auto custom-scrollbar cursor-grab active:cursor-grabbing">
+        <div
+          className="relative min-w-max min-h-max"
           style={{ width: canvasWidth, height: canvasHeight }}
         >
           {/* SVG Connecting Lines Layer */}
@@ -562,7 +555,7 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
               </div>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
 
       {/* UI Guidance Overlay */}

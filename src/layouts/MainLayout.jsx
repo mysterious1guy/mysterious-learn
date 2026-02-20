@@ -66,6 +66,7 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
           courseId={courseId}
           onAction={handleAIAction}
           isAdmin={user?.email === 'mouhamedfall@esp.sn' || user?.role === 'admin'}
+          API_URL={API_URL}
         />
       )}
 

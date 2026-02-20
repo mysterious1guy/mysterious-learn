@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, BrainCircuit, MessageSquare, ChevronLeft, X } from 'lucide-react';
 import MysteriousCopilot from './MysteriousCopilot';
 
-const AIAssistant = ({ user, currentView, courseId }) => {
+const AIAssistant = ({ user, currentView, courseId, API_URL }) => {
     const [isCopilotOpen, setIsCopilotOpen] = useState(false);
     const [theaterContent, setTheaterContent] = useState(null);
 
@@ -49,6 +49,7 @@ const AIAssistant = ({ user, currentView, courseId }) => {
                 isOpen={isCopilotOpen}
                 onClose={() => setIsCopilotOpen(false)}
                 user={user}
+                API_URL={API_URL}
             />
 
             {/* Theater Mode Overlay (Fullscreen popups from Professor) */}
@@ -69,10 +70,10 @@ const AIAssistant = ({ user, currentView, courseId }) => {
                             <button onClick={() => setTheaterContent(null)} className="absolute top-8 right-8 p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white/50 hover:text-white z-20">
                                 <X size={24} />
                             </button>
-                            <div className="p-10 border-b border-white/5 bg-gradient-to-r from-blue-600/10 to-transparent">
-                                <h2 className="text-4xl font-black text-white">{theaterContent.title}</h2>
+                            <div className="p-6 md:p-10 border-b border-white/5 bg-gradient-to-r from-blue-600/10 to-transparent">
+                                <h2 className="text-2xl md:text-4xl font-black text-white">{theaterContent.title}</h2>
                             </div>
-                            <div className="p-10 max-h-[70vh] overflow-y-auto w-full prose prose-invert max-w-none text-white">
+                            <div className="p-4 md:p-10 max-h-[70vh] overflow-y-auto w-full prose prose-invert max-w-none text-white">
                                 {theaterContent.node}
                             </div>
                         </motion.div>
