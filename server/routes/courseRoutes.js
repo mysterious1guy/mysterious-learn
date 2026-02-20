@@ -7,12 +7,14 @@ const {
   getProgress,
   updateProgress,
   getAllProgress,
+  getCourseStats,
 } = require('../controllers/courseController');
 
 const router = express.Router();
 
 // Routes publiques
 router.get('/', getAllCourses);
+router.get('/stats', getCourseStats);
 router.get('/categories', getCategories);
 router.get('/:id', getCourseById);
 

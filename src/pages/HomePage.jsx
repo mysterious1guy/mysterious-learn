@@ -11,6 +11,7 @@ import { coursesData } from '../courses/data';
 const HomePage = ({ API_URL }) => {
     const navigate = useNavigate();
     const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0 });
+    const [courseStats, setCourseStats] = useState({});
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -19,6 +20,12 @@ const HomePage = ({ API_URL }) => {
                 if (res.ok) {
                     const data = await res.json();
                     setStats(data);
+                }
+
+                const cStatsRes = await fetch(`${API_URL}/courses/stats`);
+                if (cStatsRes.ok) {
+                    const cStatsData = await cStatsRes.json();
+                    setCourseStats(cStatsData);
                 }
             } catch (err) {
                 console.error('Erreur fetch stats:', err);
@@ -32,7 +39,11 @@ const HomePage = ({ API_URL }) => {
     if (coursesData && coursesData.length > 0) {
         coursesData.forEach(category => {
             category.items.forEach(item => {
-                featuredCourses.push({ ...item, categoryLabel: category.category });
+                featuredCourses.push({
+                    ...item,
+                    categoryLabel: category.category,
+                    students: courseStats[item.id] || 0
+                });
             });
         });
     }

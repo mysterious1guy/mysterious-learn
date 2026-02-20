@@ -121,6 +121,13 @@ function App() {
     };
   }, [user]);
 
+  const handleToggleFavorite = (id) => {
+    const newFavs = favorites.includes(id)
+      ? favorites.filter(f => f !== id)
+      : [...favorites, id];
+    setFavorites(newFavs);
+  };
+
   return (
     <ThemeProvider>
       <Router>
@@ -171,12 +178,10 @@ function App() {
               <Route path="dashboard" element={
                 user ? (
                   user.hasCompletedOnboarding ? (
-                    <DashboardPage user={user} favorites={favorites} toggleFavorite={(id) => {
-                      const newFavs = favorites.includes(id)
-                        ? favorites.filter(f => f !== id)
-                        : [...favorites, id];
-                      setFavorites(newFavs);
-                    }}
+                    <DashboardPage
+                      user={user}
+                      favorites={favorites}
+                      toggleFavorite={handleToggleFavorite}
                       progressions={progressions}
                       API_URL={API_URL}
                       setToast={setToast}
@@ -197,12 +202,9 @@ function App() {
                       user={user}
                       onUpdateUser={handleUpdateUser}
                       onLogout={handleLogout}
-                      onToggleFavorite={(id) => {
-                        const newFavs = favorites.includes(id)
-                          ? favorites.filter(f => f !== id)
-                          : [...favorites, id];
-                        setFavorites(newFavs);
-                      }}
+                      progressions={progressions}
+                      favorites={favorites}
+                      onToggleFavorite={handleToggleFavorite}
                       API_URL={API_URL}
                       setToast={setToast}
                     />

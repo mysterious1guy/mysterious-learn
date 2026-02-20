@@ -3,9 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { coursesData } from '../courses/data.jsx';
 import { ChevronRight, Star, Clock, Users } from 'lucide-react';
+import { useEffect } from 'react';
 
-const DashboardPage = ({ user, favorites, toggleFavorite, progressions, searchQuery = '' }) => {
+const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL, searchQuery = '' }) => {
     const navigate = useNavigate();
+    const [courseStats, setCourseStats] = useState({});
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const res = await fetch(`${API_URL}/courses/stats`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setCourseStats(data);
+                }
+            } catch (err) {
+                console.error('Erreur fetch stats cours:', err);
+            }
+        };
+        fetchStats();
+    }, [API_URL]);
 
     const filteredCourses = coursesData.map(category => ({
         ...category,
@@ -109,7 +126,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, searchQu
                                                 </div>
                                                 <div className="flex items-center gap-1">
                                                     <Users size={14} />
-                                                    <span>{course.students || '1.2k'}</span>
+                                                    <span>{courseStats[course.id] || 0}</span>
                                                 </div>
                                                 <div className="flex items-center gap-1">
                                                     <Star size={14} className="text-yellow-500 fill-yellow-500" />

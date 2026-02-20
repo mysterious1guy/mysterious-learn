@@ -1,9 +1,9 @@
 const Course = require('../models/Course');
 const Progress = require('../models/Progress');
-const { 
-  getAllCoursesFallback, 
-  getCourseByIdFallback, 
-  getCategoriesFallback 
+const {
+  getAllCoursesFallback,
+  getCourseByIdFallback,
+  getCategoriesFallback
 } = require('./courseControllerFallback');
 
 // Vérifie si MongoDB est disponible
@@ -22,7 +22,7 @@ const getAllCourses = async (req, res) => {
   // Forcer le fallback temporairement pour résoudre le problème Render
   console.log('🔄 Forcing fallback mode for Render deployment');
   return getAllCoursesFallback(req, res);
-  
+
   // Code original (commenté temporairement)
   /*
   const mongoAvailable = await isMongoDBAvailable();
@@ -59,7 +59,7 @@ const getAllCourses = async (req, res) => {
 // @route   GET /api/courses/:id
 const getCourseById = async (req, res) => {
   const mongoAvailable = await isMongoDBAvailable();
-  
+
   if (!mongoAvailable) {
     console.log('⚠️ MongoDB indisponible - utilisation du fallback JSON');
     return getCourseByIdFallback(req, res);
@@ -68,7 +68,7 @@ const getCourseById = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id)
       .populate('prerequisites', 'title description');
-    
+
     if (!course) {
       return res.status(404).json({ message: 'Cours non trouvé' });
     }
@@ -85,7 +85,7 @@ const getCourseById = async (req, res) => {
 // @route   GET /api/courses/categories
 const getCategories = async (req, res) => {
   const mongoAvailable = await isMongoDBAvailable();
-  
+
   if (!mongoAvailable) {
     console.log('⚠️ MongoDB indisponible - utilisation du fallback JSON');
     return getCategoriesFallback(req, res);
@@ -163,11 +163,38 @@ const getAllProgress = async (req, res) => {
   }
 };
 
-module.exports = { 
-  getAllCourses, 
-  getCourseById, 
+// @desc    Obtenir les statistiques des cours (nombre d'étudiants par cours)
+// @route   GET /api/courses/stats
+const getCourseStats = async (req, res) => {
+  try {
+    const stats = await Progress.aggregate([
+      {
+        $group: {
+          _id: "$courseId",
+          studentCount: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // Transformer en objet { courseId: count }
+    const statsObj = {};
+    stats.forEach(s => {
+      statsObj[s._id] = s.studentCount;
+    });
+
+    res.json(statsObj);
+  } catch (err) {
+    console.error('Erreur stats cours:', err);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+module.exports = {
+  getAllCourses,
+  getCourseById,
   getCategories,
-  getProgress, 
-  updateProgress, 
-  getAllProgress 
+  getProgress,
+  updateProgress,
+  getAllProgress,
+  getCourseStats
 };

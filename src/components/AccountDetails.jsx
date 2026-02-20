@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, Mail, Phone, Lock, Shield, Globe, Bell,
   Camera, CheckCircle, ChevronRight, Edit2, LogOut,
-  Save, Trash2, ShieldCheck, Download, BookOpen, Target, Award, Clock
+  Save, Trash2, ShieldCheck, Download, BookOpen, Target, Award, Clock,
+  Settings, TrendingUp, X
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { formatTimeAgo } from '../utils/dateUtils';
 
-const AccountDetails = ({ user, onUpdateUser, onLogout, API_URL, setToast }) => {
+const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites, onToggleFavorite, API_URL, setToast }) => {
   const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
