@@ -127,15 +127,47 @@ const KNOWLEDGE_BASE = {
     },
     system_design: {
         keywords: ['system design', 'scalabilité', 'load balancing', 'sharding', 'haute disponibilité'],
-        response: "Concevoir pour des millions d'utilisateurs. \n- **Horizontal Scaling** : Ajouter des machines (plus de serveurs).\n- **Load Balancer** : Répartir le trafic intelligemment.\n- **Sharding** : Découper une base de données trop lourde en plusieurs morceaux."
+        response: "Concevoir pour des millions d'utilisateurs. \n- **Horizontal Scaling** : Ajouter des machines.\n- **Load Balancer** : Répartir le trafic.\n- **Sharding** : Découper une base de données trop lourde."
     },
     api_expert: {
         keywords: ['graphql', 'grpc', 'webhook', 'websocket', 'api avancée'],
-        response: "La communication entre systèmes. \n- **GraphQL** : L'utilisateur demande exactement ce qu'il veut.\n- **WebSockets** : Connexion temps réel bidirectionnelle.\n- **gRPC** : Protocole ultra-rapide basé sur HTTP/2 pour les microservices."
+        response: "Communication avancée. \n- **GraphQL** : Requêtes précises.\n- **WebSockets** : Temps réel bidirectionnel.\n- **gRPC** : Protocole ultra-rapide pour microservices."
     },
     performance_expert: {
         keywords: ['performance', 'memory leak', 'fuite mémoire', 'garbage collector', 'profiling'],
-        response: "Chaque milliseconde compte. \n- **Memory Leak** : Donnée qui reste en RAM alors qu'elle ne sert plus.\n- **Profiling** : Analyser l'exécution pour trouver les goulots d'étranglement.\n- **GC** : Le processus automatique qui libère la mémoire inutilisée."
+        response: "Chaque milliseconde compte. \n- **Memory Leak** : RAM non libérée.\n- **Profiling** : Analyse des goulots d'étranglement.\n- **GC** : Nettoyage automatique de la mémoire."
+    },
+    engineering_mindset: {
+        keywords: ['mindset', 'ingenieur', 'reflexion', 'first principles', 'compromis', 'trade-off'],
+        response: "L'ingénierie est l'art des compromis (Trade-offs). Un Maître choisit toujours en fonction du contexte et des 'First Principles'."
+    },
+    js_internals: {
+        keywords: ['v8', 'moteur js', 'event loop', 'microtask', 'stack', 'heap'],
+        response: "Le moteur V8 utilise une **Event Loop** pour gérer l'asynchronisme via microtâches (promesses) et macrotâches."
+    },
+    ai_ml_god: {
+        keywords: ['intelligence artificielle', 'ml', 'machine learning', 'resau de neurone', 'transformer', 'llm', 'deep learning'],
+        response: "L'IA moderne repose sur les **Transformers** et l'attention. Réseaux de neurones profonds prédisant le prochain 'token' à une échelle divine."
+    },
+    cs_history: {
+        keywords: ['histoire info', 'turing', 'lovelace', 'naissance informatique', 'neumann', 'hopper'],
+        response: "De **Ada Lovelace** à **Alan Turing**, nous marchons sur les épaules de géants qui ont inventé la logique machine."
+    },
+    distributed_transcendent: {
+        keywords: ['systemes distribues', 'paxos', 'raft', 'consensus', 'theoreme cap', 'replication'],
+        response: "Le **Théorème CAP** et les algorithmes de consensus (**Raft/Paxos**) sont les piliers des systèmes mondiaux résilients."
+    },
+    compilers_master: {
+        keywords: ['compilateur', 'interpréteur', 'lexing', 'parsing', 'ast', 'bytecode', 'jit'],
+        response: "Transformation du code en **AST**, puis Bytecode. Le **JIT** optimise l'exécution pour une vitesse foudroyante."
+    },
+    os_kernel_depth: {
+        keywords: ['noyau', 'kernel', 'syscall', 'threading', 'ordonnancement', 'interruption', 'unix'],
+        response: "Le **Kernel** gère les appels système et l'ordonnancement. Maîtriser l'OS, c'est maîtriser la réalité physique du code."
+    },
+    web3_future: {
+        keywords: ['web3', 'blockchain', 'ethereum', 'smart contract', 'decentralisation', 'crypto'],
+        response: "Décentralisation et **Smart Contracts** immuables. Le futur de la propriété numérique et de la confiance sans tiers."
     },
 
     // ADMINISTRATION & AIDE
