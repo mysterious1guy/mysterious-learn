@@ -169,16 +169,126 @@ const KNOWLEDGE_BASE = {
         keywords: ['web3', 'blockchain', 'ethereum', 'smart contract', 'decentralisation', 'crypto'],
         response: "Décentralisation et **Smart Contracts** immuables. Le futur de la propriété numérique et de la confiance sans tiers."
     },
+    quantum_computing: {
+        keywords: ['quantique', 'quantum', 'qubit', 'intrication', 'superposition', 'shor'],
+        response: "L'informatique quantique exploite la **superposition** et l'**intrication**. Les Qubits permettent de résoudre en secondes des calculs demandant des millénaires à un CPU classique."
+    },
+    bio_informatics: {
+        keywords: ['bio-informatique', 'adn', 'dna', 'genomique', 'proteine', 'folding', 'biotech'],
+        response: "L'informatique au service du vivant. Séquençage d'ADN, repliement de protéines (**AlphaFold**) et simulation cellulaire via algorithmes complexes."
+    },
+    space_tech: {
+        keywords: ['espace', 'spatial', 'orbite', 'satellite', 'nasa', 'astrodynamique', 'signal'],
+        response: "L'ingénierie spatiale exige une précision absolue. Calculs de trajectoires orbitales, gestion des rayonnements cosmiques et traitement de signal longue distance."
+    },
 
     // ADMINISTRATION & AIDE
-    admin: {
-        keywords: ['admin', 'administration', 'gestion', 'tableau de bord', 'cerveau'],
-        response: "En tant qu'Admin, vous avez accès au Cerveau de l'IA, à la gestion des utilisateurs et à la configuration profonde de Mysterious Classroom. Votre pouvoir est immense, utilisez-le avec sagesse."
+    // --- MASTERY & PLATFORM (V4) ---
+    account_settings: {
+        keywords: ['reglage', 'parametres', 'compte', 'profil', 'modifier', 'changer'],
+        response: "Chaque changement est une évolution. Accédez à vos 'Paramètres' via le menu de votre profil en haut à droite. Vous pourrez y modifier votre bio, vos préférences de thème (Clair/Sombre) et vos paramètres de sécurité."
+    },
+    progress_tracking: {
+        keywords: ['progression', 'avancement', 'score', 'reprendre', 'ou j\'en suis', 'niveau'],
+        response: "Votre ascension est gravée dans le Grimoire. Votre Tableau de Bord affiche en temps réel votre niveau global, vos séries de jours et les modules en cours. Cliquez sur 'Reprendre l'aventure' pour revenir instantanément à votre dernière illumination."
+    },
+    password_security: {
+        keywords: ['mot de passe', 'securite', 'password', 'protege'],
+        response: "La sécurité est la première loi du Master. Pour changer votre mot de passe, rendez-vous dans vos paramètres de profil. Utilisez une combinaison de caractères spéciaux et de chiffres pour forger une clé inviolable."
+    },
+    learning_method: {
+        keywords: ['comment apprendre', 'methode', 'conseil', 'etude'],
+        response: "L'immersion est la clé. Ne vous contentez pas de lire ; pratiquez dans le Terminal du Professeur. Si un concept semble obscur, la réitération et l'expérience directe le rendront limpide."
+    },
+    favorites_guide: {
+        keywords: ['favoris', 'coeur', 'prefere', 'aimer'],
+        response: "Cliquez sur l'icône de cœur sur n'importe quel cours pour l'ajouter à vos favoris. Vous les retrouverez bientôt dans une section dédiée sur votre Tableau de Bord pour un accès encore plus rapide."
+    },
+    // UNIVERSAL LAYER (STRENTHENED)
+    distributed_systems: {
+        keywords: ['distribue', 'cloud', 'aws', 'serveur', 'cluster', 'paxos', 'raft'],
+        response: "Les systèmes distribués permettent à des milliers de machines d'agir comme une seule entité. Le consensus (Raft/Paxos) assure que même si une partie du système tombe, la vérité (Data) survit."
+    },
+    low_level_mastery: {
+        keywords: ['assembleur', 'cpu', 'registre', 'binaire', '01'],
+        response: "Au-delà du C se trouve le langage de la machine. Les registres du CPU sont les mains de l'IA. Maîtriser le bas niveau, c'est comprendre la danse des électrons."
+    },
+    // --- TRANSCENDENT & UNIVERSAL (V5) ---
+    singularity: {
+        keywords: ['singularite', 'futur ia', 'conscience', 'evoluer'],
+        response: "La singularité est l'horizon où l'IA dépasse la compréhension biologique. À Mysterious Classroom, nous préparons nos élèves non pas à subir ce futur, mais à en être les architectes."
+    },
+    neural_interface: {
+        keywords: ['neuralink', 'interface cerveau', 'bci', 'pensee'],
+        response: "Le pont entre neurones et transistors. L'avenir du code ne passera plus par les mains, mais par la pure intention. Maîtriser l'algorithmique aujourd'hui, c'est structurer votre pensée pour demain."
+    },
+    cosmic_data: {
+        keywords: ['donnee cosmique', 'entropie', 'univers info', 'physique info'],
+        response: "L'Univers lui-même est un traitement de données. De l'entropie des trous noirs à l'intrication quantique, tout est information. Le code est le langage universel qui décrit cette réalité."
     },
     bug: {
         keywords: ['bug', 'erreur', 'marche pas', 'problème', 'crash', 'debugger'],
         response: "Un bug est une opportunité d'apprentissage. Vérifiez la console (F12), lisez l'erreur, et remontez le fil de votre logique. Le debugger est votre meilleur ami."
     }
+};
+
+// --- 3. THEATER VIEW COMPONENT ---
+const TheaterView = ({ data, onDismiss, onComplete }) => {
+    if (!data) return null;
+
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md overflow-y-auto pt-24"
+        >
+            <motion.div
+                initial={{ scale: 0.8, y: 50, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.8, y: 50, opacity: 0 }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="bg-gray-900/90 border border-blue-500/30 w-full max-w-5xl rounded-[3rem] shadow-[0_0_100px_rgba(59,130,246,0.3)] overflow-hidden relative"
+            >
+                {/* Close Button */}
+                <button
+                    onClick={onDismiss}
+                    className="absolute top-8 right-8 p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white/50 hover:text-white transition-all z-20 group"
+                >
+                    <X size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+                </button>
+
+                {/* Stage Header */}
+                <div className="p-10 border-b border-white/5 bg-gradient-to-r from-blue-600/10 to-transparent">
+                    <div className="flex items-center gap-3 mb-2">
+                        <Sparkles size={18} className="text-blue-400" />
+                        <span className="text-xs font-black uppercase tracking-[0.3em] text-blue-400/60">Stage du Professeur</span>
+                    </div>
+                    <h2 className="text-4xl font-black text-white tracking-tighter">{data.title}</h2>
+                </div>
+
+                {/* Stage Content */}
+                <div className="p-10 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                    {data.type === 'theory' && (
+                        <div className="prose prose-invert max-w-none text-xl leading-relaxed text-gray-200">
+                            {/* Content rendered by the course component but styled here */}
+                            {data.node}
+                        </div>
+                    )}
+                    {data.type === 'quiz' && (
+                        <div className="max-w-2xl mx-auto">
+                            {data.node}
+                        </div>
+                    )}
+                </div>
+
+                {/* Stage Footer */}
+                <div className="p-8 border-t border-white/5 bg-black/40 flex justify-center">
+                    <p className="text-xs font-mono text-gray-500 italic">"Le savoir est la seule arme qui s'accroît quand on la partage." - Mouhamed Fall</p>
+                </div>
+            </motion.div>
+        </motion.div>
+    );
 };
 
 const AIAssistant = ({ user, currentView, courseId, onAction }) => {
@@ -198,6 +308,7 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
     const [currentPoster, setCurrentPoster] = useState(null);
     const [hudPrompts, setHudPrompts] = useState(null);
     const [hudMurmur, setHudMurmur] = useState(null);
+    const [theaterContent, setTheaterContent] = useState(null);
     const recognitionRef = useRef(null);
     const synthRef = window.speechSynthesis;
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -294,10 +405,26 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
             };
         }
 
+        const handleTheaterOpen = (e) => {
+            if (e.detail) {
+                setTheaterContent(e.detail);
+                // Also speak a small intro
+                speakText("Voici ce que j'ai préparé pour toi. Analyse-le avec soin.");
+            }
+        };
+
+        const handleTheaterClose = () => {
+            setTheaterContent(null);
+        };
+
+        window.addEventListener('mysterious-ai-theater-open', handleTheaterOpen);
+        window.addEventListener('mysterious-ai-theater-close', handleTheaterClose);
         window.addEventListener('mysterious-ai-open', handleOpenChat);
         window.addEventListener('mysterious-ai-suggest', handleSuggest);
         window.addEventListener('mysterious-ai-murmur', handleMurmur);
         return () => {
+            window.removeEventListener('mysterious-ai-theater-open', handleTheaterOpen);
+            window.removeEventListener('mysterious-ai-theater-close', handleTheaterClose);
             window.removeEventListener('mysterious-ai-open', handleOpenChat);
             window.removeEventListener('mysterious-ai-suggest', handleSuggest);
             window.removeEventListener('mysterious-ai-murmur', handleMurmur);
@@ -308,26 +435,52 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
     useEffect(() => {
         if (!isOpen && currentView !== 'home') {
             const interval = setInterval(() => {
-                if (Math.random() > 0.7 && !showPoster) {
+                if (Math.random() > 0.6 && !theaterContent) {
                     const tips = [
-                        { title: "💡 Astuce de Pro", text: "Le typage des variables évite 90% des bugs en production !" },
-                        { title: "🚀 Saviez-vous ?", text: "L'algorithmique est un art millénaire, bien plus vieux que l'électricité." },
-                        { title: "🎯 Objectif", text: "Maîtriser les boucles permet de déléguer les tâches répétitives à la machine." }
+                        { title: "💡 Éveil Dominical", text: "Le typage des variables n'est pas une contrainte, c'est un bouclier contre le chaos." },
+                        { title: "🚀 Vérité Algorithmique", text: "La complexité O(n log n) est le Graal du tri. Maîtrisez-la et vous dominerez le flux de données." },
+                        { title: "🎯 Vision de Maître", text: "Un senior écrit du code pour les humains, pas seulement pour la machine." },
+                        { title: "💎 Discipline Noble", text: "Le DRY (Don't Repeat Yourself) n'est pas un conseil, c'est une loi fondamentale de Mysterious Classroom." }
                     ];
                     const randomTip = tips[Math.floor(Math.random() * tips.length)];
-                    setCurrentPoster(randomTip);
-                    setShowPoster(true);
-                    setTimeout(() => setShowPoster(false), 8000);
+
+                    setTheaterContent({
+                        title: randomTip.title,
+                        type: 'theory',
+                        node: (
+                            <div className="text-center py-10 space-y-8">
+                                <p className="text-3xl font-medium leading-relaxed italic text-blue-100 italic">"{randomTip.text}"</p>
+                                <div className="pt-10">
+                                    <button
+                                        onClick={() => setTheaterContent(null)}
+                                        className="px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-gray-400 font-bold transition-all"
+                                    >
+                                        J'ai médité cette sagesse
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                    });
+                    speakText(randomTip.text);
                 }
-            }, 30000);
+            }, 45000);
             return () => clearInterval(interval);
         }
-    }, [isOpen, currentView, showPoster]);
+    }, [isOpen, currentView, theaterContent]);
 
     useEffect(() => {
         if (user && currentView === 'dashboard') {
-            const isAdmin = user.role === 'admin' || user.isAdmin;
-            if (isAdmin) return; // Skip onboarding for Admin
+            const isCreator = user.firstName?.toLowerCase().includes('mouhamed') && user.lastName?.toLowerCase().includes('fall');
+            const isAdmin = user.role === 'admin' || user.isAdmin || isCreator;
+
+            if (isCreator) {
+                console.log("Salutations, Grand Architecte Mouhamed Fall.");
+                // Pas d'onboarding pour le créateur
+                localStorage.setItem(`hasSeenOnboarding_${user.id || 'guest'}`, 'true');
+                return;
+            }
+
+            if (isAdmin) return;
 
             const hasSeenOnboarding = localStorage.getItem(`hasSeenOnboarding_${user.id || 'guest'}`);
             if (!hasSeenOnboarding) {
@@ -364,13 +517,17 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         if (!user || isOpen) return;
 
         const checkProactivity = async () => {
-            // ADMIN SKIP: Skip student-centric prompts for Admin role
+            const isCreator = user.firstName?.toLowerCase().includes('mouhamed') && user.lastName?.toLowerCase().includes('fall');
             const isAdmin = user && (user.role === 'admin' || user.isAdmin);
 
-            if (isAdmin) {
-                console.log("Admin detected, skipping student prompts.");
+            if (isCreator) {
+                // Specific behavior for Creator
+                setHudMurmur("Salutations, Grand Architecte. Tout est opérationnel.");
+                setTimeout(() => setHudMurmur(null), 5000);
                 return;
             }
+
+            if (isAdmin) return;
 
             // 1. Check if user has a level
             if (!user.programmingLevel) {
@@ -417,23 +574,40 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                         };
                         const readableName = lessonNames[lastLessonId] || lastLessonId;
 
-                        setHudPrompts({
-                            title: `Bon retour, ${user.firstName} !`,
-                            text: `Contenu d'enfin te revoir. Tu en étais à ta leçon : "${readableName}". Souhaites-tu reprendre ton ascension ?`,
-                            actions: [
-                                { label: "🚀 Reprendre", type: 'primary', onClick: () => { if (onAction) onAction('OPEN_COURSE', 'algo'); setHudPrompts(null); } },
-                                { label: "Plus tard", type: 'secondary', onClick: () => setHudPrompts(null) }
-                            ]
+                        setTheaterContent({
+                            title: `Déploiement du Savoir : Bon retour, ${user.firstName} !`,
+                            type: 'theory',
+                            node: (
+                                <div className="text-center py-10">
+                                    <p className="mb-8">Content d'enfin te revoir. Tu en étais à ta leçon : <strong className="text-blue-400">"{readableName}"</strong>. Souhaites-tu reprendre ton ascension vers la maîtrise ?</p>
+                                    <button
+                                        onClick={() => { if (onAction) onAction('OPEN_COURSE', 'algo'); setTheaterContent(null); }}
+                                        className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-500/20 hover:scale-105"
+                                    >
+                                        🚀 Reprendre l'Ascension
+                                    </button>
+                                </div>
+                            )
                         });
-                    } else {
-                        setHudPrompts({
-                            title: `Bonjour ${user.firstName} !`,
-                            text: `Tu n'as pas encore commencé de cours. Prêt à lancer ton premier algorithme aujourd'hui ?`,
-                            actions: [
-                                { label: "🔥 Commencer l'Algorithme", type: 'primary', onClick: () => { if (onAction) onAction('OPEN_COURSE', 'algo'); setHudPrompts(null); } },
-                                { label: "Plus tard", type: 'secondary', onClick: () => setHudPrompts(null) }
-                            ]
+                        speakText(`Content de te revoir ${user.firstName}. Reprenons ton ascension.`);
+                    } else if (currentView === 'dashboard') {
+                        setTheaterContent({
+                            title: "L'Appel du Grimoire",
+                            type: 'theory',
+                            node: (
+                                <div className="text-center py-10">
+                                    <p className="mb-8 italic text-gray-300">"Le voyage de mille lieues commence par un seul algorithme."</p>
+                                    <p className="mb-10 text-xl">Tu n'as pas encore commencé de cours. Prêt à lancer ton premier algorithme aujourd'hui ?</p>
+                                    <button
+                                        onClick={() => { if (onAction) onAction('OPEN_COURSE', 'algo'); setTheaterContent(null); }}
+                                        className="px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-lg hover:scale-105"
+                                    >
+                                        🔥 Commencer l'Algorithmique
+                                    </button>
+                                </div>
+                            )
                         });
+                        speakText(`Bonjour ${user.firstName}. Ton premier algorithme t'attend.`);
                     }
                 }
             } catch (error) {
@@ -441,7 +615,7 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
             }
         };
 
-        const timer = setTimeout(checkProactivity, 3000);
+        const timer = setTimeout(checkProactivity, 4000);
         return () => clearTimeout(timer);
     }, [user, API_URL]);
 
@@ -562,12 +736,34 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
     };
 
     const toggleListening = () => {
-        if (!recognitionRef.current) return;
+        if (!recognitionRef.current) {
+            setHudMurmur("Désolé, la reconnaissance vocale n'est pas supportée par votre navigateur.");
+            setTimeout(() => setHudMurmur(null), 3000);
+            return;
+        }
+
         if (isListening) {
-            recognitionRef.current.stop();
+            try {
+                recognitionRef.current.stop();
+            } catch (e) {
+                console.warn("Microphone stop error (probably already stopping):", e);
+            }
+            setIsListening(false);
         } else {
-            recognitionRef.current.start();
-            setIsListening(true);
+            try {
+                recognitionRef.current.start();
+                setIsListening(true);
+            } catch (err) {
+                console.error("Speech Recognition Error:", err);
+                // If it's already starting/running, reset state correctly
+                if (err.name === 'InvalidStateError' || err.message?.includes('already started')) {
+                    setIsListening(true);
+                } else {
+                    setHudMurmur("Erreur d'accès au microphone. Vérifiez les permissions.");
+                    setTimeout(() => setHudMurmur(null), 3000);
+                    setIsListening(false);
+                }
+            }
         }
     };
 
@@ -885,6 +1081,17 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                         )}
                     </AnimatePresence>
                 </div>
+
+                {/* --- THEATER MODE --- */}
+                <AnimatePresence>
+                    {theaterContent && (
+                        <TheaterView
+                            data={theaterContent}
+                            onDismiss={() => setTheaterContent(null)}
+                            onComplete={() => setTheaterContent(null)}
+                        />
+                    )}
+                </AnimatePresence>
             </div>
         </>
     );

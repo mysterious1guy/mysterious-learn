@@ -27,7 +27,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
         </div>
 
         <div className="flex-1 max-w-md mx-4 hidden md:block">
-          {user && !isCoursePage && <SearchBar onSearch={onSearch} />}
+          {/* SearchBar removed as requested */}
         </div>
 
         <div className="flex items-center gap-1 sm:gap-4 ml-auto">

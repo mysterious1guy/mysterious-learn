@@ -180,6 +180,51 @@ const Dashboard = ({ user, courses, favorites, onSelectCourse, toggleFavorite, p
                 </div>
             </section >
 
+            {/* Favorite Courses Section */}
+            {favorites?.length > 0 && (
+                <section>
+                    <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-2xl font-bold flex items-center gap-3">
+                            <Star className="text-pink-500" fill="currentColor" /> Mes Favoris
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {favorites.map(favId => {
+                            let courseItem = null;
+                            courses.forEach(cat => {
+                                const item = cat.items.find(i => i.id === favId);
+                                if (item) courseItem = item;
+                            });
+                            if (!courseItem) return null;
+
+                            return (
+                                <motion.div
+                                    key={favId}
+                                    whileHover={{ y: -5, scale: 1.02 }}
+                                    onClick={() => onSelectCourse(courseItem)}
+                                    className="p-6 rounded-[2rem] bg-gray-800/40 backdrop-blur-sm border border-pink-500/10 hover:border-pink-500/30 transition-all cursor-pointer group overflow-hidden"
+                                >
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div className={`p-3 rounded-xl bg-gray-900/50 ${courseItem.color}`}>
+                                            {courseItem.icon}
+                                        </div>
+                                        <Star size={16} className="text-pink-500" fill="currentColor" />
+                                    </div>
+                                    <h4 className="font-bold text-gray-100 mb-1 group-hover:text-pink-400 transition-colors">{courseItem.name}</h4>
+                                    <div className="flex items-center justify-between mt-4">
+                                        <span className="text-[10px] text-gray-500 uppercase tracking-widest">{courseItem.level}</span>
+                                        {progressions?.[favId] && (
+                                            <span className="text-[10px] font-black text-blue-400">{progressions[favId].progress}%</span>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </section>
+            )}
+
             {/* All Courses Grid */}
             < div className="space-y-16" >
                 {

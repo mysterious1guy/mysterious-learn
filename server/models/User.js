@@ -40,6 +40,11 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user',
     },
+    adminTier: {
+      type: String,
+      enum: ['standard', 'owner'],
+      default: 'standard',
+    },
     joinedAt: {
       type: Date,
       default: Date.now,
