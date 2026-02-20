@@ -536,10 +536,58 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
             )}
 
             {activeTab === 'courses' && (
-              <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-[3rem] text-slate-600">
-                <BookOpen size={48} className="mb-4 opacity-20" />
-                <p className="font-bold">Module de gestion des cours en développement</p>
-              </div>
+              <motion.div key="courses" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
+                <div className="flex justify-between items-center mb-8">
+                  <h2 className="text-3xl font-black text-white">Gestion des Cours</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {courses.map(course => (
+                    <div key={course._id} className="bg-slate-900 border border-slate-800 rounded-2xl p-6 group hover:border-blue-500 transition-all flex flex-col">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full">{course.category}</span>
+                        </div>
+                        <button onClick={() => navigate(`/course/${course._id}`)} className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Voir le cours">
+                          <Eye size={16} />
+                        </button>
+                      </div>
+                      <h3 className="text-lg font-bold text-white mb-2">{course.title}</h3>
+                      <p className="text-sm text-slate-400 mb-6 line-clamp-2 flex-grow">{course.description}</p>
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-500 pt-4 border-t border-slate-800">
+                        <div className="flex items-center gap-1"><BookOpen size={14} /> {course.chapters?.length || 0} chap.</div>
+                        <div className="flex items-center gap-1"><Users size={14} /> {course.level || 'Tous'}</div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Card for AlgoCourse specifically as it might not be in the Mongo DB depending on the seed */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 group hover:border-purple-500 transition-all flex flex-col relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
+                    <div className="flex justify-between items-start mb-4 relative z-10">
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-purple-400 bg-purple-500/10 px-2 py-1 rounded-full">Fondamentaux</span>
+                      </div>
+                      <button onClick={() => navigate(`/course/algo`)} className="p-2 bg-slate-800 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition" title="Voir le cours">
+                        <Eye size={16} />
+                      </button>
+                    </div>
+                    <h3 className="text-lg font-bold text-white mb-2 relative z-10">Algorithmique</h3>
+                    <p className="text-sm text-slate-400 mb-6 line-clamp-2 flex-grow relative z-10">Mondial Algo Grimoire - Le cours interactif ultime pour comprendre la logique.</p>
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-500 pt-4 border-t border-slate-800 relative z-10">
+                      <div className="flex items-center gap-1"><BookOpen size={14} /> 7 modules</div>
+                      <div className="flex items-center gap-1"><Users size={14} /> Débutant</div>
+                    </div>
+                  </div>
+
+                  {courses.length === 0 && (
+                    <div className="col-span-full h-64 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-[3rem] text-slate-600">
+                      <BookOpen size={48} className="mb-4 opacity-20" />
+                      <p className="font-bold">Aucun cours trouvé dans la base de données.</p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
             )}
 
             {activeTab === 'config' && config && (

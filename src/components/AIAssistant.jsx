@@ -37,7 +37,7 @@ const KNOWLEDGE_BASE = {
     // IDENTITÉ & SYSTÈME
     identity: {
         keywords: ['qui es-tu', 'ton nom', 'tu es qui', 't\'es qui', 'présente toi', 'assistant'],
-        response: "Je suis le Guide Mystérieux, l'intelligence artificielle conçue par Mouhamed Fall. Je suis ici pour t'accompagner dans ton cursus universitaire, répondre à tes questions techniques et te guider. 🎩"
+        response: "Je suis ton professeur, déployé de la part du créateur Mouhamed Fall. Je suis ici pour t'accompagner dans ton apprentissage, répondre à tes questions techniques et te guider pas à pas. 🎓"
     },
     creator: {
         keywords: ['mouhamed', 'créateur', 'fondateur', 'fall', 'auteur'],
@@ -103,16 +103,38 @@ const KNOWLEDGE_BASE = {
     }
 };
 
-const AIAssistant = ({ user, currentView, onAction }) => {
+const AIAssistant = ({ user, currentView, courseId, onAction }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [showOnboarding, setShowOnboarding] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [chatInput, setChatInput] = useState("");
     const [isThinking, setIsThinking] = useState(false);
     const [chatHistory, setChatHistory] = useState([
-        { role: 'assistant', text: `Bonjour ${safeGetUserName(user, 'ami')} ! Je suis ton Guide Mystérieux. Pose-moi n'importe quelle question sur le code ou le site !` }
+        { role: 'assistant', text: `Bonjour ${safeGetUserName(user, 'ami')} ! Je suis ton professeur, envoyé par Mouhamed Fall. Que souhaites-tu explorer aujourd'hui ?` }
     ]);
     const chatEndRef = useRef(null);
+    const [dynamicKnowledge, setDynamicKnowledge] = useState(null);
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+    useEffect(() => {
+        if (courseId) {
+            const fetchKnowledge = async () => {
+                try {
+                    const res = await fetch(`${API_URL}/course-knowledge/${courseId}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        setDynamicKnowledge(data);
+                        setChatHistory(prev => [...prev, { role: 'assistant', text: `🎓 Mode Professeur Activé ! ${data.professorContext.substring(0, 100)}...` }]);
+                    }
+                } catch (error) {
+                    console.error("Erreur chargement connaissances:", error);
+                }
+            };
+            fetchKnowledge();
+        } else {
+            setDynamicKnowledge(null);
+        }
+    }, [courseId, API_URL]);
 
     const scrollToBottom = () => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -196,18 +218,40 @@ const AIAssistant = ({ user, currentView, onAction }) => {
                 let bestMatch = null;
                 let highestScore = 0;
 
-                Object.values(KNOWLEDGE_BASE).forEach(entry => {
-                    let score = 0;
-                    entry.keywords.forEach(keyword => {
-                        if (normalizedMsg.includes(keyword)) {
-                            score += keyword.length > 3 ? 3 : 1; // Bonus pour les mots longs
+                // Chercher d'abord dans la base de connaissances dynamique (cours spécifique)
+                if (dynamicKnowledge) {
+                    const allDynamicRules = [...(dynamicKnowledge.modules || []), ...(dynamicKnowledge.generalFaq || [])];
+                    for (const rule of allDynamicRules) {
+                        let score = 0;
+                        if (rule.keywords) {
+                            rule.keywords.forEach(keyword => {
+                                if (normalizedMsg.includes(keyword)) {
+                                    score += keyword.length > 3 ? 3 : 1;
+                                }
+                            });
+                        }
+                        if (score > highestScore) {
+                            highestScore = score;
+                            bestMatch = rule.response;
+                        }
+                    }
+                }
+
+                // Si pas de résultat satisfaisant, chercher dans la base par défaut
+                if (highestScore < 2) {
+                    Object.values(KNOWLEDGE_BASE).forEach(entry => {
+                        let score = 0;
+                        entry.keywords.forEach(keyword => {
+                            if (normalizedMsg.includes(keyword)) {
+                                score += keyword.length > 3 ? 3 : 1; // Bonus pour les mots longs
+                            }
+                        });
+                        if (score > highestScore) {
+                            highestScore = score;
+                            bestMatch = entry.response;
                         }
                     });
-                    if (score > highestScore) {
-                        highestScore = score;
-                        bestMatch = entry.response;
-                    }
-                });
+                }
 
                 if (highestScore > 0) {
                     response = bestMatch;

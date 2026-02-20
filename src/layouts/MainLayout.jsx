@@ -13,6 +13,10 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
   const location = useLocation();
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+  const pathParts = location.pathname.split('/');
+  const currentView = pathParts[1] || 'home';
+  const courseId = currentView === 'course' ? pathParts[2] : null;
+
   const handleAIAction = (action, data) => {
     switch (action) {
       case 'NAVIGATE_ADMIN':
@@ -56,7 +60,8 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
 
       <AIAssistant
         user={user}
-        currentView={location.pathname.split('/')[1] || 'home'}
+        currentView={currentView}
+        courseId={courseId}
         onAction={handleAIAction}
         isAdmin={user?.email === 'mouhamedfall@esp.sn' || user?.role === 'admin'}
       />

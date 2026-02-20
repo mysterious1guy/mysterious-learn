@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowLeft, ChevronRight, ChevronDown, Code, BookOpen,
@@ -9,374 +9,7 @@ import {
   TrendingUp, Clock, Filter, Search, Repeat, Zap, Sparkles
 } from 'lucide-react';
 
-// =====================================================================
-// DONNÉES DU COURS D'ALGORITHMIQUE - Version "MONDIAL" (Ultra-Détaillée)
-// =====================================================================
-
-const courseData = [
-  {
-    id: 'module1',
-    title: 'Module 1: L\'Éveil du Codeur',
-    icon: <Cpu size={20} />,
-    description: "Bienvenue dans l'aventure ! Ici, on apprend ce qu'est vraiment le code, sans stress, étape par étape.",
-    chapters: [
-      {
-        id: 'chap1',
-        title: "C'est quoi un Algorithme ?",
-        description: "Désacralisons le mot : un algorithme, c'est juste une recette !",
-        lessons: [
-          {
-            id: 'algo_m_1_1',
-            type: 'theory',
-            title: "Le concept de pas-à-pas",
-            duration: '5 min',
-            content: `
-# 🕯️ Bienvenue dans le Grimoire !
-
-Tu penses peut-être que coder est réservé aux génies des mathématiques ? Détrompe-toi. Coder, c'est **donner des ordres précis à une machine un peu bête**.
-
-## L'analogie de la recette
-Imagine que tu doives expliquer à un robot comment faire des crêpes :
-1. Sortir la farine.
-2. Casser deux œufs.
-3. Mélanger.
-
-Si tu oublies de lui dire "Casse les œufs avant de les mettre dans le bol", il va mettre les œufs avec la coquille !
-
-**Un algorithme, c'est exactement ça :** une suite d'instructions tellement claires qu'il n'y a pas d'erreur possible.
-
-> Dans ce cours, nous n'allons pas apprendre un langage spécifique tout de suite. Nous allons apprendre **la logique**. Une fois que tu as la logique, tu peux apprendre n'importe quel langage (C, Python, JavaScript) en quelques jours.
-            `
-          },
-          {
-            id: 'algo_m_1_2',
-            type: 'quiz',
-            title: "Quiz : La pensée binaire",
-            question: "L'ordinateur est-il capable d'interpréter une consigne floue comme 'Fais chauffer l'eau un peu' ?",
-            options: [
-              { id: 'a', text: "Oui, il comprend le contexte.", correct: false },
-              { id: 'b', text: "Non, il lui faut une température ou une durée précise.", correct: true }
-            ],
-            explanation: "L'ordinateur ne devine rien. Il faut lui dire 'Chauffe l'eau à 100°C' ou 'Attends 5 minutes'."
-          }
-        ]
-      },
-      {
-        id: 'chap2',
-        title: "Les Variables : Nos Boîtes Magiques",
-        description: "Comment l'ordinateur se souvient des choses ?",
-        lessons: [
-          {
-            id: 'algo_m_1_3',
-            type: 'theory',
-            title: "Stocker l'information",
-            duration: '10 min',
-            content: `
-# 📦 Les Variables
-
-Pour travailler, l'ordinateur a besoin de stocker des informations dans sa mémoire. Imagine une étagère remplie de **boîtes**.
-
-Chaque boîte a :
-1. **Un Nom** (pour la retrouver).
-2. **Une Valeur** (ce qu'il y a dedans).
-3. **Un Type** (ce qu'on a le droit de mettre dedans).
-
-## Les types de base
-*   **Entier** (1, 42, -5)
-*   **Réel** (3.14, 10.5)
-*   **Texte** ("Bonjour")
-*   **Booléen** (Vrai ou Faux)
-
-### L'Assignation
-Quand on met quelque chose dans une boîte, on dit qu'on **assigne** une valeur.
-\`score = 0\`
-            `
-          },
-          {
-            id: 'algo_m_1_4',
-            type: 'practice',
-            title: "Créer sa première variable",
-            description: "Apprenons à manipuler des boîtes.",
-            instruction: "Créez une variable nommée 'age' et donnez-lui la valeur 25.",
-            initialCode: "// Définissez votre variable ici\n",
-            hints: ["Écrivez : age = 25"],
-            validationRegex: /age\s*=\s*25/i,
-            difficulty: "Débutant"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'module2',
-    title: 'Module 2: Le Don de la Pensée (Logique)',
-    icon: <Database size={20} />,
-    description: "Apprenons à notre programme à faire des choix intelligents.",
-    chapters: [
-      {
-        id: 'chap3',
-        title: "Les Conditions (Si... Alors)",
-        description: "Faire des embranchements dans le code.",
-        lessons: [
-          {
-            id: 'algo_m_2_1',
-            type: 'theory',
-            title: "L'art du choix",
-            duration: '10 min',
-            content: `
-# 🛣️ Prendre une décision
-
-En algorithmique, on utilise le **SI... ALORS... SINON**.
-
-\`\`\`
-SI (il pleut) ALORS
-    Prendre un parapluie
-SINON
-    Prendre ses lunettes de soleil
-FIN SI
-\`\`\`
-
-### Les Comparateurs
-*   \`==\` : Égal
-*   \`!=\` : Différent
-*   \`>\` : Supérieur
-*   \`<\` : Inférieur
-            `
-          },
-          {
-            id: 'algo_m_2_2',
-            type: 'quiz',
-            title: "Quiz : La logique du Sinon",
-            question: "Si la condition du 'SI' est FAUSSE, que se passe-t-il ?",
-            options: [
-              { id: 'a', text: "Le programme s'arrête.", correct: false },
-              { id: 'b', text: "L'alternative 'SINON' est exécutée.", correct: true }
-            ],
-            explanation: "Le SINON est le plan B quand le SI échoue."
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'module3',
-    title: 'Module 3: Le Pouvoir de la Répétition (Boucles)',
-    icon: <Repeat size={20} />,
-    description: "Faites travailler l'ordinateur pour vous, des milliers de fois.",
-    chapters: [
-      {
-        id: 'chap4',
-        title: "Tant Que (While)",
-        description: "Répéter sous condition.",
-        lessons: [
-          {
-            id: 'algo_m_3_1',
-            type: 'theory',
-            title: "La boucle infinie",
-            duration: '10 min',
-            content: `
-# 🔄 Les Boucles
-
-Une boucle permet de répéter un bloc de code.
-
-## Tant Que (While)
-On répète **tant qu'une condition** est vraie.
-
-\`\`\`
-TANT QUE (batterie < 100) FAIRE
-    Charger le téléphone
-FIN TANT QUE
-\`\`\`
-            `
-          }
-        ]
-      },
-      {
-        id: 'chap5',
-        title: "Pour (For)",
-        description: "Répéter un nombre de fois précis.",
-        lessons: [
-          {
-            id: 'algo_m_3_2',
-            type: 'theory',
-            title: "Compter ses tours",
-            duration: '10 min',
-            content: `
-# 🔢 La boucle POUR
-
-C'est une boucle avec un compteur.
-
-\`\`\`
-POUR i allant de 1 à 10 FAIRE
-    Afficher(i)
-FIN POUR
-\`\`\`
-            `
-          },
-          {
-            id: 'algo_m_3_3',
-            type: 'practice',
-            title: "Répéter 5 fois",
-            description: "Affichez 'Hello' 5 fois.",
-            instruction: "Utilisez une boucle POUR de 1 à 5.",
-            initialCode: "POUR i allant de 1 à 5 FAIRE\n    // ...\nFIN POUR",
-            validationRegex: /POUR/i,
-            difficulty: "Débutant"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'module4',
-    title: 'Module 4: Organiser les Données (Tableaux)',
-    icon: <Box size={20} />,
-    description: "Stockez des centaines de valeurs dans une seule variable.",
-    chapters: [
-      {
-        id: 'chap6',
-        title: "Les Tableaux",
-        description: "Des listes indexées.",
-        lessons: [
-          {
-            id: 'algo_m_4_1',
-            type: 'theory',
-            title: "Les Indices",
-            duration: '12 min',
-            content: `
-# 📊 Les Tableaux
-
-Imagine un tiroir avec plusieurs compartiments. Chaque compartiment a un numéro : l'**index**.
-
-**Attention :** En code, on commence à compter à **0**.
-Le premier élément est à l'index 0.
-            `
-          },
-          {
-            id: 'algo_m_4_2',
-            type: 'quiz',
-            title: "Quiz : Indexation",
-            question: "Quel est l'index du 1er élément d'un tableau ?",
-            options: [
-              { id: 'a', text: "1", correct: false },
-              { id: 'b', text: "0", correct: true }
-            ],
-            explanation: "On commence toujours à 0 !"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'module5',
-    title: 'Module 5: Diviser pour Régner (Fonctions)',
-    icon: <GitBranch size={20} />,
-    description: "Apprenez à découper votre code en briques réutilisables.",
-    chapters: [
-      {
-        id: 'chap7',
-        title: "Créer une fonction",
-        description: "Donner un nom à une action.",
-        lessons: [
-          {
-            id: 'algo_m_5_1',
-            type: 'theory',
-            title: "Les Outils réutilisables",
-            duration: '15 min',
-            content: `
-# 🛠️ Les Fonctions
-
-Une fonction est un bloc de code nommé qu'on peut appeler n'importe quand.
-
-## Paramètres et Retour
-Tu peux lui donner des infos (paramètres) et elle te rend un résultat.
-
-\`\`\`
-FONCTION addition(a, b)
-    RETOURNE a + b
-FIN FONCTION
-\`\`\`
-            `
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'module6',
-    title: 'Module 6: La Magie Noire (Récursivité)',
-    icon: <Sparkles size={20} />,
-    description: "Le concept ultime : une fonction qui s'appelle elle-même.",
-    chapters: [
-      {
-        id: 'chap8',
-        title: "Une fonction dans une fonction",
-        description: "Comprendre le miroir sans fin.",
-        lessons: [
-          {
-            id: 'algo_m_6_1',
-            type: 'theory',
-            title: "Le Cas d'Arrêt",
-            duration: '15 min',
-            content: `
-# 🔁 La Récursivité
-
-C'est quand une fonction s'appelle elle-même. Pour éviter le crash, il faut une **condition d'arrêt**.
-
-## Exemple : La Factorielle
-5! = 5 * 4 * 3 * 2 * 1
-On peut dire que 5! = 5 * 4!
-            `
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'module7',
-    title: 'Module 7: Algorithmes de Légende',
-    icon: <Trophy size={20} />,
-    description: "Tris, recherches et optimisation de pro.",
-    chapters: [
-      {
-        id: 'chap9',
-        title: "Algorithmes de Tri",
-        description: "Mettre de l'ordre dans le chaos.",
-        lessons: [
-          {
-            id: 'algo_m_7_1',
-            type: 'theory',
-            title: "Tri à Bulles",
-            duration: '20 min',
-            content: `
-# 🫧 Tri à Bulles
-
-Le plus simple : on compare deux voisins et on échange s'ils sont dans le mauvais ordre. On répète.
-            `
-          }
-        ]
-      },
-      {
-        id: 'chap10',
-        title: "Algorithmes de Recherche",
-        description: "Trouver une aiguille ultra-vite.",
-        lessons: [
-          {
-            id: 'algo_m_7_2',
-            type: 'theory',
-            title: "La Dichotomie",
-            duration: '15 min',
-            content: `
-# 🔍 Recherche Dichotomique
-
-Sur un tableau trié, on divise le terrain par 2 à chaque étape. C'est ultra puissant !
-            `
-          }
-        ]
-      }
-    ]
-  }
-];
+import { algoCourseData as courseData } from './algoCourseContent';
 
 // =====================================================================
 // COMPOSANTS INTERACTIFS
@@ -583,11 +216,13 @@ const CodeEditor = ({ lesson, onComplete }) => {
   );
 };
 
-const AlgoCourse = ({ onClose, completedLessons = [], onLessonComplete }) => {
+const AlgoCourse = ({ onClose, user, API_URL }) => {
   const [activeModuleId, setActiveModuleId] = useState('module1');
   const [activeChapterId, setActiveChapterId] = useState('chap1');
   const [activeLessonId, setActiveLessonId] = useState('algo_m_1_1');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [completedLessons, setCompletedLessons] = useState([]);
+  const [loadingProgress, setLoadingProgress] = useState(true);
 
   const currentModule = courseData.find(m => m.id === activeModuleId);
   const currentChapter = currentModule?.chapters.find(c => c.id === activeChapterId);
@@ -596,11 +231,75 @@ const AlgoCourse = ({ onClose, completedLessons = [], onLessonComplete }) => {
   const totalLessons = courseData.reduce((acc, mod) => acc + mod.chapters.reduce((acc2, chap) => acc2 + chap.lessons.length, 0), 0);
   const progress = Math.round((completedLessons.length / totalLessons) * 100);
 
-  const handleLessonCompletion = (success) => {
-    if (success) {
-      onLessonComplete('algo', activeLessonId);
+  useEffect(() => {
+    if (!user || !API_URL) {
+      setLoadingProgress(false);
+      return;
+    }
+    fetch(`${API_URL}/courses/algo/progress`, {
+      headers: { Authorization: `Bearer ${user.token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.completedLessons) {
+          setCompletedLessons(data.completedLessons);
+
+          // Auto progression logic: Reprendre là où on s'était arrêté
+          if (data.completedLessons.length > 0 && data.completedLessons.length < totalLessons) {
+            let found = false;
+            for (const mod of courseData) {
+              for (const chap of mod.chapters) {
+                for (const les of chap.lessons) {
+                  if (!data.completedLessons.includes(les.id)) {
+                    setActiveModuleId(mod.id);
+                    setActiveChapterId(chap.id);
+                    setActiveLessonId(les.id);
+                    found = true;
+                    break;
+                  }
+                }
+                if (found) break;
+              }
+              if (found) break;
+            }
+          }
+        }
+        setLoadingProgress(false);
+      })
+      .catch(err => {
+        console.error("Erreur progress:", err);
+        setLoadingProgress(false);
+      });
+  }, [user, API_URL]);
+
+  const handleLessonCompletion = async (success) => {
+    if (success && !completedLessons.includes(activeLessonId)) {
+      const newCompleted = [...completedLessons, activeLessonId];
+      setCompletedLessons(newCompleted);
+
+      if (user && API_URL) {
+        try {
+          await fetch(`${API_URL}/courses/algo/progress`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${user.token}`
+            },
+            body: JSON.stringify({
+              lessonId: activeLessonId,
+              totalLessons: totalLessons
+            })
+          });
+        } catch (err) {
+          console.error("Erreur save progress", err);
+        }
+      }
     }
   };
+
+  if (loadingProgress) {
+    return <div className="fixed inset-0 z-50 bg-[#050810] flex items-center justify-center text-white">Chargement du grimoire...</div>;
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-[#050810] text-gray-100 flex flex-col font-sans overflow-hidden">

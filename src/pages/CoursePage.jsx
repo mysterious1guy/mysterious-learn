@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Clock, Users, Star, BookOpen, CheckCircle, PlayCircle } from 'lucide-react';
+import AlgoCourse from '../courses/algo/AlgoCourse';
 
 const CoursePage = ({ user, API_URL, setToast }) => {
     const { courseId } = useParams();
@@ -10,7 +11,11 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     const [expandedChapter, setExpandedChapter] = useState(null);
 
     useEffect(() => {
-        fetchCourse();
+        if (courseId !== 'algo') {
+            fetchCourse();
+        } else {
+            setLoading(false);
+        }
     }, [courseId]);
 
     const fetchCourse = async () => {
@@ -48,12 +53,16 @@ const CoursePage = ({ user, API_URL, setToast }) => {
         );
     }
 
-    if (!course) {
+    if (!course && courseId !== 'algo') {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-white">Cours non trouvé</div>
             </div>
         );
+    }
+
+    if (courseId === 'algo') {
+        return <AlgoCourse onClose={() => navigate('/dashboard')} user={user} API_URL={API_URL} />;
     }
 
     return (
@@ -191,8 +200,8 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                                                     {exercise.title}
                                                                 </span>
                                                                 <span className={`px-2 py-1 rounded text-xs ${exercise.difficulty === 'Facile' ? 'bg-green-500/20 text-green-400' :
-                                                                        exercise.difficulty === 'Moyen' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                                            'bg-red-500/20 text-red-400'
+                                                                    exercise.difficulty === 'Moyen' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                                        'bg-red-500/20 text-red-400'
                                                                     }`}>
                                                                     {exercise.difficulty}
                                                                 </span>
