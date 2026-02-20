@@ -17,6 +17,7 @@ export const algoCourseData = [
                         id: 'algo_m_1_1',
                         type: 'theory',
                         title: "Qu'est-ce qu'un Algorithme ?",
+                        professorSpeech: "Ah, te voilà ! Bienvenue dans ton premier cours de maître. Oublie tout ce que tu sais sur les ordinateurs pour l'instant. Sais-tu que l'algorithme est né bien avant l'informatique ?",
                         duration: '10 min',
                         content: `
 # 🧠 L'Art de la Pensée Structurée
@@ -51,6 +52,7 @@ Une fois que vous maîtrisez la logique algorithmique, apprendre un nouveau lang
                         id: 'algo_m_1_2',
                         type: 'quiz',
                         title: "Quiz : La nature de l'algorithme",
+                        professorSpeech: "Voyons si tu as bien saisi l'essence de ma leçon. Réponds à cette petite énigme sur les algorithmes...",
                         question: "Sachant ce que nous venons de voir, comment définiriez-vous la relation entre un algorithme et un langage de programmation ?",
                         options: [
                             { id: 'a', text: "L'algorithme est spécifique à un langage comme Python ou C.", correct: false },
@@ -63,6 +65,7 @@ Une fois que vous maîtrisez la logique algorithmique, apprendre un nouveau lang
                         id: 'algo_m_1_3',
                         type: 'theory',
                         title: "L'Anatomie d'un Algorithme",
+                        professorSpeech: "Excellent ! Maintenant, regardons comment on construit le 'squelette' d'une pensée logique. C'est ce qu'on appelle l'anatomie.",
                         duration: '8 min',
                         content: `
 # 🦴 Squelette d'un Algorithme
@@ -110,6 +113,7 @@ Dès la prochaine leçon, nous allons plonger dans le concept de "Variables", qu
                         id: 'algo_m_2_1',
                         type: 'theory',
                         title: "Les Variables : La Mémoire de l'Ordi",
+                        professorSpeech: "Imagine que ton cerveau est comme une étagère vide. Pour ne rien oublier, tu as besoin de boîtes. Ces boîtes, ce sont nos variables !",
                         duration: '15 min',
                         content: `
 # 📦 Les Variables
@@ -144,6 +148,7 @@ FIN
                         id: 'algo_m_2_2',
                         type: 'quiz',
                         title: "Quiz : Mutabilité des Boîtes",
+                        professorSpeech: "D'accord, voyons si tu as compris comment les valeurs se déplacent d'une boîte à l'autre. Ne tombe pas dans mon piège !",
                         question: "Dans mon algorithme, je fais les actions suivantes : `A <- 5`, puis `B <- A`, puis `A <- 10`. Que contient la variable B à la fin ?",
                         options: [
                             { id: 'a', text: "B contient 10, car elle suit A.", correct: false },
@@ -156,6 +161,7 @@ FIN
                         id: 'algo_m_2_3',
                         type: 'theory',
                         title: "Les Types de Données",
+                        professorSpeech: "Une boîte à chaussures ne sert pas à ranger de la soupe, n'est-ce pas ? En informatique, chaque boîte a son 'type'. C'est crucial pour ne pas tout mélanger.",
                         duration: '10 min',
                         content: `
 # 🏷️ Les Types : Trier les Choux et les Carottes
@@ -175,6 +181,7 @@ C'est pour cela qu'il faut préciser le **Type** des variables.
                         id: 'algo_m_2_4',
                         type: 'practice',
                         title: "Manipulation Pratique (Pseudo-Code)",
+                        professorSpeech: "Assez parlé ! C'est à toi de jouer. Ouvre ton grimoire et déclare tes premières variables. Montre-moi que tu es un vrai bâtisseur.",
                         description: "Créez une variable de type Entier et une autre de type Texte.",
                         instruction: "Déclarez les variables 'age' (Entier) et 'nom' (Chaîne) puis assignez '25' à 'age' et '\"Héros\"' à 'nom'.",
                         initialCode: "VARIABLES\n    // Déclarez et assignez ici\n\nDÉBUT\n    \nFIN",
@@ -201,6 +208,7 @@ C'est pour cela qu'il faut préciser le **Type** des variables.
                         id: 'algo_m_3_1',
                         type: 'theory',
                         title: "L'art du Choix (SI... ALORS)",
+                        professorSpeech: "Tes algorithmes commencent à avoir de la mémoire, mais ils sont encore bêtes : ils font toujours la même chose. Apprenons-leur à choisir !",
                         duration: '12 min',
                         content: `
 # 🚦 SI Cela, ALORS Ceci
@@ -239,6 +247,7 @@ Pour évaluer une condition, l'ordinateur doit comparer des valeurs :
                         id: 'algo_m_3_2',
                         type: 'practice',
                         title: "Pratique : Le Videur de Boîte de Nuit",
+                        professorSpeech: "Imagine que tu es un gardien à l'entrée d'un temple mystérieux. Si le visiteur est trop jeune, il ne passe pas. À toi de coder cette logique !",
                         description: "Créez l'algorithme d'un videur qui refuse l'entrée aux mineurs.",
                         instruction: "Si l'âge est majeur (>= 18), la variable 'entree' vaut \"Autorisé\", sinon elle vaut \"Refusé\".",
                         initialCode: "VARIABLES\n    age : Entier <- 16\n    entree : Chaîne\n\nDÉBUT\n    // Écrivez votre condition SI/SINON ici\n    \nFIN",
@@ -265,6 +274,7 @@ Pour évaluer une condition, l'ordinateur doit comparer des valeurs :
                         id: 'algo_m_4_1',
                         type: 'theory',
                         title: "La Boucle TANT QUE (While)",
+                        professorSpeech: "Sais-tu ce qui rend les machines supérieures aux humains ? Elles ne se fatiguent JAMAIS de répéter la même tâche. C'est le pouvoir des boucles.",
                         duration: '12 min',
                         content: `
 # 🔄 La Boucle Inconditionnelle
@@ -294,6 +304,7 @@ FIN
                         id: 'algo_m_4_2',
                         type: 'theory',
                         title: "La Boucle POUR (For)",
+                        professorSpeech: "Parfois, on n'a pas envie de surveiller la boucle nous-mêmes. Pour ça, il y a la boucle 'POUR'. C'est comme un régulateur de vitesse pour ton code.",
                         duration: '10 min',
                         content: `
 # 🔢 Le Compteur Automatique
@@ -320,6 +331,7 @@ FIN
                         id: 'algo_m_4_3',
                         type: 'practice',
                         title: "La Table de Multiplication",
+                        professorSpeech: "Un classique ! Calcule-moi cette table de multiplication. Mais attention, fais en sorte que l'algorithme travaille pour toi.",
                         description: "Générez la table de multiplication par 7.",
                         instruction: "Utilisez une boucle POUR pour calculer et assigner à 'resultat' chaque multiple de 7 (de 1 à 10). (Vous n'avez besoin d'écrire que l'assignation dans la boucle)",
                         initialCode: "VARIABLES\n    resultat : Entier\n\nDÉBUT\n    POUR i ALLANT DE 1 A 10 FAIRE\n        // Écrivez l'équation ici (ex: resultat <- ...)\n    FIN POUR\nFIN",
@@ -346,6 +358,7 @@ FIN
                         id: 'algo_m_5_1',
                         type: 'theory',
                         title: "Concept du Tableau (Array)",
+                        professorSpeech: "Stocker une valeur c'est bien. En stocker mille, c'est mieux. Bienvenue dans le monde des collections de données : les tableaux !",
                         duration: '15 min',
                         content: `
 # 🚂 Le Train des Données
@@ -380,6 +393,7 @@ FIN
                         id: 'algo_m_5_2',
                         type: 'quiz',
                         title: "Quiz : Le Piège de l'Index",
+                        professorSpeech: "Attention ! Ici, beaucoup de débutants se trompent. Rappelle-toi : en informatique, on ne commence pas toujours à compter par 1...",
                         question: "J'ai un tableau 'Noms' qui contient 100 éléments. Je veux afficher le cinquantième nom de la liste. Que dois-je écrire ?",
                         options: [
                             { id: 'a', text: "Afficher(Noms[50])", correct: false },
@@ -392,6 +406,7 @@ FIN
                         id: 'algo_m_5_3',
                         type: 'theory',
                         title: "Parcourir un Tableau",
+                        professorSpeech: "C'est ici que la magie opère : on combine les boucles et les tableaux pour traiter des armées entières de données en une fraction de seconde.",
                         duration: '10 min',
                         content: `
 # 🚗 Traverser les Tableaux
@@ -439,6 +454,7 @@ FIN
                         id: 'algo_m_6_1',
                         type: 'theory',
                         title: "Qu'est-ce qu'une Fonction ?",
+                        professorSpeech: "Ne te répète jamais ! Si tu dois faire une tâche plusieurs fois, crée une commande personnalisée : une fonction. C'est le secret des pros.",
                         duration: '15 min',
                         content: `
 # ⚙️ La Boîte Noire Magique
@@ -468,6 +484,7 @@ valeur <- Addition(10, 5)  // valeur vaut maintenant 15 !
                         id: 'algo_m_6_2',
                         type: 'practice',
                         title: "Créer la fonction Double",
+                        professorSpeech: "Prêt à créer ta première usine à données ? Fabrique-moi une fonction qui multiplie tout par deux !",
                         description: "Créez une fonction qui renvoie le double de la valeur reçue.",
                         instruction: "Remplissez le contenu de la fonction pour qu'elle RETOURNE la valeur 'nombre' multipliée par 2.",
                         initialCode: "FONCTION CalculerDouble(nombre: Entier) -> Entier\nDÉBUT\n    // Taper la commande de retour ici\n    \nFIN FONCTION",
@@ -494,6 +511,7 @@ valeur <- Addition(10, 5)  // valeur vaut maintenant 15 !
                         id: 'algo_m_7_1',
                         type: 'theory',
                         title: "La Recherche Séquentielle vs Dichotomique",
+                        professorSpeech: "Te voilà au sommet ! Voyons comment les géants comme Google trouvent une information parmi des milliards d'autres. C'est une question de stratégie.",
                         duration: '20 min',
                         content: `
 # 🔍 Trouver une Aiguille dans une Botte de Foin
@@ -519,6 +537,7 @@ On réduit drastiquement le nombre de coups nécessaires (Complexité Logarithmi
                         id: 'algo_m_7_2',
                         type: 'theory',
                         title: "L'Algorithme de Tri à Bulles",
+                        professorSpeech: "Une dernière leçon pour la route. Le tri à bulles est un classique indémodable. C'est simple, c'est beau, et c'est la base de tout !",
                         duration: '15 min',
                         content: `
 # 🫧 Mettre de l'ordre : Le Tri à Bulles

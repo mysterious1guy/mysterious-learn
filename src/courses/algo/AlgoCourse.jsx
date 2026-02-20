@@ -15,7 +15,7 @@ import { algoCourseData as courseData } from './algoCourseContent';
 // COMPOSANTS INTERACTIFS
 // =====================================================================
 
-const TheoryViewer = ({ title, content }) => {
+const TheoryViewer = ({ title, content, onComplete }) => {
   const renderContent = (text) => {
     return text.split('\n').map((line, idx) => {
       const trimmed = line.trim();
@@ -46,17 +46,27 @@ const TheoryViewer = ({ title, content }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-12 pb-24 h-full overflow-y-auto">
+    <div className="max-w-4xl mx-auto p-4 md:p-12 pb-24 h-full">
       <div className="bg-gray-900/40 p-6 md:p-10 rounded-3xl border border-white/5 backdrop-blur-sm">
         <h2 className="text-2xl md:text-3xl font-bold text-white mb-8 border-b border-white/10 pb-4">{title}</h2>
         {renderContent(content)}
-        <div className="mt-12 flex items-center gap-4 p-6 bg-blue-500/5 rounded-2xl border border-blue-500/10">
-          <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
-            <Info size={24} />
+
+        <div className="mt-12 p-8 bg-blue-500/5 rounded-3xl border border-blue-500/10 flex flex-col items-center text-center gap-6">
+          <div className="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400">
+            <Check size={32} />
           </div>
-          <p className="text-sm text-blue-200/70 italic">
-            Félicitations pour avoir lu cette partie ! N'hésite pas à passer à l'exercice pour valider tes connaissances.
-          </p>
+          <div>
+            <h4 className="text-xl font-bold text-white mb-2">Prêt pour la suite ?</h4>
+            <p className="text-gray-400 text-sm max-w-md">
+              Si tu as bien assimilé ces concepts, clique sur le bouton ci-dessous pour valider cette étape.
+            </p>
+          </div>
+          <button
+            onClick={() => onComplete(true)}
+            className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 active:scale-95"
+          >
+            J'ai compris !
+          </button>
         </div>
       </div>
     </div>
@@ -216,13 +226,31 @@ const CodeEditor = ({ lesson, onComplete }) => {
   );
 };
 
+const ProfessorBubble = ({ text, isThinking }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+    animate={{ opacity: 1, scale: 1, y: 0 }}
+    className="flex items-start gap-4 mb-8"
+  >
+    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
+      <Sparkles size={24} />
+    </div>
+    <div className="bg-white/5 border border-white/10 p-5 rounded-3xl rounded-tl-none backdrop-blur-md relative">
+      <div className="absolute top-0 -left-2 w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-white/10 border-b-[8px] border-b-transparent" />
+      <p className="text-gray-200 text-sm md:text-base leading-relaxed italic">
+        {isThinking ? "..." : text}
+      </p>
+    </div>
+  </motion.div>
+);
+
 const AlgoCourse = ({ onClose, user, API_URL }) => {
   const [activeModuleId, setActiveModuleId] = useState('module1');
   const [activeChapterId, setActiveChapterId] = useState('chap1');
   const [activeLessonId, setActiveLessonId] = useState('algo_m_1_1');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [loadingProgress, setLoadingProgress] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const currentModule = courseData.find(m => m.id === activeModuleId);
   const currentChapter = currentModule?.chapters.find(c => c.id === activeChapterId);
@@ -230,6 +258,11 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
 
   const totalLessons = courseData.reduce((acc, mod) => acc + mod.chapters.reduce((acc2, chap) => acc2 + chap.lessons.length, 0), 0);
   const progress = Math.round((completedLessons.length / totalLessons) * 100);
+
+  // Flattened lessons for easier "Next" logic
+  const allLessons = courseData.flatMap(m => m.chapters.flatMap(c => c.lessons));
+  const currentIndex = allLessons.findIndex(l => l.id === activeLessonId);
+  const isLastLesson = currentIndex === allLessons.length - 1;
 
   useEffect(() => {
     if (!user || !API_URL) {
@@ -243,24 +276,21 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
       .then(data => {
         if (data && data.completedLessons) {
           setCompletedLessons(data.completedLessons);
-
-          // Auto progression logic: Reprendre là où on s'était arrêté
           if (data.completedLessons.length > 0 && data.completedLessons.length < totalLessons) {
-            let found = false;
+            const lastCompletedIndex = allLessons.findIndex(l => l.id === data.completedLessons[data.completedLessons.length - 1]);
+            const nextIndex = Math.min(allLessons.length - 1, lastCompletedIndex + 1);
+            const nextLesson = allLessons[nextIndex];
+
+            // Trouver le module et le chapitre pour cette leçon
             for (const mod of courseData) {
               for (const chap of mod.chapters) {
-                for (const les of chap.lessons) {
-                  if (!data.completedLessons.includes(les.id)) {
-                    setActiveModuleId(mod.id);
-                    setActiveChapterId(chap.id);
-                    setActiveLessonId(les.id);
-                    found = true;
-                    break;
-                  }
+                if (chap.lessons.find(l => l.id === nextLesson.id)) {
+                  setActiveModuleId(mod.id);
+                  setActiveChapterId(chap.id);
+                  setActiveLessonId(nextLesson.id);
+                  break;
                 }
-                if (found) break;
               }
-              if (found) break;
             }
           }
         }
@@ -272,11 +302,28 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
       });
   }, [user, API_URL]);
 
+  const goToNextLesson = () => {
+    if (isLastLesson) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      const nextLesson = allLessons[currentIndex + 1];
+      for (const mod of courseData) {
+        for (const chap of mod.chapters) {
+          if (chap.lessons.find(l => l.id === nextLesson.id)) {
+            setActiveModuleId(mod.id);
+            setActiveChapterId(chap.id);
+            setActiveLessonId(nextLesson.id);
+            break;
+          }
+        }
+      }
+      setIsTransitioning(false);
+    }, 400);
+  };
+
   const handleLessonCompletion = async (success) => {
     if (success && !completedLessons.includes(activeLessonId)) {
-      const newCompleted = [...completedLessons, activeLessonId];
-      setCompletedLessons(newCompleted);
-
+      setCompletedLessons(prev => [...prev, activeLessonId]);
       if (user && API_URL) {
         try {
           await fetch(`${API_URL}/courses/algo/progress`, {
@@ -298,114 +345,94 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   };
 
   if (loadingProgress) {
-    return <div className="fixed inset-0 z-50 bg-[#050810] flex items-center justify-center text-white">Chargement du grimoire...</div>;
+    return (
+      <div className="fixed inset-0 z-50 bg-[#050810] flex flex-col items-center justify-center text-white">
+        <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-6" />
+        <p className="font-mono text-xs tracking-widest text-blue-400 uppercase">Consultation du grimoire...</p>
+      </div>
+    );
   }
 
   return (
     <div className="fixed inset-0 z-50 bg-[#050810] text-gray-100 flex flex-col font-sans overflow-hidden">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)] pointer-events-none" />
+
       {/* Header */}
-      <header className="h-16 md:h-20 bg-[#0a0c12]/80 backdrop-blur-2xl border-b border-white/5 flex items-center justify-between px-6 shrink-0 z-50">
-        <div className="flex items-center gap-6">
-          <button onClick={onClose} className="p-3 hover:bg-white/5 rounded-2xl text-gray-400 hover:text-white transition-all group">
-            <ArrowLeft size={22} className="group-hover:-translate-x-1 transition-transform" />
+      <header className="h-16 md:h-20 bg-[#0a0c12]/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-6 shrink-0 z-50">
+        <div className="flex items-center gap-4">
+          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-xl text-gray-400 transition-all">
+            <ArrowLeft size={20} />
           </button>
-          <div className="hidden md:block">
-            <h1 className="font-black text-xl tracking-tighter italic flex items-center gap-3">
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-[10px] px-2.5 py-1 rounded-full text-white uppercase tracking-widest not-italic shadow-lg shadow-blue-500/20">Mondial</span>
-              Algo Grimoire
-            </h1>
-          </div>
+          <div className="h-8 w-px bg-white/10 hidden md:block" />
+          <h1 className="font-bold text-sm md:text-base tracking-tight flex items-center gap-3">
+            <span className="text-blue-500 font-black italic">ALGO</span>
+            <span className="opacity-50 hidden sm:inline">|</span>
+            <span className="truncate max-w-[150px] md:max-w-none">{currentLesson?.title}</span>
+          </h1>
         </div>
 
-        <div className="flex-1 max-w-xl mx-8 hidden md:block">
-          <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2">
-            <span>Progression du Voyage</span>
-            <span>{completedLessons.length}/{totalLessons} • {progress}%</span>
+        <div className="flex items-center gap-6">
+          <div className="hidden lg:flex flex-col items-end gap-1">
+            <div className="flex gap-2 text-[10px] font-black tracking-widest text-gray-500">
+              <span>Maîtrise :</span>
+              <span className="text-blue-400">{progress}%</span>
+            </div>
+            <div className="w-32 h-1 bg-white/5 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                className="h-full bg-blue-500"
+              />
+            </div>
           </div>
-          <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              className="h-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-full"
-            />
+          <div className="bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-full flex items-center gap-2">
+            <Trophy size={14} className="text-yellow-500" />
+            <span className="text-xs font-bold text-blue-400">{completedLessons.length}</span>
           </div>
         </div>
-
-        <button className="md:hidden p-3 text-gray-400" onClick={() => setMobileMenuOpen(true)}>
-          <Layers size={24} />
-        </button>
       </header>
 
-      <div className="flex flex-1 overflow-hidden relative">
-        {/* Sidebar */}
-        <aside className={`
-          fixed inset-0 z-[60] bg-[#050810] md:relative md:translate-x-0 md:z-auto
-          w-full md:w-80 flex flex-col border-r border-white/5 transition-transform duration-500
-          ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
-        `}>
-          <div className="p-6 flex items-center justify-between md:hidden border-b border-white/5">
-            <span className="font-black tracking-widest uppercase text-sm">Sommaire</span>
-            <button onClick={() => setMobileMenuOpen(false)} className="p-2"><X /></button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar space-y-8">
-            {courseData.map(mod => (
-              <div key={mod.id} className="space-y-3">
-                <div className="flex items-center gap-3 text-blue-400/80 mb-2">
-                  {mod.icon}
-                  <span className="text-[10px] font-black uppercase tracking-widest">{mod.title}</span>
-                </div>
-                {mod.chapters.map(chap => (
-                  <div key={chap.id} className="space-y-1">
-                    <div className="text-xs font-bold text-gray-500 px-3 flex items-center gap-2 mb-2">
-                      <ChevronDown size={12} /> {chap.title}
-                    </div>
-                    {chap.lessons.map(lesson => (
-                      <button
-                        key={lesson.id}
-                        onClick={() => {
-                          setActiveModuleId(mod.id);
-                          setActiveChapterId(chap.id);
-                          setActiveLessonId(lesson.id);
-                          setMobileMenuOpen(false);
-                        }}
-                        className={`w-full p-4 rounded-2xl text-left text-sm transition-all flex items-center justify-between group
-                          ${activeLessonId === lesson.id ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20' : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'}
-                        `}
-                      >
-                        <div className="flex items-center gap-3 overflow-hidden">
-                          {completedLessons.includes(lesson.id) ? <CheckCircle size={16} className="text-green-400 shrink-0" /> : <Circle size={14} className="shrink-0 opacity-50" />}
-                          <span className="truncate font-medium">{lesson.title}</span>
-                        </div>
-                        {lesson.type === 'practice' && <Code size={14} className="shrink-0 opacity-40 group-hover:opacity-100" />}
-                        {lesson.type === 'quiz' && <HelpCircle size={14} className="shrink-0 opacity-40 group-hover:opacity-100" />}
-                      </button>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </aside>
+      <div className="flex-1 flex flex-col overflow-hidden relative">
+        <main className="flex-1 overflow-y-auto custom-scrollbar relative px-4 py-8 md:px-0">
+          <div className="max-w-4xl mx-auto">
+            <ProfessorBubble text={currentLesson?.professorSpeech || "C'est parti ! Apprenons ensemble."} isThinking={isTransitioning} />
 
-        {/* Content Viewer */}
-        <main className="flex-1 flex flex-col bg-[#050810] overflow-hidden">
-          <div className="flex-1 overflow-hidden relative">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={activeLessonId}
-                initial={{ opacity: 0, scale: 0.98, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.98, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="h-full"
-              >
-                {currentLesson?.type === 'theory' && <TheoryViewer title={currentLesson.title} content={currentLesson.content} />}
-                {currentLesson?.type === 'practice' && <CodeEditor lesson={currentLesson} onComplete={handleLessonCompletion} />}
-                {currentLesson?.type === 'quiz' && <QuizViewer data={currentLesson} onComplete={handleLessonCompletion} />}
-              </motion.div>
+              {!isTransitioning && (
+                <motion.div
+                  key={activeLessonId}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="mb-24"
+                >
+                  {currentLesson?.type === 'theory' && <TheoryViewer title={currentLesson.title} content={currentLesson.content} onComplete={handleLessonCompletion} />}
+                  {currentLesson?.type === 'practice' && <CodeEditor lesson={currentLesson} onComplete={handleLessonCompletion} />}
+                  {currentLesson?.type === 'quiz' && <QuizViewer data={currentLesson} onComplete={handleLessonCompletion} />}
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
         </main>
+
+        {/* Footer Navigation - Floating Button */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-6">
+          <button
+            onClick={goToNextLesson}
+            disabled={!completedLessons.includes(activeLessonId) || isLastLesson || isTransitioning}
+            className={`
+              w-full p-5 rounded-3xl font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-2xl
+              ${!completedLessons.includes(activeLessonId) || isLastLesson || isTransitioning
+                ? 'bg-gray-800 text-gray-600 opacity-50 cursor-not-allowed border border-white/5'
+                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:scale-105 active:scale-95 shadow-blue-500/20'
+              }
+            `}
+          >
+            {isLastLesson ? "Grimoire Terminé !" : "Continuer l'aventure"}
+            <ChevronRight size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );
