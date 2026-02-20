@@ -224,6 +224,7 @@ const toggleUserBan = async (req, res) => {
 module.exports = {
   getAllUsers,
   deleteUser,
+  sendEmailToUsers,
   sendNotificationToUsers,
   getAdminStats,
   updateUserRole,
