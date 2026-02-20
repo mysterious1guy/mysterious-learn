@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, Users, Star, BookOpen, Sparkles, Zap, Code2, Heart, Mail, ExternalLink, Github, Twitter, Linkedin } from 'lucide-react';
 import AnimatedLogo from '../components/AnimatedLogo';
-import Footer from '../components/Footer';
 import CourseCarousel from '../components/CourseCarousel';
 
 // Use local data for showcasing on landing
@@ -193,7 +192,7 @@ const HomePage = ({ API_URL }) => {
                 </div>
             </div>
 
-            <Footer />
+
         </div>
     );
 };
