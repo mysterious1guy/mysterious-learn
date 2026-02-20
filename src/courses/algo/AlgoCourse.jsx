@@ -16,6 +16,27 @@ import { algoCourseData as courseData } from './algoCourseContent';
 // =====================================================================
 
 const TheoryViewer = ({ title, content, onComplete }) => {
+  const renderRichText = (text) => {
+    // Handling bold **text**
+    // Handling italic ""text"" or ''text''
+    // Handling inline code `code`
+
+    const parts = text.split(/(\*\*.*?\*\*|""|''|`.*?`|\[!.*?\])/g);
+
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="text-blue-400 font-extrabold">{part.slice(2, -2)}</strong>;
+      }
+      if ((part.startsWith('""') && part.endsWith('""')) || (part.startsWith("''") && part.endsWith("''"))) {
+        return <span key={i} className="text-purple-400 italic font-medium">{part.slice(2, -2)}</span>;
+      }
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return <code key={i} className="px-2 py-0.5 bg-gray-800 border border-white/10 rounded text-pink-400 font-mono text-sm">{part.slice(1, -1)}</code>;
+      }
+      return part;
+    });
+  };
+
   const renderContent = (text) => {
     return text.split('\n').map((line, idx) => {
       const trimmed = line.trim();
@@ -24,16 +45,16 @@ const TheoryViewer = ({ title, content, onComplete }) => {
       if (trimmed.startsWith('### ')) return <h3 key={idx} className="text-lg md:text-xl font-bold text-pink-400 mb-2 mt-4">{trimmed.replace('### ', '')}</h3>;
       if (trimmed.startsWith('> ')) return (
         <blockquote key={idx} className="border-l-4 border-yellow-500 pl-4 italic text-gray-300 my-3 bg-gray-800/30 p-3 rounded-r text-sm">
-          {trimmed.replace('> ', '')}
+          {renderRichText(trimmed.replace('> ', ''))}
         </blockquote>
       );
       if (trimmed.startsWith('* ')) {
-        return <li key={idx} className="ml-4 md:ml-6 list-disc text-gray-300 mb-1 text-sm md:text-base">{trimmed.replace('* ', '')}</li>;
+        return <li key={idx} className="ml-4 md:ml-6 list-disc text-gray-300 mb-1 text-sm md:text-base">{renderRichText(trimmed.replace('* ', ''))}</li>;
       }
       if (trimmed === '') return <div key={idx} className="h-3"></div>;
 
       if (line.includes('FONCTION ') || line.includes('SI ') || line.includes('POUR ') ||
-        line.includes('TANT QUE ') || line.includes('FIN ') || line.includes('//')) {
+        line.includes('TANT QUE ') || line.includes('FIN ') || line.includes('//') || line.includes(' <- ') || line.includes(' := ')) {
         return (
           <div key={idx} className="my-6">
             <div className="flex items-center gap-2 px-4 py-2 bg-gray-950 border border-white/10 rounded-t-xl border-b-0">
@@ -51,7 +72,7 @@ const TheoryViewer = ({ title, content, onComplete }) => {
         );
       }
 
-      return <p key={idx} className="text-gray-300 leading-relaxed mb-4 text-base md:text-lg">{line}</p>;
+      return <p key={idx} className="text-gray-300 leading-relaxed mb-4 text-base md:text-lg">{renderRichText(line)}</p>;
     });
   };
 
@@ -79,8 +100,9 @@ const TheoryViewer = ({ title, content, onComplete }) => {
               window.dispatchEvent(event);
               onComplete(true);
             }}
-            className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 active:scale-95"
+            className="px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:scale-105 active:scale-95 flex items-center gap-3 group"
           >
+            <Sparkles size={20} className="group-hover:animate-pulse" />
             J'ai compris !
           </button>
         </div>

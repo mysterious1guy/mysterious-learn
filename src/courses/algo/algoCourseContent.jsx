@@ -157,13 +157,13 @@ FIN
                         type: 'quiz',
                         title: "Quiz : Mutabilité des Boîtes",
                         professorSpeech: "D'accord, voyons si tu as compris comment les valeurs se déplacent d'une boîte à l'autre. Ne tombe pas dans mon piège !",
-                        question: "Dans mon algorithme, je fais les actions suivantes : `A <- 5`, puis `B <- A`, puis `A <- 10`. Que contient la variable B à la fin ?",
+                        question: 'Dans mon algorithme, je fais les actions suivantes : ""A <- 5"", puis ""B <- A"", puis ""A <- 10"". Que contient la variable B à la fin ?',
                         options: [
                             { id: 'a', text: "B contient 10, car elle suit A.", correct: false },
                             { id: 'b', text: "B contient 5, car on a copié la valeur de A quand A valait 5.", correct: true },
                             { id: 'c', text: "L'ordinateur plante car on a changé A.", correct: false }
                         ],
-                        explanation: "Parfait ! `B <- A` crée une COPIE de ce qu'il y a dans A à cet instant précis (5). Si A change plus tard, B s'en moque, B a sa propre valeur sécurisée dans sa boîte."
+                        explanation: '**Parfait !** ""B <- A"" crée une **COPIE** de ce qu\'il y a dans A à cet instant précis (5). Si A change plus tard, B s\'en moque, B a sa propre valeur sécurisée dans sa boîte.'
                     },
                     {
                         id: 'algo_m_2_3',
@@ -245,10 +245,10 @@ FIN
 
 ## Les Opérateurs de Comparaison : Les Yeux de l'Ordi
 Pour évaluer une condition, l'ordinateur doit comparer des valeurs :
-* \`==\` : Est-ce strictement égal ?
-* \`!=\` : Est-ce différent ?
-* \`>\` et \`<\` : Supérieur et inférieur strict.
-* \`>=\` et \`<=\` : Supérieur ou égal, Inférieur ou égal.
+* ""== "" : Est-ce strictement égal ?
+* ""!= "" : Est-ce différent ?
+* ""> "" et ""< "" : Supérieur et inférieur strict.
+* "">= "" et ""<="" : Supérieur ou égal, Inférieur ou égal.
             `
                     },
                     {
@@ -408,7 +408,7 @@ FIN
                             { id: 'b', text: "Afficher(Noms[49])", correct: true },
                             { id: 'c', text: "Afficher(Noms[51])", correct: false }
                         ],
-                        explanation: "Excellent ! Puisque le comptage commence à 0, l'élément numéro 1 est à l'index 0. Donc l'élément 50 est à l'index 49."
+                        explanation: "**Excellent !** Puisque le comptage commence à 0, l'élément numéro 1 est à l'index 0. Donc l'élément 50 est à l'index 49."
                     },
                     {
                         id: 'algo_m_5_3',

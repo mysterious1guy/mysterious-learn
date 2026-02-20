@@ -368,17 +368,34 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         setIsThinking(false);
     };
 
+    const fetchWithRetry = async (url, options, retries = 3, backoff = 1000) => {
+        try {
+            const res = await fetch(url, options);
+            if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+            return await res.json();
+        } catch (error) {
+            if (retries > 0) {
+                console.warn(`AI Retry ${4 - retries}...`);
+                await new Promise(resolve => setTimeout(resolve, backoff));
+                return fetchWithRetry(url, options, retries - 1, backoff * 2);
+            }
+            throw error;
+        }
+    };
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!chatInput.trim() || isThinking) return;
 
         const originalMessage = chatInput.trim();
+        const normalizeInput = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
         setChatHistory(prev => [...prev, { role: 'user', text: originalMessage }]);
         setChatInput("");
         setIsThinking(true);
 
         try {
-            const res = await fetch(`${API_URL}/ai/chat`, {
+            const data = await fetchWithRetry(`${API_URL}/ai/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -387,29 +404,31 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                 body: JSON.stringify({
                     message: originalMessage,
                     courseId,
-                    history: chatHistory.slice(-5) // Send some context
+                    history: chatHistory.slice(-5)
                 })
             });
 
-            if (res.ok) {
-                const data = await res.json();
-                setChatHistory(prev => [...prev, { role: 'assistant', text: data.response }]);
-                speakText(data.response);
-            } else {
-                throw new Error("Erreur AI");
-            }
+            setChatHistory(prev => [...prev, { role: 'assistant', text: data.response }]);
+            speakText(data.response);
         } catch (error) {
-            // Smart Local Fallback Knowledge
+            console.error("AI Error:", error);
+            // Sophisticated Local Fallback
             const normalized = normalizeInput(originalMessage);
-            let fallbackResponse = "Mes circuits sont un peu fatigués... Réessaye dans un instant !";
+            let fallbackResponse = "Je analyse ta question... Malheureusement une petite interférence bloque ma connexion directe avec le Grand Oracle, mais voici ce que mon savoir local me dit : ";
 
-            // Keyword based fallback
+            let found = false;
             for (const category in KNOWLEDGE_BASE) {
                 if (KNOWLEDGE_BASE[category].keywords.some(k => normalized.includes(k))) {
-                    fallbackResponse = KNOWLEDGE_BASE[category].response;
+                    fallbackResponse += KNOWLEDGE_BASE[category].response;
+                    found = true;
                     break;
                 }
             }
+
+            if (!found) {
+                fallbackResponse = "Oups, une petite interférence dans les ondes du multivers ! Je n'ai pas pu joindre le Grand Oracle Gemini à l'instant, mais réessaie dans quelques secondes, je suis déjà en train de rétablir le pont. 😉";
+            }
+
             setChatHistory(prev => [...prev, { role: 'assistant', text: fallbackResponse }]);
             speakText(fallbackResponse);
         }
