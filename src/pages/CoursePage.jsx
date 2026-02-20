@@ -15,7 +15,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
 
     const fetchCourse = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/courses/${courseId}`);
+            const response = await fetch(`${API_URL}/courses/${courseId}`);
             if (response.ok) {
                 const courseData = await response.json();
                 setCourse(courseData);
@@ -86,7 +86,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                             <p className="text-gray-300 mb-6 leading-relaxed">
                                 {course.description}
                             </p>
-                            
+
                             <div className="flex flex-wrap gap-6 text-sm">
                                 <div className="flex items-center gap-2 text-gray-400">
                                     <Clock size={16} />
@@ -102,10 +102,10 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="flex items-center justify-center">
-                            <img 
-                                src={course.image} 
+                            <img
+                                src={course.image}
                                 alt={course.title}
                                 className="w-full h-64 object-cover rounded-2xl shadow-2xl"
                             />
@@ -119,13 +119,13 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                         <BookOpen size={24} />
                         Contenu du cours
                     </h2>
-                    
+
                     {course.chapters.map((chapter, index) => (
-                        <div 
+                        <div
                             key={index}
                             className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl overflow-hidden transition-all duration-300 hover:border-gray-600"
                         >
-                            <div 
+                            <div
                                 className="p-6 cursor-pointer flex items-center justify-between"
                                 onClick={() => toggleChapter(index)}
                             >
@@ -147,16 +147,16 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                         <Clock size={14} />
                                         {chapter.duration}
                                     </span>
-                                    <PlayCircle 
-                                        size={20} 
+                                    <PlayCircle
+                                        size={20}
                                         className="text-gray-400 transition-transform duration-300"
-                                        style={{ 
-                                            transform: expandedChapter === index ? 'rotate(90deg)' : 'rotate(0deg)' 
+                                        style={{
+                                            transform: expandedChapter === index ? 'rotate(90deg)' : 'rotate(0deg)'
                                         }}
                                     />
                                 </div>
                             </div>
-                            
+
                             {expandedChapter === index && (
                                 <div className="px-6 pb-6 border-t border-gray-700">
                                     <div className="pt-4">
@@ -170,7 +170,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                                 Commencer
                                             </button>
                                         </div>
-                                        
+
                                         <ul className="space-y-2 mb-4">
                                             {chapter.objectives.map((objective, objIndex) => (
                                                 <li key={objIndex} className="flex items-start gap-2 text-gray-300">
@@ -190,11 +190,10 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                                                 <span className="text-white text-sm font-medium">
                                                                     {exercise.title}
                                                                 </span>
-                                                                <span className={`px-2 py-1 rounded text-xs ${
-                                                                    exercise.difficulty === 'Facile' ? 'bg-green-500/20 text-green-400' :
-                                                                    exercise.difficulty === 'Moyen' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                                    'bg-red-500/20 text-red-400'
-                                                                }`}>
+                                                                <span className={`px-2 py-1 rounded text-xs ${exercise.difficulty === 'Facile' ? 'bg-green-500/20 text-green-400' :
+                                                                        exercise.difficulty === 'Moyen' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                                            'bg-red-500/20 text-red-400'
+                                                                    }`}>
                                                                     {exercise.difficulty}
                                                                 </span>
                                                             </div>

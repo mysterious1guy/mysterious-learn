@@ -1,19 +1,21 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, Mail, Phone, MapPin, Calendar, Shield, Bell, Palette,
-  Globe, Lock, Download, Trash2, Camera, Edit2, Save, X,
-  Settings, HelpCircle, LogOut, ChevronRight, Star, BookOpen,
-  Award, Target, TrendingUp, Users, Clock, CheckCircle
+  User, Mail, Phone, Lock, Shield, Globe, Bell,
+  Camera, CheckCircle, ChevronRight, Edit2, LogOut,
+  Save, Trash2, ShieldCheck, Download, BookOpen, Target, Award, Clock
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { formatTimeAgo } from '../utils/dateUtils';
 
-const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites, API_URL, setToast }) => {
+const AccountDetails = ({ user, onUpdateUser, onLogout, API_URL, setToast }) => {
   const { theme, setTheme } = useTheme();
+  const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
-  const [showEmailOtp, setShowEmailOtp] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
   const [otpCode, setOtpCode] = useState('');
-  const [pendingEmail, setPendingEmail] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
   const [editForm, setEditForm] = useState({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
@@ -27,11 +29,41 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     privacy: user?.privacy || 'public'
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
+  const [userStats, setUserStats] = useState({
+    totalSessions: 0,
+    totalTime: 0,
+    exercisesCompleted: 0,
+    streak: 0
+  });
+
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      try {
+        const response = await fetch(`${API_URL}/activity/user-stats/${user._id}`, {
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
+        if (response.ok) {
+          const stats = await response.json();
+          setUserStats(stats);
+        }
+      } catch (err) {
+        console.error("Erreur stats utilisateur:", err);
+      }
+    };
+
+    if (user?._id) {
+      fetchUserStats();
+    }
+  }, [user, API_URL]);
+
   const fileInputRef = useRef(null);
 
   // Fonction de suppression de compte
   const handleDeleteAccount = async () => {
+    if (user?.role === 'admin') {
+      setToast({ message: "Les comptes administrateurs ne peuvent pas être supprimés.", type: 'error' });
+      return;
+    }
     if (!confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
       return;
     }
@@ -91,10 +123,11 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         });
 
         if (res.ok) {
-          setPendingEmail(editForm.email);
-          setShowEmailOtp(true);
+          setNewEmail(editForm.email);
+          setShowEmailModal(true);
+          setOtpSent(true);
           setToast({ message: 'Code envoyé au nouvel email', type: 'info' });
-          return; // On attend la confirmation OTP
+          return;
         } else {
           const errData = await res.json();
           setToast({ message: errData.message || 'Erreur email', type: 'error' });
@@ -144,9 +177,10 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         // Mettre à jour l'utilisateur localement
         onUpdateUser({ ...user, email: data.email });
         setToast({ message: 'Email mis à jour !', type: 'success' });
-        setShowEmailOtp(false);
+        setShowEmailModal(false);
         setIsEditing(false);
         setOtpCode('');
+        setOtpSent(false);
       } else {
         const errData = await res.json();
         setToast({ message: errData.message || 'Code invalide', type: 'error' });
@@ -401,16 +435,16 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <Award className="text-purple-400" size={20} />
-            <span className="text-sm text-gray-400">Certificats</span>
+            <span className="text-sm text-gray-400">Streak de jours</span>
           </div>
-          <p className="text-2xl font-bold text-purple-400">0</p>
+          <p className="text-2xl font-bold text-purple-400">{userStats.streak || 0} 🔥</p>
         </div>
         <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="text-orange-400" size={20} />
-            <span className="text-sm text-gray-400">Heures d'apprentissage</span>
+            <span className="text-sm text-gray-400">Minutes d'apprentissage</span>
           </div>
-          <p className="text-2xl font-bold text-orange-400">0</p>
+          <p className="text-2xl font-bold text-orange-400">{userStats.totalTime || 0}</p>
         </div>
       </div>
     </div>
@@ -426,7 +460,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <Lock className="text-gray-400" size={20} />
               <div className="text-left">
                 <p className="text-white">Changer le mot de passe</p>
-                <p className="text-sm text-gray-400">Dernière modification: Il y a 30 jours</p>
+                <p className="text-sm text-gray-400">Rejoint le: {new Date(user.createdAt).toLocaleDateString()}</p>
               </div>
             </div>
             <ChevronRight className="text-gray-400" size={20} />
@@ -521,8 +555,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <BookOpen className="text-blue-400" size={16} />
             </div>
             <div className="flex-1">
-              <p className="text-white">A commencé le cours "Introduction à React"</p>
-              <p className="text-sm text-gray-400">Il y a 2 heures</p>
+              <p className="text-white">Dernière connexion</p>
+              <p className="text-sm text-gray-400">{formatTimeAgo(user.lastLogin)}</p>
             </div>
           </div>
 

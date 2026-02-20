@@ -18,10 +18,17 @@ const getAllUsers = async (req, res) => {
 // @route   DELETE /api/admin/users/:id
 const deleteUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) {
+    const targetUser = await User.findById(req.params.id);
+    if (!targetUser) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
+
+    // Protection Admin
+    if (targetUser.role === 'admin') {
+      return res.status(403).json({ message: 'Impossible de supprimer un compte administrateur' });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
     res.json({ message: 'Utilisateur supprimé avec succès' });
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur' });
@@ -73,13 +80,12 @@ const sendEmailToUsers = async (req, res) => {
 // @route   POST /api/admin/send-notification
 const sendNotificationToUsers = async (req, res) => {
   try {
-    const { title, message, type } = req.body;
+    const { title, message, type, sendEmail: shouldSendEmail } = req.body;
 
     if (!title || !message) {
       return res.status(400).json({ message: 'Titre et message requis' });
     }
 
-    // Créer la notification dans la DB pour tous les utilisateurs
     const notification = await Notification.create({
       title,
       message,
@@ -88,13 +94,47 @@ const sendNotificationToUsers = async (req, res) => {
       targetUsers: 'all'
     });
 
+    if (shouldSendEmail) {
+      const users = await User.find({ isEmailVerified: true });
+      const emailPromises = users.map(user =>
+        sendEmail({
+          to: user.email,
+          subject: title,
+          text: message
+        })
+      );
+      await Promise.all(emailPromises);
+    }
+
     res.json({
-      message: 'Notification diffusée avec succès',
+      message: 'Notification diffusée' + (shouldSendEmail ? ' et emails envoyés' : ''),
       notification
     });
   } catch (error) {
     console.error('Erreur notification:', error);
     res.status(500).json({ message: 'Erreur lors de l\'envoi de la notification' });
+  }
+};
+
+// @desc    Obtenir toutes les notifications (admin)
+// @route   GET /api/admin/notifications
+const getAllNotifications = async (req, res) => {
+  try {
+    const notifications = await Notification.find({}).sort({ createdAt: -1 });
+    res.json(notifications);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+// @desc    Supprimer une notification (admin)
+// @route   DELETE /api/admin/notifications/:id
+const deleteNotification = async (req, res) => {
+  try {
+    await Notification.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Notification supprimée' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 
@@ -184,9 +224,10 @@ const toggleUserBan = async (req, res) => {
 module.exports = {
   getAllUsers,
   deleteUser,
-  sendEmailToUsers,
   sendNotificationToUsers,
   getAdminStats,
   updateUserRole,
-  toggleUserBan
+  toggleUserBan,
+  getAllNotifications,
+  deleteNotification
 };

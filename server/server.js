@@ -14,13 +14,13 @@ const app = express();
 // Configuration pour Render/Proxy
 app.set('trust proxy', 1);
 
-// 2. Middlewares
+// Middlewares
 app.use(cors({
   origin: process.env.CLIENT_URL || '*',
   credentials: true
 }));
 
-// Middleware de logging pour débugger les boucles
+// Middleware de logging
 app.use((req, res, next) => {
   console.log(`🔄 ${new Date().toISOString()} ${req.method} ${req.url}`);
   next();
@@ -40,7 +40,6 @@ app.use('/api/debug', require('./routes/debugRoutes'));
 app.use('/api/live-monitor', require('./routes/liveMonitorRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 
-
 // 4. Gestion des fichiers statiques
 const rootDir = path.resolve(__dirname, '..');
 app.use(express.static(path.join(rootDir, 'dist')));
@@ -56,8 +55,22 @@ app.get('*', (req, res) => {
 });
 
 // 6. Démarrage du serveur
-const PORT = process.env.PORT || 10000; // Render utilise souvent 10000
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Serveur démarré sur le port ${PORT}`);
-  console.log(`📂 Dossier racine : ${__dirname}`);
 });
+
+// 7. Auto-Ping to keep Render awake (Free Tier)
+const https = require('https');
+const RENDER_SERVICE_NAME = process.env.RENDER_SERVICE_NAME;
+const RENDER_URL = process.env.RENDER_URL || (RENDER_SERVICE_NAME ? `https://${RENDER_SERVICE_NAME}.onrender.com/api/status` : null);
+
+if (RENDER_URL) {
+  setInterval(() => {
+    https.get(RENDER_URL, (res) => {
+      console.log(`🚀 Ping de réveil réussi: ${res.statusCode}`);
+    }).on('error', (err) => {
+      console.log('⚠️ Erreur ping de réveil:', err.message);
+    });
+  }, 14 * 60 * 1000); // 14 mins
+}

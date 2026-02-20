@@ -7,7 +7,7 @@ import Footer from '../components/Footer';
 import ActivityTracker from '../components/ActivityTracker';
 import UsageMonitor from '../components/UsageMonitor';
 
-const MainLayout = ({ user, onLogout }) => {
+const MainLayout = ({ user, onLogout, onSearch }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showUsageMonitor, setShowUsageMonitor] = useState(false);
   const location = useLocation();
@@ -43,6 +43,7 @@ const MainLayout = ({ user, onLogout }) => {
         user={user}
         onMenuClick={() => setMobileMenuOpen(true)}
         onShowUsageMonitor={() => setShowUsageMonitor(true)}
+        onSearch={onSearch}
         API_URL={API_URL}
       />
 

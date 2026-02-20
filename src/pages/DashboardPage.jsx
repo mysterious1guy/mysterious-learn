@@ -4,8 +4,17 @@ import { motion } from 'framer-motion';
 import { coursesData } from '../courses/data.jsx';
 import { ChevronRight, Star, Clock, Users } from 'lucide-react';
 
-const DashboardPage = ({ user, favorites, toggleFavorite, progressions }) => {
+const DashboardPage = ({ user, favorites, toggleFavorite, progressions, searchQuery = '' }) => {
     const navigate = useNavigate();
+
+    const filteredCourses = coursesData.map(category => ({
+        ...category,
+        items: category.items.filter(course =>
+            course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            course.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (course.tags && course.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+        )
+    })).filter(category => category.items.length > 0);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-900 via-[#0a0f1e] to-black pb-20">
@@ -27,7 +36,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions }) => {
 
             {/* Categories avec défilement horizontal */}
             <div className="space-y-12">
-                {coursesData.map((category, index) => (
+                {filteredCourses.map((category, index) => (
                     <motion.div
                         key={category.id}
                         initial={{ opacity: 0, x: -20 }}

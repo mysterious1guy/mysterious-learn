@@ -5,7 +5,7 @@ import {
   Users, Mail, Bell, BookOpen, Settings, Crown, Eye, Edit, Trash2, Send,
   BarChart3, UserPlus, UserMinus, Camera, Upload, AlertTriangle, TrendingUp,
   Activity, LayoutDashboard, Database, Shield, LogOut, Search, Filter,
-  CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X
+  CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone
 } from 'lucide-react';
 
 const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
@@ -18,7 +18,8 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     totalCourses: 0, activeUsers: 0, growthRate: '0%'
   });
   const [emailContent, setEmailContent] = useState({ subject: '', body: '', recipients: 'all', specificEmail: '' });
-  const [notificationContent, setNotificationContent] = useState({ title: '', message: '', type: 'info' });
+  const [notificationContent, setNotificationContent] = useState({ title: '', message: '', type: 'info', sendEmail: false });
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -36,15 +37,17 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     setLoading(true);
     try {
       const headers = { Authorization: `Bearer ${user.token}` };
-      const [usersRes, statsRes, coursesRes] = await Promise.all([
+      const [usersRes, statsRes, coursesRes, notificationsRes] = await Promise.all([
         fetch(`${API_URL}/admin/users`, { headers }),
         fetch(`${API_URL}/admin/stats`, { headers }),
-        fetch(`${API_URL}/courses`, { headers })
+        fetch(`${API_URL}/courses`, { headers }),
+        fetch(`${API_URL}/admin/notifications`, { headers })
       ]);
 
       if (usersRes.ok) setUsers(await usersRes.json());
       if (statsRes.ok) setStats(await statsRes.json());
       if (coursesRes.ok) setCourses(await coursesRes.json());
+      if (notificationsRes.ok) setNotifications(await notificationsRes.json());
     } catch (err) {
       setToast({ message: 'Erreur de connexion au serveur', type: 'error' });
     } finally {
@@ -85,16 +88,39 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
       });
       if (res.ok) {
         setToast({ message: 'Notification diffusée !', type: 'success' });
-        setNotificationContent({ title: '', message: '', type: 'info' });
+        setNotificationContent({ title: '', message: '', type: 'info', sendEmail: false });
+        fetchData(); // Rafraîchir la liste
       }
     } catch (err) {
       setToast({ message: "Échec de la diffusion", type: 'error' });
     }
   };
 
+  const handleDeleteNotification = async (id) => {
+    if (!window.confirm('Supprimer cette annonce ?')) return;
+    try {
+      const res = await fetch(`${API_URL}/admin/notifications/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${user.token}` }
+      });
+      if (res.ok) {
+        setNotifications(notifications.filter(n => n._id !== id));
+        setToast({ message: 'Annonce supprimée', type: 'success' });
+      }
+    } catch (err) {
+      setToast({ message: 'Erreur suppression', type: 'error' });
+    }
+  };
+
   const handleDeleteUser = async (id) => {
     if (!window.confirm('Supprimer définitivement cet utilisateur ?')) return;
     try {
+      const target = users.find(u => u._id === id);
+      if (target?.role === 'admin') {
+        setToast({ message: 'Impossible de supprimer un admin', type: 'error' });
+        return;
+      }
+
       const res = await fetch(`${API_URL}/admin/users/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${user.token}` }
@@ -416,7 +442,44 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     <button className="w-full py-5 bg-gradient-to-r from-orange-600 to-red-600 text-white font-black rounded-2xl shadow-xl shadow-orange-900/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                       <Megaphone size={20} /> DIFFUSER L'ANNONCE
                     </button>
+                    <label className="flex items-center gap-3 cursor-pointer group mt-4">
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          checked={notificationContent.sendEmail}
+                          onChange={(e) => setNotificationContent({ ...notificationContent, sendEmail: e.target.checked })}
+                          className="sr-only peer"
+                        />
+                        <div className="w-10 h-5 bg-slate-800 rounded-full peer peer-checked:bg-orange-600 transition-colors"></div>
+                        <div className="absolute left-1 top-1 w-3 h-3 bg-slate-400 rounded-full peer-checked:translate-x-5 peer-checked:bg-white transition-all"></div>
+                      </div>
+                      <span className="text-sm text-slate-400 group-hover:text-slate-200 transition-colors">Diffuser aussi par Email</span>
+                    </label>
                   </form>
+
+                  {/* Liste des annonces */}
+                  <div className="mt-12 space-y-4">
+                    <h3 className="text-sm font-black uppercase text-slate-500 tracking-widest pl-2">Annonces Actives</h3>
+                    <div className="space-y-3">
+                      {notifications.map(n => (
+                        <div key={n._id} className="flex items-center justify-between p-4 bg-slate-950/50 border border-slate-800 rounded-2xl group transition-all hover:border-slate-700">
+                          <div className="flex-1 min-w-0 pr-4">
+                            <p className="text-sm font-bold text-white truncate">{n.title}</p>
+                            <p className="text-[10px] text-slate-500 truncate">{n.message}</p>
+                          </div>
+                          <button
+                            onClick={() => handleDeleteNotification(n._id)}
+                            className="p-2 text-slate-600 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))}
+                      {notifications.length === 0 && (
+                        <p className="text-center py-8 text-xs text-slate-600 italic">Aucune annonce active</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -460,6 +523,5 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   );
 };
 
-const Megaphone = ({ size, className }) => <TrendingUp size={size} className={className} />; // Placeholder as Lucide Megaphone might be missing or different
-
+// Final check of components
 export default AdminPage;

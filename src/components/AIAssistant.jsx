@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Bot, Sparkles } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { safeGetUserName } from '../utils/userUtils';
 import GuideAvatar from './GuideAvatar';

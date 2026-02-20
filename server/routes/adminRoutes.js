@@ -7,7 +7,9 @@ const {
   sendNotificationToUsers,
   getAdminStats,
   updateUserRole,
-  toggleUserBan
+  toggleUserBan,
+  getAllNotifications,
+  deleteNotification
 } = require('../controllers/adminController');
 
 const router = express.Router();
@@ -25,6 +27,8 @@ router.put('/users/:id/ban', toggleUserBan);
 // Routes communications
 router.post('/send-email', sendEmailToUsers);
 router.post('/send-notification', sendNotificationToUsers);
+router.get('/notifications', getAllNotifications);
+router.delete('/notifications/:id', deleteNotification);
 
 // Routes statistiques
 router.get('/stats', getAdminStats);
