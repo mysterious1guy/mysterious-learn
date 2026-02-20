@@ -11,12 +11,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   width: 100%;
-  font-size: 15px; /* Légère réduction pour Windows */
+  font-size: 15px;
+  /* Légère réduction pour Windows */
 }
 
 @media (min-width: 1024px) {
   body {
-    font-size: 14px; /* Adaptation plus fine sur grand écran */
+    font-size: 14px;
+    /* Adaptation plus fine sur grand écran */
   }
 }
 
@@ -357,7 +359,7 @@ body {
   border-radius: 12px;
   border: 1px solid #333;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .terminal-header {
@@ -396,6 +398,45 @@ body {
 .course-theme-light {
   background-color: #f8fafc;
   color: #1e293b;
+}
+
+.glass-reflection {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-reflection::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent 45%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 55%);
+  transform: rotate(25deg);
+  pointer-events: none;
+  transition: transform 0.6s ease-in-out;
+}
+
+.glass-reflection:hover::after {
+  transform: rotate(25deg) translate(50%, -50%);
+}
+
+.tilt-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+
+.depth-shadow {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.depth-shadow:hover {
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
 }
 
 .course-theme-light .text-white {
