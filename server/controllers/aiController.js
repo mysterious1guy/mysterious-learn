@@ -64,53 +64,69 @@ const deleteGlobalKnowledge = async (req, res) => {
     }
 };
 
-// @desc    AI Chat endpoint (Contextualized)
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// @desc    AI Chat endpoint (Contextualized with Gemini)
 // @route   POST /api/ai/chat
 // @access  Private
 const aiChat = async (req, res) => {
     try {
         const { message, courseId, history } = req.body;
+        const user = req.user;
 
-        // In a real production environment with Gemini API Key:
-        // const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ message: "Clé API Gemini manquante. Contactez l'administrateur." });
+        }
 
-        // For now, we simulate the "intelligence" by retrieving relevant context
-        let context = "Tu es le Professeur Mysterious. Tu es expert, bienveillant et passionné.";
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash",
+            systemInstruction: `Tu es le Professeur Mysterious, un mentor expert en informatique créé par Mouhamed Fall. 
+            Ton ton est académique, bienveillant, inspirant et parfois un peu mystérieux. 
+            Tu aides l'utilisateur nommé ${user.name} (Prénom: ${user.firstName}). 
+            Son niveau actuel en programmation est : ${user.programmingLevel || 'non défini'}.
+            Adapte tes explications à ce niveau. Si le niveau est non défini, sois pédagogue comme pour un débutant.`
+        });
+
+        // RECHERCHE DE CONTEXTE DYNAMIQUE (Tag-free)
+        // On cherche des documents dont le titre ou le contenu match un peu le message
+        const relevantDocs = await GlobalKnowledge.find({
+            $or: [
+                { title: { $regex: message.split(' ').slice(0, 3).join('|'), $options: 'i' } },
+                { content: { $regex: message.split(' ').slice(0, 3).join('|'), $options: 'i' } }
+            ]
+        }).limit(5);
+
+        let contextPrompt = "Voici tes connaissances internes pour répondre à cette question :\n";
 
         if (courseId) {
             const courseKnowledge = await CourseKnowledge.findOne({ courseId });
             if (courseKnowledge) {
-                context += `\nContexte actuel du cours : ${courseKnowledge.professorContext}`;
+                contextPrompt += `\nCONTEXTE DU COURS ACTUEL :\n${courseKnowledge.professorContext}\n`;
             }
         }
 
-        // Search global knowledge for relevant keywords in the message
-        const globalDocs = await GlobalKnowledge.find({
-            $or: [
-                { tags: { $in: [message.toLowerCase()] } },
-                { title: { $regex: message, $options: 'i' } }
-            ]
-        }).limit(3);
-
-        if (globalDocs.length > 0) {
-            context += "\nInformations de recherche supplémentaires : " + globalDocs.map(d => d.content).join("\n");
-        }
-
-        // Logic here would call Gemini or another LLM
-        // For the simulation, we'll return a more 'intelligent' looking response if we found context
-        let aiResponse = "Je suis en train d'analyser ta demande avec mes circuits de Professeur...";
-
-        if (globalDocs.length > 0) {
-            aiResponse = `D'après mes recherches dans ma base de connaissances sur "${globalDocs[0].title}", voici ce que je peux te dire : ${globalDocs[0].content.substring(0, 200)}...`;
+        if (relevantDocs.length > 0) {
+            contextPrompt += "\nDOCUMENTS DE RECHERCHE GLOBAUX :\n" + relevantDocs.map(d => `--- ${d.title} ---\n${d.content}`).join("\n\n");
         } else {
-            aiResponse = "C'est une excellente question. Je n'ai pas de document spécifique sur ce point précis dans ma mémoire centrale, mais en tant que ton Professeur, je te recommande de vérifier les bases de l'algorithmique.";
+            contextPrompt += "\nAucun document spécifique trouvé dans la base. Utilise tes connaissances générales de Professeur.";
         }
 
-        res.json({ response: aiResponse });
+        const chat = model.startChat({
+            history: history ? history.map(h => ({
+                role: h.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: h.text }]
+            })) : []
+        });
+
+        const fullPrompt = `${contextPrompt}\n\nQUESTION DE L'ÉLÈVE : ${message}`;
+        const result = await chat.sendMessage(fullPrompt);
+        const responseText = result.response.text();
+
+        res.json({ response: responseText });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erreur de communication avec le cerveau de l\'IA' });
+        console.error("Erreur Gemini:", error);
+        res.status(500).json({ message: 'Le cerveau du Professeur est momentanément indisponible.' });
     }
 };
 

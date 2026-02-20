@@ -121,6 +121,12 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    // Personalization
+    programmingLevel: {
+      type: String,
+      enum: ['beginner', 'intermediate', 'advanced', 'expert'],
+      default: null,
+    },
   },
   {
     timestamps: true,

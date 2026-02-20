@@ -176,8 +176,86 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         return normalized;
     };
 
-    // --- C'EST ICI QUE LA MAGIE OPÈRE (NOUVELLE LOGIQUE) ---
-    const handleSendMessage = (e) => {
+    // --- PROACTIVE LOGIC ---
+    useEffect(() => {
+        if (!user || isOpen) return;
+
+        const checkProactivity = async () => {
+            // 1. Check if user has a level
+            if (!user.programmingLevel) {
+                setChatHistory([
+                    {
+                        role: 'assistant',
+                        text: `Salutations ! Je suis le Professeur Mysterious. Pour mieux t'aider dans ton aventure, j'ai besoin de connaître ton niveau en programmation. Quel est-il ?`,
+                        type: 'level_selection'
+                    }
+                ]);
+                setIsOpen(true);
+                return;
+            }
+
+            // 2. Check for last progress
+            try {
+                const res = await fetch(`${API_URL}/courses/algo/progress`, {
+                    headers: { Authorization: `Bearer ${user.token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.completedLessons && data.completedLessons.length > 0) {
+                        const lastLessonId = data.completedLessons[data.completedLessons.length - 1];
+                        setChatHistory([
+                            {
+                                role: 'assistant',
+                                text: `Bon retour, ${user.firstName} ! Content d'enfin te revoir. Tu en étais à ta leçon : "${lastLessonId}". Souhaites-tu reprendre ton ascension ?`,
+                                type: 'resume_prompt',
+                                lessonId: lastLessonId
+                            }
+                        ]);
+                        setIsOpen(true);
+                    } else {
+                        setChatHistory([
+                            {
+                                role: 'assistant',
+                                text: `Bonjour ${user.firstName} ! Tu n'as pas encore commencé de cours. Prêt à lancer ton premier algorithme aujourd'hui ?`,
+                                type: 'start_prompt'
+                            }
+                        ]);
+                        setIsOpen(true);
+                    }
+                }
+            } catch (error) {
+                console.error("Erreur proactivité:", error);
+            }
+        };
+
+        const timer = setTimeout(checkProactivity, 3000);
+        return () => clearTimeout(timer);
+    }, [user, API_URL]);
+
+    const handleLevelSelect = async (level) => {
+        setIsThinking(true);
+        try {
+            const res = await fetch(`${API_URL}/users/level`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user.token}`
+                },
+                body: JSON.stringify({ level })
+            });
+            if (res.ok) {
+                setChatHistory(prev => [...prev,
+                { role: 'user', text: `Je suis ${level === 'beginner' ? 'débutant' : level}.` },
+                { role: 'assistant', text: `C'est noté ! Je vais adapter ma pédagogie pour ton profil ${level}. Je te conseille de commencer par le cours d'Algorithmique pour poser des bases solides.` }
+                ]);
+            }
+        } catch (error) {
+            console.error("Erreur niveau:", error);
+        }
+        setIsThinking(false);
+    };
+
+    const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!chatInput.trim() || isThinking) return;
 
@@ -186,90 +264,30 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         setChatInput("");
         setIsThinking(true);
 
-        const normalizedMsg = normalizeInput(originalMessage);
+        try {
+            const res = await fetch(`${API_URL}/ai/chat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user.token}`
+                },
+                body: JSON.stringify({
+                    message: originalMessage,
+                    courseId,
+                    history: chatHistory.slice(-5) // Send some context
+                })
+            });
 
-        // 1. Détection d'actions de navigation
-        const wantsSettings = /\b(paramètres|réglages|mon compte|profil)\b/i.test(normalizedMsg);
-        const wantsCourses = /\b(cours|dashboard|tableau de bord|tous les cours)\b/i.test(normalizedMsg);
-        const wantsSpecificCourse = /\b(ouvrir|lancer|voir|apprendre|cours de|cours)\s+(\w+)/i.exec(normalizedMsg);
-
-        setTimeout(() => {
-            let response = "";
-            let actionTriggered = false;
-
-            // Priorité aux actions
-            if (wantsSettings && onAction) {
-                onAction('NAVIGATE_SETTINGS');
-                response = "Bien sûr ! J'ouvre tes paramètres. ⚙️";
-                actionTriggered = true;
-            } else if (wantsCourses && !wantsSpecificCourse && onAction) {
-                onAction('NAVIGATE_DASHBOARD');
-                response = "Cap sur le tableau de bord ! 📚";
-                actionTriggered = true;
-            } else if (wantsSpecificCourse && onAction) {
-                const courseName = wantsSpecificCourse[2];
-                onAction('OPEN_COURSE', courseName);
-                response = `C'est parti pour le cours de ${courseName} ! 🚀`;
-                actionTriggered = true;
+            if (res.ok) {
+                const data = await res.json();
+                setChatHistory(prev => [...prev, { role: 'assistant', text: data.response }]);
+            } else {
+                throw new Error("Erreur AI");
             }
-
-            // Si pas d'action, recherche intelligente dans la base de connaissances
-            if (!actionTriggered) {
-                let bestMatch = null;
-                let highestScore = 0;
-
-                // Chercher d'abord dans la base de connaissances dynamique (cours spécifique)
-                if (dynamicKnowledge) {
-                    const allDynamicRules = [...(dynamicKnowledge.modules || []), ...(dynamicKnowledge.generalFaq || [])];
-                    for (const rule of allDynamicRules) {
-                        let score = 0;
-                        if (rule.keywords) {
-                            rule.keywords.forEach(keyword => {
-                                if (normalizedMsg.includes(keyword)) {
-                                    score += keyword.length > 3 ? 3 : 1;
-                                }
-                            });
-                        }
-                        if (score > highestScore) {
-                            highestScore = score;
-                            bestMatch = rule.response;
-                        }
-                    }
-                }
-
-                // Si pas de résultat satisfaisant, chercher dans la base par défaut
-                if (highestScore < 2) {
-                    Object.values(KNOWLEDGE_BASE).forEach(entry => {
-                        let score = 0;
-                        entry.keywords.forEach(keyword => {
-                            if (normalizedMsg.includes(keyword)) {
-                                score += keyword.length > 3 ? 3 : 1; // Bonus pour les mots longs
-                            }
-                        });
-                        if (score > highestScore) {
-                            highestScore = score;
-                            bestMatch = entry.response;
-                        }
-                    });
-                }
-
-                if (highestScore > 0) {
-                    response = bestMatch;
-                } else {
-                    // Réponses par défaut variées
-                    const fallbacks = [
-                        "Intéressant... mais je ne suis pas sûr de comprendre. Parle-moi de code (Python, Boucles...) ou du site ! 🤔",
-                        "Mes capteurs ne détectent pas ce concept dans ma base. Essaye de reformuler ?",
-                        "Je suis encore un jeune assistant. Pose-moi une question sur les cours ou Mouhamed.",
-                        "Désolé, je n'ai pas la réponse. Mais tu la trouveras sûrement dans un de nos modules !"
-                    ];
-                    response = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-                }
-            }
-
-            setChatHistory(prev => [...prev, { role: 'assistant', text: response }]);
-            setIsThinking(false);
-        }, 1200);
+        } catch (error) {
+            setChatHistory(prev => [...prev, { role: 'assistant', text: "Mes circuits sont un peu fatigués... Réessaye dans un instant !" }]);
+        }
+        setIsThinking(false);
     };
 
     return (
@@ -361,14 +379,57 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         key={i}
-                                        className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                        className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                                     >
-                                        <div className={`max-w-[80%] p-4 rounded-2xl text-sm ${msg.role === 'user'
+                                        <div className={`max-w-[85%] p-4 rounded-2xl text-sm ${msg.role === 'user'
                                             ? 'bg-blue-600 text-white rounded-br-none shadow-lg'
                                             : 'bg-gray-800 text-gray-300 rounded-bl-none border border-white/5'
                                             }`}>
                                             {msg.text}
                                         </div>
+
+                                        {/* Interactive Elements for Assistant Messages */}
+                                        {msg.role === 'assistant' && msg.type === 'level_selection' && (
+                                            <div className="grid grid-cols-2 gap-2 mt-3 w-content">
+                                                {['beginner', 'intermediate', 'advanced', 'expert'].map((lvl) => (
+                                                    <button
+                                                        key={lvl}
+                                                        onClick={() => handleLevelSelect(lvl)}
+                                                        className="px-3 py-2 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white border border-blue-500/30 rounded-xl text-xs font-bold transition-all capitalize"
+                                                    >
+                                                        {lvl === 'beginner' ? 'Débutant' : lvl === 'intermediate' ? 'Moyen' : lvl === 'advanced' ? 'Avancé' : 'Expert'}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {msg.role === 'assistant' && msg.type === 'resume_prompt' && (
+                                            <div className="flex gap-2 mt-3">
+                                                <button
+                                                    onClick={() => onAction && onAction('OPEN_COURSE', 'algo')}
+                                                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-blue-500/20"
+                                                >
+                                                    🚀 Reprendre
+                                                </button>
+                                                <button
+                                                    onClick={() => setChatHistory(prev => [...prev, { role: 'assistant', text: "Très bien, je reste à ta disposition si tu changes d'avis !" }])}
+                                                    className="px-4 py-2 bg-gray-700 text-gray-300 rounded-xl text-xs font-bold"
+                                                >
+                                                    Plus tard
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {msg.role === 'assistant' && msg.type === 'start_prompt' && (
+                                            <div className="mt-3">
+                                                <button
+                                                    onClick={() => onAction && onAction('OPEN_COURSE', 'algo')}
+                                                    className="px-6 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold"
+                                                >
+                                                    🔥 Commencer l'Algorithme
+                                                </button>
+                                            </div>
+                                        )}
                                     </motion.div>
                                 ))}
                                 {isThinking && (
