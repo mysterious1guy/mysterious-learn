@@ -309,6 +309,9 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const [completedLessons, setCompletedLessons] = useState([]);
   const [loadingProgress, setLoadingProgress] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showAdminMenu, setShowAdminMenu] = useState(false);
+
+  const isAdmin = user?.role === 'admin';
 
   const currentModule = courseData.find(m => m.id === activeModuleId);
   const currentChapter = currentModule?.chapters.find(c => c.id === activeChapterId);
@@ -579,7 +582,59 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 md:gap-6">
+          {isAdmin && (
+            <div className="relative">
+              <button
+                onClick={() => setShowAdminMenu(!showAdminMenu)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/20 transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)]"
+              >
+                <Zap size={14} className="animate-pulse" /> Admin Nav
+              </button>
+              <AnimatePresence>
+                {showAdminMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-full right-0 mt-3 w-72 max-h-[70vh] bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-y-auto custom-scrollbar z-[100] p-4"
+                  >
+                    <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                      <Database size={12} /> Sauter vers une leçon
+                    </h4>
+                    <div className="space-y-4">
+                      {courseData.map(mod => (
+                        <div key={mod.id} className="space-y-1">
+                          <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-2">{mod.title}</p>
+                          {mod.chapters.flatMap(chap => chap.lessons).map(lesson => (
+                            <button
+                              key={lesson.id}
+                              onClick={() => {
+                                // Logic to jump to this lesson
+                                let targetMod = mod;
+                                let targetChap = mod.chapters.find(c => c.lessons.find(l => l.id === lesson.id));
+
+                                setActiveModuleId(targetMod.id);
+                                setActiveChapterId(targetChap.id);
+                                setActiveLessonId(lesson.id);
+                                setShowAdminMenu(false);
+                              }}
+                              className={`w-full text-left p-2 rounded-lg text-xs font-medium transition-all flex items-center gap-2
+                                ${activeLessonId === lesson.id ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}
+                              `}
+                            >
+                              <div className={`w-1.5 h-1.5 rounded-full ${completedLessons.includes(lesson.id) ? 'bg-green-500' : 'bg-slate-700'}`} />
+                              <span className="truncate">{lesson.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
           <div className="hidden lg:flex flex-col items-end gap-1">
             <div className="flex gap-2 text-[10px] font-black tracking-widest text-gray-500">
               <span>Maîtrise :</span>
@@ -705,10 +760,10 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
 
           <button
             onClick={goToNextLesson}
-            disabled={!completedLessons.includes(activeLessonId) || isLastLesson || isTransitioning}
+            disabled={(user?.role !== 'admin' && !completedLessons.includes(activeLessonId)) || isLastLesson || isTransitioning}
             className={`
               flex-1 p-5 rounded-3xl font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-2xl
-              ${!completedLessons.includes(activeLessonId) || isLastLesson || isTransitioning
+              ${(user?.role !== 'admin' && !completedLessons.includes(activeLessonId)) || isLastLesson || isTransitioning
                 ? 'bg-gray-800 text-gray-600 opacity-50 cursor-not-allowed border border-white/5'
                 : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:scale-[1.02] active:scale-95 shadow-blue-500/20'
               }

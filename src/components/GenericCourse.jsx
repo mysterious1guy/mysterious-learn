@@ -5,7 +5,7 @@ import {
     CheckCircle, Circle, Play, Check
 } from 'lucide-react';
 
-const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplete }) => {
+const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonComplete }) => {
 
     const [activeLesson, setActiveLesson] = useState(course.lessons && course.lessons.length > 0 ? course.lessons[0] : null);
 
@@ -16,6 +16,7 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
     };
 
     const isLessonCompleted = (id) => completedLessons && completedLessons.includes(id);
+    const isAdmin = user?.role === 'admin';
 
     if (!course) return null;
 
@@ -111,8 +112,12 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
                             {/* Zone de validation */}
                             <div className="flex items-center justify-between pt-8 border-t border-gray-800 mt-12">
                                 <button
-                                    className="px-6 py-3 rounded-xl border border-gray-700 text-white/80 hover:text-white hover:border-gray-500 transition"
-                                    disabled // Placeholder for now
+                                    disabled={!activeLesson || course.lessons.indexOf(activeLesson) === 0}
+                                    onClick={() => {
+                                        const currentIndex = course.lessons.indexOf(activeLesson);
+                                        if (currentIndex > 0) setActiveLesson(course.lessons[currentIndex - 1]);
+                                    }}
+                                    className={`px-6 py-3 rounded-xl border border-gray-700 text-white/80 hover:text-white hover:border-gray-500 transition ${(!activeLesson || course.lessons.indexOf(activeLesson) === 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     <ChevronRight className="rotate-180 inline mr-2" size={16} />
                                     Précédent
@@ -120,19 +125,19 @@ const GenericCourse = ({ course, onClose, completedLessons = [], onLessonComplet
 
                                 <button
                                     onClick={handleFinishLesson}
-                                    disabled={isLessonCompleted(activeLesson.id)}
-                                    className={`px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition ${isLessonCompleted(activeLesson.id)
+                                    disabled={!isAdmin && isLessonCompleted(activeLesson.id)}
+                                    className={`px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition ${(!isAdmin && isLessonCompleted(activeLesson.id))
                                         ? 'bg-green-600/20 text-green-400 cursor-default'
                                         : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg hover:shadow-blue-500/25'
                                         }`}
                                 >
-                                    {isLessonCompleted(activeLesson.id) ? (
+                                    {(isLessonCompleted(activeLesson.id) && !isAdmin) ? (
                                         <>
                                             <Check size={20} /> Leçon terminée
                                         </>
                                     ) : (
                                         <>
-                                            Terminer la leçon <ChevronRight size={20} />
+                                            {isAdmin && isLessonCompleted(activeLesson.id) ? 'Revalider' : 'Terminer la leçon'} <ChevronRight size={20} />
                                         </>
                                     )}
                                 </button>

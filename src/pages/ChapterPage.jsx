@@ -104,13 +104,23 @@ const ChapterPage = ({ user, API_URL, setToast }) => {
                 </div>
 
                 {/* Progress bar logic */}
-                <div className="flex items-center gap-3 w-32 md:w-48">
-                    <span className="text-xs font-semibold text-slate-400">{currentModuleIndex + (chapterCompleted ? 1 : 0)} / {chapter.modules.length}</span>
-                    <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out"
-                            style={{ width: `${chapterCompleted ? 100 : progressPercent}%` }}
-                        />
+                <div className="flex items-center gap-6">
+                    {user?.role === 'admin' && (
+                        <button
+                            onClick={handleModuleComplete}
+                            className="px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/20 transition-all shadow-[0_0_10px_rgba(245,158,11,0.1)] flex items-center gap-2"
+                        >
+                            <ChevronRight size={12} /> Passer l'étape
+                        </button>
+                    )}
+                    <div className="flex items-center gap-3 w-32 md:w-48">
+                        <span className="text-xs font-semibold text-slate-400">{currentModuleIndex + (chapterCompleted ? 1 : 0)} / {chapter.modules.length}</span>
+                        <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out"
+                                style={{ width: `${chapterCompleted ? 100 : progressPercent}%` }}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
