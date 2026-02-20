@@ -15,6 +15,41 @@ const HomePage = ({ API_URL }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [config, setConfig] = useState(null);
 
+    // Dynamic Background Component
+    const InteractiveBackground = () => (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+            {/* Grid Mesh */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+
+            {/* Reacting Orbs */}
+            {[...Array(5)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    animate={{
+                        x: [0, 100, 0],
+                        y: [0, 50, 0],
+                        scale: [1, 1.2, 1],
+                    }}
+                    transition={{
+                        duration: 10 + i * 2,
+                        repeat: Infinity,
+                        ease: "linear"
+                    }}
+                    style={{
+                        position: 'absolute',
+                        top: `${20 * (i + 1)}%`,
+                        left: `${15 * (i + 1)}%`,
+                        width: '300px',
+                        height: '300px',
+                        background: i % 2 === 0 ? 'rgba(59, 130, 246, 0.03)' : 'rgba(168, 85, 247, 0.03)',
+                        borderRadius: '50%',
+                        filter: 'blur(100px)',
+                    }}
+                />
+            ))}
+        </div>
+    );
+
     useEffect(() => {
         const handleMouseMove = (e) => {
             const { clientX, clientY } = e;
@@ -76,21 +111,11 @@ const HomePage = ({ API_URL }) => {
 
     return (
         <div className="min-h-screen bg-slate-950 font-sans selection:bg-blue-500/30">
-            {/* Background Effects */}
-            <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-                <motion.div
-                    style={{ x: mousePosition.x * 2, y: mousePosition.y * 2 }}
-                    className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full"
-                />
-                <motion.div
-                    style={{ x: mousePosition.x * -2, y: mousePosition.y * -2 }}
-                    className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full"
-                />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03]" />
-            </div>
+            {/* Background elements */}
+            <InteractiveBackground />
 
             {/* Hero Section */}
-            <div className="relative pt-20 pb-16 px-6">
+            <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-4 md:px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center space-y-10">
                         {/* Logo animé */}
@@ -113,13 +138,13 @@ const HomePage = ({ API_URL }) => {
                             <h1 className="flex flex-col items-center">
                                 <motion.span
                                     style={{ x: mousePosition.x * 0.5, y: mousePosition.y * 0.5 }}
-                                    className="text-7xl md:text-9xl lg:text-[11rem] brand-font text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-blue-500/20 text-glow-blue"
+                                    className="text-5xl sm:text-7xl md:text-9xl lg:text-[11rem] brand-font text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-blue-500/20 text-glow-blue leading-[0.85]"
                                 >
                                     MYSTERIOUS
                                 </motion.span>
                                 <motion.span
                                     style={{ x: mousePosition.x * -0.5, y: mousePosition.y * -0.5 }}
-                                    className="text-5xl md:text-8xl lg:text-9xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-4 text-glow-purple drop-shadow-[0_0_50px_rgba(168,85,247,0.4)]"
+                                    className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-2 md:mt-4 text-glow-purple drop-shadow-[0_0_50px_rgba(168,85,247,0.4)] leading-[0.85]"
                                 >
                                     CLASSROOM
                                 </motion.span>
@@ -138,11 +163,11 @@ const HomePage = ({ API_URL }) => {
                         >
                             <button
                                 onClick={() => navigate('/auth')}
-                                className="px-10 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xl rounded-2xl shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 group"
+                                className="px-6 py-4 md:px-10 md:py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg md:text-xl rounded-2xl shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 group"
                             >
-                                <Zap size={24} className="group-hover:text-yellow-400 transition-colors" />
+                                <Zap size={20} className="md:w-6 md:h-6 group-hover:text-yellow-400 transition-colors" />
                                 COMMENCER MAINTENANT
-                                <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
+                                <ArrowRight size={20} className="md:w-6 md:h-6 group-hover:translate-x-2 transition-transform" />
                             </button>
                         </motion.div>
 
@@ -151,7 +176,7 @@ const HomePage = ({ API_URL }) => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.6 }}
-                            className="flex justify-center gap-12 pt-8"
+                            className="flex justify-center gap-6 md:gap-12 pt-8"
                         >
                             <div className="text-center group">
                                 <p className="text-4xl font-black text-white group-hover:text-blue-400 transition-colors">{stats.totalUsers}+</p>
@@ -170,7 +195,7 @@ const HomePage = ({ API_URL }) => {
                         </motion.div>
                     </div>
                 </div>
-            </div>
+            </section>
 
             {/* Course Carousel Section */}
             <div className="py-20 bg-slate-900/40 relative">
@@ -252,7 +277,7 @@ const HomePage = ({ API_URL }) => {
             </div>
 
 
-        </div>
+        </div >
     );
 };
 

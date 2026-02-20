@@ -18,7 +18,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
             className="flex items-center gap-3 cursor-pointer group"
           >
             <MysteriousGeometricLogo className="w-8 h-8 group-hover:rotate-180 transition-transform duration-700" />
-            <span className="font-black text-lg tracking-tighter bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="font-black text-sm sm:text-lg tracking-tighter bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent truncate max-w-[150px] sm:max-w-none">
               MYSTERIOUS CLASSROOM
             </span>
           </Link>
@@ -82,7 +82,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
           ) : (
             <Link
               to="/auth"
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-sm font-black rounded-xl transition-all shadow-xl shadow-blue-900/20 active:scale-95 flex items-center gap-2"
+              className="px-4 py-2 sm:px-6 sm:py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-black rounded-xl transition-all shadow-xl shadow-blue-900/20 active:scale-95 flex items-center gap-2"
             >
               SE CONNECTER
             </Link>

@@ -9,6 +9,8 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 /* Premium Brand Font */
@@ -31,6 +33,17 @@ body {
 
 .text-glow-purple {
   text-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
+}
+
+.mobile-touch-feedback:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+@media (max-width: 640px) {
+  .brand-font {
+    letter-spacing: -0.02em;
+  }
 }
 
 /* Effet de verre (Glassmorphism) */
