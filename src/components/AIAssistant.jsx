@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Info, ChevronLeft, Volume2, Mic, MicOff } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
-import GuideAvatar from './GuideAvatar';
+import OracleCore from './OracleCore';
 
 // Configuration de l'onboarding
 const ONBOARDING_STEPS = [
@@ -32,10 +32,12 @@ const AIAssistant = ({ user, currentView, courseId }) => {
         setTimeout(() => setAvatarState('idle'), 2000);
     }, []);
 
-    // Random idle movement
+    // Random idle movement (disabled if user drags it)
+    const [isDragged, setIsDragged] = useState(false);
+
     useEffect(() => {
         const moveInterval = setInterval(() => {
-            if (avatarState === 'idle') {
+            if (avatarState === 'idle' && !isDragged) {
                 // Determine a random safe position on screen (mostly bottom/right quadrant)
                 const newBottom = Math.max(32, Math.floor(Math.random() * 200));
                 const newRight = Math.max(32, Math.floor(Math.random() * 200));
@@ -43,7 +45,7 @@ const AIAssistant = ({ user, currentView, courseId }) => {
             }
         }, 15000);
         return () => clearInterval(moveInterval);
-    }, [avatarState]);
+    }, [avatarState, isDragged]);
 
     // Handle external events sent to AI
     useEffect(() => {
@@ -191,10 +193,17 @@ const AIAssistant = ({ user, currentView, courseId }) => {
                     )}
                 </AnimatePresence>
 
-                {/* The Living Avatar */}
-                <div onClick={triggerDance} className="pointer-events-auto hover:scale-110 transition-transform">
-                    <GuideAvatar state={avatarState} size="w-32 h-32" />
-                </div>
+                {/* The Living Avatar - Draggable */}
+                <motion.div
+                    drag
+                    dragMomentum={false}
+                    onDragStart={() => setIsDragged(true)}
+                    onClick={triggerDance}
+                    className="pointer-events-auto hover:scale-110 transition-transform cursor-grab active:cursor-grabbing"
+                    whileDrag={{ scale: 1.2, filter: 'brightness(1.5)' }}
+                >
+                    <OracleCore state={avatarState} size="w-32 h-32" />
+                </motion.div>
             </motion.div>
 
             {/* Theater Mode Overlay (Fullscreen popups from Professor) */}

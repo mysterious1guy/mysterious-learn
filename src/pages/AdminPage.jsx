@@ -27,7 +27,15 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [config, setConfig] = useState({ creatorName: '', siteName: '', maintenanceMode: false });
+  const [config, setConfig] = useState({
+    creatorName: '',
+    siteName: '',
+    maintenanceMode: false,
+    creatorBio: [],
+    creatorAvatar: '',
+    creatorTitle: '',
+    footerText: ''
+  });
   const [showAIBrainModal, setShowAIBrainModal] = useState(false);
   const [aiBrainFormData, setAIBrainFormData] = useState({ title: '', content: '', category: 'general', tags: '', source: '' });
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
