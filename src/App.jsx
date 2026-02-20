@@ -210,7 +210,7 @@ function App() {
             </Route>
 
             <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} onSearch={setSearchQuery} />}>
-              <Route index element={<HomePage API_URL={API_URL} />} />
+              <Route index element={user ? <Navigate to="/dashboard" replace /> : <HomePage API_URL={API_URL} />} />
               <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
               <Route path="dashboard" element={
                 user ? (

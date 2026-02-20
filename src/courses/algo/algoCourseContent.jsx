@@ -1,98 +1,93 @@
 import React from 'react';
-import { Cpu, Database, Repeat, Box, GitBranch, Sparkles, Trophy } from 'lucide-react';
+import { Cpu, Database, Command, Box, GitBranch, Sparkles, Trophy, Zap, Terminal, Hash, Layers } from 'lucide-react';
 
 export const algoCourseData = [
     {
         id: 'module1',
-        title: 'Module 1: L\'Éveil du Codeur (Introduction)',
+        title: "Module 1: L'Éveil du Maître",
         icon: <Cpu size={20} />,
-        description: "Le fondement absolu. Découvrez ce qu'est vraiment un algorithme et pourquoi ce N'EST PAS un langage de programmation.",
+        description: "Comprenez l'essence de la logique pure. Apprenez à penser avant de coder.",
         chapters: [
             {
                 id: 'chap1',
-                title: "Le Mythe du Langage",
-                description: "L'Algorithmique n'est pas du code, c'est de la pensée.",
+                title: "La Genèse Algorithmique",
+                description: "Qu'est-ce qu'un algorithme et pourquoi la machine est-elle 'idiote' ?",
                 lessons: [
                     {
                         id: 'algo_m_1_1',
                         type: 'theory',
-                        title: "Qu'est-ce qu'un Algorithme ?",
-                        professorSpeech: "Ah, te voilà ! Bienvenue dans ton premier cours de maître. Oublie tout ce que tu sais sur les ordinateurs pour l'instant. Sais-tu que l'algorithme est né bien avant l'informatique ?",
+                        title: "Le Pouvoir de la Logique",
+                        professorSpeech: "Bienvenue, apprenti. Sais-tu que l'algorithme est né au IXe siècle avec Al-Khwarizmi ? Oublie les écrans, nous allons apprendre à structurer l'univers.",
                         duration: '10 min',
                         content: `
-# 🧠 L'Art de la Pensée Structurée
+# 🧠 L'Essence de l'Algorithmique
 
-La plus grande erreur d'un débutant est de croire qu'apprendre à programmer, c'est apprendre un langage (comme Python, C ou Java). C'est faux. **Apprendre à programmer, c'est apprendre l'algorithmique.**
+La plus grande erreur est de confondre **Apprendre à Programmer** et **Apprendre un Langage**. 
 
-Un langage n'est qu'un outil de traduction. L'algorithme, c'est l'intelligence pure.
+> [!IMPORTANT]
+> **L'Algorithme est Universel** : Que vous utilisiez Python, Java ou C++, la logique reste identique. Un langage n'est qu'une traduction.
 
-## 🛑 L'Algorithmique N'EST PAS un langage
+## Pourquoi la machine a-t-elle besoin de nous ?
+Un ordinateur est une machine incroyablement rapide, mais **totalement idiote**. Elle ne devine rien. Elle n'a aucune intuition.
 
-> **Règle d'or :** Un algorithme est universel. Il s'en fiche complètement de savoir si vous allez utiliser Python, Java ou du C++. 
+**L'Analogie de la Recette :**
+Si vous dites à un humain \"Fais-moi des crêpes\", il sait qu'il doit casser les œufs.
+Si vous dites à un ordinateur \"Fais-moi des crêpes\", il va rester figé car il ne sait pas ce qu'est une crêpe.
 
-Pensez à un roman : l'histoire (l'algorithme) reste la même, que le livre soit traduit en français, en anglais ou en japonais (les langages de programmation).
+Vous devez lui dire :
+1. Prends le récipient.
+2. Verse 250g de farine.
+3. Casse l'œuf numéro 1.
+...
 
-## Mais alors, c'est quoi ?
-Un algorithme est une **suite d'opérations ou d'instructions finies** permettant de résoudre un problème précis.
-
-**L'Analogie de la Recette de Cuisine :**
-Pour faire un gâteau (le problème à résoudre), vous suivez une recette.
-1. Prendre 3 œufs.
-2. Casser les œufs dans un bol.
-3. Ajouter 100g de sucre.
-4. Mélanger jusqu'à ce que ce soit blanc.
-
-Si vous dites simplement "Fais un gâteau", l'ordinateur va planter. Il est extrêmement obéissant, mais totalement dénué d'initiative. **Il faut tout lui détailler, étape par étape.**
-
-## Pourquoi c'est le pouvoir ultime ?
-Une fois que vous maîtrisez la logique algorithmique, apprendre un nouveau langage de programmation ne vous prendra que quelques jours. Vous saurez déjà *comment* réfléchir ; il ne restera qu'à chercher la traduction.
-            `
+## Définition
+Un **algorithme** est une suite d'instructions finies, précises et ordonnées permettant de résoudre un problème ou d'accomplir une tâche.
+`
                     },
                     {
                         id: 'algo_m_1_2',
                         type: 'quiz',
-                        title: "Quiz : La nature de l'algorithme",
-                        professorSpeech: "Voyons si tu as bien saisi l'essence de ma leçon. Réponds à cette petite énigme sur les algorithmes...",
-                        question: "Sachant ce que nous venons de voir, comment définiriez-vous la relation entre un algorithme et un langage de programmation ?",
+                        title: "Quiz : Nature de la Pensée",
+                        professorSpeech: "Voyons si tu es prêt à dompter la machine. Réponds avec sagesse.",
+                        question: "Quelle est la principale différence entre un humain et un ordinateur face à une instruction ?",
                         options: [
-                            { id: 'a', text: "L'algorithme est spécifique à un langage comme Python ou C.", correct: false },
-                            { id: 'b', text: "L'algorithme est l'idée logique universelle, le langage n'est que l'outil de traduction pour la machine.", correct: true },
-                            { id: 'c', text: "Un algorithme est un petit programme écrit en langage machine.", correct: false }
+                            { id: 'a', text: "L'ordinateur est plus intelligent et devine nos intentions.", correct: false },
+                            { id: 'b', text: "L'humain a de l'intuition, alors que l'ordinateur nécessite une précision absolue étape par étape.", correct: true },
+                            { id: 'c', text: "Il n'y a aucune différence, les deux réfléchissent de la même façon.", correct: false }
                         ],
-                        explanation: "Exact ! L'algorithme est complètement indépendant de la technologie. C'est l'essence même de votre solution."
+                        explanation: "Parfait ! La machine est 'bête'. Elle exécute exactement ce que vous écrivez, ni plus, ni moins. C'est pour cela que votre algorithme doit être impeccable."
                     },
                     {
                         id: 'algo_m_1_3',
                         type: 'theory',
-                        title: "L'Anatomie d'un Algorithme",
-                        professorSpeech: "Excellent ! Maintenant, regardons comment on construit le 'squelette' d'une pensée logique. C'est ce qu'on appelle l'anatomie.",
-                        duration: '8 min',
+                        title: "Le Squelette de la Pensée (Pseudo-code)",
+                        professorSpeech: "Pour parler à la logique, nous utilisons le Pseudo-Code. C'est l'armure de ta pensée avant qu'elle ne devienne du code réel.",
+                        duration: '12 min',
                         content: `
-# 🦴 Squelette d'un Algorithme
+# 🦴 Structure Universelle
 
-Pour écrire un algorithme clair, on utilise un "pseudo-code". C'est un langage hybride, mi-français, mi-code, compréhensible par tout humain logique.
+Pour éviter de se perdre dans les détails techniques d'un langage, on utilise le **Pseudo-code**. Voici notre template sacré :
 
-Voici la structure de base qui sera notre bible :
-
-\`\`\`
-ALGORITHME NomDeLAlgorithme
+\`\`\`pseudo
+ALGORITHME Nom_Du_Programme
 
 VARIABLES
-    // C'est ici qu'on prépare nos ingrédients (les boîtes mémoires)
+    // Ici, on liste le matériel nécessaire (Ingrédients)
 
 DÉBUT
-    // C'est ici que l'action commence
-    // On écrit les instructions pas à pas
+    // Ici, on écrit les étapes (Action)
+    // Entrée -> Traitement -> Sortie
 FIN
 \`\`\`
 
-## Les 3 phases obligatoires :
-1. **Les Entrées (Input)** : Qu'est-ce qu'on donne à l'algorithme pour démarrer ? (ex: les ingrédients de la recette).
-2. **Le Traitement (Process)** : Qu'est-ce qu'on en fait ? (ex: mélanger et cuire).
-3. **Les Sorties (Output)** : Quel est le résultat final ? (ex: le gâteau prêt à manger).
+## Les 3 Piliers d'exécution :
+1.  **Entrée (Input)** : Ce que l'utilisateur donne (ex: son âge).
+2.  **Traitement (Process)** : Ce que l'on calcule (ex: est-il majeur ?).
+3.  **Sortie (Output)** : Ce que l'on affiche (ex: \"Bienvenue !\").
 
-Dès la prochaine leçon, nous allons plonger dans le concept de "Variables", qui représentent les entrées de notre système. Préparez-vous !
-            `
+> [!TIP]
+> Toujours commencer par réfléchir sur papier. Si ton algorithme n'est pas clair dans ta tête, il ne le sera jamais pour la machine.
+`
                     }
                 ]
             }
@@ -100,102 +95,62 @@ Dès la prochaine leçon, nous allons plonger dans le concept de "Variables", qu
     },
     {
         id: 'module2',
-        title: 'Module 2: Les Boîtes Magiques (Données)',
+        title: "Module 2: L'Arsenal de Données",
         icon: <Database size={20} />,
-        description: "Le concept fondamental de la mémoire : les variables et les types de données.",
+        description: "Variables et Types Primitifs. Apprenez à stocker l'information efficacement.",
         chapters: [
             {
                 id: 'chap2',
-                title: "Stocker l'Information",
-                description: "Comment l'ordinateur se souvient des choses ?",
+                title: "Les Boîtes de Mémoire",
+                description: "Déclaration, Affectation et Typage.",
                 lessons: [
                     {
                         id: 'algo_m_2_1',
                         type: 'theory',
-                        title: "Les Variables : La Mémoire de l'Ordi",
-                        professorSpeech: "Imagine que ton cerveau est comme une étagère vide. Pour ne rien oublier, tu as besoin de boîtes. Ces boîtes, ce sont nos variables !",
+                        title: "Qu'est-ce qu'une Variable ?",
+                        professorSpeech: "Imagine que la mémoire de l'ordinateur est un immense entrepôt rempli de tiroirs. Une variable, c'est un tiroir avec une étiquette.",
                         duration: '15 min',
                         content: `
-# 📦 Les Variables : Ton Premier Super-Pouvoir
+# 📦 Les Variables : Stocker l'Information
 
-Imagine que ton ordinateur est un immense entrepôt vide. Pour ne rien perdre, il utilise des **boîtes magiques**. Ces boîtes, ce sont les **Variables**.
+En programmation, on ne peut rien faire sans stocker des données temporairement.
 
-## Pourquoi "Magique" ?
-Parce qu'une variable n'est pas juste un espace de stockage ; c'est un concept avec 3 règles d'or :
+**Une variable possède 3 caractéristiques :**
+1.  **Un Nom** (L'étiquette) : Pour la retrouver (ex: \`age_utilisateur\`).
+2.  **Un Type** (La forme) : Qu'est-ce qu'elle contient ? (Un nombre ? Du texte ?).
+3.  **Une Valeur** (Le contenu) : Ce qu'il y a à l'intérieur (ex: \`25\`).
 
-1.  **Une Étiquette (Le Nom)** : Pour retrouver ta boîte au milieu de milliards d'autres. 
-    *(Ex: \`pseudoJoueur\`, \`nombreDeVies\`)*
-2.  **Une Valeur (Le Contenu)** : Ce qu'il y a à l'intérieur à un instant T.
-    *(Ex: \`"Héros"\`, \`3\`)*
-3.  **Un Format (Le Type)** : On ne met pas de la soupe dans une boîte à chaussures.
-    *(Ex: Nombre entier, Texte, etc.)*
+## Déclarer vs Affecter
+- **Déclarer** : C'est réserver le tiroir.
+  \`VARIABLE age : Entier\`
+- **Affecter** : C'est mettre quelque chose dedans.
+  \`age <- 25\` (On lit : age reçoit 25)
 
-> [!TIP]
-> **Le mot "Variable" vient du fait que le contenu peut changer.** 
-> Si tu perds une vie, on ouvre la boîte \`nombreDeVies\`, on retire \`3\` et on met \`2\` à la place. C'est tout !
-
----
-
-## L'Affectation : L'Action de Ranger
-Déposer une valeur dans une boîte s'appelle l'**affectation**. En algorithmique, on utilise une flèche \`<-\` pour montrer que la valeur "entre" dans la boîte.
-
-\`\`\`
-VARIABLES
-    score : Entier
-
-DÉBUT
-    score <- 0      // On initialise à zéro
-    score <- 100    // On écrase le zéro avec 100
-FIN
-\`\`\`
-
-*Simple, non ? Sans variables, l'ordinateur oublierait tout en moins d'une seconde. C'est la base de toute l'informatique !*
-            `
+> [!CAUTION]
+> On ne peut mettre qu'un seul objet à la fois dans une variable. Si vous mettez une nouvelle valeur, l'ancienne est écrasée à jamais !
+`
                     },
                     {
                         id: 'algo_m_2_2',
-                        type: 'quiz',
-                        title: "Quiz : Mutabilité des Boîtes",
-                        professorSpeech: "D'accord, voyons si tu as compris comment les valeurs se déplacent d'une boîte à l'autre. Ne tombe pas dans mon piège !",
-                        question: 'Dans mon algorithme, je fais les actions suivantes : ""A <- 5"", puis ""B <- A"", puis ""A <- 10"". Que contient la variable B à la fin ?',
-                        options: [
-                            { id: 'a', text: "B contient 10, car elle suit A.", correct: false },
-                            { id: 'b', text: "B contient 5, car on a copié la valeur de A quand A valait 5.", correct: true },
-                            { id: 'c', text: "L'ordinateur plante car on a changé A.", correct: false }
-                        ],
-                        explanation: '**Parfait !** ""B <- A"" crée une **COPIE** de ce qu\'il y a dans A à cet instant précis (5). Si A change plus tard, B s\'en moque, B a sa propre valeur sécurisée dans sa boîte.'
-                    },
-                    {
-                        id: 'algo_m_2_3',
                         type: 'theory',
-                        title: "Les Types de Données",
-                        professorSpeech: "Une boîte à chaussures ne sert pas à ranger de la soupe, n'est-ce pas ? En informatique, chaque boîte a son 'type'. C'est crucial pour ne pas tout mélanger.",
+                        title: "Les 4 Types Élémentaires",
+                        professorSpeech: "Chaque tiroir a une forme précise. On ne met pas de l'eau dans une boîte à chaussures !",
                         duration: '10 min',
                         content: `
-# 🏷️ Les Types : Trier les Choux et les Carottes
+# 🛠️ Le Typage des Données
 
-On ne mélange pas des nombres avec des mots. Le processeur traite différemment l'addition mathématique "1 + 1 = 2" et la fusion de texte "A + B = AB".
+Pour optimiser la mémoire, il faut préciser la nature de ce que l'on stocke :
 
-C'est pour cela qu'il faut préciser le **Type** des variables.
+| Type | Description | Exemple |
+| :--- | :--- | :--- |
+| **Entier** | Nombres sans virgule | \`10\`, \`-5\`, \`0\` |
+| **Réel** | Nombres à virgule | \`3.14\`, \`1.5\` |
+| **Chaîne** | Texte (entre guillemets) | \`\"Bonjour\"\`, \`\"123\"\` |
+| **Booléen** | État logique | \`Vrai\`, \`Faux\` |
 
-## Les 4 Types Universels :
-1. **L'Entier (Integer)** : Les nombres sans virgule (\`1\`, \`-45\`, \`0\`, \`1000\`). Idéal pour compter.
-2. **Le Réel (Float / Double)** : Les nombres à virgule (\`3.14\`, \`-0.5\`). Idéal pour la physique ou les prix en euros.
-3. **La Chaîne de caractères (String)** : Du texte. On l'entoure toujours de guillemets pour que l'ordi comprenne que ce n'est pas une commande. (\`"Bonjour"\`, \`"A"\`, \`"Le chat"\`).
-4. **Le Booléen (Boolean)** : Le yin et le yang de l'informatique. Il ne prend que deux valeurs : **VRAI** (True / 1) ou **FAUX** (False / 0). Idéal pour répondre à des questions binaires (Le joueur est-il vivant ?).
-            `
-                    },
-                    {
-                        id: 'algo_m_2_4',
-                        type: 'practice',
-                        title: "Manipulation Pratique (Pseudo-Code)",
-                        professorSpeech: "Assez parlé ! C'est à toi de jouer. Ouvre ton grimoire et déclare tes premières variables. Montre-moi que tu es un vrai bâtisseur.",
-                        description: "Créez une variable de type Entier et une autre de type Texte.",
-                        instruction: "Déclarez les variables 'age' (Entier) et 'nom' (Chaîne) puis assignez '25' à 'age' et '\"Héros\"' à 'nom'.",
-                        initialCode: "VARIABLES\n    // Déclarez et assignez ici\n\nDÉBUT\n    \nFIN",
-                        hints: ["N'oubliez pas les guillemets pour le texte ! Ex: nom <- \"Héros\""],
-                        validationRegex: /age\s*(?:<-|=)\s*25.*nom\s*(?:<-|=)\s*["']H[ée]ros["']/si,
-                        difficulty: "Débutant"
+> [!IMPORTANT]
+> Une chaîne \`\"123\"\` n'est pas un nombre. On ne peut pas l'additionner. C'est juste du dessin pour l'ordinateur.
+`
                     }
                 ]
             }
@@ -203,65 +158,56 @@ C'est pour cela qu'il faut préciser le **Type** des variables.
     },
     {
         id: 'module3',
-        title: 'Module 3: Le Don de la Pensée (Logique de Décision)',
-        icon: <GitBranch size={20} />,
-        description: "Apprenez à votre programme à réfléchir, analyser, et faire des choix intelligents.",
+        title: "Module 3: Les Maîtres des Signes",
+        icon: <Zap size={20} />,
+        description: "Opérateurs et expressions. Faites chanter les chiffres.",
         chapters: [
             {
                 id: 'chap3',
-                title: "Les Structures Conditionnelles",
-                description: "Faire des embranchements dans le flux d'exécution.",
+                title: "Calculs et Logique",
+                description: "Opérateurs Arithmétiques, de Comparaison et Logiques.",
                 lessons: [
                     {
                         id: 'algo_m_3_1',
                         type: 'theory',
-                        title: "L'art du Choix (SI... ALORS)",
-                        professorSpeech: "Tes algorithmes commencent à avoir de la mémoire, mais ils sont encore bêtes : ils font toujours la même chose. Apprenons-leur à choisir !",
-                        duration: '12 min',
+                        title: "L'Arithmétique Profane",
+                        professorSpeech: "Calculer est la base de tout. Mais attention, la machine a ses propres règles pour la division...",
+                        duration: '10 min',
                         content: `
-# 🚦 SI Cela, ALORS Ceci
+# ➕ Opérateurs Arithmétiques
 
-L'informatique ne serait qu'une calculatrice super rapide sans les **Conditions**.
-Les conditions donnent au code le pouvoir de **réagir à son environnement**.
+Les classiques : \`+\`, \`-\`, \`*\`, \`/\`.
 
-Le principe est simple : le code vérifie une situation (qui donne un Booléen : Vrai ou Faux). 
-* SI c'est Vrai, le code emprunte le chemin A.
-* SINON, le code emprunte le chemin B.
+Mais il y en a deux très spéciaux en algorithmique :
+- **DIV** (Division Entière) : Donne le quotient sans la virgule.
+  \`10 DIV 3 = 3\`
+- **MOD** (Modulo) : Donne le reste de la division.
+  \`10 MOD 3 = 1\`
 
-## La Syntaxe Universelle
-
-\`\`\`
-VARIABLES
-    hp_joueur : Entier <- 0
-
-DÉBUT
-    SI (hp_joueur <= 0) ALORS
-        Afficher("GAME OVER")
-    SINON
-        Afficher("Continuer le combat")
-    FIN SI
-FIN
-\`\`\`
-
-## Les Opérateurs de Comparaison : Les Yeux de l'Ordi
-Pour évaluer une condition, l'ordinateur doit comparer des valeurs :
-* ""== "" : Est-ce strictement égal ?
-* ""!= "" : Est-ce différent ?
-* ""> "" et ""< "" : Supérieur et inférieur strict.
-* "">= "" et ""<="" : Supérieur ou égal, Inférieur ou égal.
-            `
+> [!TIP]
+> Le Modulo est génial pour savoir si un nombre est pair : \`N MOD 2 = 0\` -> C'est pair !
+`
                     },
                     {
                         id: 'algo_m_3_2',
-                        type: 'practice',
-                        title: "Pratique : Le Videur de Boîte de Nuit",
-                        professorSpeech: "Imagine que tu es un gardien à l'entrée d'un temple mystérieux. Si le visiteur est trop jeune, il ne passe pas. À toi de coder cette logique !",
-                        description: "Créez l'algorithme d'un videur qui refuse l'entrée aux mineurs.",
-                        instruction: "Si l'âge est majeur (>= 18), la variable 'entree' vaut \"Autorisé\", sinon elle vaut \"Refusé\".",
-                        initialCode: "VARIABLES\n    age : Entier <- 16\n    entree : Chaîne\n\nDÉBUT\n    // Écrivez votre condition SI/SINON ici\n    \nFIN",
-                        hints: ["Utilisez SI (age >= 18) ALORS..."],
-                        validationRegex: /SI\s*\(\s*age\s*>=\s*18\s*\)\s*ALORS.*entree\s*(?:<-|=)\s*["']Autorisé["'].*SINON.*entree\s*(?:<-|=)\s*["']Refusé["']/si,
-                        difficulty: "Intermédiaire"
+                        type: 'theory',
+                        title: "La Logique de Boole (ET, OU, NON)",
+                        professorSpeech: "Le cerveau de l'ordinateur ne connaît que le Vrai ou le Faux. Maîtriser ces liens, c'est maîtriser la décision.",
+                        duration: '12 min',
+                        content: `
+# 🚥 Opérateurs Logiques
+
+Ils permettent de combiner plusieurs conditions :
+
+1.  **ET (AND)** : Vrai seulement si TOUT est vrai.
+2.  **OU (OR)** : Vrai si AU MOINS une est vraie.
+3.  **NON (NOT)** : Inverse le résultat.
+
+**Table de vérité simplifiée :**
+- \`VRAI ET FAUX\` -> **FAUX**
+- \`VRAI OU FAUX\` -> **VRAI**
+- \`NON VRAI\` -> **FAUX**
+`
                     }
                 ]
             }
@@ -269,83 +215,37 @@ Pour évaluer une condition, l'ordinateur doit comparer des valeurs :
     },
     {
         id: 'module4',
-        title: 'Module 4: Le Pouvoir de l\'Infini (Les Boucles)',
-        icon: <Repeat size={20} />,
-        description: "La capacité fondamentale de l'ordinateur : répéter des tâches ingrates à la vitesse de la lumière sans jamais se fatiguer.",
+        title: "Module 4: Le Don du Choix",
+        icon: <GitBranch size={20} />,
+        description: "Conditions et structures de contrôle. Donnez une conscience à votre programme.",
         chapters: [
             {
                 id: 'chap4',
-                title: "Tourner en rond intelligemment",
-                description: "TANT QUE et POUR.",
+                title: "Si, Sinon et Cas",
+                description: "Apprendre à bifurquer dans le code.",
                 lessons: [
                     {
                         id: 'algo_m_4_1',
                         type: 'theory',
-                        title: "La Boucle TANT QUE (While)",
-                        professorSpeech: "Sais-tu ce qui rend les machines supérieures aux humains ? Elles ne se fatiguent JAMAIS de répéter la même tâche. C'est le pouvoir des boucles.",
-                        duration: '12 min',
+                        title: "Le SI : L'Aiguillage",
+                        professorSpeech: "C'est ici que ton programme commence à 'réfléchir'. S'il pleut, prends un parapluie. C'est aussi simple que cela.",
+                        duration: '15 min',
                         content: `
-# 🔄 La Boucle Inconditionnelle
+# 🛣️ Les Structures Conditionnelles
 
-Imaginez qu'on vous demande de creuser au hasard jusqu'à trouver un trésor. Vous ne savez pas *combien de temps* ça va prendre. 
-Vous allez utiliser la logique suivante : **Tant Que je n'ai pas trouvé le trésor, je continue de creuser.**
+Le programme n'est plus linéaire. Il peut choisir son chemin.
 
-En algorithmique, c'est la boucle **TANT QUE**. Elle s'exécute encore et encore, _tant qu'une condition reste VRAIE_.
-
-## Le Danger Mortel : La Boucle Infinie 💀
-Le grand risque de la boucle TANT QUE, c'est qu'elle ne s'arrête jamais si vous oubliez de modifier la condition à l'intérieur !
-
-\`\`\`
-VARIABLES
-    courage : Entier <- 10
-
-DÉBUT
-    TANT QUE (courage > 0) FAIRE
-        Afficher("Je combats le boss !")
-        courage <- courage - 1  // INDISPENSABLE ! Sans ça, le courage reste à 10 et on boucle à l'infini.
-    FIN TANT QUE
-FIN
-\`\`\`
-            `
-                    },
-                    {
-                        id: 'algo_m_4_2',
-                        type: 'theory',
-                        title: "La Boucle POUR (For)",
-                        professorSpeech: "Parfois, on n'a pas envie de surveiller la boucle nous-mêmes. Pour ça, il y a la boucle 'POUR'. C'est comme un régulateur de vitesse pour ton code.",
-                        duration: '10 min',
-                        content: `
-# 🔢 Le Compteur Automatique
-
-Parfois, on sait exactement combien de fois on veut répéter une action. Par exemple : "Affiche 50 étoiles sur l'écran".
-
-Plutôt que d'utiliser un TANT QUE où l'on doit soi-même gérer un compteur (initialiser à 0, rajouter +1 à la fin), les développeurs ont créé une structure optimisée pour : **La boucle POUR**.
-
-## La syntaxe
-La boucle POUR possède sa propre variable intégrée (souvent appelée 'i' pour Itérateur) qui augmente ou diminue toute seule !
-
-\`\`\`
-DÉBUT
-    POUR i ALLANT DE 1 A 5 FAIRE
-        Afficher("Je suis l'itération numéro : ", i)
-    FIN POUR
-FIN
+\`\`\`pseudo
+SI (condition) ALORS
+    // Bloc exécuté si condition Vraie
+SINON
+    // Bloc exécuté si condition Fausse
+FINSI
 \`\`\`
 
-À l'exécution, ce code affichera le texte 5 fois, et à chaque fois \`i\` vaudra 1, puis 2, 3, 4 et 5.
-            `
-                    },
-                    {
-                        id: 'algo_m_4_3',
-                        type: 'practice',
-                        title: "La Table de Multiplication",
-                        professorSpeech: "Un classique ! Calcule-moi cette table de multiplication. Mais attention, fais en sorte que l'algorithme travaille pour toi.",
-                        description: "Générez la table de multiplication par 7.",
-                        instruction: "Utilisez une boucle POUR pour calculer et assigner à 'resultat' chaque multiple de 7 (de 1 à 10). (Vous n'avez besoin d'écrire que l'assignation dans la boucle)",
-                        initialCode: "VARIABLES\n    resultat : Entier\n\nDÉBUT\n    POUR i ALLANT DE 1 A 10 FAIRE\n        // Écrivez l'équation ici (ex: resultat <- ...)\n    FIN POUR\nFIN",
-                        hints: ["Multipliez 'i' par 7 à chaque tour de boucle."],
-                        validationRegex: /resultat\s*(?:<-|=)\s*i\s*\*\s*7/i,
-                        difficulty: "Intermédiaire"
+> [!NOTE]
+> La condition doit toujours avoir un résultat **Booléen** (Vrai ou Faux).
+`
                     }
                 ]
             }
@@ -353,95 +253,35 @@ FIN
     },
     {
         id: 'module5',
-        title: 'Module 5: Armées de Données (Les Tableaux)',
-        icon: <Box size={20} />,
-        description: "Stocker des variables unitaires c'est bien, mais comment stocker les informations de 10 000 utilisateurs ? Avec les Tableaux.",
+        title: "Module 5: La Danse de l'Infini",
+        icon: <Terminal size={20} />,
+        description: "Les Boucles. Automatisez les tâches répétitives sans effort.",
         chapters: [
             {
                 id: 'chap5',
-                title: "Les Collections de Données",
-                description: "Aligner les boîtes dans la mémoire.",
+                title: "Itérations et Répétitions",
+                description: "POUR, TANT QUE et RÉPÉTER.",
                 lessons: [
                     {
                         id: 'algo_m_5_1',
                         type: 'theory',
-                        title: "Concept du Tableau (Array)",
-                        professorSpeech: "Stocker une valeur c'est bien. En stocker mille, c'est mieux. Bienvenue dans le monde des collections de données : les tableaux !",
-                        duration: '15 min',
-                        content: `
-# 🚂 Le Train des Données
-
-Jusqu'ici, nos variables étaient des maisons individuelles. Que faire quand on doit stocker les notes des 30 élèves d'une classe ? Créer \`note1\`, \`note2\`... \`note30\` ? C'est ingérable.
-
-L'ordinateur propose les **Tableaux (Arrays)**. Ce sont des variables massives divisées en compartiments (comme des wagons de train) où toutes les données sont rangées à la suite en mémoire.
-
-## L'Indexation : La Grande Trahison
-Comment accéder à un compartiment en particulier ? Grâce à son numéro de position, qu'on appelle l'**Index**.
-
-⚠️ **ATTENTION DANGER** : En informatique, quasiment tous les systèmes commencent à compter **à partir de ZÉRO**.
-
-Si j'ai un tableau \`T\` de 5 cases :
-* La Première case est \`T[0]\`
-* La Deuxième case est \`T[1]\`
-* La Dernière case est \`T[4]\` (Taille moins 1)
-
-\`\`\`
-VARIABLES
-    scores : Tableau[5] d'Entiers
-
-DÉBUT
-    scores[0] <- 95
-    scores[1] <- 42
-    // ...
-FIN
-\`\`\`
-            `
-                    },
-                    {
-                        id: 'algo_m_5_2',
-                        type: 'quiz',
-                        title: "Quiz : Le Piège de l'Index",
-                        professorSpeech: "Attention ! Ici, beaucoup de débutants se trompent. Rappelle-toi : en informatique, on ne commence pas toujours à compter par 1...",
-                        question: "J'ai un tableau 'Noms' qui contient 100 éléments. Je veux afficher le cinquantième nom de la liste. Que dois-je écrire ?",
-                        options: [
-                            { id: 'a', text: "Afficher(Noms[50])", correct: false },
-                            { id: 'b', text: "Afficher(Noms[49])", correct: true },
-                            { id: 'c', text: "Afficher(Noms[51])", correct: false }
-                        ],
-                        explanation: "**Excellent !** Puisque le comptage commence à 0, l'élément numéro 1 est à l'index 0. Donc l'élément 50 est à l'index 49."
-                    },
-                    {
-                        id: 'algo_m_5_3',
-                        type: 'theory',
-                        title: "Parcourir un Tableau",
-                        professorSpeech: "C'est ici que la magie opère : on combine les boucles et les tableaux pour traiter des armées entières de données en une fraction de seconde.",
+                        title: "La Boucle POUR (For)",
+                        professorSpeech: "Pourquoi écrire 100 fois la même chose ? Utilise une boucle. La boucle POUR est idéale quand tu sais combien de fois tu veux danser.",
                         duration: '10 min',
                         content: `
-# 🚗 Traverser les Tableaux
+# 🔄 La Boucle POUR
 
-Comment fait-on pour traiter toutes les valeurs d'un tableau d'un seul coup (pour faire une moyenne par exemple) ? On associe les Tableaux avec le concept ultime qu'on vient d'apprendre : **La boucle POUR**.
+On l'utilise quand on connaît le nombre exact de répétitions à l'avance.
 
-En effet, la variable \`i\` de la boucle POUR, qui augmente à chaque tour, représente l'index parfait pour visiter chaque case du tableau une à une !
-
+\`\`\`pseudo
+POUR i ALLANT DE 1 À 10
+    AFFICHER \"Tour numéro \", i
+FINPOUR
 \`\`\`
-VARIABLES
-    notes : Tableau[3] d'Entiers
-    somme : Entier <- 0
 
-DÉBUT
-    notes[0] <- 12
-    notes[1] <- 16
-    notes[2] <- 20
-    
-    // On visite le tableau (index de 0 à 2)
-    POUR i ALLANT DE 0 A 2 FAIRE
-        somme <- somme + notes[i]
-    FIN POUR
-    
-    // Ici somme vaut 48 !
-FIN
-\`\`\`
-            `
+> [!IMPORTANT]
+> **i** est une variable de contrôle (le compteur) qui s'incrémente automatiquement à chaque tour.
+`
                     }
                 ]
             }
@@ -449,56 +289,57 @@ FIN
     },
     {
         id: 'module6',
-        title: 'Module 6: Diviser pour Mieux Coder (Fonctions)',
-        icon: <GitBranch size={20} />,
-        description: "Finis les algorithmes kilométriques et spaghettis. Apprenez le pouvoir de la modularité.",
+        title: "Module 6: Savoir Commun",
+        icon: <Layers size={20} />,
+        description: "Algorithmes de base et utilitaires. Les briques de tout programme sérieux.",
         chapters: [
             {
                 id: 'chap6',
-                title: "Fonctions & Procédures",
-                description: "Créer ses propres commandes personnalisées.",
+                title: "Les Algorithmes Classiques",
+                description: "Somme, Moyenne, Maximum et Minimum.",
                 lessons: [
                     {
                         id: 'algo_m_6_1',
                         type: 'theory',
-                        title: "Qu'est-ce qu'une Fonction ?",
-                        professorSpeech: "Ne te répète jamais ! Si tu dois faire une tâche plusieurs fois, crée une commande personnalisée : une fonction. C'est le secret des pros.",
-                        duration: '15 min',
+                        title: "Calculer une Somme et une Moyenne",
+                        professorSpeech: "Maintenant que tu maîtrises les boucles, nous pouvons faire de la vraie magie. Apprenons à accumuler des richesses... je veux dire, des données.",
+                        duration: '12 min',
                         content: `
-# ⚙️ La Boîte Noire Magique
+# 📊 Accumulation de Données
 
-Quand un problème devient complexe, l'algorithme devient gigantesque. Les professionnels ne tolèrent jamais ça : ils découpent le problème en petits sous-problèmes qu'on confie à des **Fonctions**.
+Pour calculer une somme dans une boucle, on utilise une variable **Accumulateur** initialisée à 0.
 
-Une fonction est un bloc de code indépendant qui a :
-1. **Un Nom** (pour l'appeler).
-2. **Des Entrées (Paramètres/Arguments)** : Les données qu'on lui fournit pour qu'elle puisse bosser.
-3. **Une Sortie (Retour):** Le résultat final qu'elle recrache à la fin.
-
-## Le Principe du "DRY" (Don't Repeat Yourself)
-Imaginons que vous deviez calculer 10 moyennes différentes. Plutôt que de recopier 10 fois les boucles POUR, vous créez UNE SEULE fonction \`CalculerMoyenne(tableau)\` et vous l'appelez 10 fois.
-
+\`\`\`pseudo
+SOMME <- 0
+POUR i ALLANT DE 1 À 10
+    SOMME <- SOMME + i
+FINPOUR
 \`\`\`
-FONCTION Addition(a: Entier, b: Entier) -> Entier
-DÉBUT
-    RETOURNE a + b
-FIN FONCTION
 
-// Plus tard dans votre programme principal :
-valeur <- Addition(10, 5)  // valeur vaut maintenant 15 !
-\`\`\`
-            `
+> [!TIP]
+> Pour la moyenne, n'oubliez pas de diviser la somme totale par le nombre d'éléments à la fin (et vérifiez que ce nombre n'est pas 0 !).
+`
                     },
                     {
                         id: 'algo_m_6_2',
-                        type: 'practice',
-                        title: "Créer la fonction Double",
-                        professorSpeech: "Prêt à créer ta première usine à données ? Fabrique-moi une fonction qui multiplie tout par deux !",
-                        description: "Créez une fonction qui renvoie le double de la valeur reçue.",
-                        instruction: "Remplissez le contenu de la fonction pour qu'elle RETOURNE la valeur 'nombre' multipliée par 2.",
-                        initialCode: "FONCTION CalculerDouble(nombre: Entier) -> Entier\nDÉBUT\n    // Taper la commande de retour ici\n    \nFIN FONCTION",
-                        hints: ["Utilisez le mot clé RETOURNE"],
-                        validationRegex: /RETOURNE\s*nombre\s*\*\s*2/i,
-                        difficulty: "Intermédiaire"
+                        type: 'theory',
+                        title: "Trouver le Maître (Max/Min)",
+                        professorSpeech: "Qui est le plus grand ? Qui est le plus petit ? C'est une question récurrente. Voici comment trouver l'extrême.",
+                        duration: '10 min',
+                        content: `
+# 🏆 Recherche de l'Extrême
+
+Pour trouver le maximum, on commence par dire que le premier élément est le plus grand, puis on compare avec tous les autres.
+
+\`\`\`pseudo
+MAX <- premier_element
+POUR chaque element
+    SI element > MAX ALORS
+        MAX <- element
+    FINSI
+FINPOUR
+\`\`\`
+`
                     }
                 ]
             }
@@ -506,63 +347,154 @@ valeur <- Addition(10, 5)  // valeur vaut maintenant 15 !
     },
     {
         id: 'module7',
-        title: 'Module 7: Les Algorithmes de Légende',
-        icon: <Trophy size={20} />,
-        description: "Plongez dans les algorithmes classiques (Recherches & Tris) qui propulsent l'humanité (et Google) aujourd'hui.",
+        title: "Module 7: Le Train du Savoir",
+        icon: <Hash size={20} />,
+        description: "Tableaux et Listes. Organisez des masses de données dans une seule variable.",
         chapters: [
             {
                 id: 'chap7',
-                title: "Le Tri et la Recherche",
-                description: "Comment dompter des millions de données.",
+                title: "Structures de Données Linéaires",
+                description: "Indexation, Dimensions et Parcours.",
                 lessons: [
                     {
                         id: 'algo_m_7_1',
                         type: 'theory',
-                        title: "La Recherche Séquentielle vs Dichotomique",
-                        professorSpeech: "Te voilà au sommet ! Voyons comment les géants comme Google trouvent une information parmi des milliards d'autres. C'est une question de stratégie.",
-                        duration: '20 min',
-                        content: `
-# 🔍 Trouver une Aiguille dans une Botte de Foin
-
-Comment savoir si le nombre "42" se trouve dans un tableau aléatoire de 1 million d'entrées ?
-L'approche naïve, c'est de regarder chaque case (la boucle POUR de 0 à 1 million). C'est la **Recherche Séquentielle**, ou Linéaire. Temps estimé : lent. 🐌
-
-## Le Pouvoir de la Dichotomie (Diviser pour Régner)
-Mais imaginons que le tableau soit **déjà trié** (du plus petit au plus grand).
-C'est comme chercher un mot dans le dictionnaire. Vous ne lisez pas la page 1, puis la 2... 
-Vous ouvrez le dictionnaire *au milieu*.
-Si vous cherchez "Zèbre" et que vous tombez sur "Lion" (au milieu), vous savez que le Zèbre est dans la moitié de droite. Vous avez instantanément éliminé la moitié gauche (des milliers de pages !).
-
-**C'est la Recherche Dichotomique.**
-1. Regarder au milieu.
-2. Si c'est notre valeur, bingo !
-3. Sinon, si c'est plus grand, on recommence sur la sous-moitié de gauche. Sinon, sur la moitié de droite.
-
-On réduit drastiquement le nombre de coups nécessaires (Complexité Logarithmique : O(log n)).
-            `
-                    },
-                    {
-                        id: 'algo_m_7_2',
-                        type: 'theory',
-                        title: "L'Algorithme de Tri à Bulles",
-                        professorSpeech: "Une dernière leçon pour la route. Le tri à bulles est un classique indémodable. C'est simple, c'est beau, et c'est la base de tout !",
+                        title: "Le concept de Tableau",
+                        professorSpeech: "Imagine un immeuble où chaque étage porte un numéro. C'est ça un tableau. Une seule adresse, mais plusieurs appartements.",
                         duration: '15 min',
                         content: `
-# 🫧 Mettre de l'ordre : Le Tri à Bulles
+# 🚋 Les Tableaux (Arrays)
 
-Pour utiliser la Dichotomie, il faut que ce soit trié. Mais comment trier 1000 nombres dans le désordre total ?
-L'un des algorithmes historiques les plus visuels est le **Tri à Bulles**.
+Un tableau permet de stocker plusieurs valeurs du **même type** sous un seul nom.
 
-## Le Principe :
-On parcourt le tableau de gauche à droite, et on regarde les nombres par paires (Voisin de gauche, et Voisin de droite).
-* Si le voisin de gauche est PLUS GRAND que le voisin de droite, on les **échange**.
-* Sinon on continue.
+**Syntaxe :**
+\`VARIABLE notes : TABLEAU[1..30] d'Entiers\`
 
-À la fin du parcours, le plus gros nombre sera naturellement "remonté" tout à droite, comme une grosse bulle d'air dans l'eau.
-On répète ce processus complet autant de fois qu'il y a d'éléments. Et tout finit parfaitement trié !
+## L'Indexation (La clé)
+Chaque case a un indice. 
+> [!WARNING]
+> En informatique, on commence souvent à compter à partir de **0** (0, 1, 2...).
 
-C'est simple, élégant, mais pas très optimisé pour des téraoctets de données. C'est néanmoins un classique absolu pour l'éveil algorithmique. C'est ici que votre formation de base s'achève... Bienvenue parmi les architectes du numérique ! 🎓
-            `
+\`notes[0] <- 15\` // On met 15 dans la première case.
+`
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'module8',
+        title: "Module 8: Le Diviser pour Régner",
+        icon: <Command size={20} />,
+        description: "Fonctions et Procédures. Apprenez à modulariser votre code pour le rendre immortel.",
+        chapters: [
+            {
+                id: 'chap8',
+                title: "Modularité Appliquée",
+                description: "Paramètres, Valeurs de retour et Réutilisation.",
+                lessons: [
+                    {
+                        id: 'algo_m_8_1',
+                        type: 'theory',
+                        title: "Les Fonctions : Vos Sous-Traitants",
+                        professorSpeech: "Ne refais jamais deux fois la même tâche. Crée une fonction, donne-lui des ordres, et laisse-la travailler pour toi.",
+                        duration: '18 min',
+                        content: `
+# ⚙️ Fonctions et Procédures
+
+Le but est de découper un gros problème en petits morceaux faciles à gérer.
+
+- **Procédure** : Effectue une action (ex: Afficher un message).
+- **Fonction** : Effectue un calcul et **RETOURNE** un résultat.
+
+\`\`\`pseudo
+FONCTION Additionner(a, b : Entiers) : Entier
+DÉBUT
+    RETOURNER a + b
+FINFONCTION
+\`\`\`
+`
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'module9',
+        title: "Module 9: L'Art de l'Ordre",
+        icon: <Layers size={20} />,
+        description: "Tris et Recherches. Maîtrisez l'organisation des données à grande échelle.",
+        chapters: [
+            {
+                id: 'chap9',
+                title: "Tris et Algorithmes de Recherche",
+                description: "Tri à bulles, Tri par insertion et Recherche Dichotomique.",
+                lessons: [
+                    {
+                        id: 'algo_m_9_1',
+                        type: 'theory',
+                        title: "Le Tri à Bulles (Bubble Sort)",
+                        professorSpeech: "C'est le tri le plus simple. Les plus grands éléments remontent comme des bulles à la surface d'un verre de soda.",
+                        duration: '15 min',
+                        content: `
+# 🧼 Le Tri à Bulles
+
+On compare les éléments deux par deux et on les échange s'ils sont dans le mauvais ordre. On répète l'opération jusqu'à ce que tout soit trié.
+
+> [!NOTE]
+> C'est un algorithme facile à comprendre, mais très lent pour de grandes quantités de données.
+`
+                    },
+                    {
+                        id: 'algo_m_9_2',
+                        type: 'theory',
+                        title: "Recherche Dichotomique (Binary Search)",
+                        professorSpeech: "Chercher un mot dans un dictionnaire en tournant les pages une par une est stupide. Coupons le dictionnaire en deux à chaque fois !",
+                        duration: '12 min',
+                        content: `
+# 🎯 Recherche Dichotomique
+
+Pour utiliser cet algorithme, le tableau **DOIT être trié**.
+À chaque étape, on regarde au milieu. Si c'est trop grand, on cherche dans la moitié gauche. Sinon, dans la droite.
+
+**Efficacité Redoutable :** Pour 1 million de noms, il ne faut que 20 étapes maximum pour trouver quelqu'un !
+`
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'module10',
+        title: "Module 10: L'Aube de l'Efficacité",
+        icon: <Trophy size={20} />,
+        description: "Introduction à la Complexité et Structures de Données. Devenez un pur ingénieur.",
+        chapters: [
+            {
+                id: 'chap10',
+                title: "Vers l'Infini et l'Optimisation",
+                description: "Notation Big O, Piles et Files.",
+                lessons: [
+                    {
+                        id: 'algo_m_10_1',
+                        type: 'theory',
+                        title: "La Notation Big O",
+                        professorSpeech: "Félicitations, tu es arrivé au sommet. Maintenant, tu dois apprendre que le code le plus court n'est pas forcément le plus rapide. Mesurons la performance.",
+                        duration: '20 min',
+                        content: `
+# 🚀 Performance et Complexité (O)
+
+En informatique, on mesure le temps d'exécution en fonction de la taille des données (N).
+
+- **O(1)** : Temps constant (Instantané).
+- **O(N)** : Temps linéaire (Plus il y a de données, plus c'est long).
+- **O(N²)** : Temps quadratique (Très lent, évitez les boucles dans les boucles !).
+
+## Le Mot de la Fin
+Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais : le code expire, mais la logique est éternelle.
+
+**Mouhamed Fall** - *Créateur de Mysterious Classroom*
+`
                     }
                 ]
             }

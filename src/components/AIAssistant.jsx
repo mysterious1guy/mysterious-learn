@@ -772,21 +772,36 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
         synthRef.cancel();
 
         // --- Natural TTS Cleaning (Ultra-Aggressive) ---
-        // 1. Remove Emojis and Special stickers (more comprehensive set)
-        // 2. Remove Markdown bold/italic syntax (**text**, ""text"", ``code``)
-        // 3. Remove punctuation that triggers "pause" characters
         const cleanText = text
-            .replace(/[\u{1F000}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '') // Comprehensive Emoji Range
-            .replace(/\*\*|__|\"\"|\'\'|`|\[!.*?\]/g, '') // Markdown & Alerts
-            .replace(/[()]/g, ' ') // Parents often trigger specific vocalizations
+            .replace(/[\u{1F000}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '')
+            .replace(/\*\*|__|\"\"|\'\'|`|\[!.*?\]/g, '')
+            .replace(/[()]/g, ' ')
             .trim();
 
         if (!cleanText || cleanText.length < 2) return;
 
         const utterance = new SpeechSynthesisUtterance(cleanText);
         utterance.lang = 'fr-FR';
-        utterance.rate = 1.1; // Slightly faster for more natural flow
-        utterance.pitch = 1.0;
+
+        // --- Masculine Voice Selection ---
+        const voices = synthRef.getVoices();
+        // Priority male voices for French (Chrome/Windows/Mac/Android)
+        const maleVoice = voices.find(v =>
+            v.lang.startsWith('fr') &&
+            (v.name.toLowerCase().includes('male') ||
+                v.name.toLowerCase().includes('masculin') ||
+                v.name.includes('Thomas') ||
+                v.name.includes('Paul') ||
+                v.name.includes('Daniel') ||
+                v.name.includes('Google français'))
+        );
+
+        if (maleVoice) {
+            utterance.voice = maleVoice;
+        }
+
+        utterance.rate = 1.05; // Slightly faster but still authoritative
+        utterance.pitch = 0.9; // Slightly lower pitch for more "masculine" feel
 
         utterance.onstart = () => setIsSpeaking(true);
         utterance.onend = () => setIsSpeaking(false);
