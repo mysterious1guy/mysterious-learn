@@ -103,6 +103,43 @@ function App() {
     }
   }, [user]);
 
+  // Intercepteur global pour les erreurs 401 (compte supprimé ou token expiré)
+  useEffect(() => {
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      try {
+        const response = await originalFetch(...args);
+        if (response.status === 401 && user) {
+          console.warn('⚠️ Session expirée ou compte supprimé. Déconnexion...');
+          handleLogout();
+        }
+        return response;
+      } catch (error) {
+        throw error;
+      }
+    };
+    return () => { window.fetch = originalFetch; };
+  }, [user]);
+
+  // Heartbeat pour vérifier l'existence du compte périodiquement
+  useEffect(() => {
+    if (!user?.token) return;
+
+    const checkSession = async () => {
+      try {
+        const res = await fetch(`${API_URL}/auth/profile`, {
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
+        // Si 401, l'intercepteur ci-dessus gérera la déconnexion
+      } catch (err) {
+        console.error('Erreur heartbeat session:', err);
+      }
+    };
+
+    const interval = setInterval(checkSession, 5 * 60 * 1000); // 5 minutes
+    return () => clearInterval(interval);
+  }, [user, API_URL]);
+
   // Global logging pour diagnostic
   useEffect(() => {
     console.log('🌐 App: Initialisation globale');
