@@ -289,12 +289,12 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                 </div>
 
                                 <div className="space-y-4">
-                                    <h2 className="text-2xl font-bold text-white">Rencontre ton Guide</h2>
+                                    <h2 className="text-2xl font-bold text-white">Rencontre le Professeur Mysterious</h2>
                                     <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800/50 inline-block text-left text-sm text-slate-300 space-y-3 max-w-lg">
-                                        <p>Salut <span className="text-blue-400 font-medium">{formData.firstName || 'Aventurier'}</span> ! 👋</p>
-                                        <p>Je suis l'assistant IA de Mysterious. J'ai été conçu par <strong>Mouhamed Fall</strong>, le créateur de cette plateforme.</p>
-                                        <p>Mon rôle est de t'accompagner tout au long de ta progression. Si tu bloques sur un exercice, tu pourras m'invoquer en bas à droite de l'écran ou au sein du module de cours.</p>
-                                        <p className="text-slate-400 italic">Es-tu prêt à commencer l'aventure ?</p>
+                                        <p>Salutations <span className="text-blue-400 font-medium">{formData.firstName || 'Aventurier'}</span> ! 🎓</p>
+                                        <p>Je suis le <strong>Professeur Mysterious</strong>, ton mentor sur cette plateforme conçue par <strong>Mouhamed Fall</strong>.</p>
+                                        <p>Mon rôle est de t'enseigner les secrets du code et de t'accompagner à chaque étape. Si tu as un doute ou si tu veux approfondir un sujet, je suis là pour toi.</p>
+                                        <p className="text-slate-400 italic">Prêt à commencer ton apprentissage avec moi ?</p>
                                     </div>
                                 </div>
                             </motion.div>

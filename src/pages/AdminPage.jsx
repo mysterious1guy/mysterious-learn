@@ -21,10 +21,13 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const [emailContent, setEmailContent] = useState({ subject: '', body: '', recipients: 'all', specificEmail: '' });
   const [notificationContent, setNotificationContent] = useState({ title: '', message: '', type: 'info', sendEmail: false });
   const [notifications, setNotifications] = useState([]);
+  const [aiKnowledge, setAiKnowledge] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [config, setConfig] = useState(null);
+  const [showAIBrainModal, setShowAIBrainModal] = useState(false);
+  const [aiBrainFormData, setAIBrainFormData] = useState({ title: '', content: '', category: 'general', tags: '', source: '' });
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, title: '', message: '', onConfirm: () => { } });
   const fileInputRef = useRef(null);
   const configAvatarRef = useRef(null);
@@ -54,6 +57,10 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
       if (coursesRes.ok) setCourses(await coursesRes.json());
       if (notificationsRes.ok) setNotifications(await notificationsRes.json());
       if (configRes.ok) setConfig(await configRes.json());
+
+      // Fetch AI Knowledge
+      const aiRes = await fetch(`${API_URL}/ai/knowledge`, { headers });
+      if (aiRes.ok) setAiKnowledge(await aiRes.json());
     } catch (err) {
       setToast({ message: 'Erreur de connexion au serveur', type: 'error' });
     } finally {
@@ -207,6 +214,56 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     reader.readAsDataURL(file);
   };
 
+  const handleSaveAIKnowledge = async (e) => {
+    e.preventDefault();
+    try {
+      const formattedData = {
+        ...aiBrainFormData,
+        id: aiBrainFormData._id,
+        tags: aiBrainFormData.tags.split(',').map(t => t.trim()).filter(t => t !== '')
+      };
+
+      const res = await fetch(`${API_URL}/ai/knowledge`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify(formattedData)
+      });
+
+      if (res.ok) {
+        setToast({ message: 'Cerveau mis à jour ! 🧠', type: 'success' });
+        setShowAIBrainModal(false);
+        fetchData();
+      }
+    } catch (err) {
+      setToast({ message: 'Erreur mise à jour cerveau', type: 'error' });
+    }
+  };
+
+  const handleDeleteAIKnowledge = async (id) => {
+    setConfirmModal({
+      isOpen: true,
+      title: "Oublier cette connaissance ?",
+      message: "L'IA n'aura plus accès à ces informations.",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API_URL}/ai/knowledge/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${user.token}` }
+          });
+          if (res.ok) {
+            setAiKnowledge(aiKnowledge.filter(k => k._id !== id));
+            setConfirmModal({ ...confirmModal, isOpen: false });
+          }
+        } catch (err) {
+          setToast({ message: 'Erreur suppression', type: 'error' });
+        }
+      }
+    });
+  };
+
   const filteredUsers = users.filter(u =>
     u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     `${u.firstName} ${u.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
@@ -217,6 +274,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     { id: 'users', label: 'Utilisateurs', icon: Users },
     { id: 'notifications', label: 'Communications', icon: Bell },
     { id: 'courses', label: 'Gestion des cours', icon: BookOpen },
+    { id: 'ai-brain', label: 'Cerveau de l\'IA', icon: Sparkles },
     { id: 'config', label: 'Configuration Site', icon: LayoutDashboard },
     { id: 'settings', label: 'Paramètres', icon: Settings },
   ];
@@ -711,6 +769,186 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     </button>
                   </div>
                 </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'ai-brain' && (
+              <motion.div key="ai-brain" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-3xl font-black text-white">Cerveau de l'IA (Professeur Mysterious)</h2>
+                    <p className="text-slate-400">Gère ici les connaissances globales et les documents de recherche.</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setAIBrainFormData({ title: '', content: '', category: 'general', tags: '', source: '' });
+                      setShowAIBrainModal(true);
+                    }}
+                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl shadow-lg flex items-center gap-2"
+                  >
+                    + Ajouter une Connaissance
+                  </button>
+                </div>
+
+                {/* AI Statistics/Status */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl">
+                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Documents Globaux</p>
+                    <p className="text-3xl font-black text-white">{aiKnowledge.length}</p>
+                  </div>
+                  <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl">
+                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">État du Cerveau</p>
+                    <p className="text-lg font-bold text-green-400">Opérationnel 🧠</p>
+                  </div>
+                  <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl">
+                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-1">Vision IA</p>
+                    <p className="text-lg font-bold text-yellow-500">Prêt pour Analyse 📸</p>
+                  </div>
+                </div>
+
+                {/* Documents Table */}
+                <div className="bg-slate-900 border border-slate-800 rounded-[2rem] overflow-hidden">
+                  <table className="w-full text-left">
+                    <thead className="bg-slate-950/50 text-slate-500 text-xs font-bold uppercase tracking-widest">
+                      <tr>
+                        <th className="px-8 py-6">Titre / Source</th>
+                        <th className="px-8 py-6">Catégorie</th>
+                        <th className="px-8 py-6">Tags</th>
+                        <th className="px-8 py-6">Date</th>
+                        <th className="px-8 py-6">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800">
+                      {aiKnowledge.map(doc => (
+                        <tr key={doc._id} className="hover:bg-slate-800/30 transition-colors">
+                          <td className="px-8 py-6">
+                            <p className="text-sm font-bold text-white">{doc.title}</p>
+                            <p className="text-[10px] text-slate-500">{doc.source || 'Interne'}</p>
+                          </td>
+                          <td className="px-8 py-6">
+                            <span className="px-2 py-1 bg-slate-800 text-[10px] rounded uppercase font-bold text-slate-300">
+                              {doc.category}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex gap-1 flex-wrap">
+                              {doc.tags?.map((t, i) => (
+                                <span key={i} className="text-[9px] bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded-full border border-blue-500/20">{t}</span>
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-8 py-6 text-xs text-slate-500">
+                            {new Date(doc.updatedAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => {
+                                  setAIBrainFormData({ ...doc, tags: doc.tags.join(', ') });
+                                  setShowAIBrainModal(true);
+                                }}
+                                className="p-2 text-slate-600 hover:text-blue-400 transition-colors"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteAIKnowledge(doc._id)}
+                                className="p-2 text-slate-600 hover:text-red-500 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {aiKnowledge.length === 0 && (
+                    <div className="p-20 text-center text-slate-600">
+                      <Sparkles size={48} className="mx-auto mb-4 opacity-20" />
+                      <p>Aucun document dans le cerveau central.</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* AI Knowledge Modal */}
+                {showAIBrainModal && (
+                  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+                    <div className="bg-slate-900 border border-slate-800 rounded-[2.5rem] w-full max-w-3xl p-10 max-h-[90vh] overflow-y-auto">
+                      <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-2xl font-black text-white">Document de Connaissance</h2>
+                        <button onClick={() => setShowAIBrainModal(false)} className="text-slate-500 hover:text-white"><X size={24} /></button>
+                      </div>
+
+                      <form onSubmit={handleSaveAIKnowledge} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-xs font-black uppercase text-slate-500">Titre</label>
+                            <input
+                              type="text"
+                              required
+                              value={aiBrainFormData.title}
+                              onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, title: e.target.value })}
+                              className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none focus:border-blue-500"
+                              placeholder="Ex: Les bases de la récursivité"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs font-black uppercase text-slate-500">Catégorie</label>
+                            <select
+                              value={aiBrainFormData.category}
+                              onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, category: e.target.value })}
+                              className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                            >
+                              <option value="general">Général</option>
+                              <option value="pedagogy">Pédagogie</option>
+                              <option value="research">Recherche / Documentation</option>
+                              <option value="documentation">Documentation Technique</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase text-slate-500">Tags (séparés par des virgules)</label>
+                          <input
+                            type="text"
+                            value={aiBrainFormData.tags}
+                            onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, tags: e.target.value })}
+                            className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none focus:border-blue-500"
+                            placeholder="algorithme, récursivité, base"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase text-slate-500">Contenu de la connaissance</label>
+                          <textarea
+                            required
+                            rows="8"
+                            value={aiBrainFormData.content}
+                            onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, content: e.target.value })}
+                            className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none focus:border-blue-500 resize-none font-mono text-sm"
+                            placeholder="Indiquez ici les informations que l'IA doit posséder..."
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase text-slate-500">Source (Lien ou Auteur)</label>
+                          <input
+                            type="text"
+                            value={aiBrainFormData.source}
+                            onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, source: e.target.value })}
+                            className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none focus:border-blue-500"
+                            placeholder="Ex: Documentation MDN, Livre de l'auteur..."
+                          />
+                        </div>
+
+                        <button type="submit" className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all shadow-xl shadow-blue-900/40">
+                          ENREGISTRER DANS LE CERVEAU
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Bot, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageCircle, Send, X, Bot, Sparkles, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { safeGetUserName } from '../utils/userUtils';
 import GuideAvatar from './GuideAvatar';
@@ -7,8 +7,8 @@ import GuideAvatar from './GuideAvatar';
 // --- 1. CONFIGURATION DE L'ONBOARDING ---
 const ONBOARDING_STEPS = [
     {
-        title: "Bienvenue, Voyageur du Code ! 🎩",
-        content: "Je suis ton professeur. Je vais te montrer comment dompter cette plateforme créée par Mouhamed Fall.",
+        title: "Bienvenue, Voyageur du Code ! 🎓",
+        content: "Je suis le Professeur Mysterious. Je vais te montrer comment dompter cette plateforme créée par Mouhamed Fall.",
         target: "brand-logo",
         position: "center"
     },
@@ -110,7 +110,7 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
     const [chatInput, setChatInput] = useState("");
     const [isThinking, setIsThinking] = useState(false);
     const [chatHistory, setChatHistory] = useState([
-        { role: 'assistant', text: `Bonjour ${safeGetUserName(user, 'ami')} ! Je suis ton professeur, envoyé par Mouhamed Fall. Que souhaites-tu explorer aujourd'hui ?` }
+        { role: 'assistant', text: `Bonjour ${safeGetUserName(user, 'ami')} ! Je suis le Professeur Mysterious, envoyé par Mouhamed Fall. Que souhaites-tu explorer aujourd'hui ?` }
     ]);
     const chatEndRef = useRef(null);
     const [dynamicKnowledge, setDynamicKnowledge] = useState(null);
@@ -391,8 +391,15 @@ const AIAssistant = ({ user, currentView, courseId, onAction }) => {
                                         value={chatInput}
                                         onChange={(e) => setChatInput(e.target.value)}
                                         placeholder="Pose ta question..."
-                                        className="w-full bg-gray-800/50 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-sm text-white focus:outline-none focus:border-blue-500 transition"
+                                        className="w-full bg-gray-800/50 border border-white/10 rounded-xl py-3 pl-12 pr-12 text-sm text-white focus:outline-none focus:border-blue-500 transition"
                                     />
+                                    <button
+                                        type="button"
+                                        className="absolute left-2 top-1.5 p-2 text-gray-400 hover:text-blue-400 transition-colors"
+                                        title="Analyser une image"
+                                    >
+                                        <Camera size={18} />
+                                    </button>
                                     <button type="submit" className="absolute right-2 top-1.5 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition">
                                         <ChevronRight size={18} />
                                     </button>
