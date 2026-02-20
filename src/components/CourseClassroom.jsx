@@ -7,7 +7,7 @@ const CourseClassroom = ({ courseTitle, courseDescription, onEnter }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             const event = new CustomEvent('mysterious-ai-suggest', {
-                detail: { text: "Bienvenue dans mon sanctuaire. Prends place, nous allons décortiquer la matrice ensemble." }
+                detail: { text: "Initialisation... Connexion au réseau neuronal établie. L'Oracle t'attend." }
             });
             window.dispatchEvent(event);
         }, 1500);
@@ -34,11 +34,11 @@ const CourseClassroom = ({ courseTitle, courseDescription, onEnter }) => {
                         transition={{ delay: 0.5 }}
                         className="text-center"
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-full text-xs font-black uppercase tracking-[0.3em] mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-xs font-black uppercase tracking-[0.3em] mb-6 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
                             <Sparkles size={14} className="animate-pulse" />
-                            Salle de Classe Virtuelle
+                            Réseau Neuronal Global
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 drop-shadow-2xl">
+                        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)] uppercase italic">
                             {courseTitle || "L'Art de l'Algorithmique"}
                         </h1>
                         <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
@@ -80,17 +80,17 @@ const CourseClassroom = ({ courseTitle, courseDescription, onEnter }) => {
                 <button
                     onClick={() => {
                         const event = new CustomEvent('mysterious-ai-suggest', {
-                            detail: { text: "C'est parti. Concentre-toi, la première leçon est fondamentale." }
+                            detail: { text: "Analyse des algorithmes en cours. Suis les noeuds d'apprentissage." }
                         });
                         window.dispatchEvent(event);
                         onEnter();
                     }}
-                    className="relative px-12 py-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-[2rem] text-white font-black text-xl tracking-[0.2em] uppercase transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(59,130,246,0.3)] hover:shadow-[0_0_80px_rgba(59,130,246,0.5)] group overflow-hidden"
+                    className="relative px-12 py-6 bg-gradient-to-r from-emerald-600 to-blue-600 rounded-[2rem] text-white font-black text-xl tracking-[0.2em] uppercase transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(16,185,129,0.3)] hover:shadow-[0_0_80px_rgba(16,185,129,0.5)] group overflow-hidden"
                 >
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                     <span className="relative z-10 flex items-center gap-4">
                         <Play size={24} className="fill-white" />
-                        Entrer dans la salle
+                        Initier le scan
                     </span>
                 </button>
             </motion.div>
@@ -100,10 +100,10 @@ const CourseClassroom = ({ courseTitle, courseDescription, onEnter }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2 }}
-                className="absolute bottom-12 text-slate-500 font-mono text-sm tracking-widest uppercase flex items-center gap-2"
+                className="absolute bottom-12 text-emerald-500/60 font-mono text-xs tracking-[0.3em] uppercase flex items-center gap-2"
             >
-                <Star size={14} className="text-yellow-500/50" />
-                Le Professeur t'attend à l'intérieur
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                L'Oracle est en ligne
             </motion.p>
         </motion.div>
     );

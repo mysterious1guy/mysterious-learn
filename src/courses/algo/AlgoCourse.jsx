@@ -319,62 +319,34 @@ const CodeEditor = ({ lesson, onComplete }) => {
   );
 };
 
-const ProfessorBubble = ({ text, isThinking, onAskQuestion }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9, y: 10 }}
-    animate={{ opacity: 1, scale: 1, y: 0 }}
-    className="flex items-start gap-4 mb-8"
-  >
-    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
-      <Sparkles size={24} />
-    </div>
-    <div className="bg-white border border-slate-200 p-5 rounded-3xl rounded-tl-none shadow-sm relative group">
-      <div className="absolute top-0 -left-2 w-0 h-0 border-t-[8px] border-t-transparent border-r-[12px] border-r-white border-b-[8px] border-b-transparent" />
-      <p className="text-slate-700 text-sm md:text-base leading-relaxed italic font-medium">
-        {isThinking ? "..." : text}
-      </p>
-
-      {!isThinking && (
-        <motion.button
-          initial={{ opacity: 0 }}
-          whileHover={{ opacity: 1, scale: 1.05 }}
-          onClick={onAskQuestion}
-          className="mt-3 flex items-center gap-2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-100 transition-all"
-        >
-          <Sparkles size={12} />
-          Demander un Indice
-        </motion.button>
-      )}
-    </div>
-  </motion.div>
-);
-
 const AlgoCourse = ({ onClose, user, API_URL }) => {
-  const [activeModuleId, setActiveModuleId] = useState('module1');
-  const [activeChapterId, setActiveChapterId] = useState('chap1');
-  const [activeLessonId, setActiveLessonId] = useState('algo_m_1_1');
+  const [activeLessonId, setActiveLessonId] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [loadingProgress, setLoadingProgress] = useState(true);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [showAdminMenu, setShowAdminMenu] = useState(false);
   const [showClassroomIntro, setShowClassroomIntro] = useState(true);
 
-  const isAdmin = user?.role === 'admin';
-
-  const currentModule = courseData.find(m => m.id === activeModuleId);
-  const currentChapter = currentModule?.chapters.find(c => c.id === activeChapterId);
-  const currentLesson = currentChapter?.lessons.find(l => l.id === activeLessonId);
-
-  // Nouveau state pour l'animation de changement de module
-  const [showModuleCelebration, setShowModuleCelebration] = useState(false);
-
-  const totalLessons = courseData.reduce((acc, mod) => acc + mod.chapters.reduce((acc2, chap) => acc2 + chap.lessons.length, 0), 0);
-  const progress = Math.round((completedLessons.length / totalLessons) * 100);
-
-  // Flattened lessons for easier "Next" logic
+  // Mettre à plat toutes les leçons
   const allLessons = courseData.flatMap(m => m.chapters.flatMap(c => c.lessons));
-  const currentIndex = allLessons.findIndex(l => l.id === activeLessonId);
-  const isLastLesson = currentIndex === allLessons.length - 1;
+
+  // Générer les positions pour le Node Map (Zig-zag vertical)
+  const COLUMNS = 3;
+  const X_SPACING = 250;
+  const Y_SPACING = 150;
+
+  const nodes = allLessons.map((lesson, index) => {
+    const row = Math.floor(index / COLUMNS);
+    const col = index % COLUMNS;
+    // Si ligne impaire, on inverse la direction
+    const xMultiplier = row % 2 !== 0 ? (params => (COLUMNS - 1) - params)(col) : col;
+
+    return {
+      ...lesson,
+      x: xMultiplier * X_SPACING + 100,
+      y: row * Y_SPACING + 100,
+      isUnlocked: index === 0 || completedLessons.includes(allLessons[index - 1].id),
+      isCompleted: completedLessons.includes(lesson.id)
+    };
+  });
 
   useEffect(() => {
     if (!user || !API_URL) {
@@ -386,26 +358,7 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data && data.completedLessons) {
-          setCompletedLessons(data.completedLessons);
-          if (data.completedLessons.length > 0 && data.completedLessons.length < totalLessons) {
-            const lastCompletedIndex = allLessons.findIndex(l => l.id === data.completedLessons[data.completedLessons.length - 1]);
-            const nextIndex = Math.min(allLessons.length - 1, lastCompletedIndex + 1);
-            const nextLesson = allLessons[nextIndex];
-
-            // Trouver le module et le chapitre pour cette leçon
-            for (const mod of courseData) {
-              for (const chap of mod.chapters) {
-                if (chap.lessons.find(l => l.id === nextLesson.id)) {
-                  setActiveModuleId(mod.id);
-                  setActiveChapterId(chap.id);
-                  setActiveLessonId(nextLesson.id);
-                  break;
-                }
-              }
-            }
-          }
-        }
+        if (data && data.completedLessons) setCompletedLessons(data.completedLessons);
         setLoadingProgress(false);
       })
       .catch(err => {
@@ -414,114 +367,46 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
       });
   }, [user, API_URL]);
 
-  // Proactivité : Suggérer des questions si l'utilisateur stagne
-  useEffect(() => {
-    if (loadingProgress || isTransitioning) return;
+  // Si on ouvre une leçon (clic sur un noeud)
+  const openNode = (lesson) => {
+    if (!lesson.isUnlocked) return;
+    setActiveLessonId(lesson.id);
 
-    const proactiveTimer = setTimeout(() => {
-      // Déclencher un événement mystérieux pour l'IA
-      const event = new CustomEvent('mysterious-ai-suggest', {
-        detail: {
-          text: `Je vois que tu étudies attentivement cette partie sur "${currentLesson?.title}". Est-ce qu'il y a quelque chose qui n'est pas clair pour toi ? Je suis là pour t'expliquer différemly si besoin !`,
-          forceOpen: true
-        }
-      });
-      window.dispatchEvent(event);
-    }, 45000); // 45 secondes d'inactivité/lecture sur la leçon
+    // Déclenche l'Oracle
+    window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+      detail: { text: "Accès à la mémoire du noeud en cours... Analyse de la logique." }
+    }));
 
-    return () => clearTimeout(proactiveTimer);
-  }, [activeLessonId, loadingProgress, isTransitioning]);
-
-  const handleAskQuestion = () => {
-    const hints = [
-      "Réfléchis en pseudo-code d'abord !",
-      "Un ordinateur est bête, sois très précis.",
-      "Décortique le problème en sous-problèmes plus simples.",
-      "N'oublie pas de vérifier tes conditions de boucle."
-    ];
-    const randomHint = hints[Math.floor(Math.random() * hints.length)];
-    const event = new CustomEvent('mysterious-ai-murmur', {
-      detail: { text: "Petit indice : " + randomHint }
+    const eventType = lesson.type;
+    const event = new CustomEvent('mysterious-ai-theater-open', {
+      detail: {
+        type: eventType,
+        title: lesson.title,
+        node: eventType === 'theory' ? (
+          <TheoryViewer
+            title={lesson.title}
+            content={lesson.content}
+            onComplete={(success) => handleLessonCompletion(lesson.id, success)}
+          />
+        ) : eventType === 'quiz' ? (
+          <QuizViewer
+            data={lesson}
+            onComplete={(success) => handleLessonCompletion(lesson.id, success)}
+          />
+        ) : (
+          <CodeEditor lesson={lesson} onComplete={(success) => handleLessonCompletion(lesson.id, success)} />
+        )
+      }
     });
     window.dispatchEvent(event);
   };
 
-  const goToNextLesson = () => {
-    if (isLastLesson) return;
-    setIsTransitioning(true);
-
-    const nextLesson = allLessons[currentIndex + 1];
-
-    // Vérifier si on change de module
-    let nextMod = null;
-    for (const mod of courseData) {
-      for (const chap of mod.chapters) {
-        if (chap.lessons.find(l => l.id === nextLesson.id)) {
-          nextMod = mod;
-          break;
-        }
-      }
-      if (nextMod) break;
-    }
-
-    const changedModule = nextMod && nextMod.id !== activeModuleId;
-
-    setTimeout(() => {
-      if (nextMod) {
-        // Si on change de module, on peut afficher une petite célébration
-        if (changedModule) {
-          setShowModuleCelebration(true);
-          setTimeout(() => setShowModuleCelebration(false), 3000);
-        }
-
-        // Trouver le chapitre
-        let nextChap = null;
-        for (const chap of nextMod.chapters) {
-          if (chap.lessons.find(l => l.id === nextLesson.id)) {
-            nextChap = chap;
-            break;
-          }
-        }
-
-        setActiveModuleId(nextMod.id);
-        setActiveChapterId(nextChap.id);
-        setActiveLessonId(nextLesson.id);
-      }
-      setIsTransitioning(false);
-    }, 400);
-  };
-
-  const goToPreviousLesson = () => {
-    if (currentIndex === 0) return;
-    setIsTransitioning(true);
-
-    const prevLesson = allLessons[currentIndex - 1];
-
-    // Trouver module et chapitre
-    let prevMod = null;
-    let prevChap = null;
-    for (const mod of courseData) {
-      for (const chap of mod.chapters) {
-        if (chap.lessons.find(l => l.id === prevLesson.id)) {
-          prevMod = mod;
-          prevChap = chap;
-          break;
-        }
-      }
-      if (prevMod) break;
-    }
-
-    setTimeout(() => {
-      setActiveModuleId(prevMod.id);
-      setActiveChapterId(prevChap.id);
-      setActiveLessonId(prevLesson.id);
-      setIsTransitioning(false);
-    }, 400);
-  };
-
-  const handleLessonCompletion = async (success) => {
-    if (success && !completedLessons.includes(activeLessonId)) {
-      setCompletedLessons(prev => [...prev, activeLessonId]);
+  const handleLessonCompletion = async (id, success) => {
+    if (success && !completedLessons.includes(id)) {
+      setCompletedLessons(prev => [...prev, id]);
+      window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+        detail: { text: "Séquence validée. Connexion au prochain noeud établie." }
+      }));
       if (user && API_URL) {
         try {
           await fetch(`${API_URL}/courses/algo/progress`, {
@@ -530,60 +415,19 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${user.token}`
             },
-            body: JSON.stringify({
-              lessonId: activeLessonId,
-              totalLessons: totalLessons
-            })
+            body: JSON.stringify({ lessonId: id, totalLessons: allLessons.length })
           });
-        } catch (err) {
-          console.error("Erreur save progress", err);
-        }
+        } catch (err) { }
       }
+      setTimeout(() => window.dispatchEvent(new CustomEvent('mysterious-ai-theater-close')), 1500);
     }
   };
 
-  // --- AUTO THEATER TRIGGER ---
-  useEffect(() => {
-    if (!currentLesson || isTransitioning) return;
-
-    if (currentLesson.type === 'theory' || currentLesson.type === 'quiz') {
-      const timer = setTimeout(() => {
-        const eventType = currentLesson.type;
-        const event = new CustomEvent('mysterious-ai-theater-open', {
-          detail: {
-            type: eventType,
-            title: currentLesson.title,
-            node: eventType === 'theory' ? (
-              <TheoryViewer
-                title={currentLesson.title}
-                content={currentLesson.content}
-                onComplete={(success) => {
-                  handleLessonCompletion(success);
-                  window.dispatchEvent(new CustomEvent('mysterious-ai-theater-close'));
-                }}
-              />
-            ) : (
-              <QuizViewer
-                data={currentLesson}
-                onComplete={(success) => {
-                  handleLessonCompletion(success);
-                  if (success) setTimeout(() => window.dispatchEvent(new CustomEvent('mysterious-ai-theater-close')), 2000);
-                }}
-              />
-            )
-          }
-        });
-        window.dispatchEvent(event);
-      }, 1000); // 1s delay for smooth transition
-      return () => clearTimeout(timer);
-    }
-  }, [activeLessonId, isTransitioning, currentLesson]);
-
   if (loadingProgress) {
     return (
-      <div className="fixed inset-0 z-50 bg-slate-50 flex flex-col items-center justify-center">
-        <div className="w-16 h-16 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mb-6" />
-        <p className="font-mono text-xs tracking-widest text-blue-600 uppercase font-black text-center">Consultation du grimoire...</p>
+      <div className="fixed inset-0 z-50 bg-[#020617] flex flex-col items-center justify-center">
+        <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-6" />
+        <p className="font-mono text-xs tracking-widest text-emerald-500 uppercase font-black text-center">Initialisation du Réseau Neuronal...</p>
       </div>
     );
   }
@@ -591,253 +435,128 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   if (showClassroomIntro) {
     return (
       <CourseClassroom
-        courseTitle="L'Art de l'Algorithmique"
-        courseDescription="Plonge dans les fondations du code. Oublie les langages éphémères, apprends la pure logique machine."
+        courseTitle="Protocole: ALGORITHMIQUE"
+        courseDescription="Ici la théorie n'existe pas. Seule la logique fait loi. Explore le réseau neuronal et connecte les concepts."
         onEnter={() => setShowClassroomIntro(false)}
       />
     );
   }
 
+  // Dimensions virtelles du canvas draggable
+  const canvasWidth = COLUMNS * X_SPACING + 200;
+  const canvasHeight = Math.ceil(allLessons.length / COLUMNS) * Y_SPACING + 200;
+
   return (
-    <div className="fixed inset-0 z-50 bg-slate-50 text-slate-900 flex flex-col font-sans overflow-hidden">
-      {/* Dynamic Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.03),transparent)] pointer-events-none" />
+    <div className="fixed inset-0 z-50 bg-[#020617] text-emerald-50 flex flex-col font-sans overflow-hidden pattern-grid-lg">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#020617]/90 to-emerald-900/20 pointer-events-none" />
 
-      {/* Module Celebration Overlay */}
-      <AnimatePresence>
-        {showModuleCelebration && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.5 }}
-            className="fixed inset-0 z-[100] flex flex-col items-center justify-center pointer-events-none"
-          >
-            <div className="bg-blue-600 text-white p-8 rounded-[40px] shadow-2xl flex flex-col items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center animate-bounce">
-                <Trophy size={40} className="text-yellow-400" />
-              </div>
-              <div className="text-center">
-                <h3 className="text-2xl font-black italic tracking-tighter uppercase">Nouveau Module !</h3>
-                <p className="text-blue-100 font-medium">{currentModule?.title}</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Glitch Overlay effect */}
+      <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/stardust.png')] opacity-[0.03] pointer-events-none mix-blend-overlay" />
 
-      {/* Header */}
-      <header className="h-16 md:h-20 bg-[#0a0c12]/60 backdrop-blur-xl border-b border-white/5 flex items-center justify-between px-6 shrink-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-xl text-gray-400 transition-all">
+      {/* Cybernetic HUD Header */}
+      <header className="h-20 bg-black/80 backdrop-blur-md border-b border-emerald-500/20 flex items-center justify-between px-8 shrink-0 z-50">
+        <div className="flex items-center gap-6">
+          <button onClick={onClose} className="p-2 hover:bg-emerald-500/10 rounded-xl text-emerald-500 transition-all border border-transparent hover:border-emerald-500/30">
             <ArrowLeft size={20} />
           </button>
-          <div className="h-8 w-px bg-white/10 hidden md:block" />
           <div className="flex flex-col">
-            <h1 className="font-bold text-sm md:text-base tracking-tight flex items-center gap-2">
-              <span className="text-blue-500 font-black italic hidden sm:inline">ALGO</span>
-              <span className="opacity-50 hidden sm:inline">|</span>
-              <span className="truncate max-w-[150px] md:max-w-none">{currentLesson?.title}</span>
+            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-white uppercase">
+              <Cpu size={20} className="text-emerald-500" /> SYSTEM.ALGO
             </h1>
-            {/* Breadcrumb for mobile clarity */}
-            <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-              <span className="text-purple-400/80">{currentModule?.title.split(':')[0]}</span>
-              <ChevronRight size={10} className="opacity-30" />
-              <span className="truncate max-w-[100px]">{currentChapter?.title}</span>
+            <div className="flex items-center gap-2 text-[10px] text-emerald-500/70 font-mono">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              STATUS: ONLINE // Rendu Neuronal Actif
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-4 md:gap-6">
-          {isAdmin && (
-            <div className="relative">
-              <button
-                onClick={() => setShowAdminMenu(!showAdminMenu)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/20 transition-all shadow-[0_0_15px_rgba(245,158,11,0.1)]"
-              >
-                <Zap size={14} className="animate-pulse" /> Admin Nav
-              </button>
-              <AnimatePresence>
-                {showAdminMenu && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute top-full right-0 mt-3 w-72 max-h-[70vh] bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-y-auto custom-scrollbar z-[100] p-4"
-                  >
-                    <h4 className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
-                      <Database size={12} /> Sauter vers une leçon
-                    </h4>
-                    <div className="space-y-4">
-                      {courseData.map(mod => (
-                        <div key={mod.id} className="space-y-1">
-                          <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest px-2">{mod.title}</p>
-                          {mod.chapters.flatMap(chap => chap.lessons).map(lesson => (
-                            <button
-                              key={lesson.id}
-                              onClick={() => {
-                                // Logic to jump to this lesson
-                                let targetMod = mod;
-                                let targetChap = mod.chapters.find(c => c.lessons.find(l => l.id === lesson.id));
-
-                                setActiveModuleId(targetMod.id);
-                                setActiveChapterId(targetChap.id);
-                                setActiveLessonId(lesson.id);
-                                setShowAdminMenu(false);
-                              }}
-                              className={`w-full text-left p-2 rounded-lg text-xs font-medium transition-all flex items-center gap-2
-                                ${activeLessonId === lesson.id ? 'bg-blue-600 text-white' : 'text-slate-400 hover:bg-white/5 hover:text-white'}
-                              `}
-                            >
-                              <div className={`w-1.5 h-1.5 rounded-full ${completedLessons.includes(lesson.id) ? 'bg-green-500' : 'bg-slate-700'}`} />
-                              <span className="truncate">{lesson.title}</span>
-                            </button>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
-          <div className="hidden lg:flex flex-col items-end gap-1">
-            <div className="flex gap-2 text-[10px] font-black tracking-widest text-gray-500">
-              <span>Maîtrise :</span>
-              <span className="text-blue-400">{progress}%</span>
-            </div>
-            <div className="w-32 h-1 bg-white/5 rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                className="h-full bg-blue-500"
-              />
-            </div>
+        <div className="flex flex-col items-end gap-1 font-mono">
+          <div className="flex gap-2 text-xs font-black tracking-widest text-emerald-500/50">
+            <span>NODES:</span>
+            <span className="text-emerald-400">{completedLessons.length} / {allLessons.length}</span>
           </div>
-          <div className="bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-full flex items-center gap-2">
-            <Trophy size={14} className="text-yellow-500" />
-            <span className="text-xs font-bold text-blue-400">{completedLessons.length}</span>
+          <div className="w-40 h-1 bg-emerald-900/30 rounded-full overflow-hidden shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${(completedLessons.length / allLessons.length) * 100}%` }}
+              className="h-full bg-emerald-500 shadow-[0_0_10px_#10b981]"
+            />
           </div>
         </div>
       </header>
 
-      <div className="flex-1 flex flex-col overflow-hidden relative">
-        <main className="flex-1 overflow-y-auto custom-scrollbar relative px-4 py-8 md:px-0 scroll-smooth">
-          <div className="max-w-5xl mx-auto px-4">
+      {/* Draggable Map Area */}
+      <div className="flex-1 relative overflow-hidden cursor-move">
+        <motion.div
+          drag
+          dragConstraints={{
+            top: -canvasHeight + window.innerHeight - 100,
+            left: -canvasWidth + window.innerWidth - 100,
+            right: 100,
+            bottom: 100
+          }}
+          className="absolute origin-top-left"
+          style={{ width: canvasWidth, height: canvasHeight }}
+        >
+          {/* SVG Connecting Lines Layer */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+            {nodes.map((node, i) => {
+              if (i === nodes.length - 1) return null;
+              const nextNode = nodes[i + 1];
+              const isPathCompleted = node.isCompleted && nextNode.isCompleted;
+              const isPathUnlocked = node.isCompleted;
+
+              return (
+                <motion.line
+                  key={`line-${i}`}
+                  x1={node.x} y1={node.y}
+                  x2={nextNode.x} y2={nextNode.y}
+                  stroke={isPathCompleted ? '#10b981' : isPathUnlocked ? '#0ea5e9' : '#1e293b'}
+                  strokeWidth={isPathCompleted ? "3" : "2"}
+                  strokeDasharray={!isPathCompleted ? "5,5" : "none"}
+                  className="transition-colors duration-1000"
+                />
+              );
+            })}
+          </svg>
+
+          {/* Nodes Render */}
+          {nodes.map((node) => (
             <motion.div
-              initial={{ x: -100, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.2, type: 'spring' }}
+              key={node.id}
+              onClick={() => openNode(node)}
+              className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
+              style={{ left: node.x, top: node.y }}
+              whileHover={node.isUnlocked ? { scale: 1.1 } : {}}
+              whileTap={node.isUnlocked ? { scale: 0.9 } : {}}
             >
-              <ProfessorBubble
-                text={currentLesson?.professorSpeech || "C'est parti ! Apprenons ensemble."}
-                isThinking={isTransitioning}
-                onAskQuestion={handleAskQuestion}
-              />
+              <div className={`
+                        relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500
+                        ${node.isCompleted ? 'bg-emerald-500/20 border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.4)] text-emerald-400'
+                  : node.isUnlocked ? 'bg-blue-900/40 border-2 border-blue-500 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)] animate-pulse'
+                    : 'bg-slate-900/80 border-2 border-slate-800 text-slate-600'}
+                    `}>
+                {node.type === 'theory' && <BookOpen size={24} />}
+                {node.type === 'quiz' && <HelpCircle size={24} />}
+                {node.type === 'practice' && <Code size={24} />}
+
+                {/* Node Label */}
+                <div className="absolute top-20 w-48 text-center pointer-events-none">
+                  <p className={`text-xs font-black tracking-widest uppercase truncate ${node.isCompleted ? 'text-emerald-400' : node.isUnlocked ? 'text-blue-400' : 'text-slate-600'}`}>
+                    {node.title}
+                  </p>
+                  {node.isCompleted && <span className="text-[9px] text-emerald-500 font-mono mt-1 block">DONNÉE_ASSIMILÉE</span>}
+                </div>
+              </div>
             </motion.div>
+          ))}
+        </motion.div>
+      </div>
 
-            <AnimatePresence mode="wait">
-              {!isTransitioning && (
-                <motion.div
-                  key={activeLessonId}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.05 }}
-                  className="mb-24"
-                >
-                  {currentLesson?.type === 'theory' && (
-                    <div className="flex flex-col items-center py-20 text-center">
-                      <div className="w-32 h-32 rounded-full bg-blue-500/10 flex items-center justify-center mb-8 border border-blue-500/20">
-                        <BookOpen size={48} className="text-blue-500 animate-pulse" />
-                      </div>
-                      <h2 className="text-3xl font-black text-white mb-4 italic tracking-tighter">Déploiement du Savoir...</h2>
-                      <p className="text-gray-500 mb-10 max-w-sm">Le Professeur expose actuellement la leçon au centre de la salle.</p>
-                      <button
-                        onClick={() => {
-                          const event = new CustomEvent('mysterious-ai-theater-open', {
-                            detail: {
-                              type: 'theory',
-                              title: currentLesson.title,
-                              node: <TheoryViewer title={currentLesson.title} content={currentLesson.content} onComplete={(success) => {
-                                handleLessonCompletion(success);
-                                window.dispatchEvent(new CustomEvent('mysterious-ai-theater-close'));
-                              }} />
-                            }
-                          });
-                          window.dispatchEvent(event);
-                        }}
-                        className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-white font-bold transition-all flex items-center gap-3 group"
-                      >
-                        <Maximize2 size={20} className="text-blue-400 group-hover:scale-110 transition-transform" />
-                        Ouvrir le Théâtre du Savoir
-                      </button>
-                    </div>
-                  )}
-                  {currentLesson?.type === 'quiz' && (
-                    <div className="flex flex-col items-center py-20 text-center">
-                      <div className="w-32 h-32 rounded-full bg-purple-500/10 flex items-center justify-center mb-8 border border-purple-500/20">
-                        <HelpCircle size={48} className="text-purple-500 animate-bounce" />
-                      </div>
-                      <h2 className="text-3xl font-black text-white mb-4 italic tracking-tighter">Épreuve de Logique...</h2>
-                      <p className="text-gray-500 mb-10 max-w-sm">Le quiz est en cours d'exposition sur la scène principale.</p>
-                      <button
-                        onClick={() => {
-                          const event = new CustomEvent('mysterious-ai-theater-open', {
-                            detail: {
-                              type: 'quiz',
-                              title: currentLesson.title,
-                              node: <QuizViewer data={currentLesson} onComplete={(success) => {
-                                handleLessonCompletion(success);
-                                if (success) setTimeout(() => window.dispatchEvent(new CustomEvent('mysterious-ai-theater-close')), 2000);
-                              }} />
-                            }
-                          });
-                          window.dispatchEvent(event);
-                        }}
-                        className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-white font-bold transition-all flex items-center gap-3 group"
-                      >
-                        <Trophy size={20} className="text-purple-400 group-hover:rotate-12 transition-transform" />
-                        Accéder à la Scène Quizz
-                      </button>
-                    </div>
-                  )}
-                  {currentLesson?.type === 'practice' && <CodeEditor lesson={currentLesson} onComplete={handleLessonCompletion} />}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </main>
-
-        {/* Footer Navigation - Floating Button */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-6 flex gap-4">
-          <button
-            onClick={goToPreviousLesson}
-            disabled={currentIndex === 0 || isTransitioning}
-            className={`
-              w-20 p-5 rounded-3xl font-black transition-all flex items-center justify-center shadow-2xl
-              ${currentIndex === 0 || isTransitioning
-                ? 'bg-gray-800 text-gray-600 opacity-50 cursor-not-allowed'
-                : 'bg-white/5 text-white hover:bg-white/10 active:scale-95'
-              }
-            `}
-          >
-            <ArrowLeft size={24} />
-          </button>
-
-          <button
-            onClick={goToNextLesson}
-            disabled={(user?.role !== 'admin' && !completedLessons.includes(activeLessonId)) || isLastLesson || isTransitioning}
-            className={`
-              flex-1 p-5 rounded-3xl font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-2xl
-              ${(user?.role !== 'admin' && !completedLessons.includes(activeLessonId)) || isLastLesson || isTransitioning
-                ? 'bg-gray-800 text-gray-600 opacity-50 cursor-not-allowed border border-white/5'
-                : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:scale-[1.02] active:scale-95 shadow-blue-500/20'
-              }
-            `}
-          >
-            {isLastLesson ? "Grimoire Terminé !" : "Continuer l'aventure"}
-            <ChevronRight size={20} />
-          </button>
-        </div>
+      {/* UI Guidance Overlay */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 text-emerald-500/50 font-mono text-[10px] tracking-widest pointer-events-none uppercase">
+        <span>{'>'} Glisse pour naviguer le réseau</span>
+        <span>// Clique sur un noeud pour l'assimiler {'<'}</span>
       </div>
     </div>
   );
