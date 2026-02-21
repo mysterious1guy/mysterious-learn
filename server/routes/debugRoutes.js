@@ -1,5 +1,5 @@
 const express = require('express');
-const { checkPaths, fullStatusCheck, testGoogleOAuth } = require('../controllers/debugController');
+const { checkPaths, fullStatusCheck, testGoogleOAuth, testEmail } = require('../controllers/debugController');
 
 const router = express.Router();
 
