@@ -1,57 +1,19 @@
-const nodemailer = require('nodemailer');
-const dns = require('dns');
+const { Resend } = require('resend');
 
-console.log('📧 Initialisation du service email...');
-const emailUser = (process.env.EMAIL_USER || '').trim();
-const emailPass = (process.env.EMAIL_PASS || '').trim();
+console.log('📧 Initialisation du service email (Resend API)...');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-console.log('📧 EMAIL_USER:', emailUser ? 'OK' : 'MANQUANT');
-console.log('📧 Longueur EMAIL_PASS:', emailPass.length, 'caractères');
-
-// Configuration forcée IPv4 + Port 465 (le plus stable sur Render Free)
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: emailUser,
-    pass: emailPass,
-  },
-  // On force l'IPv4 au niveau du transporteur
-  family: 4,
-  // On fournit un lookup qui ne renvoie que de l'IPv4
-  lookup: (hostname, options, callback) => {
-    dns.lookup(hostname, { family: 4 }, (err, address) => {
-      if (err) return callback(err);
-      console.log(`📡 SMTP Lookup: ${hostname} -> ${address}`);
-      callback(null, address, 4);
-    });
-  },
-  connectionTimeout: 40000, // 40s
-  greetingTimeout: 40000,
-  socketTimeout: 40000,
-  debug: true,
-  logger: true
-});
-
-// Vérification immédiate au démarrage
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('❌ ÉCHEC CONNEXION SMTP AU DÉMARRAGE:', error.message);
-  } else {
-    console.log('✅ CONNEXION SMTP ÉTABLIE AVEC SUCCÈS');
-  }
-});
+console.log('📧 RESEND_API_KEY configuré:', process.env.RESEND_API_KEY ? 'OUI' : 'NON');
 
 /**
- * Envoie un email formaté
+ * Envoie un email formaté via Resend API
  */
 const sendEmail = async ({ to, subject, html, text }) => {
   try {
-    const info = await transporter.sendMail({
-      from: `"Mysterious Classroom" <${emailUser}>`,
-      to,
-      subject,
+    const { data, error } = await resend.emails.send({
+      from: 'Mysterious Classroom <onboarding@resend.dev>', // Email par défaut de Resend pour le test
+      to: [to],
+      subject: subject,
       text: text || '',
       html: html || `
         <div style="font-family: sans-serif; max-width: 600px; padding: 20px; border: 1px solid #eee;">
@@ -61,8 +23,13 @@ const sendEmail = async ({ to, subject, html, text }) => {
       `,
     });
 
-    console.log('✅ Email envoyé:', info.messageId);
-    return info;
+    if (error) {
+      console.error('❌ Erreur Resend API:', error);
+      throw error;
+    }
+
+    console.log('✅ Email envoyé via Resend:', data.id);
+    return data;
   } catch (error) {
     console.error('❌ Erreur d\'envoi d\'email:', error.message);
     throw error;
