@@ -30,7 +30,8 @@ const admin = (req, res, next) => {
 };
 
 const ownerAdmin = (req, res, next) => {
-  if (req.user && (req.user.role === 'admin' || req.user.email === 'mouhamedfall@esp.sn') && req.user.adminTier === 'owner') {
+  const isOwner = req.user && (req.user.adminTier === 'owner' || req.user.email === 'mouhamedfall@esp.sn');
+  if (isOwner && req.user.role === 'admin') {
     next();
   } else {
     res.status(403).json({ message: 'Accès interdit. Privilèges insuffisants (requis: Owner).' });

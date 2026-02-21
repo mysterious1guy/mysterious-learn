@@ -346,13 +346,13 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
-    ...(user?.adminTier === 'owner' ? [
+    ...(user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn' ? [
       { id: 'users', label: 'Utilisateurs', icon: Users },
       { id: 'notifications', label: 'Communications', icon: Bell }
     ] : []),
     { id: 'courses', label: 'Gestion des cours', icon: BookOpen },
     { id: 'ai-brain', label: 'Cerveau de l\'IA', icon: Sparkles },
-    ...(user?.adminTier === 'owner' ? [
+    ...(user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn' ? [
       { id: 'config', label: 'Configuration Site', icon: LayoutDashboard },
       { id: 'settings', label: 'Paramètres', icon: Settings }
     ] : [])
