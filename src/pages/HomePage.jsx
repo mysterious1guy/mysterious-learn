@@ -95,10 +95,12 @@ const HomePage = ({ API_URL }) => {
         fetchConfig();
     }, [API_URL]);
 
-    // Extracting courses to showcase
+    // Extracting courses to showcase and calculating total exact count
+    let totalCoursesCount = 0;
     const featuredCourses = [];
     if (coursesData && coursesData.length > 0) {
         coursesData.forEach(category => {
+            totalCoursesCount += category.items.length;
             category.items.forEach(item => {
                 featuredCourses.push({
                     ...item,
@@ -179,7 +181,7 @@ const HomePage = ({ API_URL }) => {
                             className="flex justify-center gap-6 md:gap-12 pt-8"
                         >
                             <div className="text-center group">
-                                <p className="text-4xl font-black text-white group-hover:text-blue-400 transition-colors">{stats.totalUsers}+</p>
+                                <p className="text-4xl font-black text-white group-hover:text-blue-400 transition-colors">{stats.totalUsers}</p>
                                 <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Membres</p>
                             </div>
                             <div className="w-px h-12 bg-slate-800 hidden md:block" />
@@ -189,7 +191,7 @@ const HomePage = ({ API_URL }) => {
                             </div>
                             <div className="w-px h-12 bg-slate-800 hidden md:block" />
                             <div className="text-center group">
-                                <p className="text-4xl font-black text-white group-hover:text-pink-400 transition-colors">25+</p>
+                                <p className="text-4xl font-black text-white group-hover:text-pink-400 transition-colors">{totalCoursesCount}</p>
                                 <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Cours gratuits</p>
                             </div>
                         </motion.div>
