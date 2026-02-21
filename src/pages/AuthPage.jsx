@@ -20,6 +20,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     const [emailExists, setEmailExists] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState(0);
     const [petSecret, setPetSecret] = useState(null);
+    const [resendCooldown, setResendCooldown] = useState(0);
 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,6 +49,16 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     useEffect(() => {
         if (user) navigate('/dashboard');
     }, [user, navigate]);
+
+    useEffect(() => {
+        let timer;
+        if (resendCooldown > 0) {
+            timer = setInterval(() => {
+                setResendCooldown(prev => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [resendCooldown]);
 
     const handleGoogleLogin = () => {
         setIsLoading(true);
@@ -153,6 +164,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     };
 
     const handleResendCode = async () => {
+        if (resendCooldown > 0) return;
         try {
             await fetch(`${API_URL}/auth/resend-verification`, {
                 method: 'POST',
@@ -160,6 +172,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                 body: JSON.stringify({ email: formData.email }),
             });
             setToast({ message: 'Nouveau code envoyé !', type: 'success' });
+            setResendCooldown(60); // Start 60s cooldown
         } catch (err) {
             setToast({ message: 'Erreur lors du renvoi', type: 'error' });
         }
@@ -213,8 +226,15 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                     >
                                         {isLoading ? 'Vérification...' : 'Activer mon compte'}
                                     </button>
-                                    <button type="button" onClick={handleResendCode} className="w-full text-slate-500 hover:text-white text-sm">
-                                        Renvoyer le code
+                                    <button
+                                        type="button"
+                                        onClick={handleResendCode}
+                                        disabled={resendCooldown > 0}
+                                        className={`w-full text-slate-500 hover:text-white text-sm transition-colors ${resendCooldown > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    >
+                                        {resendCooldown > 0
+                                            ? `Renvoyer le code (${resendCooldown}s)`
+                                            : "Renvoyer le code"}
                                     </button>
                                 </motion.div>
                             ) : (
