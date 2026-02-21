@@ -28,7 +28,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
           </div>
           <div style="padding: 40px; background: #ffffff; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
             <div style="font-size: 16px;">
-              ${text.replace(/\n/g, '<br>')}
+            ${(text || '').replace(/\n/g, '<br>')}
             </div>
             <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f3f4f6; text-align: center; color: #9ca3af; font-size: 12px;">
               <p>© ${new Date().getFullYear()} Mysterious Classroom. Créé par Mouhamed Fall.</p>
