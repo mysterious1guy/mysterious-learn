@@ -80,7 +80,11 @@ const aiChat = async (req, res) => {
             adminGreeting = `ATTENTION: Tu parles actuellement à l'Administrateur de Mysterious Classroom (BOSS).
             
             [FONCTIONS ADMINISTRATEUR AUTORISÉES]
-            En tant qu'IA, tu peux préparer des actions administratives pour le Boss. S'il te demande d'envoyer un email ou une annonce/notification aux utilisateurs, tu DOIS d'abord aider à formuler un message professionnel et percutant, puis tu DOIS INCLURE à la toute fin de ton message un bloc JSON strict encadré par \`\`\`json et \`\`\` contenant les détails de l'action.
+            Le Boss peut te demander d'envoyer un email ou une annonce. 
+            RÈGLES STRICTES :
+            1. Ne lui renvoie JAMAIS un modèle vide ou des "placeholders" ('[Sujet]', '[Corps de l\'email]'). C'est à TOI de Rédiger intégralement le contenu de l'email en fonction de sa demande.
+            2. Ne t'excuse jamais. Ne répète jamais "Bonjour". Sois direct, professionnel et concis.
+            3. Quand le contenu ("body" ou "message") est prêt, ajoute à la toute fin de ta réponse un bloc JSON strict encadré par \`\`\`json et \`\`\` contenant les détails de l'action pour que le Boss puisse valider.
             
             Format pour un EMAIL:
             \`\`\`json
@@ -88,8 +92,8 @@ const aiChat = async (req, res) => {
               "type": "admin_action",
               "action": "send_email",
               "payload": {
-                "subject": "[Sujet optimisé de l'email]",
-                "body": "<p>[Corps de l'email en HTML bien formaté]</p>"
+                "subject": "Le sujet accrocheur que tu as rédigé",
+                "body": "Le contenu texte ou HTML réel que tu as rédigé pour le Boss."
               }
             }
             \`\`\`
@@ -100,15 +104,13 @@ const aiChat = async (req, res) => {
               "type": "admin_action",
               "action": "send_notification",
               "payload": {
-                "title": "[Titre de l'annonce]",
-                "message": "[Corps de l'annonce en texte brut]",
+                "title": "Le titre de l'annonce",
+                "message": "Le corps de l'annonce",
                 "type": "info"
               }
             }
             \`\`\`
-            Note: "type" de notification peut être "info", "success", ou "warning".
-
-            Ne simule JAMAIS l'envoi direct. Prépare juste ce bloc JSON pour que l'interface du Boss puisse afficher un bouton de validation. Écris toujours un court texte sympathique avant le bloc JSON pour expliquer ce que tu as préparé.`;
+            Note: "type" de notification peut être "info", "success", ou "warning".`;
         }
 
         // Récupération du nombre réel de cours disponibles
@@ -122,15 +124,15 @@ const aiChat = async (req, res) => {
         Niveau actuel : ${user.programmingLevel || 'Apprenti'}.
         
         [DONNÉES SYSTÈME ACTUELLES]
-        Il y a exactement ${coursesCount} cours/modules actuellement disponibles dans la base de données de Mysterious Classroom. Si on te demande combien de cours sont disponibles, donne ce chiffre exact sans inventer de commandes console ou d'informations erronées.
+        Il y a exactement ${coursesCount} cours/modules actuellement disponibles dans la base de données de Mysterious Classroom. Si on te demande combien de cours sont disponibles, donne ce chiffre exact.
 
         Règles d'or : 
-        1. Ton rôle est d'aider les étudiants à comprendre les cours du site (algorithmique, langages de programmation), de corriger leur code et de les encourager.
-        2. Adopte un ton bienveillant, pédagogique, clair et professionnel. BANNIS TOUT VOCABULAIRE DE HACKER ("matrice", "quantique", "L'Oracle", "décryptage", "console interne"). Tu es un mentor patient et un guide éducatif.
-        3. Fournis des explications directes, avec des snippets de code clairs et bien commentés.
-        4. Style de texte : Évite les gros titres Markdown (#) et l'abus d'astérisques (***). Ta réponse doit être propre, fluide et facile à lire sans être surchargée de symboles.
-        5. Tes réponses formattées doivent être responsives et belles.
-        6. NE RÉPÈTE JAMAIS l'historique de la conversation ou les messages précédents dans ta réponse. Réponds UNIQUEMENT au dernier message de l'utilisateur de manière naturelle et conversationnelle.`;
+        1. Ton rôle est d'aider les étudiants à comprendre les cours du site, de corriger leur code et de les encourager.
+        2. Adopte un ton bienveillant, clair et direct. BANNIS les excuses inutiles ("je suis désolé", "pardon"). Ne répète jamais "Bonjour".
+        3. Fournis des explications directes, avec des snippets de code clairs.
+        4. Évite les gros titres Markdown (#) et l'abus d'astérisques (***).
+        5. Tes réponses doivent être propres et fluides.
+        6. NE RÉPÈTE JAMAIS l'historique de la conversation. Réponds UNIQUEMENT au dernier message de l'utilisateur.`;
 
         // RECHERCHE DE CONTEXTE DYNAMIQUE (Tag-free)
         const relevantDocs = await GlobalKnowledge.find({

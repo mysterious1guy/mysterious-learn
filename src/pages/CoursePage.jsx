@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Clock, Users, Star, BookOpen, CheckCircle, PlayCircle } from 'lucide-react';
 import AlgoCourse from '../courses/algo/AlgoCourse';
+import CCourse from '../courses/c/CCourse';
 
 const CoursePage = ({ user, API_URL, setToast }) => {
     const { courseId } = useParams();
@@ -26,7 +27,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     const normalizedCourseId = courseId?.toLowerCase();
 
     useEffect(() => {
-        if (normalizedCourseId !== 'algo' && normalizedCourseId) {
+        if (normalizedCourseId !== 'algo' && normalizedCourseId !== 'c' && normalizedCourseId) {
             fetchCourse();
         } else {
             setLoading(false);
@@ -34,7 +35,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     }, [normalizedCourseId]);
 
     const fetchCourse = async () => {
-        if (normalizedCourseId === 'algo') return;
+        if (normalizedCourseId === 'algo' || normalizedCourseId === 'c') return;
         try {
             const response = await fetch(`${API_URL}/courses/${normalizedCourseId}`);
             if (response.ok) {
@@ -68,7 +69,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
         );
     }
 
-    if (!course && normalizedCourseId !== 'algo') {
+    if (!course && normalizedCourseId !== 'algo' && normalizedCourseId !== 'c') {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-white">Cours non trouvé</div>
@@ -78,6 +79,10 @@ const CoursePage = ({ user, API_URL, setToast }) => {
 
     if (normalizedCourseId === 'algo') {
         return <AlgoCourse onClose={() => navigate(user?.role === 'admin' ? '/admin' : '/dashboard')} user={user} API_URL={API_URL} />;
+    }
+
+    if (normalizedCourseId === 'c') {
+        return <CCourse onClose={() => navigate(user?.role === 'admin' ? '/admin' : '/dashboard')} user={user} API_URL={API_URL} />;
     }
 
     return (

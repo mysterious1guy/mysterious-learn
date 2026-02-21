@@ -59,12 +59,12 @@ const sendEmailToUsers = async (req, res) => {
 
     const results = await Promise.allSettled(
       users.map(user => {
-        const isHtml = /<[a-z][\s\S]*>/i.test(body);
+        // Envelopper le corps de l'email généré par l'IA (texte ou html) dans le template officiel avec logo
+        const finalHtml = getMarketingEmail(subject, body);
         return sendEmail({
           to: user.email,
           subject: subject,
-          text: isHtml ? "" : body,
-          html: isHtml ? body : undefined
+          html: finalHtml
         });
       })
     );
