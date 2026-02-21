@@ -1,35 +1,38 @@
-const { Resend } = require('resend');
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 /**
- * Envoie un email formaté via Resend API
+ * Envoie un email via le relais Google Apps Script (100% Gratuit)
  */
 const sendEmail = async ({ to, subject, html, text }) => {
+  const relayUrl = process.env.GAS_RELAY_URL;
+
+  if (!relayUrl) {
+    console.error('❌ GAS_RELAY_URL non configurée dans les variables d\'environnement.');
+    throw new Error('Configuration email manquante');
+  }
+
   try {
-    const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
-    const { data, error } = await resend.emails.send({
-      from: `Mysterious Classroom <${fromEmail}>`,
-      to: [to],
-      subject: subject,
-      text: text || '',
-      html: html || `
-        <div style="font-family: sans-serif; max-width: 600px; padding: 20px; border: 1px solid #eee;">
-          <h2 style="color: #3b82f6;">Mysterious Classroom</h2>
-          <p>${(text || '').replace(/\n/g, '<br>')}</p>
-        </div>
-      `,
+    const response = await fetch(relayUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: to,
+        subject: subject,
+        text: text || '',
+        html: html,
+        key: 'mysterious_secret_key_2026' // La clé de sécurité définie dans le script
+      })
     });
 
-    if (error) {
-      console.error('❌ Erreur Resend API:', error);
-      throw error;
+    const result = await response.json();
+
+    if (!result.success) {
+      console.error('❌ Erreur Relais Google:', result.error);
+      throw new Error(result.error);
     }
 
-    console.log('✅ Email envoyé via Resend:', data.id);
-    return data;
+    console.log('✅ Email envoyé avec succès via le relais Google');
+    return result;
   } catch (error) {
-    console.error('❌ Erreur d\'envoi d\'email:', error.message);
+    console.error('❌ Erreur d\'envoi d\'email via relais:', error.message);
     throw error;
   }
 };
