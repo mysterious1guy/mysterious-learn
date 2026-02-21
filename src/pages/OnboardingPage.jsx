@@ -119,7 +119,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                     }`}>
                                     {step > s.id ? <Check className="w-5 h-5" /> : s.icon}
                                 </div>
-                                <span className={`text-[10px] uppercase tracking-widest font-bold ${step >= s.id ? 'text-blue-400' : 'text-slate-500'}`}>{t(`onboarding.${s.title.toLowerCase()}`) || s.title}</span>
+                                <span className={`text-[10px] uppercase tracking-widest font-bold ${step >= s.id ? 'text-blue-400' : 'text-slate-500'}`}>{s.title}</span>
                             </div>
                         ))}
                     </div>
