@@ -184,14 +184,30 @@ const aiChat = async (req, res) => {
         // Si la réponse texte commence par '{' ou '[', on essaie de la parser au cas où
         let finalResponse = responseText;
         try {
+            // First pass, try to parse root JSON if the provider returned standard JSON
             const parsed = JSON.parse(responseText);
             if (parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
                 finalResponse = parsed.choices[0].message.content;
             } else if (parsed.response) {
                 finalResponse = parsed.response;
+            } else if (parsed.content) {
+                finalResponse = parsed.content;
             }
         } catch (e) {
             // C'est du texte brut, c'est parfait
+        }
+
+        // Second pass: Some AI models (like DeepSeek via Pollinations) leak their reasoning JSON
+        // block as pure text. We need to catch this specific format.
+        if (typeof finalResponse === 'string' && finalResponse.trim().startsWith('{"role":')) {
+            try {
+                const leakedParsed = JSON.parse(finalResponse.trim());
+                if (leakedParsed.content) {
+                    finalResponse = leakedParsed.content;
+                }
+            } catch (e) {
+                // Ignorer, texte cassé
+            }
         }
 
         // Nettoyage des publicités injectées par Pollinations.ai
