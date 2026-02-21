@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const PendingUser = require('../models/PendingUser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
@@ -80,52 +81,43 @@ const register = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
     const name = `${firstName} ${lastName}`;
 
+    // 1. Vérifier si l'utilisateur existe déjà officiellement
     const userExists = await User.findOne({ email });
-
     if (userExists) {
-      console.log('❌ Inscription bloquée : Email existe déjà dans la DB:', email, '(ID:', userExists._id, ')');
-      return res.status(400).json({
-        message: 'Un compte existe déjà avec cet email.'
-      });
+      return res.status(400).json({ message: 'Un compte existe déjà avec cet email.' });
     }
 
+    // 2. Préparer les données
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     const verificationCode = generateVerificationCode();
-
     const isSuperAdmin = email === 'mouhamedfall@esp.sn';
 
-    const user = await User.create({
-      firstName,
-      lastName,
-      name: `${firstName} ${lastName}`,
-      email,
-      password: hashedPassword,
-      emailVerificationCode: verificationCode,
-      emailVerificationExpire: Date.now() + 30 * 60 * 1000,
-      isEmailVerified: false,
-      role: isSuperAdmin ? 'admin' : 'user',
-      hasCompletedOnboarding: false,
-      joinedAt: new Date(),
-    });
+    // 3. Stocker temporairement dans PendingUser (ou mettre à jour si déjà présent)
+    await PendingUser.findOneAndUpdate(
+      { email },
+      {
+        firstName,
+        lastName,
+        name,
+        password: hashedPassword,
+        verificationCode,
+        role: isSuperAdmin ? 'admin' : 'user',
+        createdAt: new Date() // Reset TTL
+      },
+      { upsert: true, new: true }
+    );
 
-    console.log(`🔐 CODE DE VERIFICATION POUR NOUVEL UTILISATEUR ${email} : ${verificationCode}`);
+    console.log(`🔐 CODE DE VERIFICATION (TEMP) POUR ${email} : ${verificationCode}`);
 
-    // Envoi de l'email en arrière-plan pour ne pas bloquer la réponse
+    // 4. Envoi de l'email
     sendVerificationEmail(email, name, verificationCode).catch(mailErr => {
       console.error('Échec envoi mail verification:', mailErr);
     });
 
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
-      isEmailVerified: false,
-      message: 'Compte créé. Vérifie ton email pour le code d\'activation.'
+      email,
+      message: 'Code de vérification envoyé sur ton email.'
     });
   } catch (err) {
     console.error('Erreur register:', err);
@@ -139,40 +131,50 @@ const verifyEmail = async (req, res) => {
   try {
     const { email, code } = req.body;
 
-    const user = await User.findOne({
-      email,
-      // On retire la vérification stricte du code ici pour la traiter manuellement
-      // emailVerificationCode: code,
-      // emailVerificationExpire: { $gt: Date.now() }
+    // 1. Chercher dans les inscriptions en attente
+    const pendingUser = await PendingUser.findOne({ email });
+    if (!pendingUser) {
+      // Si pas dans pending, peut-être déjà vérifié ?
+      const user = await User.findOne({ email });
+      if (user && user.isEmailVerified) {
+        return res.status(400).json({ message: 'Cet email est déjà vérifié. Connecte-toi.' });
+      }
+      return res.status(404).json({ message: 'Aucune inscription en attente trouvée pour cet email.' });
+    }
+
+    // 2. Vérifier le code
+    if (pendingUser.verificationCode !== code) {
+      return res.status(400).json({ message: 'Code invalide' });
+    }
+
+    // 3. Créer l'utilisateur officiel
+    const newUser = await User.create({
+      firstName: pendingUser.firstName,
+      lastName: pendingUser.lastName,
+      name: pendingUser.name,
+      email: pendingUser.email,
+      password: pendingUser.password,
+      role: pendingUser.role,
+      isEmailVerified: true,
+      hasCompletedOnboarding: false,
+      joinedAt: new Date()
     });
 
-    if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
-    }
-
-    // Vérification du code envoyé par email uniquement
-    const isValidCode = user.emailVerificationCode === code && user.emailVerificationExpire > Date.now();
-
-    if (!isValidCode) {
-      return res.status(400).json({ message: 'Code invalide ou expiré' });
-    }
-
-    user.isEmailVerified = true;
-    user.emailVerificationCode = undefined;
-    user.emailVerificationExpire = undefined;
-    await user.save();
+    // 4. Supprimer l'inscription temporaire
+    await PendingUser.deleteOne({ _id: pendingUser._id });
 
     res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
+      _id: newUser._id,
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
       isEmailVerified: true,
-      token: generateToken(user._id),
-      message: 'Email vérifié avec succès !'
+      token: generateToken(newUser._id),
+      message: 'Félicitations ! Ton compte est maintenant actif.'
     });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de la vérification' });
+    console.error('Erreur verifyEmail:', error);
+    res.status(500).json({ message: 'Erreur lors de l\'activation' });
   }
 };
 
@@ -181,30 +183,27 @@ const verifyEmail = async (req, res) => {
 const resendVerification = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    const pendingUser = await PendingUser.findOne({ email });
 
-    if (!user) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
-    }
-
-    if (user.isEmailVerified) {
-      return res.status(400).json({ message: 'Cet email est déjà vérifié' });
+    if (!pendingUser) {
+      const user = await User.findOne({ email });
+      if (user && user.isEmailVerified) {
+        return res.status(400).json({ message: 'Email déjà vérifié.' });
+      }
+      return res.status(404).json({ message: 'Aucune inscription en attente.' });
     }
 
     const newCode = generateVerificationCode();
-    user.emailVerificationCode = newCode;
-    user.emailVerificationExpire = Date.now() + 30 * 60 * 1000;
-    await user.save();
+    pendingUser.verificationCode = newCode;
+    pendingUser.createdAt = new Date(); // Reset TTL
+    await pendingUser.save();
 
-    console.log(`🔐 CODE DE VERIFICATION RENVOYE POUR ${email} : ${newCode}`);
-
-    await sendVerificationEmail(user.email, user.name, newCode).catch(err => {
-      console.log("Erreur silencieuse envoi email, le code est dans la console.");
-    });
+    console.log(`🔐 CODE RENVOYE POUR ${email} : ${newCode}`);
+    await sendVerificationEmail(pendingUser.email, pendingUser.name, newCode);
 
     res.json({ message: 'Nouveau code envoyé !' });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors de l\'envoi du code' });
+    res.status(500).json({ message: 'Erreur lors de l\'envoi' });
   }
 };
 
@@ -647,16 +646,13 @@ const deleteAccount = async (req, res) => {
 const checkEmail = async (req, res) => {
   try {
     const { email } = req.body;
-
-    if (!email) {
-      return res.status(400).json({ message: 'Email requis' });
-    }
+    if (!email) return res.status(400).json({ message: 'Email requis' });
 
     const user = await User.findOne({ email });
-    if (user) console.log('checkEmail found user in DB:', email, '(ID:', user._id, ')');
-    res.json({ exists: !!user });
+    const pending = await PendingUser.findOne({ email });
+
+    res.json({ exists: !!user || !!pending });
   } catch (err) {
-    console.error('Erreur checkEmail:', err);
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };
