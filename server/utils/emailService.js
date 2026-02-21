@@ -1,15 +1,19 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_PORT) || 587,
-  secure: false, // true for 465, false for other ports (like 587)
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  tls: {
-    rejectUnauthorized: false // Helps with some network environments
+});
+
+// Vérifier la connexion au démarrage
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('❌ Erreur de configuration Email:', error);
+  } else {
+    console.log('📧 Serveur prêt à envoyer des emails');
   }
 });
 
