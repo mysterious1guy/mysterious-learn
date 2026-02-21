@@ -34,7 +34,25 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
             }
         };
         fetchStats();
-    }, [API_URL]);
+
+        // Proactive Dashboard Murmur
+        const timer = setTimeout(() => {
+            const completedCount = Object.values(progressions).filter(p => p.progress === 100).length;
+            let text = `Bon retour dans La Matrice, ${user?.firstName}. Content de voir tes systèmes actifs.`;
+
+            if (completedCount > 0) {
+                text = `Félicitations pour tes ${completedCount} certifications. Ton potentiel d'assimilation est impressionnant.`;
+            } else if (Object.keys(progressions).length > 0) {
+                text = "Ton parcours progresse. Ne laisse pas la logique se dissiper, continue l'entraînement.";
+            }
+
+            window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+                detail: { text }
+            }));
+        }, 2500);
+
+        return () => clearTimeout(timer);
+    }, [API_URL, progressions, user]);
 
     const filteredCourses = coursesData.map(category => ({
         ...category,

@@ -19,6 +19,16 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         scrollToBottom();
     }, [messages, isTyping]);
 
+    // Initial Greeting Murmur
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+                detail: { text: `Bonjour ${safeGetUserName(user, 'Voyageur')}. Je suis l'Oracle. Prêt à décoder les mystères de la logique ?` }
+            }));
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, [user]);
+
     useEffect(() => {
         // Listeners for proactive suggestions (like the old hudMurmur)
         const handleSuggest = (e) => {
