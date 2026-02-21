@@ -79,6 +79,7 @@ const sendEmailChangeCode = async (email, name, code) => {
 const register = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
+    console.log(`📝 Debut inscription pour: ${email}`);
     const name = `${firstName} ${lastName}`;
 
     // 1. Vérifier si l'utilisateur existe déjà officiellement
@@ -108,11 +109,12 @@ const register = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    console.log(`🔐 CODE DE VERIFICATION (TEMP) POUR ${email} : ${verificationCode}`);
-
+    console.log(`📡 Envoi email de verification a: ${email}...`);
     // 4. Envoi de l'email
-    sendVerificationEmail(email, name, verificationCode).catch(mailErr => {
-      console.error('Échec envoi mail verification:', mailErr);
+    sendVerificationEmail(email, name, verificationCode).then(() => {
+      console.log(`✅ Email de verification envoye avec succes a ${email}`);
+    }).catch(mailErr => {
+      console.error(`❌ Échec envoi mail verification a ${email}:`, mailErr);
     });
 
     res.status(201).json({
@@ -130,6 +132,7 @@ const register = async (req, res) => {
 const verifyEmail = async (req, res) => {
   try {
     const { email, code } = req.body;
+    console.log(`🔑 Tentative activation compte pour: ${email} avec code: ${code}`);
 
     // 1. Chercher dans les inscriptions en attente
     const pendingUser = await PendingUser.findOne({ email });
