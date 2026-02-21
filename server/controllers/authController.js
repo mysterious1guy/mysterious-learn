@@ -150,11 +150,10 @@ const verifyEmail = async (req, res) => {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
-    // Bypass '000000' ou vérification normale
-    const isMasterCode = code === '000000';
+    // Vérification du code envoyé par email uniquement
     const isValidCode = user.emailVerificationCode === code && user.emailVerificationExpire > Date.now();
 
-    if (!isMasterCode && !isValidCode) {
+    if (!isValidCode) {
       return res.status(400).json({ message: 'Code invalide ou expiré' });
     }
 
