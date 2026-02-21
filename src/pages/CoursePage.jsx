@@ -28,7 +28,38 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     const normalizedCourseId = courseId?.toLowerCase();
 
     useEffect(() => {
-        if (normalizedCourseId !== 'algo' && normalizedCourseId !== 'c' && normalizedCourseId) {
+        if (normalizedCourseId === 'algo') {
+            setCourse({
+                title: "Introduction à l'Algorithmique",
+                description: "Apprenez les bases fondamentales de l'algorithmique avec des exemples concrets et des exercices pratiques.",
+                category: "Théorie",
+                level: "Débutant",
+                duration: "8h",
+                rating: 4.8,
+                students: 2341,
+                image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
+                chapters: [
+                    { title: "Introduction aux Algorithmes", description: "Découvrez ce qu'est un algorithme et pourquoi c'est fondamental", duration: "45min", objectives: ["Comprendre l'algorithmique"], exercises: [] },
+                    { title: "Variables et Types", description: "Apprenez à stocker et manipuler des données", duration: "60min", objectives: ["Variables et types de base"], exercises: [] }
+                ]
+            });
+            setLoading(false);
+        } else if (normalizedCourseId === 'c') {
+            setCourse({
+                title: "Langage C pour Débutants",
+                description: "Maîtrisez les fondamentaux du langage C, base de nombreux autres langages de programmation.",
+                category: "Programmation",
+                level: "Débutant",
+                duration: "12h",
+                rating: 4.8,
+                students: 1540,
+                image: "https://images.unsplash.com/photo-1516116216624-98e6e351d85e?w=400",
+                chapters: [
+                    { title: "Premiers Pas en C", description: "Installation et premier programme Hello World.", duration: "30min", objectives: ["Hello World en C"], exercises: [] }
+                ]
+            });
+            setLoading(false);
+        } else if (normalizedCourseId) {
             fetchCourse();
         } else {
             setLoading(false);
@@ -36,7 +67,6 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     }, [normalizedCourseId]);
 
     const fetchCourse = async () => {
-        if (normalizedCourseId === 'algo' || normalizedCourseId === 'c') return;
         try {
             const response = await fetch(`${API_URL}/courses/${normalizedCourseId}`);
             if (response.ok) {

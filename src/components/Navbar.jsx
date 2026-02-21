@@ -71,17 +71,6 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                   </div>
                 )}
               </Link>
-
-              <button
-                onClick={onShowUsageMonitor}
-                className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded-lg transition group"
-                title={t('monitor')}
-              >
-                <BarChart3 size={18} className="text-slate-400 group-hover:text-blue-400 transition-colors" />
-                <span className="text-sm font-bold hidden md:block text-slate-300 group-hover:text-white transition-colors">
-                  {t('monitor')}
-                </span>
-              </button>
             </>
           ) : (
             <Link

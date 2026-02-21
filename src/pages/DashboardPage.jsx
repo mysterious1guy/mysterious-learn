@@ -62,6 +62,54 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
         )
     })).filter(category => category.items.length > 0);
 
+    const userCategories = [];
+
+    // 1. Reprendre l'apprentissage
+    if (progressions) {
+        const inProgressCoursesIds = Object.entries(progressions)
+            .filter(([id, data]) => data.progress > 0 && data.progress < 100)
+            .sort((a, b) => new Date(b[1].lastAccessed || 0) - new Date(a[1].lastAccessed || 0))
+            .slice(0, 3)
+            .map(([id]) => id);
+
+        const inProgressCourses = inProgressCoursesIds.map(id => {
+            for (const cat of coursesData) {
+                const c = cat.items.find(item => item.id === id);
+                if (c) return c;
+            }
+            return null;
+        }).filter(Boolean);
+
+        if (inProgressCourses.length > 0) {
+            userCategories.push({
+                id: 'resume',
+                category: "Reprendre l'apprentissage",
+                items: inProgressCourses
+            });
+        }
+    }
+
+    // 2. Favoris
+    if (favorites && favorites.length > 0) {
+        const favoriteCourses = favorites.map(id => {
+            for (const cat of coursesData) {
+                const c = cat.items.find(item => item.id === id);
+                if (c) return c;
+            }
+            return null;
+        }).filter(Boolean);
+
+        if (favoriteCourses.length > 0) {
+            userCategories.push({
+                id: 'favorites',
+                category: 'Mes Cours Favoris',
+                items: favoriteCourses
+            });
+        }
+    }
+
+    const finalCategories = [...userCategories, ...filteredCourses];
+
     return (
         <div className="min-h-screen transition-colors duration-500 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 dark:from-gray-900 dark:via-[#0a0f1e] dark:to-black pb-20">
             {/* Header */}
@@ -113,7 +161,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
 
             {/* Categories avec défilement horizontal */}
             <div className="space-y-12">
-                {filteredCourses.map((category, index) => (
+                {finalCategories.map((category, index) => (
                     <motion.div
                         key={category.id}
                         initial={{ opacity: 0, x: -20 }}
