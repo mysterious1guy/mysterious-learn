@@ -110,12 +110,48 @@ const aiChat = async (req, res) => {
               }
             }
             \`\`\`
+
+            Format pour MODIFIER LE RÔLE D'UN UTILISATEUR :
+            \`\`\`json
+            {
+              "type": "admin_action",
+              "action": "update_role",
+              "payload": {
+                "userId": "L'ID de l'utilisateur concerné",
+                "role": "admin ou user"
+              }
+            }
+            \`\`\`
+
+            Format pour SUPPRIMER UN UTILISATEUR :
+            \`\`\`json
+            {
+              "type": "admin_action",
+              "action": "delete_user",
+              "payload": {
+                "userId": "L'ID de l'utilisateur concerné"
+              }
+            }
+            \`\`\`
             Note: "type" de notification peut être "info", "success", ou "warning".`;
+
+            try {
+                const User = require('../models/User');
+                const allUsers = await User.find().select('name email _id role createdAt');
+                const usersListText = allUsers.map(u => `👤 Nom: ${u.name} | Email: ${u.email} | ID: ${u._id} | Rôle: ${u.role}`).join('\n');
+
+                adminGreeting += `\n\n[LISTE DES UTILISATEURS DU SYSTÈME]
+                Voici la liste de tous les utilisateurs inscrits. Si on te demande de les lister, fais de vrais retours à la ligne clairs avec des émojis pour bien les séparer visuellement :
+${usersListText}`;
+            } catch (err) {
+                console.error("Erreur récupération utilisateurs pour IA", err);
+            }
         }
 
-        // Récupération du nombre réel de cours disponibles
+        // Récupération des cours réels
         const Course = require('../models/Course');
-        const coursesCount = await Course.countDocuments();
+        const courses = await Course.find().select('title');
+        const coursesList = courses.map(c => c.title).join(', ');
 
         // Configuration du système
         const systemInstruction = `Tu es l'Assistant Pédagogique Officiel de la plateforme "Mysterious Classroom", une plateforme interactive d'apprentissage de l'algorithmique et de la programmation.
@@ -124,14 +160,14 @@ const aiChat = async (req, res) => {
         Niveau actuel : ${user.programmingLevel || 'Apprenti'}.
         
         [DONNÉES SYSTÈME ACTUELLES]
-        Il y a exactement ${coursesCount} cours/modules actuellement disponibles dans la base de données de Mysterious Classroom. Si on te demande combien de cours sont disponibles, donne ce chiffre exact.
+        La plateforme propose les cours et parcours suivants : ${coursesList}, ainsi que le "Langage C" et "Algo" qui ont des cartes de cours (Timelines) dédiées. Tu as accès à l'intégralité du contenu pédagogique pour aider.
 
         Règles d'or : 
         1. Ton rôle est d'aider les étudiants à comprendre les cours du site, de corriger leur code et de les encourager.
         2. Adopte un ton bienveillant, clair et direct. BANNIS les excuses inutiles ("je suis désolé", "pardon"). Ne répète jamais "Bonjour".
         3. Fournis des explications directes, avec des snippets de code clairs.
-        4. Évite les gros titres Markdown (#) et l'abus d'astérisques (***).
-        5. Tes réponses doivent être propres et fluides.
+        4. Évite les gros titres Markdown (#) et l'abus d'astérisques (***). Utilise des retours à la ligne réguliers et aérés.
+        5. Tes réponses doivent être propres et fluides. N'hésite pas à utiliser des émojis pertinents avec parcimonie.
         6. NE RÉPÈTE JAMAIS l'historique de la conversation. Réponds UNIQUEMENT au dernier message de l'utilisateur.`;
 
         // RECHERCHE DE CONTEXTE DYNAMIQUE (Tag-free)

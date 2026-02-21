@@ -107,14 +107,31 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
     const executeAdminAction = async (actionData) => {
         try {
-            const endpoint = actionData.action === 'send_email' ? '/admin/send-email' : '/admin/send-notification';
+            let endpoint = '';
+            let method = 'POST';
+            let body = JSON.stringify(actionData.payload);
+
+            if (actionData.action === 'send_email') endpoint = '/admin/send-email';
+            else if (actionData.action === 'send_notification') endpoint = '/admin/send-notification';
+            else if (actionData.action === 'delete_user') {
+                endpoint = `/admin/users/${actionData.payload.userId}`;
+                method = 'DELETE';
+                body = null;
+            } else if (actionData.action === 'update_role') {
+                endpoint = `/admin/users/${actionData.payload.userId}/role`;
+                method = 'PUT';
+                body = JSON.stringify({ role: actionData.payload.role });
+            } else {
+                throw new Error("Action non reconnue.");
+            }
+
             const response = await fetch(`${API_URL}${endpoint}`, {
-                method: 'POST',
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user?.token || localStorage.getItem('token')}`
                 },
-                body: JSON.stringify(actionData.payload)
+                body: body
             });
 
             if (!response.ok) {
@@ -174,6 +191,20 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                         <p><span className="text-slate-500">Action:</span> Envoi de Notification</p>
                                         <p><span className="text-slate-500">Titre:</span> {actionData.payload.title}</p>
                                         <p><span className="text-slate-500">Message:</span> {actionData.payload.message}</p>
+                                    </>
+                                )}
+                                {actionData.action === 'delete_user' && (
+                                    <>
+                                        <p><span className="text-slate-500">Action:</span> ⚠️ SUPPRESSION UTILISATEUR</p>
+                                        <p><span className="text-slate-500">ID Cible:</span> {actionData.payload.userId}</p>
+                                        <p className="text-red-400 font-bold mt-2">Cette action est irréversible.</p>
+                                    </>
+                                )}
+                                {actionData.action === 'update_role' && (
+                                    <>
+                                        <p><span className="text-slate-500">Action:</span> MODIFICATION RÔLE</p>
+                                        <p><span className="text-slate-500">ID Cible:</span> {actionData.payload.userId}</p>
+                                        <p><span className="text-slate-500">Nouveau Rôle:</span> <span className="text-amber-400 font-bold uppercase">{actionData.payload.role}</span></p>
                                     </>
                                 )}
                             </div>
