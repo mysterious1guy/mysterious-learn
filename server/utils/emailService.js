@@ -26,17 +26,19 @@ const sendEmail = async ({ to, subject, html, text }) => {
     // 2. Créer le transporteur à la volée avec l'IP résolue
     const transporter = nodemailer.createTransport({
       host: smtpIp,
-      port: 465,
-      secure: true,
+      port: 587,
+      secure: false, // Port 587 utilise STARTTLS
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
       tls: {
-        // Très important: garder le vrai nom pour la vérification SSL
-        servername: 'smtp.gmail.com'
+        servername: 'smtp.gmail.com',
+        rejectUnauthorized: false // Aide parfois à passer les proxies cloud
       },
-      connectionTimeout: 15000,
+      logger: true,
+      debug: true,
+      connectionTimeout: 20000,
       socketTimeout: 30000,
     });
 
