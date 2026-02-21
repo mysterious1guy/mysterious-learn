@@ -548,13 +548,11 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
               onClick={() => openNode(node)}
               className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
               style={{ left: node.x, top: node.y }}
-              whileHover={node.isUnlocked ? { scale: 1.1 } : {}}
-              whileTap={node.isUnlocked ? { scale: 0.9 } : {}}
             >
               <div className={`
                         relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500
                         ${node.isCompleted ? 'bg-emerald-500/20 border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.4)] text-emerald-400'
-                  : node.isUnlocked ? 'bg-blue-900/40 border-2 border-blue-500 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)] animate-pulse'
+                  : node.isUnlocked ? 'bg-blue-900/40 border-2 border-blue-500 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
                     : 'bg-slate-900/80 border-2 border-slate-800 text-slate-600'}
                     `}>
                 {node.type === 'theory' && <BookOpen size={24} />}
