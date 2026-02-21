@@ -194,6 +194,22 @@ const aiChat = async (req, res) => {
             // C'est du texte brut, c'est parfait
         }
 
+        // Nettoyage des publicités injectées par Pollinations.ai
+        if (typeof finalResponse === 'string') {
+            const adMarkers = [
+                '--- **Support Pollinations.AI:** ---',
+                '**Ad** 🌸 Powered by Pollinations.AI',
+                '**Ad** Powered by Pollinations.AI'
+            ];
+
+            for (const marker of adMarkers) {
+                const adIndex = finalResponse.indexOf(marker);
+                if (adIndex !== -1) {
+                    finalResponse = finalResponse.substring(0, adIndex).trim();
+                }
+            }
+        }
+
         res.json({ response: finalResponse });
 
     } catch (error) {
