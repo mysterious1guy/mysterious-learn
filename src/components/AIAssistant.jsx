@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, BrainCircuit, MessageSquare, ChevronLeft, X } from 'lucide-react';
 import MysteriousCopilot from './MysteriousCopilot';
+import AnimatedAIAvatar from './AnimatedAIAvatar';
 
 const AIAssistant = ({ user, currentView, courseId, API_URL }) => {
     const [isCopilotOpen, setIsCopilotOpen] = useState(false);
@@ -85,11 +86,13 @@ const AIAssistant = ({ user, currentView, courseId, API_URL }) => {
                 animate={{ x: isCopilotOpen ? 100 : 0 }}
                 transition={{ type: 'spring', damping: 20 }}
                 onClick={() => setIsCopilotOpen(true)}
-                className="fixed top-1/2 right-0 -translate-y-1/2 z-[140] bg-slate-900 border border-r-0 border-blue-500/50 hover:bg-slate-800 text-blue-400 p-3 rounded-l-2xl shadow-[-5px_0_20px_rgba(59,130,246,0.2)] flex items-center gap-2 group transition-colors"
+                className="fixed top-1/2 right-0 -translate-y-1/2 z-[140] bg-slate-900 border border-r-0 border-blue-500/50 hover:bg-slate-800 text-blue-400 p-2 rounded-l-2xl shadow-[-5px_0_20px_rgba(59,130,246,0.2)] flex items-center gap-2 group transition-colors"
             >
                 <div className="flex flex-col items-center">
                     <ChevronLeft size={16} className="text-slate-500 group-hover:text-white transition-colors mb-1" />
-                    <BrainCircuit size={24} className="group-hover:scale-110 transition-transform" />
+                    <div className="w-10 h-10 group-hover:scale-110 transition-transform">
+                        <AnimatedAIAvatar isTyping={false} />
+                    </div>
                 </div>
             </motion.button>
 

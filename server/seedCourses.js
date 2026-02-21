@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     const mongoURI = process.env.MONGO_URI;
-    
+
     if (!mongoURI) {
       throw new Error('MONGO_URI non défini dans les variables d\'environnement');
     }
@@ -23,31 +23,31 @@ const connectDB = async () => {
     return true;
   } catch (error) {
     console.error('❌ Erreur de connexion MongoDB:', error.message);
-    
+
     // En cas d'échec, créer des données de démonstration locales
     console.log('📁 Création des données de démonstration en JSON...');
     const fs = require('fs');
     const path = require('path');
-    
+
     // Créer le dossier data s'il n'existe pas
     const dataDir = path.join(__dirname, '../data');
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
     }
-    
+
     // Ajouter des IDs aux cours pour le fallback
     const coursesWithIds = coursesData.map((course, index) => ({
       ...course,
       _id: `course_${index + 1}`,
       id: `course_${index + 1}`
     }));
-    
+
     // Sauvegarder les cours en JSON
     fs.writeFileSync(
       path.join(dataDir, 'courses.json'),
       JSON.stringify(coursesWithIds, null, 2)
     );
-    
+
     console.log('📄 Données sauvegardées dans /data/courses.json');
     console.log('⚠️ L\'application utilisera ce fichier en fallback si MongoDB n\'est pas disponible');
     return false;
@@ -102,50 +102,36 @@ const coursesData = [
     ]
   },
   {
+    id: "c",
     title: "Langage C pour Débutants",
-    description: "Maîtrisez les fondamentaux du langage C, base de nombreux autres langages de programmation",
+    description: "Maîtrisez les fondamentaux du langage C, base de nombreux autres langages de programmation.",
     category: "Programmation",
     level: "Débutant",
     duration: "12h",
     image: "https://images.unsplash.com/photo-1516116216624-98e6e351d85e?w=400",
-    rating: 4.7,
-    students: 1876,
-    tags: ["C", "programmation", "mémoire"],
+    rating: 4.8,
+    students: 1540,
+    tags: ["C", "programmation", "mémoire", "bas niveau"],
     chapters: [
       {
         title: "Premiers Pas en C",
-        description: "Installation et configuration de l'environnement de développement",
+        description: "Installation et premier programme Hello World.",
         order: 1,
         duration: "30min",
-        content: "Le langage C a été créé en 1972 par Dennis Ritchie...",
-        objectives: ["Installer un compilateur", "Écrire votre premier programme"],
+        content: "Le langage C a été créé dans les années 70. Il est le père de nombreux langages modernes...",
+        objectives: ["Comprendre la compilation", "Écrire un Hello World"],
         exercises: [
           {
-            title: "Hello World en C",
-            description: "Écrivez votre premier programme en langage C",
+            title: "Votre premier code",
+            description: "Écrivez un programme qui affiche 'Hello, World!'",
             difficulty: "Facile",
             solution: "#include <stdio.h>\nint main() {\n    printf(\"Hello, World!\\n\");\n    return 0;\n}"
-          }
-        ]
-      },
-      {
-        title: "Types et Variables en C",
-        description: "Comprendre les types de données du langage C et la gestion mémoire",
-        order: 2,
-        duration: "75min",
-        content: "En C, chaque variable a un type qui détermine sa taille en mémoire...",
-        objectives: ["Connaître les types de base", "Déclarer et initialiser des variables"],
-        exercises: [
-          {
-            title: "Calcul d'aire",
-            description: "Calculez l'aire d'un rectangle en utilisant des variables",
-            difficulty: "Facile",
-            solution: "Utiliser des variables float pour longueur et largeur, calculer longueur * largeur"
           }
         ]
       }
     ]
   },
+
   {
     title: "Python Complet",
     description: "De zéro à expert : apprenez Python avec des projets pratiques et des concepts avancés",
@@ -267,7 +253,7 @@ const coursesData = [
 async function seedCourses() {
   try {
     const isConnected = await connectDB();
-    
+
     if (isConnected) {
       // Connexion réussie - utiliser MongoDB
       await Course.deleteMany({});
@@ -280,19 +266,19 @@ async function seedCourses() {
       console.log('📁 Création des données de démonstration en JSON...');
       const fs = require('fs');
       const path = require('path');
-      
+
       // Créer le dossier data s'il n'existe pas
       const dataDir = path.join(__dirname, '../data');
       if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true });
       }
-      
+
       // Sauvegarder les cours en JSON
       fs.writeFileSync(
         path.join(dataDir, 'courses.json'),
         JSON.stringify(coursesData, null, 2)
       );
-      
+
       console.log('📄 Données sauvegardées dans /data/courses.json');
       console.log('⚠️ L\'application utilisera ce fichier en fallback si MongoDB n\'est pas disponible');
     }

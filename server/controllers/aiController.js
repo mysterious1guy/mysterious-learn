@@ -81,7 +81,8 @@ const aiChat = async (req, res) => {
         }
 
         // Récupération du nombre réel de cours disponibles
-        const coursesCount = await CourseKnowledge.countDocuments();
+        const Course = require('../models/Course');
+        const coursesCount = await Course.countDocuments();
 
         // Configuration du système
         const systemInstruction = `Tu es l'Assistant Pédagogique Officiel de la plateforme "Mysterious Classroom", une plateforme interactive d'apprentissage de l'algorithmique et de la programmation.

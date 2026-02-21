@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2 } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
+import AnimatedAIAvatar from './AnimatedAIAvatar';
 
 const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const [messages, setMessages] = useState([
@@ -114,11 +115,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     {/* Header */}
                     <div className="p-4 border-b border-white/10 flex justify-between items-center bg-black/40">
                         <div className="flex items-center gap-3">
-                            <div className="relative">
-                                <BrainCircuit className="text-blue-400" size={24} />
-                                <div className="absolute inset-0 bg-blue-400/20 blur-md rounded-full"></div>
+                            <div className="relative w-12 h-12">
+                                <AnimatedAIAvatar isTyping={isTyping} />
                                 {/* Online indicator pulse */}
-                                <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full border border-black animate-pulse"></div>
+                                <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full border border-black animate-pulse z-10"></div>
                             </div>
                             <span className="font-mono font-bold text-white tracking-widest text-sm">
                                 Mysterious Assistant <span className="text-blue-500 text-xs ml-1">v2.0</span>
@@ -151,8 +151,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                                     </div>
                                                 )
                                             ) : (
-                                                <div className="w-full h-full bg-slate-900 flex items-center justify-center">
-                                                    <BrainCircuit size={14} className="text-blue-400" />
+                                                <div className="w-full h-full">
+                                                    <AnimatedAIAvatar isTyping={false} />
                                                 </div>
                                             )}
                                         </div>

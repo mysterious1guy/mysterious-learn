@@ -55,55 +55,38 @@
     ]
   },
   {
+    "id": "c",
     "title": "Langage C pour Débutants",
-    "description": "Maîtrisez les fondamentaux du langage C, base de nombreux autres langages de programmation",
+    "description": "Maîtrisez les fondamentaux du langage C, base de nombreux autres langages de programmation.",
     "category": "Programmation",
     "level": "Débutant",
     "duration": "12h",
     "image": "https://images.unsplash.com/photo-1516116216624-98e6e351d85e?w=400",
-    "rating": 4.7,
-    "students": 1876,
+    "rating": 4.8,
+    "students": 1540,
     "tags": [
       "C",
       "programmation",
-      "mémoire"
+      "mémoire",
+      "bas niveau"
     ],
     "chapters": [
       {
         "title": "Premiers Pas en C",
-        "description": "Installation et configuration de l'environnement de développement",
+        "description": "Installation et premier programme Hello World.",
         "order": 1,
         "duration": "30min",
-        "content": "Le langage C a été créé en 1972 par Dennis Ritchie...",
+        "content": "Le langage C a été créé dans les années 70. Il est le père de nombreux langages modernes...",
         "objectives": [
-          "Installer un compilateur",
-          "Écrire votre premier programme"
+          "Comprendre la compilation",
+          "Écrire un Hello World"
         ],
         "exercises": [
           {
-            "title": "Hello World en C",
-            "description": "Écrivez votre premier programme en langage C",
+            "title": "Votre premier code",
+            "description": "Écrivez un programme qui affiche 'Hello, World!'",
             "difficulty": "Facile",
             "solution": "#include <stdio.h>\nint main() {\n    printf(\"Hello, World!\\n\");\n    return 0;\n}"
-          }
-        ]
-      },
-      {
-        "title": "Types et Variables en C",
-        "description": "Comprendre les types de données du langage C et la gestion mémoire",
-        "order": 2,
-        "duration": "75min",
-        "content": "En C, chaque variable a un type qui détermine sa taille en mémoire...",
-        "objectives": [
-          "Connaître les types de base",
-          "Déclarer et initialiser des variables"
-        ],
-        "exercises": [
-          {
-            "title": "Calcul d'aire",
-            "description": "Calculez l'aire d'un rectangle en utilisant des variables",
-            "difficulty": "Facile",
-            "solution": "Utiliser des variables float pour longueur et largeur, calculer longueur * largeur"
           }
         ]
       }
