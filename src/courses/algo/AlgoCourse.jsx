@@ -372,39 +372,39 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const activeLesson = activeLessonId ? allLessons.find(l => l.id === activeLessonId) : null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#020617] text-emerald-50 flex flex-col font-sans overflow-hidden pattern-grid-lg">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#020617]/90 to-emerald-900/20 pointer-events-none" />
+    <div className="fixed inset-0 z-50 bg-slate-50 text-slate-900 flex flex-col font-sans overflow-hidden pattern-grid-lg">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-blue-50 pointer-events-none" />
 
-      {/* Glitch Overlay effect */}
-      <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/stardust.png')] opacity-[0.03] pointer-events-none mix-blend-overlay" />
+      {/* Glitch Overlay effect (Lightened) */}
+      <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/stardust.png')] opacity-[0.05] pointer-events-none mix-blend-multiply" />
 
-      {/* Cybernetic HUD Header */}
-      <header className="h-20 bg-black/80 backdrop-blur-md border-b border-emerald-500/20 flex items-center justify-between px-8 shrink-0 z-50">
+      {/* Cybernetic HUD Header -> Light Clean Header */}
+      <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-50 shadow-sm">
         <div className="flex items-center gap-6">
-          <button onClick={onClose} className="p-2 hover:bg-emerald-500/10 rounded-xl text-emerald-500 transition-all border border-transparent hover:border-emerald-500/30">
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl text-slate-500 transition-all border border-transparent hover:border-slate-200">
             <ArrowLeft size={20} />
           </button>
           <div className="flex flex-col">
-            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-white uppercase">
-              <Cpu size={20} className="text-emerald-500" /> SYSTEM.ALGO
+            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-slate-800 uppercase">
+              <Cpu size={20} className="text-blue-600" /> SYSTEM.ALGO
             </h1>
-            <div className="flex items-center gap-2 text-[10px] text-emerald-500/70 font-mono">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="flex items-center gap-2 text-[10px] text-blue-600/70 font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
               STATUS: ONLINE // Programme d'Initiation
             </div>
           </div>
         </div>
 
         <div className="flex flex-col items-end gap-1 font-mono hidden md:flex">
-          <div className="flex gap-2 text-xs font-black tracking-widest text-emerald-500/50">
+          <div className="flex gap-2 text-xs font-black tracking-widest text-slate-400">
             <span>NODES:</span>
-            <span className="text-emerald-400">{completedLessons.length} / {allLessons.length}</span>
+            <span className="text-blue-600">{completedLessons.length} / {allLessons.length}</span>
           </div>
-          <div className="w-40 h-1 bg-emerald-900/30 rounded-full overflow-hidden shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+          <div className="w-40 h-1.5 bg-slate-200 rounded-full overflow-hidden shadow-inner">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${(completedLessons.length / allLessons.length) * 100}%` }}
-              className="h-full bg-emerald-500 shadow-[0_0_10px_#10b981]"
+              className="h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
             />
           </div>
         </div>
@@ -412,21 +412,21 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
 
       {/* Scrollable Map Area - TIMELINE VERTICALE */}
       <div className="flex-1 relative overflow-y-auto custom-scrollbar flex flex-col items-center py-12 px-4 shadow-inner">
-        <div className="w-full max-w-lg relative">
+        <div className="w-full max-w-3xl relative">
 
           {/* Ligne Centrale Globale */}
-          <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1 bg-slate-800 -translate-x-1/2 z-0" />
+          <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1 bg-slate-200 -translate-x-1/2 z-0" />
 
           {courseData.map((module, mIdx) => (
             <div key={module.id} className="mb-16 w-full relative z-10">
               {/* Module Header */}
-              <div className="sticky top-0 z-20 bg-[#020617]/95 backdrop-blur-sm py-4 mb-8 border-y border-slate-800/50 flex justify-center shadow-2xl">
-                <div className="flex items-center gap-4 bg-slate-900/80 border border-emerald-500/20 px-6 py-3 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                  <span className="text-emerald-400 bg-emerald-500/20 p-2 rounded-xl border border-emerald-500/30 shadow-inner">
+              <div className="sticky top-0 z-20 bg-slate-50/95 backdrop-blur-sm py-4 mb-8 border-y border-slate-200 flex justify-center shadow-sm">
+                <div className="flex items-center gap-4 bg-white border border-slate-200 px-6 py-3 rounded-2xl shadow-sm">
+                  <span className="text-blue-600 bg-blue-50 p-2 rounded-xl border border-blue-100 shadow-inner">
                     {module.icon}
                   </span>
                   <div>
-                    <h3 className="font-black text-white text-base md:text-lg tracking-widest uppercase">{module.title}</h3>
+                    <h3 className="font-black text-slate-800 text-base md:text-lg tracking-widest uppercase">{module.title}</h3>
                     <p className="text-xs text-slate-500 font-mono line-clamp-1">{module.description}</p>
                   </div>
                 </div>
@@ -453,7 +453,7 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                     >
                       {/* Ligne Connectrice Horizontale (Desktop uniquement) */}
                       <div className={`hidden md:block absolute top-1/2 w-[calc(50%-4rem)] h-1 -translate-y-1/2 z-0
-                               ${isCompleted ? 'bg-emerald-500' : isUnlocked ? 'bg-blue-500/50' : 'bg-slate-800'}
+                               ${isCompleted ? 'bg-green-500' : isUnlocked ? 'bg-blue-300' : 'bg-slate-200'}
                                ${alignLeft ? 'left-16' : 'right-16'}
                            `} />
 
@@ -463,10 +463,10 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                           onClick={() => openNode(globalNode)}
                           className={`
                                 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300
-                                hover:scale-110 active:scale-95 shadow-xl border-[3px]
-                                ${isCompleted ? 'bg-emerald-900 border-emerald-400 text-emerald-400 shadow-[0_0_30px_rgba(16,212,143,0.4)]'
-                              : isUnlocked ? 'bg-blue-900/80 border-blue-400 text-blue-300 shadow-[0_0_20px_rgba(59,130,246,0.5)]'
-                                : 'bg-slate-900 border-slate-700 text-slate-500 opacity-60'}
+                                hover:scale-110 active:scale-95 shadow-md border-[3px]
+                                ${isCompleted ? 'bg-green-100 border-green-500 text-green-600 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+                              : isUnlocked ? 'bg-blue-50 border-blue-500 text-blue-600 shadow-[0_0_15px_rgba(59,130,246,0.3)]'
+                                : 'bg-slate-100 border-slate-300 text-slate-400 opacity-60'}
                                `}
                         >
                           {lessonObj.type === 'theory' && <BookOpen size={26} />}
@@ -474,8 +474,8 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                           {lessonObj.type === 'practice' && <Code size={26} />}
 
                           {isCompleted && (
-                            <div className="absolute -bottom-1 -right-1 bg-[#020617] rounded-full p-0.5">
-                              <CheckCircle size={18} className="text-emerald-400 fill-emerald-950" />
+                            <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                              <CheckCircle size={18} className="text-green-500 fill-white" />
                             </div>
                           )}
                         </div>
@@ -484,32 +484,32 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                       {/* Carte de Contenu */}
                       <div className={`
                               w-full md:w-[calc(50%-4rem)] pl-24 md:pl-0 
-                              ${alignLeft ? 'md:pr-24 md:text-right' : 'md:pl-24 md:text-left'}
+                              ${alignLeft ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'}
                            `}>
                         <div
                           onClick={() => openNode(globalNode)}
                           className={`
                                   p-4 md:p-5 rounded-2xl cursor-pointer transition-all border
-                                  hover:-translate-y-1 hover:shadow-2xl
-                                  ${isCompleted ? 'bg-emerald-900/20 border-emerald-500/30 hover:border-emerald-400'
-                              : isUnlocked ? 'bg-blue-900/20 border-blue-500/40 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.1)]'
-                                : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'}
+                                  hover:-translate-y-1 hover:shadow-xl
+                                  ${isCompleted ? 'bg-green-50 border-green-200 hover:border-green-400 shadow-sm'
+                              : isUnlocked ? 'bg-white border-blue-200 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.05)]'
+                                : 'bg-slate-50 border-slate-200 hover:border-slate-300 shadow-sm'}
                                  `}
                         >
                           <div className={`flex items-center gap-2 mb-2 ${alignLeft ? 'md:justify-end' : 'md:justify-start'}`}>
                             <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded
-                                      ${lessonObj.type === 'theory' ? 'bg-purple-500/20 text-purple-400' :
-                                lessonObj.type === 'quiz' ? 'bg-yellow-500/20 text-yellow-400' :
-                                  'bg-pink-500/20 text-pink-400'}
+                                      ${lessonObj.type === 'theory' ? 'bg-purple-100 text-purple-700' :
+                                lessonObj.type === 'quiz' ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-pink-100 text-pink-700'}
                                     `}>
                               {lessonObj.type === 'theory' ? 'Théorie' : lessonObj.type === 'quiz' ? 'Quiz' : 'Pratique'}
                             </span>
-                            <span className="text-[10px] text-slate-500 font-mono">{lessonObj.duration}</span>
+                            <span className="text-[10px] text-slate-500 font-mono font-bold">{lessonObj.duration}</span>
                           </div>
-                          <h4 className={`text-base md:text-lg font-bold truncate ${isCompleted ? 'text-emerald-100' : 'text-white'}`}>
+                          <h4 className={`text-base md:text-lg font-bold ${isCompleted ? 'text-green-800' : 'text-slate-800'}`}>
                             {lessonObj.title}
                           </h4>
-                          <p className="text-slate-400 text-xs md:text-sm mt-1 line-clamp-2 md:line-clamp-none">
+                          <p className="text-slate-500 text-sm mt-1 leading-relaxed">
                             {lessonObj.professorSpeech || "Clique pour décrypter cette information."}
                           </p>
                         </div>
@@ -522,10 +522,10 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
           ))}
 
           {/* Fin de Timeline */}
-          <div className="w-full flex justify-center py-10 opacity-50 relative z-20">
-            <div className="bg-slate-900 border border-slate-700 px-6 py-3 rounded-full flex items-center gap-3">
-              <Trophy size={16} className="text-slate-500" />
-              <span className="text-xs font-mono font-black tracking-widest text-slate-500 uppercase">Fin de Ligne</span>
+          <div className="w-full flex justify-center py-10 opacity-70 relative z-20">
+            <div className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm">
+              <Trophy size={16} className="text-slate-400" />
+              <span className="text-xs font-mono font-black tracking-widest text-slate-400 uppercase">Fin de Ligne</span>
             </div>
           </div>
         </div>
@@ -537,13 +537,13 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+            className="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
           >
-            <div className="bg-[#020617] w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-emerald-500/20">
+            <div className="bg-slate-50 w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-slate-200">
               <div className="absolute top-4 right-4 z-50">
                 <button
                   onClick={closeLesson}
-                  className="bg-slate-900 hover:bg-slate-800 text-slate-400 p-2 rounded-full transition-colors border border-slate-700"
+                  className="bg-white hover:bg-slate-100 text-slate-500 p-2 rounded-full transition-colors border border-slate-200 shadow-sm"
                 >
                   <X size={24} />
                 </button>
