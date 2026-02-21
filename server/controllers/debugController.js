@@ -127,8 +127,8 @@ const testEmail = async (req, res) => {
     console.log(`📧 Test email manuel vers: ${to}`);
     await sendEmail({
       to,
-      subject: '🧪 Test Resend API — Mysterious Classroom',
-      text: 'Si tu reçois ce message, la configuration Resend API est correcte !'
+      subject: '🧪 Test Relais Google — Mysterious Classroom',
+      text: 'Si tu reçois ce message, ton relais Google Apps Script fonctionne parfaitement !'
     });
 
     res.json({ success: true, message: `Email de test envoyé à ${to}` });
