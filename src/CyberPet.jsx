@@ -8,7 +8,7 @@ const idleMessages = [
   "Nice code! ✨", "Debugging... 🐛",
 ];
 
-const CyberPet = ({ isPasswordFocused, onSecret }) => {
+const CyberPet = ({ isPasswordFocused, onSecret, user }) => {
   const [mood, setMood] = useState('neutral');
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [idleMessage, setIdleMessage] = useState(null);

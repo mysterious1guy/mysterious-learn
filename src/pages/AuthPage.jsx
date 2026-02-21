@@ -7,7 +7,7 @@ import CyberPet from '../CyberPet';
 const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     const navigate = useNavigate();
     const [authMode, setAuthMode] = useState('signin'); // 'signin', 'signup', 'verification'
-    const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '' });
+    const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
     const [verificationKey, setVerificationKey] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -88,6 +88,10 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
+        if (authMode === 'signup' && formData.password !== formData.confirmPassword) {
+            setAuthError('Les mots de passe ne correspondent pas');
+            return;
+        }
         if (!agreedToPolicy || !agreedToTerms) {
             setAuthError('Veuillez accepter les conditions');
             return;
@@ -166,7 +170,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
             >
                 <div className="bg-slate-900/80 backdrop-blur-2xl border border-slate-800/50 p-8 rounded-[2.5rem] shadow-2xl">
                     <div className="flex justify-center mb-6">
-                        <CyberPet isPasswordFocused={isPasswordFocused} onSecret={petSecret} />
+                        <CyberPet isPasswordFocused={isPasswordFocused} onSecret={petSecret} user={user} />
                     </div>
 
                     <h2 className="text-3xl brand-font text-white text-center mb-8 tracking-tight">
@@ -257,6 +261,20 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
+
+                                    {authMode === 'signup' && (
+                                        <div className="relative">
+                                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                                            <input
+                                                type={showPassword ? 'text' : 'password'}
+                                                placeholder="Confirmer le mot de passe"
+                                                value={formData.confirmPassword}
+                                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                                className="w-full pl-12 pr-5 py-3.5 bg-slate-800/50 border border-slate-700 rounded-2xl text-white outline-none focus:ring-2 focus:ring-blue-500/50"
+                                                required
+                                            />
+                                        </div>
+                                    )}
 
                                     {authMode === 'signup' && (
                                         <div className="flex flex-col gap-2">
