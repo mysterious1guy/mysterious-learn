@@ -3,20 +3,27 @@ const nodemailer = require('nodemailer');
 console.log('📧 Initialisation du service email...');
 console.log('📧 EMAIL_USER configuré:', process.env.EMAIL_USER ? 'OUI' : 'NON');
 
+console.log('📧 Tentative de connexion au SMTP Gmail via Port 465 (SSL)...');
+
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  connectionTimeout: 10000, // 10 secondes
+  greetingTimeout: 10000,
 });
 
 // Vérifier la connexion au démarrage
 transporter.verify((error, success) => {
   if (error) {
-    console.error('❌ Erreur de configuration Email détaillée:', error);
+    console.error('❌ ERREUR SMTP CRITIQUE:', error.message);
+    if (error.code === 'EAUTH') console.log('👉 Le mot de passe d\'application (16 lettres) semble invalide.');
   } else {
-    console.log('📧 Serveur prêt à envoyer des emails (SMTP OK)');
+    console.log('📧 CONNEXION SMTP RÉUSSIE : Le serveur peut envoyer des emails.');
   }
 });
 
