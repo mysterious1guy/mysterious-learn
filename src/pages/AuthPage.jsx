@@ -15,6 +15,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [agreedToPolicy, setAgreedToPolicy] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [emailError, setEmailError] = useState('');
     const [emailExists, setEmailExists] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState(0);
@@ -36,7 +37,13 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
         else if (formData.password.length < 6) setPasswordStrength(1);
         else if (formData.password.length < 8) setPasswordStrength(2);
         else setPasswordStrength(3);
-    }, [formData.password]);
+
+        if (formData.confirmPassword) {
+            setPasswordsMatch(formData.password === formData.confirmPassword);
+        } else {
+            setPasswordsMatch(true);
+        }
+    }, [formData.password, formData.confirmPassword]);
 
     useEffect(() => {
         if (user) navigate('/dashboard');
@@ -88,7 +95,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        if (authMode === 'signup' && formData.password !== formData.confirmPassword) {
+        if (formData.password !== formData.confirmPassword) {
             setAuthError('Les mots de passe ne correspondent pas');
             return;
         }
@@ -294,15 +301,21 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                         </div>
                                     )}
 
-                                    {authError && <p className="text-red-500 text-sm text-center">{authError}</p>}
+                                    {authMode === 'signup' && !passwordsMatch && formData.confirmPassword && (
+                                        <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest pl-2 animate-pulse">
+                                            Les mots de passe ne correspondent pas
+                                        </p>
+                                    )}
+
+                                    {authError && <p className="text-red-500 text-sm text-center font-bold bg-red-500/10 py-2 rounded-xl border border-red-500/20">{authError}</p>}
 
                                     <button
                                         type="submit"
-                                        disabled={isLoading}
-                                        className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
+                                        disabled={isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms || !passwordsMatch || !formData.password || formData.password.length < 6))}
+                                        className={`w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 group ${isLoading || (authMode === 'signup' && (!agreedToPolicy || !agreedToTerms || !passwordsMatch || !formData.password || formData.password.length < 6)) ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
                                     >
                                         {isLoading ? 'Chargement...' : (authMode === 'signin' ? 'Connexion' : 'Créer un compte')}
-                                        <ArrowRight size={18} />
+                                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                     </button>
                                 </motion.div>
                             )}
