@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
-const { sendEmail } = require('../utils/emailService');
+const { sendEmail, sendWelcomeEmail } = require('../utils/emailService');
+const { getVerificationEmail, getEmailChangeEmail, getPasswordResetEmail } = require('../utils/emailTemplates');
 
 // Initialisation du client Google
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -23,23 +24,7 @@ const generateVerificationCode = () => {
 
 // Envoyer email de vérification
 const sendVerificationEmail = async (email, name, code) => {
-  const html = `
-    <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; padding: 40px; border-radius: 16px;">
-      <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="font-size: 28px; background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">MYSTERIOUS CLASSROOM</h1>
-      </div>
-      <h2 style="color: #fff; font-size: 22px;">Bonjour ${name} ! 👋</h2>
-      <p style="color: #94a3b8; line-height: 1.8;">Bienvenue dans l'univers Mysterious Classroom. Pour activer ton compte, entre ce code de vérification :</p>
-      <div style="text-align: center; margin: 30px 0;">
-        <div style="display: inline-block; padding: 20px 40px; background: linear-gradient(135deg, #2563eb, #7c3aed); border-radius: 12px; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: white;">
-          ${code}
-        </div>
-      </div>
-      <p style="color: #64748b; font-size: 13px; text-align: center;">Ce code expire dans 30 minutes.</p>
-      <hr style="border: none; border-top: 1px solid #334155; margin: 30px 0;" />
-      <p style="color: #475569; font-size: 12px; text-align: center;">Si tu n'as pas créé de compte, ignore cet email.</p>
-    </div>
-  `;
+  const html = getVerificationEmail(name, code);
   await sendEmail({
     to: email,
     subject: 'Vérifie ton email — Mysterious Classroom',
@@ -49,22 +34,7 @@ const sendVerificationEmail = async (email, name, code) => {
 
 // Envoyer code de changement d'email
 const sendEmailChangeCode = async (email, name, code) => {
-  const html = `
-    <div style="font-family: 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; padding: 40px; border-radius: 16px;">
-      <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="font-size: 28px; background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">MYSTERIOUS CLASSROOM</h1>
-      </div>
-      <h2 style="color: #fff; font-size: 22px;">Confirmation de changement d'email 👋</h2>
-      <p style="color: #94a3b8; line-height: 1.8;">Bonjour ${name}, vous avez demandé à associer cet email à votre compte Mysterious Classroom.</p>
-      <p style="color: #94a3b8; line-height: 1.8;">Veuillez entrer ce code de confirmation :</p>
-      <div style="text-align: center; margin: 30px 0;">
-        <div style="display: inline-block; padding: 20px 40px; background: linear-gradient(135deg, #2563eb, #7c3aed); border-radius: 12px; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: white;">
-          ${code}
-        </div>
-      </div>
-      <p style="color: #64748b; font-size: 13px; text-align: center;">Ce code expire dans 15 minutes.</p>
-    </div>
-  `;
+  const html = getEmailChangeEmail(name, code);
   await sendEmail({
     to: email,
     subject: "Code de confirmation — Changement d'email",
@@ -165,6 +135,11 @@ const verifyEmail = async (req, res) => {
 
     // 4. Supprimer l'inscription temporaire
     await PendingUser.deleteOne({ _id: pendingUser._id });
+
+    // 5. Envoi du mail de félicitations (Bienvenue)
+    sendWelcomeEmail(newUser.email, newUser.firstName).catch(err => {
+      console.error('❌ Échec envoi mail de bienvenue:', err);
+    });
 
     res.json({
       _id: newUser._id,
@@ -551,14 +526,13 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-    const message = `
-      <h1>Réinitialisation de mot de passe</h1>
-      <p>Clique sur ce lien pour réinitialiser ton mot de passe :</p>
-      <a href="${resetUrl}" target="_blank">${resetUrl}</a>
-      <p>Ce lien expire dans 1 heure.</p>
-    `;
+    const html = getPasswordResetEmail(user.firstName || user.name, resetUrl);
 
-    await sendMail(email, 'Réinitialisation de mot de passe', message);
+    await sendEmail({
+      to: email,
+      subject: 'Réinitialisation de ton mot de passe — Mysterious Classroom',
+      html
+    });
     res.json({ message: 'Email envoyé' });
   } catch (err) {
     console.error(err);

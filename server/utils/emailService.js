@@ -1,3 +1,5 @@
+const { getWelcomeEmail } = require('./emailTemplates');
+
 /**
  * Envoie un email via le relais Google Apps Script (100% Gratuit)
  */
@@ -29,7 +31,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
       throw new Error(result.error);
     }
 
-    console.log('✅ Email envoyé avec succès via le relais Google');
+    console.log(`✅ Email [${subject}] envoyé avec succès à ${to}`);
     return result;
   } catch (error) {
     console.error('❌ Erreur d\'envoi d\'email via relais:', error.message);
@@ -37,4 +39,16 @@ const sendEmail = async ({ to, subject, html, text }) => {
   }
 };
 
-module.exports = { sendEmail };
+/**
+ * Envoi spécifique du mail de Bienvenue
+ */
+const sendWelcomeEmail = async (email, name) => {
+  const html = getWelcomeEmail(name);
+  return sendEmail({
+    to: email,
+    subject: 'Bienvenue dans Mysterious Classroom ! 🚀',
+    html
+  });
+};
+
+module.exports = { sendEmail, sendWelcomeEmail };
