@@ -511,10 +511,13 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
       </header>
 
       {/* Scrollable Map Area */}
-      <div className="flex-1 relative overflow-y-auto overflow-x-hidden custom-scrollbar touch-pan-y">
+      <div
+        className="flex-1 relative overflow-y-auto overflow-x-hidden custom-scrollbar touch-pan-y"
+        style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}
+      >
         <div
-          className="relative w-full"
-          style={{ width: canvasWidth, height: canvasHeight }}
+          className="relative w-full overflow-x-hidden"
+          style={{ height: canvasHeight }}
         >
           {/* SVG Connecting Lines Layer */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">

@@ -24,8 +24,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         const handleSuggest = (e) => {
             if (e.detail?.text) {
                 setMessages(prev => [...prev, { role: 'system', content: e.detail.text, type: 'suggestion' }]);
+                // Ensure suggestions also murmur if sidebar is closed
                 if (!isOpen) {
-                    // Optional: trigger a notification dot on the collapsed sidebar
+                    window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+                        detail: { text: e.detail.text }
+                    }));
                 }
             }
         };
@@ -67,7 +70,13 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 throw new Error(data.message || data.error || `Erreur serveur : ${response.status}`);
             }
 
-            setMessages(prev => [...prev, { role: 'system', content: data.response || "Désolé, j'ai eu un trou de mémoire." }]);
+            const aiResponse = data.response || "Désolé, j'ai eu un trou de mémoire.";
+            setMessages(prev => [...prev, { role: 'system', content: aiResponse }]);
+
+            // Dispatch murmur for real-time visibility outside the sidebar
+            window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+                detail: { text: aiResponse }
+            }));
         } catch (error) {
             console.error('Erreur Copilot:', error);
             const errorMsg = error.name === 'TypeError' && error.message === 'Failed to fetch'

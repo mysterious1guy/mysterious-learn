@@ -6,30 +6,57 @@ import MysteriousCopilot from './MysteriousCopilot';
 const AIAssistant = ({ user, currentView, courseId, API_URL }) => {
     const [isCopilotOpen, setIsCopilotOpen] = useState(false);
     const [theaterContent, setTheaterContent] = useState(null);
+    const [currentMurmur, setCurrentMurmur] = useState(null);
 
-    // Handle external events to open theater mode
+    // Handle external events
     useEffect(() => {
-        const handleTheaterOpen = (e) => {
-            if (e.detail) {
-                setTheaterContent(e.detail);
-            }
-        };
+        const handleTheaterOpen = (e) => e.detail && setTheaterContent(e.detail);
+        const handleTheaterClose = () => setTheaterContent(null);
 
-        const handleTheaterClose = () => {
-            setTheaterContent(null);
+        const handleMurmur = (e) => {
+            if (e.detail?.text) {
+                setCurrentMurmur(e.detail.text);
+                // Auto-clear after 6 seconds
+                const timer = setTimeout(() => setCurrentMurmur(null), 6000);
+                return () => clearTimeout(timer);
+            }
         };
 
         window.addEventListener('mysterious-ai-theater-open', handleTheaterOpen);
         window.addEventListener('mysterious-ai-theater-close', handleTheaterClose);
+        window.addEventListener('mysterious-ai-murmur', handleMurmur);
 
         return () => {
             window.removeEventListener('mysterious-ai-theater-open', handleTheaterOpen);
             window.removeEventListener('mysterious-ai-theater-close', handleTheaterClose);
+            window.removeEventListener('mysterious-ai-murmur', handleMurmur);
         };
     }, []);
 
     return (
         <>
+            {/* AI Murmur Bubble (Floating near Brain) */}
+            <AnimatePresence>
+                {currentMurmur && !isCopilotOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: 20, scale: 0.8 }}
+                        className="fixed top-[45%] right-20 z-[140] max-w-[250px] bg-slate-900/90 border border-blue-500/50 backdrop-blur-xl p-4 rounded-2xl rounded-tr-none shadow-2xl pointer-events-none"
+                    >
+                        <div className="flex items-center gap-2 mb-2 opacity-50">
+                            <Sparkles size={12} className="text-blue-400" />
+                            <span className="text-[10px] font-black font-mono tracking-widest text-blue-400">MURMURE OMNIPRÉSENT</span>
+                        </div>
+                        <p className="text-xs font-bold text-slate-200 leading-relaxed italic">
+                            "{currentMurmur}"
+                        </p>
+                        {/* Little peak pointing to the brain button */}
+                        <div className="absolute top-4 -right-2 w-4 h-4 bg-slate-900 border-r border-t border-blue-500/50 rotate-45" />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Copilot Toggle Button (Fixed on the right edge) */}
             <motion.button
                 initial={{ x: 100 }}
