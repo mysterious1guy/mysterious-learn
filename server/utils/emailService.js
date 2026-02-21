@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
 
 console.log('📧 Initialisation du service email...');
 const emailUser = (process.env.EMAIL_USER || '').trim();
@@ -7,23 +8,39 @@ const emailPass = (process.env.EMAIL_PASS || '').trim();
 console.log('📧 EMAIL_USER:', emailUser ? 'OK' : 'MANQUANT');
 console.log('📧 Longueur EMAIL_PASS:', emailPass.length, 'caractères');
 
-if (emailPass.length !== 16) {
-  console.warn('⚠️ ATTENTION : Un mot de passe d\'application Google doit faire exactement 16 caractères.');
-}
-
-// Configuration standard mais robuste pour Render
+// Configuration forcée IPv4 + Port 465 (le plus stable sur Render Free)
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: emailUser,
     pass: emailPass,
   },
-  // Augmentation des timeouts pour le réseau instable de Render
-  connectionTimeout: 60000, // 60 secondes
-  greetingTimeout: 60000,
-  socketTimeout: 60000,
+  // On force l'IPv4 au niveau du transporteur
+  family: 4,
+  // On fournit un lookup qui ne renvoie que de l'IPv4
+  lookup: (hostname, options, callback) => {
+    dns.lookup(hostname, { family: 4 }, (err, address) => {
+      if (err) return callback(err);
+      console.log(`📡 SMTP Lookup: ${hostname} -> ${address}`);
+      callback(null, address, 4);
+    });
+  },
+  connectionTimeout: 40000, // 40s
+  greetingTimeout: 40000,
+  socketTimeout: 40000,
   debug: true,
   logger: true
+});
+
+// Vérification immédiate au démarrage
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('❌ ÉCHEC CONNEXION SMTP AU DÉMARRAGE:', error.message);
+  } else {
+    console.log('✅ CONNEXION SMTP ÉTABLIE AVEC SUCCÈS');
+  }
 });
 
 /**
