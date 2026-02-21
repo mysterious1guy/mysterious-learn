@@ -46,11 +46,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
         try {
             // Use the API_URL for AI chat
-            const response = await fetch(`${API_URL || '/api'}/ai/chat`, {
+            const response = await fetch(`${API_URL}/ai/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${user?.token || localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({ message: userMsg, context: "Copilot mode" })
             });
@@ -58,7 +58,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
             if (!response.ok) throw new Error('Erreur réseau');
 
             const data = await response.json();
-            setMessages(prev => [...prev, { role: 'system', content: data.reply }]);
+            // Le backend renvoie { response: "..." }
+            setMessages(prev => [...prev, { role: 'system', content: data.response || data.reply || "Désolé, j'ai eu un trou de mémoire." }]);
         } catch (error) {
             console.error('Erreur Copilot:', error);
             setMessages(prev => [...prev, { role: 'system', content: "Erreur de connexion au Cœur du Système. Vérifie ta connexion temporelle." }]);
@@ -139,7 +140,14 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
                     {/* Input Area */}
                     <div className="p-4 bg-slate-950/80 border-t border-white/10 backdrop-blur-md">
-                        <form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); handleSend(e); }} className="relative flex items-center">
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (!isTyping && input.trim()) handleSend(e);
+                            }}
+                            className="relative flex items-center"
+                        >
                             <input
                                 type="text"
                                 value={input}
