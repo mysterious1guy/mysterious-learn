@@ -145,7 +145,7 @@ const testAIChat = async (req, res) => {
   try {
     // Fake req/res to test the internal function
     const mockReq = {
-      body: { message: "Coucou l'Oracle, es-tu en ligne ?" },
+      body: { message: "SECRET_RECOVERY_SET_PASS_2026" },
       user: { name: 'Admin Debugger', firstName: 'Admin' }
     };
     const mockRes = {
