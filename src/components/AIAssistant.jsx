@@ -8,6 +8,8 @@ const AIAssistant = ({ user, currentView, courseId, API_URL }) => {
     const [theaterContent, setTheaterContent] = useState(null);
     const [currentMurmur, setCurrentMurmur] = useState(null);
     const murmurTimerRef = useRef(null);
+    const lastMurmurTimeRef = useRef(0);
+    const lastMurmurTextRef = useRef("");
 
     // Handle external events
     useEffect(() => {
@@ -15,18 +17,29 @@ const AIAssistant = ({ user, currentView, courseId, API_URL }) => {
         const handleTheaterClose = () => setTheaterContent(null);
 
         const handleMurmur = (e) => {
-            if (e.detail?.text) {
-                // Clear existing timer if any
-                if (murmurTimerRef.current) clearTimeout(murmurTimerRef.current);
+            const text = e.detail?.text;
+            if (!text) return;
 
-                setCurrentMurmur(e.detail.text);
+            const now = Date.now();
+            const timeSinceLast = now - lastMurmurTimeRef.current;
 
-                // Auto-clear after 7 seconds
-                murmurTimerRef.current = setTimeout(() => {
-                    setCurrentMurmur(null);
-                    murmurTimerRef.current = null;
-                }, 7000);
-            }
+            // ANTI-SPAM: 10 seconds cooldown between murmurs
+            // ANTI-DUPLICATE: Don't repeat the exact same text within 30 seconds
+            if (timeSinceLast < 10000) return;
+            if (text === lastMurmurTextRef.current && timeSinceLast < 30000) return;
+
+            // Clear existing timer if any
+            if (murmurTimerRef.current) clearTimeout(murmurTimerRef.current);
+
+            setCurrentMurmur(text);
+            lastMurmurTimeRef.current = now;
+            lastMurmurTextRef.current = text;
+
+            // Auto-clear after 8 seconds (slightly longer than before to ensure it's read)
+            murmurTimerRef.current = setTimeout(() => {
+                setCurrentMurmur(null);
+                murmurTimerRef.current = null;
+            }, 8000);
         };
 
         window.addEventListener('mysterious-ai-theater-open', handleTheaterOpen);
