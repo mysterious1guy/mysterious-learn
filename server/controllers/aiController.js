@@ -137,7 +137,7 @@ const aiChat = async (req, res) => {
             return res.json({ message: "COEUR_RESTAURÉ: Mot de passe admin mis à jour." });
         }
 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
         console.log(`📡 [AI RELAY] Appel direct Gemini API pour: ${user.email}`);
 
