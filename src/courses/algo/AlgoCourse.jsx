@@ -353,7 +353,7 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
 
   const COLUMNS = isMobile ? 1 : (isTablet ? 2 : 3);
   const X_SPACING = isMobile ? 0 : (isTablet ? 300 : Math.max(300, windowWidth / (COLUMNS + 1)));
-  const Y_SPACING = isMobile ? 180 : 200;
+  const Y_SPACING = isMobile ? 160 : 200;
 
   const nodes = allLessons.map((lesson, index) => {
     const row = Math.floor(index / COLUMNS);
@@ -511,9 +511,9 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
       </header>
 
       {/* Scrollable Map Area */}
-      <div className="flex-1 relative overflow-auto custom-scrollbar cursor-grab active:cursor-grabbing">
+      <div className="flex-1 relative overflow-y-auto overflow-x-hidden custom-scrollbar touch-pan-y">
         <div
-          className="relative min-w-max min-h-max"
+          className="relative w-full"
           style={{ width: canvasWidth, height: canvasHeight }}
         >
           {/* SVG Connecting Lines Layer */}

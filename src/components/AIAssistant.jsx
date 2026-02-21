@@ -59,21 +59,21 @@ const AIAssistant = ({ user, currentView, courseId, API_URL }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[160] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md overflow-y-auto pt-24"
+                        className="fixed inset-0 z-[160] flex items-center justify-center p-2 sm:p-6 bg-black/90 sm:bg-black/80 backdrop-blur-md overflow-hidden pt-16 sm:pt-24"
                     >
                         <motion.div
-                            initial={{ scale: 0.8, y: 50, opacity: 0 }}
+                            initial={{ scale: 0.9, y: 30, opacity: 0 }}
                             animate={{ scale: 1, y: 0, opacity: 1 }}
-                            exit={{ scale: 0.8, y: 50, opacity: 0 }}
-                            className="bg-gray-900/90 border border-blue-500/30 w-full max-w-5xl rounded-[3rem] shadow-[0_0_100px_rgba(59,130,246,0.3)] overflow-hidden relative"
+                            exit={{ scale: 0.9, y: 30, opacity: 0 }}
+                            className="bg-gray-900 border border-blue-500/30 w-full max-w-5xl rounded-3xl sm:rounded-[3rem] shadow-[0_0_100px_rgba(59,130,246,0.2)] overflow-hidden relative flex flex-col max-h-[92vh] sm:max-h-[85vh]"
                         >
-                            <button onClick={() => setTheaterContent(null)} className="absolute top-8 right-8 p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white/50 hover:text-white z-20">
-                                <X size={24} />
+                            <button onClick={() => setTheaterContent(null)} className="absolute top-4 right-4 sm:top-8 sm:right-8 p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white/50 hover:text-white z-20 transition-colors">
+                                <X size={20} className="sm:w-6 sm:h-6" />
                             </button>
-                            <div className="p-6 md:p-10 border-b border-white/5 bg-gradient-to-r from-blue-600/10 to-transparent">
-                                <h2 className="text-2xl md:text-4xl font-black text-white">{theaterContent.title}</h2>
+                            <div className="p-6 sm:p-10 border-b border-white/5 bg-gradient-to-r from-blue-600/10 to-transparent shrink-0">
+                                <h2 className="text-xl sm:text-4xl font-black text-white pr-10">{theaterContent.title}</h2>
                             </div>
-                            <div className="p-4 md:p-10 max-h-[70vh] overflow-y-auto w-full prose prose-invert max-w-none text-white">
+                            <div className="flex-1 p-4 sm:p-10 overflow-y-auto w-full prose prose-invert max-w-none text-white custom-scrollbar scroll-smooth">
                                 {theaterContent.node}
                             </div>
                         </motion.div>
