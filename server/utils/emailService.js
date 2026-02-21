@@ -17,10 +17,12 @@ const sendEmail = async ({ to, subject, html, text }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         to: to,
-        subject: subject,
+        subject: subject.startsWith('[Mysterious') ? subject : `[Mysterious Classroom] ${subject}`,
         text: text || '',
         html: html,
-        name: "Mysterious Classroom (no-reply)", // Identité Branding forcée
+        name: "Mysterious Classroom", // Identité Branding forcée (pour MailApp options)
+        senderName: "Mysterious Classroom",
+        from: "Mysterious Classroom <mysteriousclassroom@gmail.com>",
         key: 'mysterious_secret_key_2026'
       })
     });

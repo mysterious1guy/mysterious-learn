@@ -68,10 +68,13 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 },
                 body: JSON.stringify({
                     message: userMsg,
-                    history: messages.filter(m => m.role !== 'system').map(m => ({
-                        role: m.role,
-                        text: m.content
-                    }))
+                    history: messages
+                        // Exclude the very first hardcoded initialization greeting to save tokens
+                        .filter((m, idx) => !(idx === 0 && m.role === 'system'))
+                        .map(m => ({
+                            role: m.role === 'system' ? 'assistant' : m.role,
+                            text: m.content
+                        }))
                 })
             });
 

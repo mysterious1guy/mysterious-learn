@@ -40,7 +40,7 @@ const courseSchema = new mongoose.Schema({
   },
   language: {
     type: String,
-    default: 'Français'
+    default: 'french'
   },
   isFree: {
     type: Boolean,
