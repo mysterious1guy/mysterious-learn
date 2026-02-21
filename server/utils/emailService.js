@@ -11,7 +11,7 @@ console.log('📧 RESEND_API_KEY configuré:', process.env.RESEND_API_KEY ? 'OUI
 const sendEmail = async ({ to, subject, html, text }) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'Mysterious Classroom <onboarding@resend.dev>', // Email par défaut de Resend pour le test
+      from: 'Mysterious Classroom <no-reply@mysterious-classroom.com>',
       to: [to],
       subject: subject,
       text: text || '',
