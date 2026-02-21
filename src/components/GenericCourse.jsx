@@ -110,23 +110,31 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                             </div>
 
                             {/* Zone de validation */}
-                            <div className="flex items-center justify-between pt-8 border-t border-gray-800 mt-12">
-                                <button
-                                    disabled={!activeLesson || course.lessons.indexOf(activeLesson) === 0}
-                                    onClick={() => {
-                                        const currentIndex = course.lessons.indexOf(activeLesson);
-                                        if (currentIndex > 0) setActiveLesson(course.lessons[currentIndex - 1]);
-                                    }}
-                                    className={`px-6 py-3 rounded-xl border border-gray-700 text-white/80 hover:text-white hover:border-gray-500 transition ${(!activeLesson || course.lessons.indexOf(activeLesson) === 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                >
-                                    <ChevronRight className="rotate-180 inline mr-2" size={16} />
-                                    Précédent
-                                </button>
+                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-gray-800 mt-12">
+                                <div className="flex items-center gap-4 w-full sm:w-auto">
+                                    <button
+                                        disabled={!activeLesson || course.lessons.indexOf(activeLesson) === 0}
+                                        onClick={() => {
+                                            const currentIndex = course.lessons.indexOf(activeLesson);
+                                            if (currentIndex > 0) setActiveLesson(course.lessons[currentIndex - 1]);
+                                        }}
+                                        className={`px-6 py-3 rounded-xl border border-gray-700 text-white/80 hover:text-white hover:border-gray-500 transition ${(!activeLesson || course.lessons.indexOf(activeLesson) === 0) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    >
+                                        <ChevronRight className="rotate-180 inline mr-2" size={16} />
+                                        Précédent
+                                    </button>
+                                    <button
+                                        onClick={onClose}
+                                        className="px-6 py-3 rounded-xl border border-gray-700 text-white/80 hover:text-white hover:border-gray-500 transition"
+                                    >
+                                        Quitter
+                                    </button>
+                                </div>
 
                                 <button
                                     onClick={handleFinishLesson}
                                     disabled={!isAdmin && isLessonCompleted(activeLesson.id)}
-                                    className={`px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition ${(!isAdmin && isLessonCompleted(activeLesson.id))
+                                    className={`px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition w-full sm:w-auto ${(!isAdmin && isLessonCompleted(activeLesson.id))
                                         ? 'bg-green-600/20 text-green-400 cursor-default'
                                         : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg hover:shadow-blue-500/25'
                                         }`}

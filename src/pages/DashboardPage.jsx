@@ -63,7 +63,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
     })).filter(category => category.items.length > 0);
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-900 via-[#0a0f1e] to-black pb-20">
+        <div className="min-h-screen transition-colors duration-500 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 dark:from-gray-900 dark:via-[#0a0f1e] dark:to-black pb-20">
             {/* Header */}
             <div className="pt-24 pb-12 px-6 lg:px-12 relative overflow-hidden">
                 {/* Background Blobs */}
@@ -105,7 +105,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                             👋
                         </motion.div>
                     </div>
-                    <p className="text-gray-400 text-lg font-medium opacity-80">
+                    <p className="text-slate-600 dark:text-gray-400 text-lg font-medium opacity-80">
                         Prêt à continuer ton apprentissage mystérieux ?
                     </p>
                 </motion.div>
@@ -122,7 +122,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                         className="pl-6 lg:pl-12"
                     >
                         <div className="flex items-center gap-3 mb-8">
-                            <h2 className="text-xl md:text-2xl brand-font-secondary text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40 uppercase tracking-[0.2em] font-black">{category.category}</h2>
+                            <h2 className="text-xl md:text-2xl brand-font-secondary text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-500 dark:from-white dark:to-white/40 uppercase tracking-[0.2em] font-black">{category.category}</h2>
                             <div className="h-px flex-1 bg-gradient-to-r from-blue-500/20 to-transparent ml-6" />
                         </div>
 
@@ -133,11 +133,11 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                                         key={course.id}
                                         whileHover={{ scale: 1.02, y: -5 }}
                                         onClick={() => navigate(`/course/${course.id}`)}
-                                        className="w-[280px] md:w-[350px] flex-shrink-0 bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer group"
+                                        className="w-[280px] md:w-[350px] flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer group"
                                     >
                                         {/* Image du cours */}
                                         <div className="h-40 relative overflow-hidden">
-                                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent z-10" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
                                             <img
                                                 src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.id}`}
                                                 alt={course.name}
@@ -171,10 +171,10 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
 
                                         {/* Contenu */}
                                         <div className="p-5">
-                                            <h3 className="text-xl font-black text-white mb-2 line-clamp-1 group-hover:text-blue-400 transition-colors tracking-tight">
+                                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight">
                                                 {course.name}
                                             </h3>
-                                            <p className="text-gray-400 text-xs font-medium mb-5 line-clamp-2 min-h-[32px] leading-relaxed">
+                                            <p className="text-slate-600 dark:text-gray-400 text-xs font-medium mb-5 line-clamp-2 min-h-[32px] leading-relaxed">
                                                 {course.desc}
                                             </p>
 
@@ -209,7 +209,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <button className="w-full py-3 rounded-xl bg-white/5 text-blue-400 text-xs font-black uppercase tracking-widest border border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 hover:shadow-[0_10px_20px_rgba(37,99,235,0.2)] transition-all duration-300 flex items-center justify-center gap-2">
+                                                <button className="w-full py-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 hover:shadow-[0_10px_20px_rgba(37,99,235,0.2)] transition-all duration-300 flex items-center justify-center gap-2">
                                                     Commencer
                                                     <ChevronRight size={14} />
                                                 </button>

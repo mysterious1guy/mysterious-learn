@@ -9,7 +9,20 @@ require('dotenv').config();
 const connectDB = require('./config/db');
 
 // 2. Connexion à MongoDB & Services
-connectDB();
+const Course = require('./models/Course');
+const seedCourses = require('./seedCourses');
+
+connectDB().then(async () => {
+  try {
+    const count = await Course.countDocuments();
+    if (count === 0) {
+      console.log('⚙️ Base de données vide détectée. Lancement de l\'auto-seeding...');
+      await seedCourses(false);
+    }
+  } catch (e) {
+    console.error('❌ Erreur lors de l\'auto-seeding:', e.message);
+  }
+});
 
 const app = express();
 

@@ -491,8 +491,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                       editForm.programmingLevel === 'advanced' ? 'Avancé' : 'Expert'}
                 </p>
                 <span className={`w-2 h-2 rounded-full ${editForm.programmingLevel === 'beginner' ? 'bg-blue-400' :
-                    editForm.programmingLevel === 'intermediate' ? 'bg-yellow-400' :
-                      editForm.programmingLevel === 'advanced' ? 'bg-purple-400' : 'bg-emerald-400'
+                  editForm.programmingLevel === 'intermediate' ? 'bg-yellow-400' :
+                    editForm.programmingLevel === 'advanced' ? 'bg-purple-400' : 'bg-emerald-400'
                   }`}></span>
               </div>
             )}
@@ -642,48 +642,80 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
   const renderPreferencesTab = () => (
     <div className="space-y-6">
-      <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-        <h4 className="text-lg font-semibold mb-4">Préférences</h4>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-white">Notifications par email</p>
-              <p className="text-sm text-gray-400">Recevoir des emails de notification</p>
+      <div className="bg-gray-900/50 border border-gray-700 rounded-[2.5rem] p-8 space-y-8">
+        <h4 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
+          <Settings size={20} className="text-blue-500" /> Préférences du Compte
+        </h4>
+
+        <div className="space-y-6">
+          <div
+            onClick={async () => {
+              const val = !(user?.preferences?.notifications ?? true);
+              try {
+                const res = await fetch(`${API_URL}/auth/profile`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                  },
+                  body: JSON.stringify({ preferences: { ...user.preferences, notifications: val } })
+                });
+                if (res.ok) {
+                  const updated = await res.json();
+                  onUpdateUser(updated);
+                  setToast({ message: 'Préférences mises à jour', type: 'success' });
+                }
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            className="flex items-center justify-between p-5 bg-gray-800/50 rounded-2xl border border-gray-700/50 cursor-pointer hover:border-blue-500/30 transition-colors"
+          >
+            <div className="space-y-1">
+              <p className="text-sm font-bold text-white">Notifications par email</p>
+              <p className="text-xs text-gray-400">Recevoir des emails de notification importants.</p>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                className="sr-only peer"
-                checked={user?.preferences?.notifications ?? true}
-                onChange={async (e) => {
-                  const val = e.target.checked;
-                  try {
-                    const res = await fetch(`${API_URL}/auth/profile`, {
-                      method: 'PUT',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${user.token}`
-                      },
-                      body: JSON.stringify({ preferences: { ...user.preferences, notifications: val } })
-                    });
-                    if (res.ok) {
-                      const updated = await res.json();
-                      onUpdateUser(updated);
-                      setToast({ message: 'Préférences mises à jour', type: 'success' });
-                    }
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }}
-              />
-              <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-            </label>
+            <div className={`w-12 h-6 rounded-full relative transition-all ${(user?.preferences?.notifications ?? true) ? 'bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'bg-gray-700'}`}>
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${(user?.preferences?.notifications ?? true) ? 'right-1' : 'left-1'}`} />
+            </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-white">Langue</p>
-              <p className="text-sm text-gray-400">Choisir la langue de l'interface</p>
+          <div
+            onClick={async () => {
+              const val = !(user?.preferences?.soundEnabled ?? true);
+              try {
+                const res = await fetch(`${API_URL}/auth/profile`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                  },
+                  body: JSON.stringify({ preferences: { ...user.preferences, soundEnabled: val } })
+                });
+                if (res.ok) {
+                  const updated = await res.json();
+                  onUpdateUser(updated);
+                  setToast({ message: 'Préférences sonores mises à jour', type: 'success' });
+                }
+              } catch (err) {
+                console.error(err);
+              }
+            }}
+            className="flex items-center justify-between p-5 bg-gray-800/50 rounded-2xl border border-gray-700/50 cursor-pointer hover:border-blue-500/30 transition-colors"
+          >
+            <div className="space-y-1">
+              <p className="text-sm font-bold text-white">Effets Sonores (CyberPet)</p>
+              <p className="text-xs text-gray-400">Activer ou désactiver les bruitages au survol.</p>
+            </div>
+            <div className={`w-12 h-6 rounded-full relative transition-all ${(user?.preferences?.soundEnabled ?? true) ? 'bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'bg-gray-700'}`}>
+              <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${(user?.preferences?.soundEnabled ?? true) ? 'right-1' : 'left-1'}`} />
+            </div>
+          </div>
+
+          <div className="p-5 bg-gray-800/50 rounded-2xl border border-gray-700/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <p className="text-sm font-bold text-white">Langue de l'interface</p>
+              <p className="text-xs text-gray-400">Choisir la langue d'affichage du site.</p>
             </div>
             <select
               value={user?.preferences?.language || 'fr'}
@@ -707,43 +739,53 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                   console.error(err);
                 }
               }}
-              className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+              className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-sm font-bold text-white focus:border-blue-500 outline-none transition-colors"
             >
-              <option value="fr">Français</option>
-              <option value="en">English</option>
-              <option value="es">Español</option>
+              <option value="fr">Français 🇫🇷</option>
+              <option value="en">English 🇬🇧</option>
+              <option value="es">Español 🇪🇸</option>
             </select>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-white">Thème</p>
-              <p className="text-sm text-gray-400">Apparence de l'interface</p>
+          <div className="p-5 bg-gray-800/50 rounded-2xl border border-gray-700/50">
+            <div className="space-y-1 mb-4">
+              <p className="text-sm font-bold text-white">Thème Dynamique</p>
+              <p className="text-xs text-gray-400">Gérer l'apparence visuelle pour plus de confort.</p>
             </div>
-            <select
-              value={theme}
-              onChange={async (e) => {
-                const val = e.target.value;
-                setTheme(val);
-                try {
-                  await fetch(`${API_URL}/auth/profile`, {
-                    method: 'PUT',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${user.token}`
-                    },
-                    body: JSON.stringify({ preferences: { ...user.preferences, theme: val } })
-                  });
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-              className="bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
-            >
-              <option value="dark">Sombre</option>
-              <option value="light">Clair</option>
-            </select>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={async () => {
+                  setTheme('light');
+                  try {
+                    await fetch(`${API_URL}/auth/profile`, {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}` },
+                      body: JSON.stringify({ preferences: { ...user.preferences, theme: 'light' } })
+                    });
+                  } catch (err) { console.error(err); }
+                }}
+                className={`py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-widest ${theme === 'light' ? 'bg-gray-700 text-white border border-blue-500/50 shadow-inner' : 'bg-gray-900/50 text-gray-400 border border-gray-800 hover:bg-gray-800'}`}
+              >
+                Clair ☀️
+              </button>
+              <button
+                onClick={async () => {
+                  setTheme('dark');
+                  try {
+                    await fetch(`${API_URL}/auth/profile`, {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}` },
+                      body: JSON.stringify({ preferences: { ...user.preferences, theme: 'dark' } })
+                    });
+                  } catch (err) { console.error(err); }
+                }}
+                className={`py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-widest ${theme === 'dark' ? 'bg-gray-700 text-white border border-blue-500/50 shadow-inner' : 'bg-gray-900/50 text-gray-400 border border-gray-800 hover:bg-gray-800'}`}
+              >
+                Sombre 🌙
+              </button>
+            </div>
           </div>
+
         </div>
       </div>
     </div>

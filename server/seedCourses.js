@@ -250,7 +250,7 @@ const coursesData = [
   }
 ];
 
-async function seedCourses() {
+async function seedCourses(closeConnection = true) {
   try {
     const isConnected = await connectDB();
 
@@ -283,8 +283,10 @@ async function seedCourses() {
       console.log('⚠️ L\'application utilisera ce fichier en fallback si MongoDB n\'est pas disponible');
     }
 
-    mongoose.connection.close();
-    console.log('🔌 Connexion fermée');
+    if (closeConnection) {
+      mongoose.connection.close();
+      console.log('🔌 Connexion fermée');
+    }
   } catch (error) {
     console.error('❌ Erreur lors du seeding:', error.message);
     process.exit(1);

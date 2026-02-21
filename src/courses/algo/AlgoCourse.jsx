@@ -131,15 +131,15 @@ const TheoryViewer = ({ title, content, onComplete }) => {
         }
       }
 
-      return <p key={idx} className="text-slate-700 leading-relaxed mb-6 text-base md:text-lg font-medium">{renderRichText(line)}</p>;
+      return <p key={idx} className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6 text-base md:text-lg font-medium">{renderRichText(line)}</p>;
     });
   };
 
   return (
     <div className="max-w-4xl mx-auto p-0 md:p-8 pb-24 h-full">
-      <div className="bg-white/40 p-4 md:p-8 rounded-3xl border border-slate-200 backdrop-blur-sm shadow-sm">
-        <div className="flex items-center gap-3 mb-8 border-b border-slate-100 pb-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900">{title}</h2>
+      <div className="bg-white/40 dark:bg-slate-900/40 p-4 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 backdrop-blur-sm shadow-sm">
+        <div className="flex items-center gap-3 mb-8 border-b border-slate-100 dark:border-slate-800 pb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{title}</h2>
         </div>
         {renderContent(content)}
 
@@ -148,24 +148,32 @@ const TheoryViewer = ({ title, content, onComplete }) => {
             <Check size={32} />
           </div>
           <div>
-            <h4 className="text-xl font-bold text-slate-900 mb-2">Prêt pour la suite ?</h4>
-            <p className="text-slate-500 text-sm max-w-md">
-              Si tu as bien assimilé ces concepts, clique sur le bouton ci-dessous pour valider cette étape.
+            <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Prêt pour la suite ?</h4>
+            <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md">
+              Si tu as bien assimilé ces concepts, clique sur le bouton ci-dessous pour valider cette étape. Tu peux aussi quitter sans valider.
             </p>
           </div>
-          <button
-            onClick={() => {
-              const event = new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: "C'est compris ! Ton apprentissage avance bien." }
-              });
-              window.dispatchEvent(event);
-              onComplete(true);
-            }}
-            className="px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(59,130,246,0.1)] hover:shadow-[0_15px_30px_rgba(59,130,246,0.2)] hover:scale-105 active:scale-95 flex items-center gap-3 group"
-          >
-            <Sparkles size={20} className="group-hover:animate-pulse" />
-            J'ai compris !
-          </button>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <button
+              onClick={() => {
+                const event = new CustomEvent('mysterious-ai-murmur', {
+                  detail: { text: "C'est compris ! Ton apprentissage avance bien." }
+                });
+                window.dispatchEvent(event);
+                onComplete(true);
+              }}
+              className="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(59,130,246,0.1)] hover:shadow-[0_15px_30px_rgba(59,130,246,0.2)] hover:scale-105 active:scale-95 flex items-center gap-3 group"
+            >
+              <Sparkles size={20} className="group-hover:animate-pulse" />
+              J'ai compris !
+            </button>
+            <button
+              onClick={() => onComplete(false)}
+              className="px-8 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 text-sm font-bold rounded-2xl transition-all"
+            >
+              Quitter sans valider
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -192,10 +200,10 @@ const QuizViewer = ({ data, onComplete }) => {
 
   return (
     <div className="max-w-2xl mx-auto p-4 md:p-8 h-full flex flex-col justify-center">
-      <div className="bg-white/70 rounded-[3rem] p-6 md:p-10 border border-slate-200 backdrop-blur-md shadow-xl">
-        <h2 className="text-2xl font-black mb-6 text-slate-900 tracking-tight italic uppercase">{data.title}</h2>
-        <div className="bg-slate-50 p-6 rounded-2xl mb-8 border-l-4 border-blue-500 shadow-sm">
-          <p className="text-lg text-slate-700 font-medium leading-relaxed">{data.question}</p>
+      <div className="bg-white/70 dark:bg-slate-900/70 rounded-[3rem] p-6 md:p-10 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-xl">
+        <h2 className="text-2xl font-black mb-6 text-slate-900 dark:text-white tracking-tight italic uppercase">{data.title}</h2>
+        <div className="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl mb-8 border-l-4 border-blue-500 shadow-sm">
+          <p className="text-lg text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{data.question}</p>
         </div>
 
         <div className="space-y-4">
@@ -273,12 +281,12 @@ const CodeEditor = ({ lesson, onComplete }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-50">
-      <div className="bg-white border-b border-slate-200 p-6 shrink-0 shadow-sm">
-        <h3 className="text-xl font-bold text-slate-900 flex items-center gap-3 italic tracking-tight">
+    <div className="flex flex-col h-full bg-slate-50 dark:bg-[#020617]">
+      <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-6 shrink-0 shadow-sm">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-3 italic tracking-tight">
           <Terminal size={24} className="text-blue-600" /> {lesson.title}
         </h3>
-        <p className="text-slate-500 mt-2 text-sm max-w-2xl font-medium">{lesson.instruction}</p>
+        <p className="text-slate-500 dark:text-slate-400 mt-2 text-sm max-w-2xl font-medium">{lesson.instruction}</p>
       </div>
 
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
@@ -286,7 +294,7 @@ const CodeEditor = ({ lesson, onComplete }) => {
           <textarea
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="w-full h-full bg-slate-50 text-slate-800 p-8 resize-none focus:outline-none font-mono text-base leading-relaxed"
+            className="w-full h-full bg-slate-50 dark:bg-[#020617] text-slate-800 dark:text-slate-200 p-8 resize-none focus:outline-none font-mono text-base leading-relaxed"
             spellCheck="false"
             placeholder="// Écris ton algorithme ici..."
           />
@@ -372,20 +380,20 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const activeLesson = activeLessonId ? allLessons.find(l => l.id === activeLessonId) : null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-50 text-slate-900 flex flex-col font-sans overflow-hidden pattern-grid-lg">
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-blue-50 pointer-events-none" />
+    <div className="fixed inset-0 z-50 bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 flex flex-col font-sans overflow-hidden pattern-grid-lg">
+      <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-900 dark:via-[#020617] dark:to-slate-900 pointer-events-none" />
 
       {/* Glitch Overlay effect (Lightened) */}
       <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/stardust.png')] opacity-[0.05] pointer-events-none mix-blend-multiply" />
 
       {/* Cybernetic HUD Header -> Light Clean Header */}
-      <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-50 shadow-sm">
+      <header className="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 shrink-0 z-50 shadow-sm">
         <div className="flex items-center gap-6">
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl text-slate-500 transition-all border border-transparent hover:border-slate-200">
             <ArrowLeft size={20} />
           </button>
           <div className="flex flex-col">
-            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-slate-800 uppercase">
+            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-slate-800 dark:text-slate-100 uppercase">
               <Cpu size={20} className="text-blue-600" /> SYSTEM.ALGO
             </h1>
             <div className="flex items-center gap-2 text-[10px] text-blue-600/70 font-mono font-bold">
@@ -420,14 +428,14 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
           {courseData.map((module, mIdx) => (
             <div key={module.id} className="mb-16 w-full relative z-10">
               {/* Module Header */}
-              <div className="sticky top-0 z-20 bg-slate-50/95 backdrop-blur-sm py-4 mb-8 border-y border-slate-200 flex justify-center shadow-sm">
-                <div className="flex items-center gap-4 bg-white border border-slate-200 px-6 py-3 rounded-2xl shadow-sm">
-                  <span className="text-blue-600 bg-blue-50 p-2 rounded-xl border border-blue-100 shadow-inner">
+              <div className="sticky top-0 z-20 bg-slate-50/95 dark:bg-[#020617]/95 backdrop-blur-sm py-4 mb-8 border-y border-slate-200 dark:border-slate-800 flex justify-center shadow-sm">
+                <div className="flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-6 py-3 rounded-2xl shadow-sm">
+                  <span className="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-xl border border-blue-100 dark:border-blue-900/50 shadow-inner">
                     {module.icon}
                   </span>
                   <div>
-                    <h3 className="font-black text-slate-800 text-base md:text-lg tracking-widest uppercase">{module.title}</h3>
-                    <p className="text-xs text-slate-500 font-mono line-clamp-1">{module.description}</p>
+                    <h3 className="font-black text-slate-800 dark:text-slate-100 text-base md:text-lg tracking-widest uppercase">{module.title}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-mono line-clamp-1">{module.description}</p>
                   </div>
                 </div>
               </div>
@@ -491,9 +499,9 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                           className={`
                                   p-4 md:p-5 rounded-2xl cursor-pointer transition-all border
                                   hover:-translate-y-1 hover:shadow-xl
-                                  ${isCompleted ? 'bg-green-50 border-green-200 hover:border-green-400 shadow-sm'
-                              : isUnlocked ? 'bg-white border-blue-200 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.05)]'
-                                : 'bg-slate-50 border-slate-200 hover:border-slate-300 shadow-sm'}
+                                  ${isCompleted ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 hover:border-green-400 shadow-sm'
+                              : isUnlocked ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.05)]'
+                                : 'bg-slate-50 dark:bg-[#020617] border-slate-200 dark:border-slate-800 hover:border-slate-300 shadow-sm'}
                                  `}
                         >
                           <div className={`flex items-center gap-2 mb-2 ${alignLeft ? 'md:justify-end' : 'md:justify-start'}`}>
@@ -506,10 +514,10 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                             </span>
                             <span className="text-[10px] text-slate-500 font-mono font-bold">{lessonObj.duration}</span>
                           </div>
-                          <h4 className={`text-base md:text-lg font-bold ${isCompleted ? 'text-green-800' : 'text-slate-800'}`}>
+                          <h4 className={`text-base md:text-lg font-bold ${isCompleted ? 'text-green-800 dark:text-green-400' : 'text-slate-800 dark:text-slate-200'}`}>
                             {lessonObj.title}
                           </h4>
-                          <p className="text-slate-500 text-sm mt-1 leading-relaxed">
+                          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 leading-relaxed">
                             {lessonObj.professorSpeech || "Clique pour décrypter cette information."}
                           </p>
                         </div>
@@ -539,7 +547,7 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
             exit={{ opacity: 0, scale: 0.95 }}
             className="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
           >
-            <div className="bg-slate-50 w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-slate-200">
+            <div className="bg-slate-50 dark:bg-[#020617] w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-slate-200 dark:border-slate-800">
               <div className="absolute top-4 right-4 z-50">
                 <button
                   onClick={closeLesson}
@@ -548,24 +556,30 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                   <X size={24} />
                 </button>
               </div>
-              <div className="flex-1 overflow-hidden bg-white rounded-3xl m-2 md:m-4 mt-16 md:mt-20">
+              <div className="flex-1 overflow-y-auto custom-scrollbar bg-white rounded-3xl m-2 md:m-4 mt-16 md:mt-20">
                 {activeLesson.type === 'theory' && (
                   <TheoryViewer
                     title={activeLesson.title}
                     content={activeLesson.content}
-                    onComplete={handleLessonCompletion}
+                    onComplete={(validated) => {
+                      if (validated) handleLessonCompletion(true);
+                      else closeLesson();
+                    }}
                   />
                 )}
                 {activeLesson.type === 'practice' && (
                   <CodeEditor
                     lesson={activeLesson}
-                    onComplete={handleLessonCompletion}
+                    onComplete={(validated) => {
+                      if (validated) handleLessonCompletion(true);
+                      else closeLesson();
+                    }}
                   />
                 )}
                 {activeLesson.type === 'quiz' && (
                   <QuizViewer
                     data={activeLesson}
-                    onComplete={handleLessonCompletion}
+                    onComplete={(validated) => handleLessonCompletion(validated)}
                   />
                 )}
               </div>

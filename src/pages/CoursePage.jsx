@@ -42,7 +42,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                 setCourse(courseData);
             } else {
                 setToast({ message: 'Cours non trouvé', type: 'error' });
-                navigate('/dashboard');
+                navigate(user?.role === 'admin' ? '/admin' : '/dashboard');
             }
         } catch (error) {
             console.error('Erreur:', error);
@@ -77,12 +77,12 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     }
 
     if (normalizedCourseId === 'algo') {
-        return <AlgoCourse onClose={() => navigate('/dashboard')} user={user} API_URL={API_URL} />;
+        return <AlgoCourse onClose={() => navigate(user?.role === 'admin' ? '/admin' : '/dashboard')} user={user} API_URL={API_URL} />;
     }
 
     return (
         <div
-            className="min-h-screen course-theme-light bg-slate-50 transition-colors duration-500 overflow-hidden relative"
+            className="min-h-screen course-theme-light bg-slate-50 dark:bg-[#020617] transition-colors duration-500 overflow-hidden relative"
             style={{
                 perspective: '1000px'
             }}
@@ -102,7 +102,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
             <div className="max-w-6xl mx-auto p-6 pt-24 relative z-10">
                 {/* Header */}
                 <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate(user?.role === 'admin' ? '/admin' : '/dashboard')}
                     className="flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-8 transition group"
                 >
                     <ArrowLeft size={20} className="group-hover:-translate-x-1 transition" />
@@ -110,7 +110,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                 </button>
 
                 {/* Course Header */}
-                <div className="bg-white/80 backdrop-blur-md border border-slate-200 rounded-3xl p-8 mb-8 shadow-sm">
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-3xl p-8 mb-8 shadow-sm">
                     <div className="grid md:grid-cols-2 gap-8">
                         <div>
                             <div className="flex items-center gap-2 mb-4">
@@ -121,10 +121,10 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                     {course.level}
                                 </span>
                             </div>
-                            <h1 className="text-4xl font-bold mb-4 text-slate-900">
+                            <h1 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">
                                 {course.title}
                             </h1>
-                            <p className="text-slate-600 mb-6 leading-relaxed">
+                            <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                                 {course.description}
                             </p>
 
@@ -156,7 +156,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
 
                 {/* Chapters */}
                 <div className="space-y-4">
-                    <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
                         <BookOpen size={24} className="text-blue-500" />
                         Contenu du cours
                     </h2>
@@ -168,7 +168,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                 transform: `translateY(${expandedChapter === index ? -8 : 0}px) rotateX(${expandedChapter === index ? mousePos.y * 0.1 : 0}deg) rotateY(${expandedChapter === index ? -mousePos.x * 0.1 : 0}deg)`,
                                 transition: 'transform 0.3s ease-out'
                             }}
-                            className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-2xl transition-all duration-300 group relative glass-reflection depth-shadow"
+                            className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-gray-800 shadow-sm hover:shadow-2xl transition-all duration-300 group relative glass-reflection depth-shadow"
                         >
                             <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                             <div
@@ -180,10 +180,10 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                         {index + 1}
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-semibold text-slate-800">
+                                        <h3 className="text-lg font-semibold text-slate-800 dark:text-white">
                                             {chapter.title}
                                         </h3>
-                                        <p className="text-slate-500 text-sm">
+                                        <p className="text-slate-500 dark:text-slate-400 text-sm">
                                             {chapter.description}
                                         </p>
                                     </div>
@@ -204,10 +204,10 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                             </div>
 
                             {expandedChapter === index && (
-                                <div className="px-6 pb-6 border-t border-slate-100 bg-slate-50/30">
+                                <div className="px-6 pb-6 border-t border-slate-100 dark:border-gray-800 bg-slate-50/30 dark:bg-gray-800/30">
                                     <div className="pt-4">
                                         <div className="flex items-center justify-between mb-4">
-                                            <h4 className="text-slate-700 font-medium">Objectifs d'apprentissage</h4>
+                                            <h4 className="text-slate-700 dark:text-slate-300 font-medium">Objectifs d'apprentissage</h4>
                                             <button
                                                 onClick={() => startLesson(index)}
                                                 className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all active:scale-95 flex items-center gap-2 font-medium"
@@ -219,7 +219,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
 
                                         <ul className="grid sm:grid-cols-2 gap-3 mb-6">
                                             {chapter.objectives.map((objective, objIndex) => (
-                                                <li key={objIndex} className="flex items-start gap-2 text-slate-600 bg-white/50 p-2 rounded-lg border border-slate-100">
+                                                <li key={objIndex} className="flex items-start gap-2 text-slate-600 dark:text-slate-400 bg-white/50 dark:bg-gray-900/50 p-2 rounded-lg border border-slate-100 dark:border-gray-700">
                                                     <CheckCircle size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
                                                     <span className="text-sm">{objective}</span>
                                                 </li>
@@ -228,22 +228,22 @@ const CoursePage = ({ user, API_URL, setToast }) => {
 
                                         {chapter.exercises && chapter.exercises.length > 0 && (
                                             <div>
-                                                <h5 className="text-slate-700 font-medium mb-3">Exercices pratiques</h5>
+                                                <h5 className="text-slate-700 dark:text-slate-300 font-medium mb-3">Exercices pratiques</h5>
                                                 <div className="grid gap-3">
                                                     {chapter.exercises.map((exercise, exIndex) => (
-                                                        <div key={exIndex} className="bg-white border border-slate-100 rounded-xl p-4 shadow-sm hover:border-blue-200 transition-colors">
+                                                        <div key={exIndex} className="bg-white dark:bg-gray-900 border border-slate-100 dark:border-gray-700 rounded-xl p-4 shadow-sm hover:border-blue-200 dark:hover:border-blue-500/50 transition-colors">
                                                             <div className="flex items-center justify-between mb-2">
-                                                                <span className="text-slate-800 text-sm font-semibold">
+                                                                <span className="text-slate-800 dark:text-slate-200 text-sm font-semibold">
                                                                     {exercise.title}
                                                                 </span>
-                                                                <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${exercise.difficulty === 'Facile' ? 'bg-green-100 text-green-700' :
-                                                                        exercise.difficulty === 'Moyen' ? 'bg-yellow-100 text-yellow-700' :
-                                                                            'bg-red-100 text-red-700'
+                                                                <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${exercise.difficulty === 'Facile' ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' :
+                                                                    exercise.difficulty === 'Moyen' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/50 dark:text-yellow-400' :
+                                                                        'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400'
                                                                     }`}>
                                                                     {exercise.difficulty}
                                                                 </span>
                                                             </div>
-                                                            <p className="text-slate-500 text-sm leading-relaxed">
+                                                            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
                                                                 {exercise.description}
                                                             </p>
                                                         </div>
