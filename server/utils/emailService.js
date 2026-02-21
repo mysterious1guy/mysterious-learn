@@ -10,8 +10,9 @@ console.log('📧 RESEND_API_KEY configuré:', process.env.RESEND_API_KEY ? 'OUI
  */
 const sendEmail = async ({ to, subject, html, text }) => {
   try {
+    const fromEmail = process.env.EMAIL_FROM || 'onboarding@resend.dev';
     const { data, error } = await resend.emails.send({
-      from: 'Mysterious Classroom <no-reply@mysterious-classroom.com>',
+      from: `Mysterious Classroom <${fromEmail}>`,
       to: [to],
       subject: subject,
       text: text || '',
