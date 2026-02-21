@@ -351,8 +351,8 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const isMobile = windowWidth < 768;
   const isTablet = windowWidth >= 768 && windowWidth < 1200;
 
-  const COLUMNS = isMobile ? 1 : (isTablet ? 2 : 6);
-  const X_SPACING = isMobile ? 0 : (isTablet ? 300 : Math.max(400, windowWidth / (COLUMNS - 1)));
+  const COLUMNS = isMobile ? 1 : (isTablet ? 2 : 5);
+  const X_SPACING = isMobile ? 0 : (isTablet ? (windowWidth - 120) / (COLUMNS - 1) : (windowWidth - 250) / (COLUMNS - 1));
   const Y_SPACING = isMobile ? 160 : 200;
 
   const nodes = allLessons.map((lesson, index) => {
