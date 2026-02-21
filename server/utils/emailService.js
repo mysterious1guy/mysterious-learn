@@ -20,7 +20,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
       from: `"Mysterious Classroom" <${process.env.EMAIL_USER}>`,
       to,
       subject,
-      text,
+      text: text || '',
       html: html || `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; color: #333; line-height: 1.6;">
           <div style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
