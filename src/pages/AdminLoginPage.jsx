@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Eye, EyeOff, Lock, Mail, User, ArrowRight } from 'lucide-react';
+import { API_URL } from '../config';
 
 const AdminLoginPage = ({ setToast }) => {
   const [formData, setFormData] = useState({
@@ -48,7 +49,7 @@ const AdminLoginPage = ({ setToast }) => {
       }
 
       // Pour les autres admins, connexion normale
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/auth/login`, {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

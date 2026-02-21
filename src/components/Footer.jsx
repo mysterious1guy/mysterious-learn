@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Twitter, Linkedin, Mail, Heart, Code, Sparkles } from 'lucide-react';
 import AnimatedLogo from './AnimatedLogo';
+import { API_URL } from '../config';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [config, setConfig] = useState(null);
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   useEffect(() => {
     const fetchConfig = async () => {

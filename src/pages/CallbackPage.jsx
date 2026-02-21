@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { API_URL } from '../config';
 
 const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
     const navigate = useNavigate();
@@ -26,7 +27,6 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
 
         if (token) {
             console.log('✅ CallbackPage: Token valide, récupération profil...');
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
             fetch(`${API_URL}/auth/profile`, {
                 headers: { Authorization: `Bearer ${token}` }
             })

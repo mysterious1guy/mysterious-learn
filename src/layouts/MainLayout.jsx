@@ -6,13 +6,13 @@ import AIAssistant from '../components/AIAssistant';
 import Footer from '../components/Footer';
 import ActivityTracker from '../components/ActivityTracker';
 import UsageMonitor from '../components/UsageMonitor';
+import { API_URL } from '../config';
 
 const MainLayout = ({ user, onLogout, onSearch }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showUsageMonitor, setShowUsageMonitor] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   const pathParts = location.pathname.split('/');
   const currentView = pathParts[1] || 'home';

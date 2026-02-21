@@ -30,6 +30,8 @@ import Particles from './Particles';
 import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './components/ProtectedRoute';
 
+import { API_URL } from './config';
+
 function App() {
   const [user, setUser] = useLocalStorage('user', null);
   const [toast, setToast] = useState(null);
@@ -37,8 +39,6 @@ function App() {
   const [progressions, setProgressions] = useState({});
   const [favorites, setFavorites] = useLocalStorage('favorites', []);
   const { setUserCookie, getUserCookie, removeUserCookie, setProgressCookie, getProgressCookie } = useCookies();
-
-  const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
 
   // Synchroniser les cookies avec le localStorage
   useEffect(() => {
