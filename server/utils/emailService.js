@@ -17,20 +17,20 @@ dns.lookup('smtp.gmail.com', { family: 4 }, (err, address) => {
 
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // TLS via STARTTLS
+  port: 465,
+  secure: true, // SSL/TLS
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  requireTLS: true,
-  pool: true, // Utiliser un pool de connexions
-  maxConnections: 5,
-  maxMessages: 100,
+  // Force IPv4 au niveau DNS interne de Nodemailer
+  lookup: (hostname, options, callback) => {
+    dns.lookup(hostname, { family: 4 }, callback);
+  },
   logger: true,
   debug: true,
-  connectionTimeout: 20000,
-  greetingTimeout: 20000,
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
   socketTimeout: 30000,
 });
 

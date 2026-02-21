@@ -1,4 +1,7 @@
-// 1. Importations
+// 1. Initialisation DNS et Environnement
+require('dns').setDefaultResultOrder?.('ipv4first');
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
