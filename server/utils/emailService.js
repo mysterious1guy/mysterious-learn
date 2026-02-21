@@ -1,26 +1,27 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: process.env.EMAIL_PORT == 465, // true for 465, false for other ports
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
+  service: 'gmail',
+  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+  port: process.env.EMAIL_PORT || 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
 });
 
 /**
  * Envoie un email formaté
  */
 const sendEmail = async ({ to, subject, html, text }) => {
-    try {
-        const info = await transporter.sendMail({
-            from: `"Mysterious Classroom" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            text,
-            html: html || `
+  try {
+    const info = await transporter.sendMail({
+      from: `"Mysterious Classroom" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      text,
+      html: html || `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; color: #333; line-height: 1.6;">
           <div style="background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
             <h1 style="color: white; margin: 0; font-size: 24px; letter-spacing: -0.5px;">Mysterious Classroom</h1>
@@ -36,13 +37,13 @@ const sendEmail = async ({ to, subject, html, text }) => {
           </div>
         </div>
       `,
-        });
-        console.log('Email envoyé:', info.messageId);
-        return info;
-    } catch (error) {
-        console.error('Erreur d\'envoi d\'email:', error);
-        throw error;
-    }
+    });
+    console.log('Email envoyé:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Erreur d\'envoi d\'email:', error);
+    throw error;
+  }
 };
 
 module.exports = { sendEmail };
