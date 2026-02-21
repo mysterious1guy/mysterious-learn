@@ -164,9 +164,63 @@ const getPasswordResetEmail = (name, url) => `
 </div>
 `;
 
+/**
+ * Template Annonce / Marketing (Admin)
+ */
+const getMarketingEmail = (title, content) => `
+<div style="${baseStyles}">
+  <div style="${headerStyles}">
+    <h1 style="margin: 0; font-size: 24px; color: #ffffff;">${title}</h1>
+  </div>
+  <div style="${bodyStyles} background-color: #0f172a;">
+    <div style="color: #cbd5e1; font-size: 16px;">
+      ${content}
+    </div>
+  </div>
+  <div style="${footerStyles}">
+    <p>Message de l'équipe Mysterious Classroom.</p>
+    <p style="margin-top: 15px; font-weight: bold;">&copy; 2026 Mysterious Classroom</p>
+  </div>
+</div>
+`;
+
+/**
+ * Template Suppression de Compte
+ */
+const getAccountDeletionEmail = (name) => `
+<div style="${baseStyles}">
+  <div style="${headerStyles}">
+    <div style="margin-bottom: 25px;">
+      <div style="width: 70px; height: 70px; margin: 0 auto; background: linear-gradient(135deg, #ef4444, #be123c); border-radius: 20px; display: flex; align-items: center; justify-content: center; transform: rotate(5deg);">
+           <span style="font-size: 35px;">👋</span>
+      </div>
+    </div>
+    <h1 style="margin: 0; font-size: 24px; color: #ffffff;">COMPTE SUPPRIMÉ</h1>
+  </div>
+  <div style="${bodyStyles}">
+    <h2 style="color: #ffffff;">Au revoir, ${name}</h2>
+    <p style="color: #cbd5e1; font-size: 16px;">Nous te confirmons que ton compte Mysterious Classroom a été définitivement supprimé, ainsi que toutes tes données associées.</p>
+    
+    <div style="background: rgba(30, 41, 59, 0.5); border-radius: 20px; padding: 25px; margin: 30px 0; border: 1px solid #1e293b; text-align: center;">
+       <p style="color: #94a3b8; font-size: 14px; margin: 0;">Si tu souhaites revenir un jour, tu seras toujours le bienvenu pour créer un nouveau compte et reprendre ton apprentissage.</p>
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px;">
+      <a href="https://mysterious-classroom-free-courses.onrender.com" style="${buttonStyles} background: linear-gradient(135deg, #475569 0%, #1e293b 100%);">Retourner à l'accueil</a>
+    </div>
+  </div>
+  <div style="${footerStyles}">
+    <p>Merci d'avoir fait partie de l'aventure.</p>
+    <p style="margin-top: 15px; font-weight: bold;">Mysterious Classroom Team</p>
+  </div>
+</div>
+`;
+
 module.exports = {
   getVerificationEmail,
   getWelcomeEmail,
   getEmailChangeEmail,
-  getPasswordResetEmail
+  getPasswordResetEmail,
+  getMarketingEmail,
+  getAccountDeletionEmail
 };

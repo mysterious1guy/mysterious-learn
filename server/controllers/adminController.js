@@ -2,6 +2,7 @@ const Notification = require('../models/Notification');
 const User = require('../models/User');
 const Course = require('../models/Course');
 const { sendEmail } = require('../utils/emailService');
+const { getMarketingEmail } = require('../utils/emailTemplates');
 
 // @desc    Obtenir tous les utilisateurs (admin)
 // @route   GET /api/admin/users
@@ -102,13 +103,14 @@ const sendNotificationToUsers = async (req, res) => {
 
     if (shouldSendEmail) {
       const users = await User.find({ isEmailVerified: true });
-      const isHtml = /<[a-z][\s\S]*>/i.test(message);
+      // On utilise le template marketing pour les annonces
+      const htmlContent = getMarketingEmail(title, message);
+
       const emailPromises = users.map(user =>
         sendEmail({
           to: user.email,
           subject: title,
-          text: isHtml ? "" : message,
-          html: isHtml ? message : undefined
+          html: htmlContent
         })
       );
       await Promise.all(emailPromises);

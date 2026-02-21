@@ -5,7 +5,12 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
 const { sendEmail, sendWelcomeEmail } = require('../utils/emailService');
-const { getVerificationEmail, getEmailChangeEmail, getPasswordResetEmail } = require('../utils/emailTemplates');
+const {
+  getVerificationEmail,
+  getPasswordResetEmail,
+  getEmailChangeEmail,
+  getAccountDeletionEmail
+} = require('../utils/emailTemplates');
 
 // Initialisation du client Google
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -609,7 +614,28 @@ const changePassword = async (req, res) => {
 // @route   DELETE /api/auth/profile
 const deleteAccount = async (req, res) => {
   try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    const { email, firstName, name } = user;
+
     await User.findByIdAndDelete(req.user._id);
+
+    // Envoyer l'email d'adieu
+    const html = getAccountDeletionEmail(firstName || name || 'Aventurier');
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Confirmation de suppression de compte - Mysterious Classroom',
+        html
+      });
+    } catch (emailErr) {
+      console.error("Erreur envoi email suppression compte:", emailErr);
+      // On ne throw pas l'erreur pour ne pas bloquer la suppression côté client
+    }
+
     res.json({ message: 'Compte supprimé' });
   } catch (err) {
     console.error('Erreur deleteAccount:', err);
