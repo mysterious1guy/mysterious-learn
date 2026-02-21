@@ -1103,19 +1103,31 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       <div className="space-y-3">
                         <div className="flex justify-between items-end">
                           <label className="text-xs font-bold text-white/80">Créativité / Température</label>
-                          <span className="text-[10px] font-mono text-blue-400">0.7 (Équilibré)</span>
+                          <span className="text-[10px] font-mono text-blue-400">
+                            {config.aiTemperature} ({config.aiTemperature < 0.4 ? 'Précis' : config.aiTemperature < 0.8 ? 'Équilibré' : 'Créatif'})
+                          </span>
                         </div>
-                        <input type="range" className="w-full accent-blue-600" min="0" max="100" defaultValue="70" />
+                        <input
+                          type="range"
+                          className="w-full accent-blue-600"
+                          min="0"
+                          max="100"
+                          value={config.aiTemperature * 100}
+                          onChange={(e) => setConfig({ ...config, aiTemperature: e.target.value / 100 })}
+                        />
                         <p className="text-[9px] text-white/40 italic">Une valeur plus haute rend le Professeur plus imprévisible mais plus "humain".</p>
                       </div>
 
-                      <div className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
+                      <div
+                        onClick={() => setConfig({ ...config, aiMemory: !config.aiMemory })}
+                        className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50 cursor-pointer hover:border-blue-500/30 transition-colors"
+                      >
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Mémoire Multi-Session</p>
                           <p className="text-[10px] text-white/40">L'IA se souvient des discussions passées.</p>
                         </div>
-                        <div className="w-12 h-6 bg-blue-600 rounded-full relative cursor-pointer shadow-[0_0_10px_rgba(37,99,235,0.4)]">
-                          <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                        <div className={`w-12 h-6 rounded-full relative transition-all ${config.aiMemory ? 'bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'bg-slate-800'}`}>
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${config.aiMemory ? 'right-1' : 'left-1'}`} />
                         </div>
                       </div>
                     </div>
@@ -1129,23 +1141,29 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     </h3>
 
                     <div className="space-y-6">
-                      <div className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
+                      <div
+                        onClick={() => setConfig({ ...config, gamificationStreaks: !config.gamificationStreaks })}
+                        className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50 cursor-pointer hover:border-purple-500/30 transition-colors"
+                      >
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Système de Streaks (Séries)</p>
                           <p className="text-[10px] text-white/40">Encourager la connexion quotidienne.</p>
                         </div>
-                        <div className="w-12 h-6 bg-purple-600 rounded-full relative cursor-pointer">
-                          <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full" />
+                        <div className={`w-12 h-6 rounded-full relative transition-all ${config.gamificationStreaks ? 'bg-purple-600 shadow-[0_0_10px_rgba(147,51,234,0.4)]' : 'bg-slate-800'}`}>
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${config.gamificationStreaks ? 'right-1' : 'left-1'}`} />
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
+                      <div
+                        onClick={() => setConfig({ ...config, gamificationBadges: !config.gamificationBadges })}
+                        className="flex items-center justify-between p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50 cursor-pointer hover:border-purple-500/30 transition-colors"
+                      >
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-white">Badges Automatiques</p>
                           <p className="text-[10px] text-white/40">Génération de succès via l'IA.</p>
                         </div>
-                        <div className="w-12 h-6 bg-slate-800 rounded-full relative cursor-pointer">
-                          <div className="absolute left-1 top-1 w-4 h-4 bg-slate-500 rounded-full" />
+                        <div className={`w-12 h-6 rounded-full relative transition-all ${config.gamificationBadges ? 'bg-purple-600 shadow-[0_0_10px_rgba(147,51,234,0.4)]' : 'bg-slate-800'}`}>
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${config.gamificationBadges ? 'right-1' : 'left-1'}`} />
                         </div>
                       </div>
                     </div>
@@ -1162,27 +1180,43 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       <div className="p-5 bg-slate-950/50 rounded-3xl border border-slate-800/50 space-y-4">
                         <p className="text-xs font-bold text-white/80">Force du Thème</p>
                         <div className="grid grid-cols-2 gap-2">
-                          <button className="py-2 bg-slate-800 rounded-xl text-[10px] font-bold text-white border border-blue-500/50">AUTO</button>
-                          <button className="py-2 bg-slate-900/50 rounded-xl text-[10px] font-bold text-white/40 border border-slate-800">FORCER DARK</button>
+                          <button
+                            onClick={() => setConfig({ ...config, themeForce: 'AUTO' })}
+                            className={`py-2 rounded-xl text-[10px] font-bold transition-all ${config.themeForce === 'AUTO' ? 'bg-slate-800 text-white border border-blue-500/50' : 'bg-slate-900/50 text-white/20 border border-slate-800'}`}
+                          >
+                            AUTO
+                          </button>
+                          <button
+                            onClick={() => setConfig({ ...config, themeForce: 'DARK' })}
+                            className={`py-2 rounded-xl text-[10px] font-bold transition-all ${config.themeForce === 'DARK' ? 'bg-slate-800 text-white border border-blue-500/50' : 'bg-slate-900/50 text-white/20 border border-slate-800'}`}
+                          >
+                            FORCER DARK
+                          </button>
                         </div>
                       </div>
 
-                      <div className="p-5 bg-slate-950/50 rounded-3xl border border-slate-800/50 space-y-4">
+                      <div
+                        onClick={() => setConfig({ ...config, ultraImmersiveMode: !config.ultraImmersiveMode })}
+                        className="p-5 bg-slate-950/50 rounded-3xl border border-slate-800/50 space-y-4 cursor-pointer hover:border-amber-500/20 transition-colors"
+                      >
                         <p className="text-xs font-bold text-white/80">Mode Ultra-Immersif</p>
                         <div className="flex items-center justify-between">
                           <p className="text-[9px] text-white/40">Filtres CRT & Ambient</p>
-                          <div className="w-10 h-5 bg-slate-800 rounded-full relative">
-                            <div className="absolute left-1 top-1 w-3 h-3 bg-slate-600 rounded-full" />
+                          <div className={`w-10 h-5 rounded-full relative transition-all ${config.ultraImmersiveMode ? 'bg-amber-600' : 'bg-slate-800'}`}>
+                            <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${config.ultraImmersiveMode ? 'right-1' : 'left-1'}`} />
                           </div>
                         </div>
                       </div>
 
-                      <div className="p-5 bg-red-600/10 rounded-3xl border border-red-500/20 space-y-4">
+                      <div
+                        onClick={() => setConfig({ ...config, maintenanceMode: !config.maintenanceMode })}
+                        className={`p-5 rounded-3xl border transition-all cursor-pointer ${config.maintenanceMode ? 'bg-red-600/20 border-red-500/40' : 'bg-red-600/5 border-red-500/10 hover:border-red-500/30'}`}
+                      >
                         <p className="text-xs font-bold text-red-500">Mode Maintenance</p>
                         <div className="flex items-center justify-between">
-                          <p className="text-[9px] text-red-500/60 font-bold uppercase">ALERTE ROUGE</p>
-                          <div className="w-10 h-5 bg-slate-800 rounded-full relative cursor-pointer">
-                            <div className="absolute left-1 top-1 w-3 h-3 bg-slate-600 rounded-full" />
+                          <p className={`text-[9px] font-bold uppercase transition-colors ${config.maintenanceMode ? 'text-red-400' : 'text-red-500/40'}`}>ALERTE ROUGE</p>
+                          <div className={`w-10 h-5 rounded-full relative transition-all ${config.maintenanceMode ? 'bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.4)]' : 'bg-slate-800'}`}>
+                            <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${config.maintenanceMode ? 'right-1' : 'left-1'}`} />
                           </div>
                         </div>
                       </div>

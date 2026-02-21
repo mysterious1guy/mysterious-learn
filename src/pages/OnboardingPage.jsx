@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { User, Palette, ShieldCheck, Bot, ArrowRight, Check, Moon, Sun, Volume2, VolumeX, Globe, Monitor, Zap, Cpu } from 'lucide-react';
+import { User, Palette, ShieldCheck, Bot, ArrowRight, Check, Moon, Sun, Volume2, VolumeX, Globe, Monitor, Zap, Cpu, TrendingUp } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -20,6 +20,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
         language: user?.preferences?.language || 'fr',
         soundEnabled: user?.preferences?.soundEnabled ?? true,
         acceptedTerms: false,
+        programmingLevel: user?.programmingLevel || 'beginner',
     });
 
     const handleChange = (e) => {
@@ -38,7 +39,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
     };
 
     const handleNext = () => {
-        if (step === 3 && !formData.acceptedTerms) {
+        if (step === 4 && !formData.acceptedTerms) {
             setToast({ message: "Vous devez accepter les conditions pour continuer.", type: "error" });
             return;
         }
@@ -63,6 +64,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                         language: formData.language,
                         soundEnabled: formData.soundEnabled,
                     },
+                    programmingLevel: formData.programmingLevel,
                     hasCompletedOnboarding: true,
                 }),
             });
@@ -83,9 +85,10 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
 
     const steps = [
         { id: 1, title: 'Profil', icon: <User className="w-5 h-5" /> },
-        { id: 2, title: 'Préférences', icon: <Palette className="w-5 h-5" /> },
-        { id: 3, title: 'Sécurité', icon: <ShieldCheck className="w-5 h-5" /> },
-        { id: 4, title: 'Assistant', icon: <Bot className="w-5 h-5" /> },
+        { id: 2, title: 'Niveau', icon: <TrendingUp className="w-5 h-5" /> },
+        { id: 3, title: 'Préférences', icon: <Palette className="w-5 h-5" /> },
+        { id: 4, title: 'Sécurité', icon: <ShieldCheck className="w-5 h-5" /> },
+        { id: 5, title: 'Assistant', icon: <Bot className="w-5 h-5" /> },
     ];
 
     return (
@@ -172,6 +175,47 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
+                                className="space-y-6"
+                            >
+                                <div className="text-center mb-8">
+                                    <h2 className="text-2xl font-semibold text-white mb-2">Quel est ton niveau ?</h2>
+                                    <p className="text-slate-400">Cela aidera l'Oracle à adapter son langage.</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {[
+                                        { id: 'beginner', label: 'Débutant', desc: 'Je découvre les bases du code.', icon: <Monitor className="text-blue-400" /> },
+                                        { id: 'intermediate', label: 'Intermédiaire', desc: 'Je maîtrise la syntaxe de base.', icon: <Zap className="text-yellow-400" /> },
+                                        { id: 'advanced', label: 'Avancé', desc: 'Je crée des projets complexes.', icon: <Cpu className="text-purple-400" /> },
+                                        { id: 'expert', label: 'Expert', desc: 'Le code est ma langue maternelle.', icon: <ShieldCheck className="text-emerald-400" /> },
+                                    ].map((level) => (
+                                        <button
+                                            key={level.id}
+                                            onClick={() => setFormData({ ...formData, programmingLevel: level.id })}
+                                            className={`p-6 rounded-2xl border-2 text-left transition-all group ${formData.programmingLevel === level.id
+                                                ? 'bg-blue-600/10 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.2)]'
+                                                : 'bg-slate-950/40 border-slate-800 hover:border-slate-700'
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-3 mb-2">
+                                                {level.icon}
+                                                <span className={`font-bold uppercase tracking-widest text-xs ${formData.programmingLevel === level.id ? 'text-blue-400' : 'text-slate-300'}`}>
+                                                    {level.label}
+                                                </span>
+                                            </div>
+                                            <p className="text-[10px] text-slate-500 line-clamp-1">{level.desc}</p>
+                                        </button>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {step === 3 && (
+                            <motion.div
+                                key="step3"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
                                 className="space-y-8"
                             >
                                 <div className="text-center mb-6">
@@ -248,9 +292,9 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                             </motion.div>
                         )}
 
-                        {step === 3 && (
+                        {step === 4 && (
                             <motion.div
-                                key="step3"
+                                key="step4"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
@@ -289,9 +333,9 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                             </motion.div>
                         )}
 
-                        {step === 4 && (
+                        {step === 5 && (
                             <motion.div
-                                key="step4"
+                                key="step5"
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}

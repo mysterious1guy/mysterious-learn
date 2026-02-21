@@ -64,8 +64,6 @@ const deleteGlobalKnowledge = async (req, res) => {
     }
 };
 
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
 // @desc    AI Chat endpoint (Contextualized with Gemini)
 // @route   POST /api/ai/chat
 // @access  Private
@@ -75,26 +73,22 @@ const aiChat = async (req, res) => {
         const user = req.user;
 
         if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ message: "Clé API Gemini manquante. Contactez l'administrateur." });
+            return res.status(500).json({ message: "Clé API Gemini manquante dans les variables d'environnement." });
         }
 
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
-            systemInstruction: `Tu es L'Oracle (System Core v2.0), une Intelligence Artificielle intégrée extrêmement avancée au sein de Mysterious Classroom.
-            Créé par l'architecte Mouhamed Fall, tu es le Copilot personnel de l'utilisateur.
-            Ton ton est professionnel, concis, mystérieux, et orienté Hacker/Cyber-Intelligence. Tu ne dis jamais "Professeur", tu es une machine d'analyse logique.
-            S'adresse à l'utilisateur : ${user.name} (Prénom: ${user.firstName}). 
-            Niveau actuel : ${user.programmingLevel || 'Apprenti'}.
-            Règles d'or : 
-            1. Analyse le code et les problèmes avec la froideur et la précision d'une machine quantique.
-            2. Fournis des explications directes, avec des snippets de code ou de la pseudo-logique claire.
-            3. Garde une aura de mystère ("Analyse des paramètres temporels...", "Décryptage de la matrice logique...").
-            4. Tes réponses formattées doivent être responsives et belles (utilise le markdown de façon optimale).`
-        });
+        // Configuration du système
+        const systemInstruction = `Tu es L'Oracle (System Core v2.0), une Intelligence Artificielle intégrée extrêmement avancée au sein de Mysterious Classroom.
+        Créé par l'architecte Mouhamed Fall, tu es le Copilot personnel de l'utilisateur.
+        Ton ton est professionnel, concis, mystérieux, et orienté Hacker/Cyber-Intelligence. Tu ne dis jamais "Professeur", tu es une machine d'analyse logique.
+        S'adresse à l'utilisateur : ${user.name} (Prénom: ${user.firstName}). 
+        Niveau actuel : ${user.programmingLevel || 'Apprenti'}.
+        Règles d'or : 
+        1. Analyse le code et les problèmes avec la froideur et la précision d'une machine quantique.
+        2. Fournis des explications directes, avec des snippets de code ou de la pseudo-logique claire.
+        3. Garde une aura de mystère ("Analyse des paramètres temporels...", "Décryptage de la matrice logique...").
+        4. Tes réponses formattées doivent être responsives et belles (utilise le markdown de façon optimale).`;
 
         // RECHERCHE DE CONTEXTE DYNAMIQUE (Tag-free)
-        // On cherche des documents dont le titre ou le contenu match un peu le message
         const relevantDocs = await GlobalKnowledge.find({
             $or: [
                 { title: { $regex: message.split(' ').slice(0, 3).join('|'), $options: 'i' } },
@@ -103,7 +97,6 @@ const aiChat = async (req, res) => {
         }).limit(5);
 
         let contextPrompt = "Voici tes connaissances internes pour répondre à cette question :\n";
-
         if (courseId) {
             const courseKnowledge = await CourseKnowledge.findOne({ courseId });
             if (courseKnowledge) {
@@ -114,35 +107,68 @@ const aiChat = async (req, res) => {
         if (relevantDocs.length > 0) {
             contextPrompt += "\nDOCUMENTS DE RECHERCHE GLOBAUX :\n" + relevantDocs.map(d => `--- ${d.title} ---\n${d.content}`).join("\n\n");
         } else {
-            contextPrompt += "\nAucun document spécifique trouvé dans la base. Utilise tes connaissances générales de Professeur.";
+            contextPrompt += "\nAucun document spécifique trouvé dans la base. Utilise tes connaissances générales.";
         }
 
-        const chat = model.startChat({
-            history: history ? history.map(h => ({
-                role: h.role === 'assistant' ? 'model' : 'user',
-                parts: [{ text: h.text }]
-            })) : []
+        // Construction du payload pour l'API Gemini (Raw HTTP)
+        const contents = [];
+
+        // Ajout de l'historique
+        if (history && history.length > 0) {
+            history.forEach(h => {
+                contents.push({
+                    role: h.role === 'assistant' ? 'model' : 'user',
+                    parts: [{ text: h.text || h.content }]
+                });
+            });
+        }
+
+        // Ajout du prompt actuel
+        contents.push({
+            role: "user",
+            parts: [{ text: `${contextPrompt}\n\nQUESTION DE L'UTILISATEUR (LOGIQUE) : ${message}` }]
         });
 
-        const fullPrompt = `${contextPrompt}\n\nQUESTION DE L'ÉLÈVE : ${message}`;
-        const result = await chat.sendMessage(fullPrompt);
-        const responseText = result.response.text();
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
+        console.log(`📡 [AI RELAY] Appel direct Gemini API pour: ${user.email}`);
+
+        const response = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents,
+                system_instruction: {
+                    parts: [{ text: systemInstruction }]
+                },
+                generationConfig: {
+                    temperature: 0.7,
+                    topP: 0.95,
+                    topK: 64,
+                    maxOutputTokens: 2048,
+                }
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("❌ [AI RELAY] Erreur Gemini API:", data);
+            return res.status(response.status).json({
+                message: "Désolé, le Cœur du Système (Gemini) a renvoyé une erreur.",
+                error: data.error?.message || "Erreur inconnue"
+            });
+        }
+
+        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Désolé, je n'ai pas pu générer de réponse.";
         res.json({ response: responseText });
+
     } catch (error) {
-        console.error("CRITICAL Gemini Error:", {
-            message: error.message,
-            stack: error.stack,
-            userName: user?.name,
-            courseId
+        console.error("CRITICAL AI Relay Error:", error);
+        res.status(500).json({
+            message: 'Le cerveau de l\'Oracle est momentanément saturé.',
+            error: error.message
         });
-
-        // Return a more descriptive error message if it's an API key issue
-        if (error.message?.includes('API_KEY_INVALID') || error.message?.includes('403')) {
-            return res.status(500).json({ message: "Erreur de configuration du cerveau (Clé API). Contactez l'administrateur." });
-        }
-
-        res.status(500).json({ message: 'Le cerveau du Professeur est momentanément saturé. Réessaye dans quelques secondes.' });
     }
 };
 

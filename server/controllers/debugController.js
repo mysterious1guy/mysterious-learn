@@ -138,9 +138,31 @@ const testEmail = async (req, res) => {
   }
 };
 
+// @desc    Test AI Chat connectivity
+// @route   GET /api/debug/test-ai
+const testAIChat = async (req, res) => {
+  const { aiChat } = require('./aiController');
+  try {
+    // Fake req/res to test the internal function
+    const mockReq = {
+      body: { message: "Coucou l'Oracle, es-tu en ligne ?" },
+      user: { name: 'Admin Debugger', firstName: 'Admin' }
+    };
+    const mockRes = {
+      status: (code) => ({ json: (data) => res.status(code).json({ ...data, debug_code: code }) }),
+      json: (data) => res.json({ success: true, ...data })
+    };
+
+    await aiChat(mockReq, mockRes);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 module.exports = {
   checkPaths,
   fullStatusCheck,
   testGoogleOAuth,
-  testEmail
+  testEmail,
+  testAIChat
 };

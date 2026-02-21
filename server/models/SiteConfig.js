@@ -39,6 +39,36 @@ const siteConfigSchema = new mongoose.Schema({
     footerText: {
         type: String,
         default: "Plateforme d'apprentissage innovante créée avec passion pour l'éducation technologique et le partage des connaissances."
+    },
+    // Nouveaux paramètres ajoutés en Phase 15
+    aiTemperature: {
+        type: Number,
+        default: 0.7
+    },
+    aiMemory: {
+        type: Boolean,
+        default: true
+    },
+    gamificationStreaks: {
+        type: Boolean,
+        default: true
+    },
+    gamificationBadges: {
+        type: Boolean,
+        default: false
+    },
+    themeForce: {
+        type: String,
+        enum: ['AUTO', 'DARK'],
+        default: 'AUTO'
+    },
+    ultraImmersiveMode: {
+        type: Boolean,
+        default: false
+    },
+    maintenanceMode: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

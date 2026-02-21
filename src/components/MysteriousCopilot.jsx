@@ -52,17 +52,31 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user?.token || localStorage.getItem('token')}`
                 },
-                body: JSON.stringify({ message: userMsg, context: "Copilot mode" })
+                body: JSON.stringify({
+                    message: userMsg,
+                    history: messages.filter(m => m.role !== 'system').map(m => ({
+                        role: m.role,
+                        text: m.content
+                    }))
+                })
             });
 
-            if (!response.ok) throw new Error('Erreur réseau');
-
             const data = await response.json();
-            // Le backend renvoie { response: "..." }
-            setMessages(prev => [...prev, { role: 'system', content: data.response || data.reply || "Désolé, j'ai eu un trou de mémoire." }]);
+
+            if (!response.ok) {
+                throw new Error(data.message || data.error || `Erreur serveur : ${response.status}`);
+            }
+
+            setMessages(prev => [...prev, { role: 'system', content: data.response || "Désolé, j'ai eu un trou de mémoire." }]);
         } catch (error) {
             console.error('Erreur Copilot:', error);
-            setMessages(prev => [...prev, { role: 'system', content: "Erreur de connexion au Cœur du Système. Vérifie ta connexion temporelle." }]);
+            const errorMsg = error.name === 'TypeError' && error.message === 'Failed to fetch'
+                ? "Impossible de joindre le serveur. Vérifie si le backend est bien démarré."
+                : error.message;
+            setMessages(prev => [...prev, {
+                role: 'system',
+                content: `DÉFAILLANCE CORE : ${errorMsg}.`
+            }]);
         } finally {
             setIsTyping(false);
         }

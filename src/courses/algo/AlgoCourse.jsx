@@ -340,21 +340,34 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   // Mettre à plat toutes les leçons
   const allLessons = courseData.flatMap(m => m.chapters.flatMap(c => c.lessons));
 
-  // Générer les positions pour le Node Map (Zig-zag vertical)
-  const COLUMNS = 3;
-  const X_SPACING = 250;
-  const Y_SPACING = 150;
+  // Gestion de la responsivité pour le graph
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 768;
+  const isTablet = windowWidth >= 768 && windowWidth < 1200;
+
+  const COLUMNS = isMobile ? 1 : (isTablet ? 2 : 3);
+  const X_SPACING = isMobile ? 0 : (isTablet ? 300 : Math.max(300, windowWidth / (COLUMNS + 1)));
+  const Y_SPACING = isMobile ? 180 : 200;
 
   const nodes = allLessons.map((lesson, index) => {
     const row = Math.floor(index / COLUMNS);
     const col = index % COLUMNS;
-    // Si ligne impaire, on inverse la direction
-    const xMultiplier = row % 2 !== 0 ? (params => (COLUMNS - 1) - params)(col) : col;
+    // Si ligne impaire, on inverse la direction (serpentin)
+    const xMultiplier = !isMobile && row % 2 !== 0 ? (COLUMNS - 1) - col : col;
+
+    // Centrage horizontal sur PC/Tablette, ou centrage fixe sur Mobile
+    const xBase = isMobile ? windowWidth / 2 : (windowWidth - (COLUMNS - 1) * X_SPACING) / 2;
 
     return {
       ...lesson,
-      x: xMultiplier * X_SPACING + 100,
-      y: row * Y_SPACING + 100,
+      x: isMobile ? windowWidth / 2 : xBase + col * X_SPACING,
+      y: row * Y_SPACING + 150,
       isUnlocked: index === 0 || completedLessons.includes(allLessons[index - 1].id),
       isCompleted: completedLessons.includes(lesson.id)
     };
@@ -454,9 +467,9 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
     );
   }
 
-  // Dimensions virtelles du canvas draggable
-  const canvasWidth = COLUMNS * X_SPACING + 200;
-  const canvasHeight = Math.ceil(allLessons.length / COLUMNS) * Y_SPACING + 200;
+  // Dimensions virtuelles du canvas draggable (pour le défilement)
+  const canvasWidth = windowWidth; // On utilise toute la largeur
+  const canvasHeight = Math.ceil(allLessons.length / COLUMNS) * Y_SPACING + 300;
 
   return (
     <div className="fixed inset-0 z-50 bg-[#020617] text-emerald-50 flex flex-col font-sans overflow-hidden pattern-grid-lg">

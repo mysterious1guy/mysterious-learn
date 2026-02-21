@@ -57,13 +57,15 @@ const sendEmailToUsers = async (req, res) => {
     }
 
     const results = await Promise.allSettled(
-      users.map(user =>
-        sendEmail({
+      users.map(user => {
+        const isHtml = /<[a-z][\s\S]*>/i.test(body);
+        return sendEmail({
           to: user.email,
           subject: subject,
-          text: body
-        })
-      )
+          text: isHtml ? "" : body,
+          html: isHtml ? body : undefined
+        });
+      })
     );
 
     const successful = results.filter(r => r.status === 'fulfilled').length;
@@ -100,11 +102,13 @@ const sendNotificationToUsers = async (req, res) => {
 
     if (shouldSendEmail) {
       const users = await User.find({ isEmailVerified: true });
+      const isHtml = /<[a-z][\s\S]*>/i.test(message);
       const emailPromises = users.map(user =>
         sendEmail({
           to: user.email,
           subject: title,
-          text: message
+          text: isHtml ? "" : message,
+          html: isHtml ? message : undefined
         })
       );
       await Promise.all(emailPromises);

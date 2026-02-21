@@ -27,7 +27,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     website: user?.website || '',
     language: user?.language || 'fr',
     notifications: user?.notifications || true,
-    privacy: user?.privacy || 'public'
+    privacy: user?.privacy || 'public',
+    programmingLevel: user?.programmingLevel || 'beginner'
   });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -251,7 +252,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       website: user?.website || '',
       language: user?.language || 'fr',
       notifications: user?.notifications || true,
-      privacy: user?.privacy || 'public'
+      privacy: user?.privacy || 'public',
+      programmingLevel: user?.programmingLevel || 'beginner'
     });
     setIsEditing(false);
   };
@@ -465,6 +467,34 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               />
             ) : (
               <p className="text-white">{user?.website ? <a href={user.website} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">{user.website}</a> : '-'}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">Niveau d'expertise</label>
+            {isEditing ? (
+              <select
+                value={editForm.programmingLevel}
+                onChange={(e) => setEditForm({ ...editForm, programmingLevel: e.target.value })}
+                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+              >
+                <option value="beginner">Débutant</option>
+                <option value="intermediate">Intermédiaire</option>
+                <option value="advanced">Avancé</option>
+                <option value="expert">Expert</option>
+              </select>
+            ) : (
+              <div className="flex items-center gap-2">
+                <p className="text-white uppercase tracking-wider font-bold text-sm">
+                  {editForm.programmingLevel === 'beginner' ? 'Débutant' :
+                    editForm.programmingLevel === 'intermediate' ? 'Intermédiaire' :
+                      editForm.programmingLevel === 'advanced' ? 'Avancé' : 'Expert'}
+                </p>
+                <span className={`w-2 h-2 rounded-full ${editForm.programmingLevel === 'beginner' ? 'bg-blue-400' :
+                    editForm.programmingLevel === 'intermediate' ? 'bg-yellow-400' :
+                      editForm.programmingLevel === 'advanced' ? 'bg-purple-400' : 'bg-emerald-400'
+                  }`}></span>
+              </div>
             )}
           </div>
         </div>

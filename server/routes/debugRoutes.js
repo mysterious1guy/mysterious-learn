@@ -7,5 +7,6 @@ router.get('/paths', checkPaths);
 router.get('/status', fullStatusCheck);
 router.get('/google-oauth', testGoogleOAuth);
 router.get('/test-email', testEmail);
+router.get('/test-ai', testAIChat);
 
 module.exports = router;
