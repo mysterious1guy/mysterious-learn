@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { User, Palette, ShieldCheck, Bot, ArrowRight, Check, Moon, Sun, Volume2, VolumeX, Globe } from 'lucide-react';
+import { User, Palette, ShieldCheck, Bot, ArrowRight, Check, Moon, Sun, Volume2, VolumeX, Globe, Monitor, Zap, Cpu } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { setTheme } = useTheme();
+    const { t, setLanguage, language } = useLanguage();
 
     // Local state for preferences
     const [formData, setFormData] = useState({
@@ -25,6 +29,12 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
 
     const setPreference = (key, value) => {
         setFormData({ ...formData, [key]: value });
+        // Appliquer immédiatement le changement de thème ou de langue
+        if (key === 'theme') {
+            setTheme(value);
+        } else if (key === 'language') {
+            setLanguage(value);
+        }
     };
 
     const handleNext = () => {
@@ -102,11 +112,11 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
 
                         {steps.map((s) => (
                             <div key={s.id} className="flex flex-col items-center gap-2">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${step >= s.id ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'bg-slate-800 text-slate-400'
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${step >= s.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30' : 'bg-slate-800 text-slate-400'
                                     }`}>
                                     {step > s.id ? <Check className="w-5 h-5" /> : s.icon}
                                 </div>
-                                <span className={`text-xs font-medium ${step >= s.id ? 'text-blue-400' : 'text-slate-500'}`}>{s.title}</span>
+                                <span className={`text-[10px] uppercase tracking-widest font-bold ${step >= s.id ? 'text-blue-400' : 'text-slate-500'}`}>{t(`onboarding.${s.title.toLowerCase()}`) || s.title}</span>
                             </div>
                         ))}
                     </div>
@@ -165,66 +175,72 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                 className="space-y-8"
                             >
                                 <div className="text-center mb-6">
-                                    <h2 className="text-2xl font-semibold text-white mb-2">Personnalise ton espace</h2>
-                                    <p className="text-slate-400">Choisis les paramètres qui te conviennent.</p>
+                                    <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-tight">{t('onboarding.title')}</h2>
+                                    <p className="text-slate-400 text-sm">Choisis les paramètres qui te conviennent pour ton voyage.</p>
                                 </div>
 
                                 {/* Theme Selection */}
-                                <div className="space-y-3">
-                                    <label className="text-sm font-medium text-slate-300">Thème</label>
+                                <div className="space-y-4">
+                                    <label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                                        <Monitor size={14} /> {t('onboarding.theme')}
+                                    </label>
                                     <div className="grid grid-cols-2 gap-4">
                                         <button
                                             onClick={() => setPreference('theme', 'dark')}
-                                            className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all ${formData.theme === 'dark' ? 'bg-blue-500/10 border-blue-500 text-blue-400' : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                                            className={`flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all group ${formData.theme === 'dark' ? 'bg-blue-600/10 border-blue-500 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.2)]' : 'bg-slate-950/40 border-slate-800 text-slate-500 hover:border-slate-700'
                                                 }`}
                                         >
-                                            <Moon className="w-8 h-8 mb-2" />
-                                            <span className="font-medium">Sombre</span>
+                                            <Moon className={`w-8 h-8 mb-3 transition-transform group-hover:scale-110 ${formData.theme === 'dark' ? 'text-blue-400' : ''}`} />
+                                            <span className="font-bold uppercase tracking-widest text-[10px]">{t('onboarding.dark')}</span>
                                         </button>
                                         <button
                                             onClick={() => setPreference('theme', 'light')}
-                                            className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all ${formData.theme === 'light' ? 'bg-blue-500/10 border-blue-500 text-blue-400' : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                                            className={`flex flex-col items-center justify-center p-6 rounded-2xl border-2 transition-all group ${formData.theme === 'light' ? 'bg-blue-600/10 border-blue-500 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.2)]' : 'bg-slate-950/40 border-slate-800 text-slate-500 hover:border-slate-700'
                                                 }`}
                                         >
-                                            <Sun className="w-8 h-8 mb-2" />
-                                            <span className="font-medium">Clair</span>
+                                            <Sun className={`w-8 h-8 mb-3 transition-transform group-hover:rotate-45 ${formData.theme === 'light' ? 'text-blue-400' : ''}`} />
+                                            <span className="font-bold uppercase tracking-widest text-[10px]">{t('onboarding.light')}</span>
                                         </button>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-3">
-                                        <label className="text-sm font-medium text-slate-300">Langue du contenu</label>
-                                        <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+                                    <div className="space-y-4">
+                                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                                            <Globe size={14} /> {t('onboarding.language')}
+                                        </label>
+                                        <div className="flex bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800">
                                             <button
                                                 onClick={() => setPreference('language', 'fr')}
-                                                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${formData.language === 'fr' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-300'}`}
+                                                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${formData.language === 'fr' ? 'bg-slate-800 text-blue-400 shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                                             >
-                                                <Globe className="w-4 h-4" /> Français
+                                                Français
                                             </button>
                                             <button
                                                 onClick={() => setPreference('language', 'en')}
-                                                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${formData.language === 'en' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-300'}`}
+                                                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${formData.language === 'en' ? 'bg-slate-800 text-blue-400 shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
                                             >
-                                                <Globe className="w-4 h-4" /> English
+                                                English
                                             </button>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <label className="text-sm font-medium text-slate-300">Effets Sonores (CyberPet)</label>
-                                        <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+                                    <div className="space-y-4">
+                                        <label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                                            <Volume2 size={14} /> {t('onboarding.sound')}
+                                        </label>
+                                        <div className="flex bg-slate-950/60 p-1.5 rounded-2xl border border-slate-800">
                                             <button
                                                 onClick={() => setPreference('soundEnabled', true)}
-                                                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${formData.soundEnabled === true ? 'bg-blue-500/20 text-blue-400' : 'text-slate-400 hover:text-slate-300'}`}
+                                                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${formData.soundEnabled === true ? 'bg-emerald-500/20 text-emerald-400' : 'text-slate-500 hover:text-slate-300'}`}
                                             >
-                                                <Volume2 className="w-4 h-4" /> Activé
+                                                <Volume2 className="w-4 h-4" /> {t('onboarding.active')}
                                             </button>
                                             <button
                                                 onClick={() => setPreference('soundEnabled', false)}
-                                                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${formData.soundEnabled === false ? 'bg-red-500/20 text-red-400' : 'text-slate-400 hover:text-slate-300'}`}
+                                                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest transition-all ${formData.soundEnabled === false ? 'bg-red-500/20 text-red-500' : 'text-slate-500 hover:text-slate-300'}`}
                                             >
-                                                <VolumeX className="w-4 h-4" /> Muet
+                                                <VolumeX className="w-4 h-4" /> {t('onboarding.mute')}
                                             </button>
                                         </div>
                                     </div>
@@ -281,10 +297,17 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 className="text-center space-y-8 py-6"
                             >
-                                <div className="relative w-32 h-32 mx-auto">
-                                    <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-ping"></div>
-                                    <div className="relative w-full h-full bg-slate-900 border-2 border-blue-500 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/20">
-                                        <Bot className="w-16 h-16 text-blue-400" />
+                                <div className="relative w-40 h-40 mx-auto">
+                                    <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-pulse blur-2xl"></div>
+                                    <div className="relative w-full h-full bg-slate-900 border-2 border-blue-500/30 rounded-[2.5rem] flex items-center justify-center shadow-[0_0_50px_rgba(59,130,246,0.2)] overflow-hidden">
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div className="relative">
+                                                <Cpu className="w-16 h-16 text-blue-400 animate-pulse" />
+                                                <Zap className="w-6 h-6 text-yellow-400 absolute -top-1 -right-1 animate-bounce" />
+                                            </div>
+                                            <div className="h-1 w-12 bg-blue-500/20 rounded-full"></div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -319,19 +342,19 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                             onClick={handleNext}
                             className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-colors flex items-center gap-2 group"
                         >
-                            Suivant
+                            {t('onboarding.next')}
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </button>
                     ) : (
                         <button
                             onClick={handleComplete}
                             disabled={loading}
-                            className="px-8 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2 hover:scale-105 disabled:opacity-70 disabled:hover:scale-100"
+                            className="px-8 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-xl font-bold uppercase tracking-widest text-xs transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2 hover:scale-105 disabled:opacity-70 disabled:hover:scale-100"
                         >
                             {loading ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
-                                <>Commencer <ArrowRight className="w-4 h-4" /></>
+                                <>{t('onboarding.start')} <ArrowRight className="w-4 h-4" /></>
                             )}
                         </button>
                     )}

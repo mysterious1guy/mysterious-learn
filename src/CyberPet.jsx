@@ -18,6 +18,10 @@ const CyberPet = ({ isPasswordFocused, onSecret }) => {
 
   // --- Audio Context for Synthesis ---
   const playSound = useCallback((type) => {
+    // Vérifier la préférence de l'utilisateur
+    const soundEnabled = user?.preferences?.soundEnabled ?? true;
+    if (!soundEnabled) return;
+
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
 

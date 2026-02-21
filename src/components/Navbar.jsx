@@ -3,9 +3,11 @@ import { Menu, BarChart3, Crown } from 'lucide-react';
 import MysteriousGeometricLogo from '../MysteriousGeometricLogo';
 import SearchBar from './SearchBar';
 import NotificationBell from './NotificationBell';
+import { useLanguage } from '../context/LanguageContext';
 
 const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) => {
   const location = useLocation();
+  const { t } = useLanguage();
   const isCoursePage = location.pathname.startsWith('/course/') || location.pathname.startsWith('/chapter/');
   return (
     <nav className="fixed top-0 left-0 right-0 p-2 sm:p-4 border-b border-gray-800 bg-gray-900/80 backdrop-blur-md z-40">
@@ -38,10 +40,10 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                 <Link
                   to="/admin"
                   className="flex items-center gap-2 p-2 sm:px-4 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-xl hover:bg-yellow-500/20 transition-all group"
-                  title="Accéder au panneau d'administration"
+                  title={t('admin')}
                 >
                   <Crown size={16} className="text-yellow-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-bold text-yellow-500 hidden md:block">Admin</span>
+                  <span className="text-sm font-bold text-yellow-500 hidden md:block">{t('admin')}</span>
                 </Link>
               )}
 
@@ -54,7 +56,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                     {user.firstName} {user.lastName}
                   </span>
                   <span className="text-[10px] text-blue-400 font-medium uppercase tracking-wider">
-                    Profil
+                    {t('account')}
                   </span>
                 </div>
                 {user.avatar ? (
@@ -73,11 +75,11 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
               <button
                 onClick={onShowUsageMonitor}
                 className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded-lg transition group"
-                title="Statistiques d'utilisation"
+                title={t('monitor')}
               >
                 <BarChart3 size={18} className="text-slate-400 group-hover:text-blue-400 transition-colors" />
                 <span className="text-sm font-bold hidden md:block text-slate-300 group-hover:text-white transition-colors">
-                  Moniteur
+                  {t('monitor')}
                 </span>
               </button>
             </>
