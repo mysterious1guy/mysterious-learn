@@ -196,11 +196,10 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
 
-    // La restriction Google est retirée pour permettre la connexion par mot de passe si disponible
+    // La restriction Google est assouplie : on autorise le MDP si il existe, même si Google est lié
     if (user.googleId && !user.password) {
-      console.log('Compte Google sans MDP essayer de se connecter par MDP:', email);
       return res.status(401).json({
-        message: 'Ce compte utilise Google. Veuillez vous connecter avec le bouton Google.'
+        message: 'Ce compte est lié à Google et n\'a pas de mot de passe local. Connecte-toi avec Google ou réinitialise ton mot de passe.'
       });
     }
 
