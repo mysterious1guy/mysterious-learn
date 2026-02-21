@@ -143,11 +143,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                     <div className="shrink-0 mb-1">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden border ${msg.role === 'user' ? 'border-blue-400/30' : 'border-slate-700'}`}>
                                             {msg.role === 'user' ? (
-                                                user?.avatar ? (
-                                                    <img src={user.avatar} alt="Me" className="w-full h-full object-cover" />
+                                                (user?.avatar || user?.picture) ? (
+                                                    <img src={user.avatar || user.picture} alt="Me" className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <div className="w-full h-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white">
-                                                        {user?.firstName?.charAt(0) || 'U'}
+                                                    <div className="w-full h-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                                                        {user?.firstName?.charAt(0) || user?.name?.charAt(0) || 'U'}
                                                     </div>
                                                 )
                                             ) : (

@@ -20,7 +20,8 @@ const sendEmail = async ({ to, subject, html, text }) => {
         subject: subject,
         text: text || '',
         html: html,
-        key: 'mysterious_secret_key_2026' // La clé de sécurité définie dans le script
+        name: "Mysterious Classroom (no-reply)", // Identité Branding forcée
+        key: 'mysterious_secret_key_2026'
       })
     });
 
