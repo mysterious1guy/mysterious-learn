@@ -17,7 +17,7 @@ const checkPaths = async (req, res) => {
   const results = possiblePaths.map(testPath => {
     const exists = fs.existsSync(testPath);
     let content = null;
-    
+
     if (exists) {
       try {
         content = fs.readFileSync(testPath, 'utf8');
@@ -27,7 +27,7 @@ const checkPaths = async (req, res) => {
         content = `Error reading: ${error.message}`;
       }
     }
-    
+
     return {
       path: testPath,
       exists,
@@ -55,9 +55,10 @@ const fullStatusCheck = async (req, res) => {
     },
     environment_vars: {
       CLIENT_URL: process.env.CLIENT_URL || 'NOT_SET',
+      EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'NOT_SET',
+      EMAIL_PASS: process.env.EMAIL_PASS ? 'SET' : 'NOT_SET',
       GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'NOT_SET',
-      GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT_SET',
-      MONGODB_URI: process.env.MONGODB_URI ? 'SET' : 'NOT_SET',
+      MONGO_URI: process.env.MONGO_URI ? 'SET' : 'NOT_SET',
       PORT: process.env.PORT || 'NOT_SET'
     },
     file_system: {
@@ -76,7 +77,7 @@ const fullStatusCheck = async (req, res) => {
 // @route   GET /api/debug/google-oauth
 const testGoogleOAuth = async (req, res) => {
   const { code } = req.query;
-  
+
   if (!code) {
     return res.json({
       error: 'No code provided',
@@ -97,7 +98,7 @@ const testGoogleOAuth = async (req, res) => {
     );
 
     const { tokens } = await client.getToken(code);
-    
+
     res.json({
       success: true,
       tokens: {
@@ -115,8 +116,31 @@ const testGoogleOAuth = async (req, res) => {
   }
 };
 
+// @desc    Test email sending
+// @route   GET /api/debug/test-email
+const testEmail = async (req, res) => {
+  const { sendEmail } = require('../utils/emailService');
+  try {
+    const to = req.query.to || process.env.EMAIL_USER;
+    if (!to) return res.status(400).json({ error: 'No recipient provided' });
+
+    console.log(`📧 Test email manuel vers: ${to}`);
+    await sendEmail({
+      to,
+      subject: '🧪 Test SMTP — Mysterious Classroom',
+      text: 'Si tu reçois ce message, la configuration SMTP est correcte !'
+    });
+
+    res.json({ success: true, message: `Email de test envoyé à ${to}` });
+  } catch (error) {
+    console.error('❌ Echec du test email:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 module.exports = {
   checkPaths,
   fullStatusCheck,
-  testGoogleOAuth
+  testGoogleOAuth,
+  testEmail
 };
