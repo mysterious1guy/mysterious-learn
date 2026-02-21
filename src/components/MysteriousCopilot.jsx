@@ -121,7 +121,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full border border-black animate-pulse"></div>
                             </div>
                             <span className="font-mono font-bold text-white tracking-widest text-sm">
-                                MYSTERIOUS ASSISTANT <span className="text-blue-500 text-xs ml-1">v2.0</span>
+                                Mysterious Assistant <span className="text-blue-500 text-xs ml-1">v2.0</span>
                             </span>
                         </div>
                         <button onClick={onClose} className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
