@@ -435,7 +435,7 @@ FINFONCTION
         id: 'module9',
         title: "Module 9 : Algorithmes de Tri",
         icon: <Layers size={20} />,
-        description: "Tris et Recherches. Maîtrisez l'organisation des données à grande échelle.",
+        description: "Apprenez à organiser les données à grande échelle. Maîtrisez le tri à bulles et la recherche dichotomique.",
         chapters: [
             {
                 id: 'chap9',
@@ -470,40 +470,11 @@ Pour utiliser cet algorithme, le tableau **DOIT être trié**.
 À chaque étape, on regarde au milieu. Si c'est trop grand, on cherche dans la moitié gauche. Sinon, dans la droite.
 
 **Efficacité Redoutable :** Pour 1 million de noms, il ne faut que 20 étapes maximum pour trouver quelqu'un !
-`
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id: 'module10',
-        title: "Module 10 : Complexité",
-        icon: <Trophy size={20} />,
-        description: "Introduction à la Complexité et Structures de Données. Devenez un pur ingénieur.",
-        chapters: [
-            {
-                id: 'chap10',
-                title: "Vers l'Infini et l'Optimisation",
-                description: "Notation Big O, Piles et Files.",
-                lessons: [
-                    {
-                        id: 'algo_m_10_1',
-                        type: 'theory',
-                        title: "La Notation Big O",
-                        professorSpeech: "Félicitations, tu es arrivé au sommet. Maintenant, tu dois apprendre que le code le plus court n'est pas forcément le plus rapide. Mesurons la performance.",
-                        duration: '20 min',
-                        content: `
-# 🚀 Performance et Complexité (O)
 
-En informatique, on mesure le temps d'exécution en fonction de la taille des données (N).
-
-- **O(1)** : Temps constant (Instantané).
-- **O(N)** : Temps linéaire (Plus il y a de données, plus c'est long).
-- **O(N²)** : Temps quadratique (Très lent, évitez les boucles dans les boucles !).
-
-## Le Mot de la Fin
-Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais : le code expire, mais la logique est éternelle.
+---
+**Félicitations, Apprenti.** 
+Tu as acquis les bases universelles de la logique de programmation. Ces concepts sont les fondations de tous les langages que tu rencontreras : Python, C, JavaScript ou Java. 
+Tu es maintenant prêt à quitter la théorie pure pour la pratique réelle.
 
 **Mouhamed Fall** - *Créateur de Mysterious Classroom*
 `
@@ -511,151 +482,5 @@ Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais 
                 ]
             }
         ]
-    },
-    {
-        "id": "module11",
-        "title": "Module 11: La Magie de la R\u00e9cursivit\u00e9",
-        "icon": "Repeat",
-        "description": "Appelez-vous vous-m\u00eame. Comprenez la puissance de la r\u00e9cursivit\u00e9.",
-        "chapters": [
-            {
-                "id": "chap11",
-                "title": "Introduction à la Récursivité",
-                "description": "L'art de d\u00e9couper un probl\u00e8me en sous-probl\u00e8mes identiques.",
-                "lessons": [
-                    {
-                        "id": "algo_m_11_1",
-                        "type": "theory",
-                        "title": "Principe de la Récursivité",
-                        "professorSpeech": "Pour comprendre la r\u00e9cursivit\u00e9, il faut d'abord comprendre la r\u00e9cursivit\u00e9. C'est l'art de s'appeler soi-m\u00eame.",
-                        "duration": "15 min",
-                        "content": "# \ud83e\ude86 La R\u00e9cursivit\u00e9\n\nUne fonction **r\u00e9cursive** est une fonction qui fait appel \u00e0 **elle-m\u00eame** pendant son ex\u00e9cution.\n\n## Les 2 Lois Fondamentales\n1.  **Le cas de base (Condition d'arr\u00eat)** : Il FAUT un moment o\u00f9 la fonction arr\u00eate de s'appeler, sinon c'est la boucle infinie (Stack Overflow) !\n2.  **L'appel r\u00e9cursif** : L'\u00e9tape o\u00f9 elle s'appelle elle-m\u00eame avec un probl\u00e8me l\u00e9g\u00e8rement plus petit.\n\n```pseudo\nFONCTION CompteARebours(n : Entier)\nD\u00c9BUT\n    // 1. Cas de base\n    SI n <= 0 ALORS\n        AFFICHER \"D\u00e9collage !\"\n        RETOURNER\n    FINSI\n    \n    AFFICHER n\n    // 2. Appel r\u00e9cursif (probl\u00e8me plus petit)\n    CompteARebours(n - 1)\nFINFONCTION\n```\n"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "id": "module12",
-        "title": "Module 12 : Les Chaînes de Caractères",
-        "icon": "Type",
-        "description": "L'art de traiter le texte, les mots de passe et la cryptographie.",
-        "chapters": [
-            {
-                "id": "chap12",
-                "title": "Algorithmes sur les Strings",
-                "description": "Palindromes, Anagrammes et expressions r\u00e9guli\u00e8res.",
-                "lessons": [
-                    {
-                        "id": "algo_m_12_1",
-                        "type": "theory",
-                        "title": "Inverser et Vérifier (Strings)",
-                        "professorSpeech": "RADAR. KAYAK. LAVAL. Un mot qui se lit dans les deux sens cache des sym\u00e9tries int\u00e9ressantes.",
-                        "duration": "15 min",
-                        "content": "# \ud83e\ude9e Les Palindromes\n\nUn palindrome est un mot qui se lit de la m\u00eame mani\u00e8re de gauche \u00e0 droite et de droite \u00e0 gauche.\n\n**Comment v\u00e9rifier un palindrome ?**\nOn utilise g\u00e9n\u00e9ralement la technique des \"Deux Pointeurs\" (Two Pointers).\n1. Un pointeur \\`gauche\\` commence au d\u00e9but (indice 0).\n2. Un pointeur \\`droite\\` commence \u00e0 la fin.\n3. On compare, puis on rapproche les pointeurs vers le centre.\n\n```pseudo\nFONCTION EstPalindrome(mot : Cha\u00eene)\n    gauche <- 0\n    droite <- LONGUEUR(mot) - 1\n    \n    TANT QUE gauche < droite\n        SI mot[gauche] != mot[droite] ALORS\n            RETOURNER FAUX\n        FINSI\n        gauche <- gauche + 1\n        droite <- droite - 1\n    FINTANTQUE\n    \n    RETOURNER VRAI\nFINFONCTION\n```\n"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "id": "module13",
-        "title": "Module 13 : Listes Chaînées",
-        "icon": "Link",
-        "description": "Une alternative dynamique aux Tableaux. La m\u00e9moire sous forme de cha\u00eene.",
-        "chapters": [
-            {
-                "id": "chap13",
-                "title": "G\u00e9rer la Fronti\u00e8re de la M\u00e9moire",
-                "description": "Noeuds, Pointeurs et Allocation dynamique.",
-                "lessons": [
-                    {
-                        "id": "algo_m_13_1",
-                        "type": "theory",
-                        "title": "Noeuds et Pointeurs",
-                        "professorSpeech": "Imaginez des wagons de train. Chaque wagon contient une marchandise, mais aussi un crochet pointant vers le wagon suivant. C'est une liste cha\u00een\u00e9e.",
-                        "duration": "20 min",
-                        "content": "# \ud83d\udd17 Les Listes Cha\u00een\u00e9es (Linked Lists)\n\nContrairement \u00e0 un tableau o\u00f9 toutes les cases sont coll\u00e9es en m\u00e9moire, une **liste cha\u00een\u00e9e** est dispers\u00e9e. \n\nChaque \u00e9l\u00e9ment (appel\u00e9 **Noeud**) contient :\n1. La Donn\u00e9e (La valeur).\n2. Le **Pointeur** (L'adresse en m\u00e9moire du noeud suivant).\n\n## Pourquoi utiliser des listes cha\u00een\u00e9es ?\n- **\u2705 Ajout/Suppression ultra rapide :** O(1) si on est au bon endroit. Il suffit de changer le lien du pointeur.\n- **\u274c Acc\u00e8s tr\u00e8s lent :** O(N). Pas d'indice ! Pour voir le 50\u00e8me \u00e9l\u00e9ment, il faut parcourir les 49 premiers un par un.\n\n> [!CAUTION]\n> \"Null Pointer Exception\" : L'erreur la plus c\u00e9l\u00e8bre du monde arrive quand un pointeur regarde vers le vide (Null) au lieu d'un Noeud existant.\n"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "id": "module14",
-        "title": "Module 14 : Arbres et Hiérarchies",
-        "icon": "Network",
-        "description": "Hi\u00e9rarchies et organisation spatiale des donn\u00e9es.",
-        "chapters": [
-            {
-                "id": "chap14",
-                "title": "Arbres Binaires et Graphes",
-                "description": "BST, Parcours DFS et BFS.",
-                "lessons": [
-                    {
-                        "id": "algo_m_14_1",
-                        "type": "theory",
-                        "title": "Les Arbres Binaires de Recherche (BST)",
-                        "professorSpeech": "L'organisation parfaite n'est pas une ligne droite, c'est un arbre g\u00e9n\u00e9alogique.",
-                        "duration": "25 min",
-                        "content": "# \ud83c\udf33 Les Arbres Binaires\n\nUn Arbre est compos\u00e9 de **Noeuds**. Le premier noeud tout en haut est la **Racine** (Root). Les noeuds tout en bas sans enfants sont les **Feuilles** (Leaves).\n\nUn **Arbre Binaire de Recherche (BST)** a une r\u00e8gle magique :\n- Tout enfant \u00e0 **gauche** est plus PETIT que son parent.\n- Tout enfant \u00e0 **droite** est plus GRAND que son parent.\n\n## La Recherche Parfaite\nGr\u00e2ce \u00e0 cette r\u00e8gle, chercher un \u00e9l\u00e9ment coupe toujours le probl\u00e8me en deux (comme la recherche dichotomique !). Temps de recherche : **O(log N)**.\n\n```pseudo\nFONCTION RechercheArbre(racine, valeur)\n    SI racine est NULL ALORS\n        RETOURNER FAUX\n    FINSI\n    SI racine.donnee == valeur ALORS\n        RETOURNER VRAI\n    FINSI\n    SI valeur < racine.donnee ALORS\n        RETOURNER RechercheArbre(racine.gauche, valeur)\n    SINON\n        RETOURNER RechercheArbre(racine.droite, valeur)\n    FINSI\nFINFONCTION\n```\n"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "id": "module15",
-        "title": "Module 15 : Dictionnaires et Hachage",
-        "icon": "DatabaseZap",
-        "description": "Comment les bases de donn\u00e9es trouvent un million d'infos instantan\u00e9ment.",
-        "chapters": [
-            {
-                "id": "chap15",
-                "title": "Tables de Hachage et Dictionnaires",
-                "description": "Le secret derri\u00e8re la recherche en O(1).",
-                "lessons": [
-                    {
-                        "id": "algo_m_15_1",
-                        "type": "theory",
-                        "title": "Les Fonctions de Hachage",
-                        "professorSpeech": "Chercher dans un tableau prend du temps (O(N)). Imagines si tu connaissais la r\u00e9ponse instantan\u00e9ment sans chercher (O(1)). C'est le pouvoir des cl\u00e9s.",
-                        "duration": "20 min",
-                        "content": "# \ud83d\udddd\ufe0f Les Tables de Hachage (Hash Tables)\n\nAussi appel\u00e9es **Dictionnaires** (Python) ou **Maps** (Java/JS), c'est la structure de donn\u00e9es la plus utilis\u00e9e au monde.\n\n**Comment \u00e7a marche ?**\n1. Tuple Cl\u00e9-Valeur : Au lieu d'un index num\u00e9rique, on utilise un mot-cl\u00e9 (ex: \"nom\" -> \"Alice\").\n2. **La Fonction de Hachage** : Elle prend le mot-cl\u00e9, fait des math\u00e9matiques bizarres dessus, et crache un num\u00e9ro. \n3. Ce num\u00e9ro indique EXACTEMENT \u00e0 quel endroit dans la m\u00e9moire la valeur est stock\u00e9e.\n\n## Le probl\u00e8me des Collisions\nQue se passe-t-il si \"Alice\" et \"Bob\" donnent le m\u00eame num\u00e9ro apr\u00e8s calcul math\u00e9matique ? C'est une **collision**. L'ordinateur stocke alors les deux dans la m\u00eame case (souvent via une mini-liste cha\u00een\u00e9e).\n\n> [!TIP]\n> C'est avec des tables de hachage que les jeux vid\u00e9o v\u00e9rifient instantan\u00e9ment si le pseudo que vous voulez prendre est d\u00e9j\u00e0 utilis\u00e9 parmi des millions de joueurs !\n"
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "id": "module16",
-        "title": "Module 16 : Algorithmes Avancés",
-        "icon": "Crown",
-        "description": "Programmation Dynamique, Algorithmes Gloutons et Pathfinding.",
-        "chapters": [
-            {
-                "id": "chap16",
-                "title": "Ma\u00eetrise Algorithmique",
-                "description": "Comment Google Maps trouve le chemin le plus court.",
-                "lessons": [
-                    {
-                        "id": "algo_m_16_1",
-                        "type": "theory",
-                        "title": "Programmation Dynamique (DP)",
-                        "professorSpeech": "Ceux qui oublient le pass\u00e9 sont condamn\u00e9s \u00e0 le r\u00e9p\u00e9ter. La programmation dynamique, c'est se souvenir de ce qu'on a d\u00e9j\u00e0 calcul\u00e9.",
-                        "duration": "30 min",
-                        "content": "# \ud83e\udde0 La Programmation Dynamique\n\nC'est la technique reine des entretiens chez Google, Microsoft ou Meta.\n\nLe principe est la **M\u00e9mo\u00efsation** (Rappeler \u00e0 la m\u00e9moire).\nSi vous calculez Fibonacci(50) de mani\u00e8re r\u00e9cursive classique, votre ordinateur va exploser car il recalcule les m\u00eames choses des milliards de fois.\n\n**La Solution DP :**\nSi on demande Fibonacci(5), et qu'on a d\u00e9j\u00e0 calcul\u00e9 Fibonacci(5) plus t\u00f4t, on sauvegarde la r\u00e9ponse dans un tableau. La prochaine fois, on lit le tableau (O(1)) au lieu de refaire le calcul !\n\n1. D\u00e9composer le probl\u00e8me en sous-probl\u00e8mes.\n2. R\u00e9soudre chaque sous-probl\u00e8me une seule fois.\n3. Stocker la solution dans une table.\n"
-                    },
-                    {
-                        "id": "algo_m_16_2",
-                        "type": "theory",
-                        "title": "Le Compas d'Or : A* et Pathfinding",
-                        "professorSpeech": "Comment aller d'un point A \u00e0 un point B ? Le GPS ne devine pas, il calcule. Bienvenue dans les Graphes pond\u00e9r\u00e9s.",
-                        "duration": "30 min",
-                        "content": "# \ud83d\uddfa\ufe0f Pathfinding (Recherche de chemin)\n\nComment un PNJ dans un jeu vid\u00e9o trouve son chemin vers vous en \u00e9vitant les murs ?\n\n## L'algorithme de Dijkstra\nIl explore comme une flaque d'eau : il teste tous les chemins en cercles concentriques grandissants jusqu'\u00e0 trouver la cible. C'est s\u00fbr \u00e0 100%, mais c'est tr\u00e8s lent.\n\n## L'algorithme A*\nIl ajoute une **Heuristique** (Une supposition intelligente). Au lieu d'explorer dans toutes les directions, il calcule une \"distance \u00e0 vol d'oiseau\" et priorise les cases qui se rapprochent physiquement de la cible.\n\n> [!NOTE]\n> Si vous jouez aux \u00c9checs contre l'ordinateur, l'IA utilise un algorithme appel\u00e9 **Minimax** avec \u00e9lagage Alpha-Beta, qui est une exploration de l'arbre des coups possibles ! Vous savez maintenant comment le monde num\u00e9rique est b\u00e2ti.\n\n**Toutes nos f\u00e9licitations, Ma\u00eetre.** Vous avez atteint la limite de l'enseignement classique. Le reste s'\u00e9crit avec vos doigts sur le clavier.\n"
-                    }
-                ]
-            }
-        ]
     }
-]
+];
