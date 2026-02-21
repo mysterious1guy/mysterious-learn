@@ -9,29 +9,34 @@ if (dns.setDefaultResultOrder) {
 console.log('📧 Initialisation du service email...');
 console.log('📧 EMAIL_USER configuré:', process.env.EMAIL_USER ? 'OUI' : 'NON');
 
-// Vérification DNS manuelle pour debug
-dns.lookup('smtp.gmail.com', { family: 4 }, (err, address) => {
-  if (err) console.error('❌ Erreur DNS smtp.gmail.com:', err.message);
-  else console.log('📡 DNS smtp.gmail.com résolu sur:', address);
-});
-
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
   port: 465,
-  secure: true, // SSL/TLS
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  // Force IPv4 au niveau DNS interne de Nodemailer
+  // Force IPv4 en court-circuitant le DNS système
   lookup: (hostname, options, callback) => {
-    dns.lookup(hostname, { family: 4 }, callback);
+    if (hostname === 'smtp.gmail.com') {
+      dns.resolve4(hostname, (err, addresses) => {
+        if (err || !addresses.length) {
+          console.error('❌ Échec critique résolution IPv4 smtp.gmail.com');
+          return dns.lookup(hostname, options, callback);
+        }
+        console.log(`📡 [Lookup Custom] ${hostname} -> ${addresses[0]} (IPv4)`);
+        callback(null, addresses[0], 4);
+      });
+    } else {
+      dns.lookup(hostname, options, callback);
+    }
   },
   logger: true,
   debug: true,
-  connectionTimeout: 15000,
-  greetingTimeout: 15000,
-  socketTimeout: 30000,
+  connectionTimeout: 30000, // 30s
+  greetingTimeout: 30000,
+  socketTimeout: 45000,
 });
 
 // Vérifier la connexion au démarrage
