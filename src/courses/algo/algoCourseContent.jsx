@@ -4,19 +4,19 @@ import { Cpu, Database, Command, Box, GitBranch, Sparkles, Trophy, Zap, Terminal
 export const algoCourseData = [
     {
         id: 'module1',
-        title: "Module 1: L'Éveil du Maître",
+        title: "Module 1 : Initiation à la Logique",
         icon: <Cpu size={20} />,
-        description: "Comprenez l'essence de la logique pure. Apprenez à penser avant de coder.",
+        description: "Apprenez à structurer votre pensée logique avant d'écrire une seule ligne de code. Les fondations universelles du développement.",
         chapters: [
             {
                 id: 'chap1',
-                title: "La Genèse Algorithmique",
+                title: "Bases du Raisonnement",
                 description: "Qu'est-ce qu'un algorithme et pourquoi la machine est-elle 'idiote' ?",
                 lessons: [
                     {
                         id: 'algo_m_1_1',
                         type: 'theory',
-                        title: "Le Pouvoir de la Logique",
+                        title: "Qu'est-ce qu'un Algorithme ?",
                         professorSpeech: "Bienvenue, apprenti. Sais-tu que l'algorithme est né au IXe siècle avec Al-Khwarizmi ? Oublie les écrans, nous allons apprendre à structurer l'univers.",
                         duration: '10 min',
                         content: `
@@ -51,7 +51,7 @@ Un **algorithme** est une suite d'instructions finies, précises et ordonnées p
                     {
                         id: 'algo_m_1_2',
                         type: 'quiz',
-                        title: "Quiz : Nature de la Pensée",
+                        title: "Quiz : Pensée Procédurale",
                         professorSpeech: "Voyons si tu es prêt à dompter la machine. Réponds avec sagesse.",
                         question: "Quelle est la principale différence entre un humain et un ordinateur face à une instruction ?",
                         options: [
@@ -64,7 +64,7 @@ Un **algorithme** est une suite d'instructions finies, précises et ordonnées p
                     {
                         id: 'algo_m_1_3',
                         type: 'theory',
-                        title: "Le Squelette de la Pensée (Pseudo-code)",
+                        title: "Le Pseudo-code (Structure)",
                         professorSpeech: "Pour parler à la logique, nous utilisons le Pseudo-Code. C'est l'armure de ta pensée avant qu'elle ne devienne du code réel.",
                         duration: '12 min',
                         content: `
@@ -101,13 +101,13 @@ FIN
     },
     {
         id: 'module2',
-        title: "Module 2: L'Arsenal de Données",
+        title: "Module 2 : Variables et Stockage",
         icon: <Database size={20} />,
-        description: "Variables et Types Primitifs. Apprenez à stocker l'information efficacement.",
+        description: "Comprendre comment la machine mémorise les informations : Nombres, Texte et Etats Logiques.",
         chapters: [
             {
                 id: 'chap2',
-                title: "Les Boîtes de Mémoire",
+                title: "Gestion des Données",
                 description: "Déclaration, Affectation et Typage.",
                 lessons: [
                     {
@@ -141,7 +141,7 @@ En programmation, on ne peut rien faire sans stocker des données temporairement
                     {
                         id: 'algo_m_2_2',
                         type: 'theory',
-                        title: "Les 4 Types Élémentaires",
+                        title: "Les Types de Données",
                         professorSpeech: "Chaque tiroir a une forme précise. On ne met pas de l'eau dans une boîte à chaussures !",
                         duration: '10 min',
                         content: `
@@ -166,19 +166,19 @@ Pour optimiser la mémoire, il faut préciser la nature de ce que l'on stocke :
     },
     {
         id: 'module3',
-        title: "Module 3: Les Maîtres des Signes",
+        title: "Module 3 : Opérateurs et Calculs",
         icon: <Zap size={20} />,
         description: "Opérateurs et expressions. Faites chanter les chiffres.",
         chapters: [
             {
                 id: 'chap3',
-                title: "Calculs et Logique",
+                title: "Opérations Élémentaires",
                 description: "Opérateurs Arithmétiques, de Comparaison et Logiques.",
                 lessons: [
                     {
                         id: 'algo_m_3_1',
                         type: 'theory',
-                        title: "L'Arithmétique Profane",
+                        title: "Calculs Arithmétiques",
                         professorSpeech: "Calculer est la base de tout. Mais attention, la machine a ses propres règles pour la division...",
                         duration: '10 min',
                         content: `
@@ -223,19 +223,19 @@ Ils permettent de combiner plusieurs conditions :
     },
     {
         id: 'module4',
-        title: "Module 4: Le Don du Choix",
+        title: "Module 4 : Les Conditions",
         icon: <GitBranch size={20} />,
         description: "Conditions et structures de contrôle. Donnez une conscience à votre programme.",
         chapters: [
             {
                 id: 'chap4',
-                title: "Si, Sinon et Cas",
+                title: "Structures de Décision",
                 description: "Apprendre à bifurquer dans le code.",
                 lessons: [
                     {
                         id: 'algo_m_4_1',
                         type: 'theory',
-                        title: "Le SI : L'Aiguillage",
+                        title: "La Condition SI... SINON",
                         professorSpeech: "C'est ici que ton programme commence à 'réfléchir'. S'il pleut, prends un parapluie. C'est aussi simple que cela.",
                         duration: '15 min',
                         content: `
@@ -263,13 +263,13 @@ FINSI
     },
     {
         id: 'module5',
-        title: "Module 5: La Danse de l'Infini",
+        title: "Module 5 : Les Boucles",
         icon: <Terminal size={20} />,
-        description: "Les Boucles. Automatisez les tâches répétitives sans effort.",
+        description: "Maîtrisez l'art de l'automatisation. Apprenez à répéter des actions logiques sans effort.",
         chapters: [
             {
                 id: 'chap5',
-                title: "Itérations et Répétitions",
+                title: "Tâches Répétitives",
                 description: "POUR, TANT QUE et RÉPÉTER.",
                 lessons: [
                     {
@@ -301,13 +301,13 @@ FINPOUR
     },
     {
         id: 'module6',
-        title: "Module 6: Savoir Commun",
+        title: "Module 6 : Algorithmes Usuels",
         icon: <Layers size={20} />,
         description: "Algorithmes de base et utilitaires. Les briques de tout programme sérieux.",
         chapters: [
             {
                 id: 'chap6',
-                title: "Les Algorithmes Classiques",
+                title: "Statistiques et Calculs",
                 description: "Somme, Moyenne, Maximum et Minimum.",
                 lessons: [
                     {
@@ -335,7 +335,7 @@ FINPOUR
                     {
                         id: 'algo_m_6_2',
                         type: 'theory',
-                        title: "Trouver le Maître (Max/Min)",
+                        title: "Recherche de Minimum/Maximum",
                         professorSpeech: "Qui est le plus grand ? Qui est le plus petit ? C'est une question récurrente. Voici comment trouver l'extrême.",
                         duration: '10 min',
                         content: `
@@ -359,7 +359,7 @@ FINPOUR
     },
     {
         id: 'module7',
-        title: "Module 7: Le Train du Savoir",
+        title: "Module 7 : Les Tableaux",
         icon: <Hash size={20} />,
         description: "Tableaux et Listes. Organisez des masses de données dans une seule variable.",
         chapters: [
@@ -396,7 +396,7 @@ Chaque case a un indice.
     },
     {
         id: 'module8',
-        title: "Module 8: Le Diviser pour Régner",
+        title: "Module 8 : Fonctions",
         icon: <Command size={20} />,
         description: "Fonctions et Procédures. Apprenez à modulariser votre code pour le rendre immortel.",
         chapters: [
@@ -408,7 +408,7 @@ Chaque case a un indice.
                     {
                         id: 'algo_m_8_1',
                         type: 'theory',
-                        title: "Les Fonctions : Vos Sous-Traitants",
+                        title: "Concept de Fonction",
                         professorSpeech: "Ne refais jamais deux fois la même tâche. Crée une fonction, donne-lui des ordres, et laisse-la travailler pour toi.",
                         duration: '18 min',
                         content: `
@@ -433,7 +433,7 @@ FINFONCTION
     },
     {
         id: 'module9',
-        title: "Module 9: L'Art de l'Ordre",
+        title: "Module 9 : Algorithmes de Tri",
         icon: <Layers size={20} />,
         description: "Tris et Recherches. Maîtrisez l'organisation des données à grande échelle.",
         chapters: [
@@ -478,7 +478,7 @@ Pour utiliser cet algorithme, le tableau **DOIT être trié**.
     },
     {
         id: 'module10',
-        title: "Module 10: L'Aube de l'Efficacité",
+        title: "Module 10 : Complexité",
         icon: <Trophy size={20} />,
         description: "Introduction à la Complexité et Structures de Données. Devenez un pur ingénieur.",
         chapters: [
@@ -520,13 +520,13 @@ Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais 
         "chapters": [
             {
                 "id": "chap11",
-                "title": "Les Poup\u00e9es Russes Codeuses",
+                "title": "Introduction à la Récursivité",
                 "description": "L'art de d\u00e9couper un probl\u00e8me en sous-probl\u00e8mes identiques.",
                 "lessons": [
                     {
                         "id": "algo_m_11_1",
                         "type": "theory",
-                        "title": "Inception : La Fonction qui s'appelle elle-m\u00eame",
+                        "title": "Principe de la Récursivité",
                         "professorSpeech": "Pour comprendre la r\u00e9cursivit\u00e9, il faut d'abord comprendre la r\u00e9cursivit\u00e9. C'est l'art de s'appeler soi-m\u00eame.",
                         "duration": "15 min",
                         "content": "# \ud83e\ude86 La R\u00e9cursivit\u00e9\n\nUne fonction **r\u00e9cursive** est une fonction qui fait appel \u00e0 **elle-m\u00eame** pendant son ex\u00e9cution.\n\n## Les 2 Lois Fondamentales\n1.  **Le cas de base (Condition d'arr\u00eat)** : Il FAUT un moment o\u00f9 la fonction arr\u00eate de s'appeler, sinon c'est la boucle infinie (Stack Overflow) !\n2.  **L'appel r\u00e9cursif** : L'\u00e9tape o\u00f9 elle s'appelle elle-m\u00eame avec un probl\u00e8me l\u00e9g\u00e8rement plus petit.\n\n```pseudo\nFONCTION CompteARebours(n : Entier)\nD\u00c9BUT\n    // 1. Cas de base\n    SI n <= 0 ALORS\n        AFFICHER \"D\u00e9collage !\"\n        RETOURNER\n    FINSI\n    \n    AFFICHER n\n    // 2. Appel r\u00e9cursif (probl\u00e8me plus petit)\n    CompteARebours(n - 1)\nFINFONCTION\n```\n"
@@ -537,7 +537,7 @@ Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais 
     },
     {
         "id": "module12",
-        "title": "Module 12: Manipulation de Cha\u00eenes",
+        "title": "Module 12 : Les Chaînes de Caractères",
         "icon": "Type",
         "description": "L'art de traiter le texte, les mots de passe et la cryptographie.",
         "chapters": [
@@ -549,7 +549,7 @@ Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais 
                     {
                         "id": "algo_m_12_1",
                         "type": "theory",
-                        "title": "Palindromes (Miroirs Parfaits)",
+                        "title": "Inverser et Vérifier (Strings)",
                         "professorSpeech": "RADAR. KAYAK. LAVAL. Un mot qui se lit dans les deux sens cache des sym\u00e9tries int\u00e9ressantes.",
                         "duration": "15 min",
                         "content": "# \ud83e\ude9e Les Palindromes\n\nUn palindrome est un mot qui se lit de la m\u00eame mani\u00e8re de gauche \u00e0 droite et de droite \u00e0 gauche.\n\n**Comment v\u00e9rifier un palindrome ?**\nOn utilise g\u00e9n\u00e9ralement la technique des \"Deux Pointeurs\" (Two Pointers).\n1. Un pointeur \\`gauche\\` commence au d\u00e9but (indice 0).\n2. Un pointeur \\`droite\\` commence \u00e0 la fin.\n3. On compare, puis on rapproche les pointeurs vers le centre.\n\n```pseudo\nFONCTION EstPalindrome(mot : Cha\u00eene)\n    gauche <- 0\n    droite <- LONGUEUR(mot) - 1\n    \n    TANT QUE gauche < droite\n        SI mot[gauche] != mot[droite] ALORS\n            RETOURNER FAUX\n        FINSI\n        gauche <- gauche + 1\n        droite <- droite - 1\n    FINTANTQUE\n    \n    RETOURNER VRAI\nFINFONCTION\n```\n"
@@ -560,7 +560,7 @@ Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais 
     },
     {
         "id": "module13",
-        "title": "Module 13: Les Listes Cha\u00een\u00e9es",
+        "title": "Module 13 : Listes Chaînées",
         "icon": "Link",
         "description": "Une alternative dynamique aux Tableaux. La m\u00e9moire sous forme de cha\u00eene.",
         "chapters": [
@@ -583,7 +583,7 @@ Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais 
     },
     {
         "id": "module14",
-        "title": "Module 14: L'Empire des Arbres",
+        "title": "Module 14 : Arbres et Hiérarchies",
         "icon": "Network",
         "description": "Hi\u00e9rarchies et organisation spatiale des donn\u00e9es.",
         "chapters": [
@@ -606,7 +606,7 @@ Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais 
     },
     {
         "id": "module15",
-        "title": "Module 15: Le Secret du Hachage",
+        "title": "Module 15 : Dictionnaires et Hachage",
         "icon": "DatabaseZap",
         "description": "Comment les bases de donn\u00e9es trouvent un million d'infos instantan\u00e9ment.",
         "chapters": [
@@ -629,7 +629,7 @@ Tu as maintenant les bases pour devenir un architecte logiciel. N'oublie jamais 
     },
     {
         "id": "module16",
-        "title": "Module 16: L'\u00c9preuve des Dieux",
+        "title": "Module 16 : Algorithmes Avancés",
         "icon": "Crown",
         "description": "Programmation Dynamique, Algorithmes Gloutons et Pathfinding.",
         "chapters": [

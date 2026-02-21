@@ -351,8 +351,8 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const isMobile = windowWidth < 768;
   const isTablet = windowWidth >= 768 && windowWidth < 1200;
 
-  const COLUMNS = isMobile ? 1 : (isTablet ? 2 : 3);
-  const X_SPACING = isMobile ? 0 : (isTablet ? 300 : Math.max(300, windowWidth / (COLUMNS + 1)));
+  const COLUMNS = isMobile ? 1 : (isTablet ? 2 : 5);
+  const X_SPACING = isMobile ? 0 : (isTablet ? 300 : Math.max(350, windowWidth / (COLUMNS - 0.5)));
   const Y_SPACING = isMobile ? 160 : 200;
 
   const nodes = allLessons.map((lesson, index) => {
@@ -361,12 +361,12 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
     // Si ligne impaire, on inverse la direction (serpentin)
     const xMultiplier = !isMobile && row % 2 !== 0 ? (COLUMNS - 1) - col : col;
 
-    // Centrage horizontal sur PC/Tablette, ou centrage fixe sur Mobile
+    // Centrage horizontal
     const xBase = isMobile ? windowWidth / 2 : (windowWidth - (COLUMNS - 1) * X_SPACING) / 2;
 
     return {
       ...lesson,
-      x: isMobile ? windowWidth / 2 : xBase + col * X_SPACING,
+      x: isMobile ? windowWidth / 2 : xBase + xMultiplier * X_SPACING,
       y: row * Y_SPACING + 150,
       isUnlocked: index === 0 || completedLessons.includes(allLessons[index - 1].id),
       isCompleted: completedLessons.includes(lesson.id)
