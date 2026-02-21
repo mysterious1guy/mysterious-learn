@@ -127,8 +127,8 @@ const testEmail = async (req, res) => {
     console.log(`📧 Test email manuel vers: ${to}`);
     await sendEmail({
       to,
-      subject: '🧪 Test SMTP — Mysterious Classroom',
-      text: 'Si tu reçois ce message, la configuration SMTP est correcte !'
+      subject: '🧪 Test Resend API — Mysterious Classroom',
+      text: 'Si tu reçois ce message, la configuration Resend API est correcte !'
     });
 
     res.json({ success: true, message: `Email de test envoyé à ${to}` });
