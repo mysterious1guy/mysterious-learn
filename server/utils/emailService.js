@@ -1,59 +1,45 @@
 const nodemailer = require('nodemailer');
 const dns = require('dns');
+const { promisify } = require('util');
+const resolve4 = promisify(dns.resolve4);
 
-// Forcer IPv4 en premier pour éviter les erreurs ENETUNREACH sur Render (IPv6 instable)
-if (dns.setDefaultResultOrder) {
-  dns.setDefaultResultOrder('ipv4first');
-}
-
-console.log('📧 Initialisation du service email...');
-console.log('📧 EMAIL_USER configuré:', process.env.EMAIL_USER ? 'OUI' : 'NON');
-
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  // Force IPv4 en court-circuitant le DNS système
-  lookup: (hostname, options, callback) => {
-    if (hostname === 'smtp.gmail.com') {
-      dns.resolve4(hostname, (err, addresses) => {
-        if (err || !addresses.length) {
-          console.error('❌ Échec critique résolution IPv4 smtp.gmail.com');
-          return dns.lookup(hostname, options, callback);
-        }
-        console.log(`📡 [Lookup Custom] ${hostname} -> ${addresses[0]} (IPv4)`);
-        callback(null, addresses[0], 4);
-      });
-    } else {
-      dns.lookup(hostname, options, callback);
-    }
-  },
-  logger: true,
-  debug: true,
-  connectionTimeout: 30000, // 30s
-  greetingTimeout: 30000,
-  socketTimeout: 45000,
-});
-
-// Vérifier la connexion au démarrage
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('❌ ERREUR SMTP CRITIQUE:', error.message);
-    if (error.code === 'EAUTH') console.log('👉 Le mot de passe d\'application (16 lettres) semble invalide.');
-  } else {
-    console.log('📧 CONNEXION SMTP RÉUSSIE : Le serveur peut envoyer des emails.');
-  }
-});
+console.log('📧 Initialisation du service email (V6)...');
+console.log('📧 EMAIL_USER:', process.env.EMAIL_USER ? 'OK' : 'MANQUANT');
 
 /**
- * Envoie un email formaté
+ * Envoie un email formaté avec résolution IPv4 forcée
  */
 const sendEmail = async ({ to, subject, html, text }) => {
   try {
+    // 1. Résoudre l'adresse IPv4 de Gmail manuellement pour éviter IPv6 sur Render
+    let smtpIp = 'smtp.gmail.com';
+    try {
+      const addresses = await resolve4('smtp.gmail.com');
+      if (addresses && addresses.length > 0) {
+        smtpIp = addresses[0];
+        console.log(`📡 [DNS Force] smtp.gmail.com -> ${smtpIp}`);
+      }
+    } catch (dnsErr) {
+      console.warn('⚠️ Échec résolution IPv4, tentative avec hostname standard:', dnsErr.message);
+    }
+
+    // 2. Créer le transporteur à la volée avec l'IP résolue
+    const transporter = nodemailer.createTransport({
+      host: smtpIp,
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        // Très important: garder le vrai nom pour la vérification SSL
+        servername: 'smtp.gmail.com'
+      },
+      connectionTimeout: 15000,
+      socketTimeout: 30000,
+    });
+
     const info = await transporter.sendMail({
       from: `"Mysterious Classroom" <${process.env.EMAIL_USER}>`,
       to,
@@ -76,10 +62,11 @@ const sendEmail = async ({ to, subject, html, text }) => {
         </div>
       `,
     });
-    console.log('Email envoyé:', info.messageId);
+
+    console.log('✅ Email envoyé avec succès:', info.messageId);
     return info;
   } catch (error) {
-    console.error('Erreur d\'envoi d\'email:', error);
+    console.error('❌ Erreur d\'envoi d\'email (Log complet):', error);
     throw error;
   }
 };
