@@ -1,5 +1,8 @@
 const nodemailer = require('nodemailer');
 
+console.log('📧 Initialisation du service email...');
+console.log('📧 EMAIL_USER configuré:', process.env.EMAIL_USER ? 'OUI' : 'NON');
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -11,9 +14,9 @@ const transporter = nodemailer.createTransport({
 // Vérifier la connexion au démarrage
 transporter.verify((error, success) => {
   if (error) {
-    console.error('❌ Erreur de configuration Email:', error);
+    console.error('❌ Erreur de configuration Email détaillée:', error);
   } else {
-    console.log('📧 Serveur prêt à envoyer des emails');
+    console.log('📧 Serveur prêt à envoyer des emails (SMTP OK)');
   }
 });
 

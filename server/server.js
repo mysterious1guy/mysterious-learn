@@ -6,8 +6,9 @@ const path = require('path');
 require('dotenv').config();
 const connectDB = require('./config/db');
 
-// 2. Connexion à MongoDB
+// 2. Connexion à MongoDB & Services
 connectDB();
+require('./utils/emailService');
 
 const app = express();
 
