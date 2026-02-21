@@ -8,19 +8,30 @@ if (dns.setDefaultResultOrder) {
 
 console.log('📧 Initialisation du service email...');
 console.log('📧 EMAIL_USER configuré:', process.env.EMAIL_USER ? 'OUI' : 'NON');
-console.log('🌐 Ordre DNS : IPv4 en priorité');
+
+// Vérification DNS manuelle pour debug
+dns.lookup('smtp.gmail.com', { family: 4 }, (err, address) => {
+  if (err) console.error('❌ Erreur DNS smtp.gmail.com:', err.message);
+  else console.log('📡 DNS smtp.gmail.com résolu sur:', address);
+});
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // TLS via STARTTLS
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  logger: true, // Log SMTP traffic
-  debug: true,  // Show full debug info
-  connectionTimeout: 20000, // Augmenté à 20s
+  requireTLS: true,
+  pool: true, // Utiliser un pool de connexions
+  maxConnections: 5,
+  maxMessages: 100,
+  logger: true,
+  debug: true,
+  connectionTimeout: 20000,
   greetingTimeout: 20000,
-  socketTimeout: 20000,
+  socketTimeout: 30000,
 });
 
 // Vérifier la connexion au démarrage
