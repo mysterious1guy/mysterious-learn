@@ -4,95 +4,95 @@ import { Cpu, Database, Command, Box, GitBranch, Sparkles, Trophy, Zap, Terminal
 export const algoCourseData = [
     {
         id: 'module1',
-        title: "Module 1 : Initiation à la Logique",
+        title: "Module 1 : L'Art de Parler aux Machines",
         icon: <Cpu size={20} />,
-        description: "Apprenez à structurer votre pensée logique avant d'écrire une seule ligne de code. Les fondations universelles du développement.",
+        description: "Apprenez à structurer votre pensée logique avant d'écrire une seule ligne de code. L'ordinateur est obéissant, mais très bête.",
         chapters: [
             {
                 id: 'chap1',
                 title: "Bases du Raisonnement",
-                description: "Qu'est-ce qu'un algorithme et pourquoi la machine est-elle 'idiote' ?",
+                description: "Qu'est-ce qu'un algorithme et pourquoi l'ordinateur a besoin qu'on lui tienne la main ?",
                 lessons: [
                     {
                         id: 'algo_m_1_1',
                         type: 'theory',
                         title: "Qu'est-ce qu'un Algorithme ?",
-                        professorSpeech: "Bienvenue, apprenti. Sais-tu que l'algorithme est né au IXe siècle avec Al-Khwarizmi ? Oublie les écrans, nous allons apprendre à structurer l'univers.",
+                        professorSpeech: "Oublie les films de pirates informatiques. Programmer, c'est comme donner la recette d'un gâteau hyper compliqué à un enfant de 4 ans.",
                         duration: '10 min',
                         content: `
 # 🧠 L'Essence de l'Algorithmique
 
-La plus grande erreur est de confondre **Apprendre à Programmer** et **Apprendre un Langage**. 
+La plus grande erreur est de penser qu'apprendre à coder, c'est apprendre un "langage" (comme l'Anglais ou l'Espagnol). Non, coder, **c'est apprendre à penser logicien**. 
 
 > [!IMPORTANT]
-> **L'Algorithme est Universel** : Que vous utilisiez Python, Java ou C++, la logique reste identique. Un langage n'est qu'une traduction.
+> **L'Algorithme est Universel** : Que vous utilisiez Python, Java ou C++, la logique reste *exactement* la même. Un algorithme, c'est la recette. Python, c'est juste la langue dans laquelle la recette est écrite.
 
-[?] Mais alors, c'est quoi le code ? | Le code n'est que la traduction de votre algorithme (qui est universel) dans une syntaxe spécifique compréhensible par l'ordinateur. L'algorithme est l'âme, le code est le corps.
+[?] Mais alors, l'ordinateur ne devine rien ? | Pas du tout ! L'ordinateur est une machine incroyablement puissante... mais **totalement idiote**. Elle n'a aucune imagination, aucune intuition, aucun bon sens.
 
-## Pourquoi la machine a-t-elle besoin de nous ?
-Un ordinateur est une machine incroyablement rapide, mais **totalement idiote**. Elle ne devine rien. Elle n'a aucune intuition.
+## L'Analogie des Crêpes 🥞
+Imagine que tu demandes à ton grand frère : *"Fais-moi des crêpes"*. 
+Il sait qu'il doit ouvrir le frigo, prendre du lait, casser des œufs, chauffer la poêle... Il a **l'intuition humaine**.
 
-**L'Analogie de la Recette :**
-Si vous dites à un humain \"Fais-moi des crêpes\", il sait qu'il doit casser les œufs.
-Si vous dites à un ordinateur \"Fais-moi des crêpes\", il va rester figé car il ne sait pas ce qu'est une crêpe.
+Si tu dis à un ordinateur *"Fais-moi des crêpes"*, il te regardera fixement et plantera. Pourquoi ? Parce qu'il ne sait pas ce qu'est une crêpe. Il ne sait pas ce qu'est un frigo. Il ne sait même pas ce qu'est un bras g pour ouvrir le frigo !
 
-Vous devez lui dire :
-1. Prends le récipient.
-2. Verse 250g de farine.
-3. Casse l'œuf numéro 1.
+Pour l'ordinateur, tu dois dire :
+1. Avance ton bras gauche de 40 centimètres.
+2. Serre la poignée avec une force de 2 Newtons.
+3. Tire vers toi.
+4. Prends le contenant cylindrique blanc (le lait).
 ...
 
 ## Définition
-Un **algorithme** est une suite d'instructions finies, précises et ordonnées permettant de résoudre un problème ou d'accomplir une tâche.
-
-[?] Pourquoi les algorithmes sont-ils si importants aujourd'hui ? | Ils contrôlent tout : de ce que vous voyez sur vos réseaux sociaux (algorithme de recommandation) à la trajectoire des fusées SpaceX. Maîtriser l'algorithmique, c'est maîtriser le monde moderne.
+Un **algorithme** est une **suite d'actions précises, ordonnées et limitées dans le temps**, qui permet de résoudre un problème ou d'accomplir une tâche. C'est tout !
 `
                     },
                     {
                         id: 'algo_m_1_2',
                         type: 'quiz',
-                        title: "Quiz : Pensée Procédurale",
-                        professorSpeech: "Voyons si tu es prêt à dompter la machine. Réponds avec sagesse.",
-                        question: "Quelle est la principale différence entre un humain et un ordinateur face à une instruction ?",
+                        title: "Quiz : Le Cerveau de la Machine",
+                        professorSpeech: "Voyons si tu as compris comment fonctionne ton nouvel ami stupide.",
+                        question: "Si tu dis à un ordinateur 'Sors le chien !', que risque-t-il de se passer ?",
                         options: [
-                            { id: 'a', text: "L'ordinateur est plus intelligent et devine nos intentions.", correct: false },
-                            { id: 'b', text: "L'humain a de l'intuition, alors que l'ordinateur nécessite une précision absolue étape par étape.", correct: true },
-                            { id: 'c', text: "Il n'y a aucune différence, les deux réfléchissent de la même façon.", correct: false }
+                            { id: 'a', text: "L'ordinateur va analyser la météo et sortir le chien.", correct: false },
+                            { id: 'b', text: "L'ordinateur va mordre le chien.", correct: false },
+                            { id: 'c', text: "L'ordinateur va planter, car il ne sait pas ce qu'est une porte, un chien, ou l'action de marcher.", correct: true }
                         ],
-                        explanation: "Parfait ! La machine est 'bête'. Elle exécute exactement ce que vous écrivez, ni plus, ni moins. C'est pour cela que votre algorithme doit être impeccable."
+                        explanation: "Exactement ! La machine est littérale. Elle n'a aucun contexte, ni intuition. Il faut lui expliquer comment déverrouiller la porte, avec quelle main prendre la laisse, etc."
                     },
                     {
                         id: 'algo_m_1_3',
                         type: 'theory',
-                        title: "Le Pseudo-code (Structure)",
-                        professorSpeech: "Pour parler à la logique, nous utilisons le Pseudo-Code. C'est l'armure de ta pensée avant qu'elle ne devienne du code réel.",
+                        title: "Le Célèbre Pseudo-code",
+                        professorSpeech: "Avant de parler Python ou Javascript, on utilise une langue universelle : le Pseudo-code. C'est du français mélangé à un poil de logique.",
                         duration: '12 min',
                         content: `
-# 🦴 Structure Universelle
+# 🦴 Le Squelette de ta Pensée
 
-Pour éviter de se perdre dans les détails techniques d'un langage, on utilise le **Pseudo-code**. Voici notre template sacré :
+Le **Pseudo-code**, c'est génial. Ça te permet de te concentrer sur la résolution du problème sans te prendre la tête avec l'oubli d'un point-virgule ou d'une parenthèse.
+
+Voici la forme sacrée d'un petit programme :
 
 \`\`\`pseudo
-ALGORITHME Nom_Du_Programme
+ALGORITHME Faire_Des_Crepes
 
 VARIABLES
-    // Ici, on liste le matériel nécessaire (Ingrédients)
+    // Ici, on liste le matériel nécessaire (Ingrédients, Saladier)
 
 DÉBUT
-    // Ici, on écrit les étapes (Action)
-    // Entrée -> Traitement -> Sortie
+    // Ici, on écrit les étapes (L'Action)
+    // 1. Casser l'oeuf
+    // 2. Mettre la farine
 FIN
 \`\`\`
 
-## Les 3 Piliers d'exécution :
-1.  **Entrée (Input)** : Ce que l'utilisateur donne (ex: son âge).
-2.  **Traitement (Process)** : Ce que l'on calcule (ex: est-il majeur ?).
-3.  **Sortie (Output)** : Ce que l'on affiche (ex: \"Bienvenue !\").
+## La Trinité du Code :
+Peu importe le logiciel du monde (Facebook, un jeu vidéo, ou Word), il fonctionne toujours avec ces 3 étapes :
+1. **Entrée (Input)** : On reçoit une information. (ex: L'utilisateur clique sur *Like*).
+2. **Traitement (Process)** : On calcule. (ex: On ajoute +1 au compteur de likes).
+3. **Sortie (Output)** : On affiche le résultat. (ex: Le petit pouce devient bleu).
 
 > [!TIP]
-> Toujours commencer par réfléchir sur papier. Si ton algorithme n'est pas clair dans ta tête, il ne le sera jamais pour la machine.
-
-[?] Et si je me trompe dans mon pseudo-code ? | Ce n'est pas grave ! L'avantage du pseudo-code, c'est qu'il n'y a pas de compilateur pour crier à l'erreur de syntaxe. L'important est que la **logique** (l'ordre des étapes) soit cohérente.
+> Ne saute jamais sur ton clavier sans réfléchir sur papier avant. Si tu ne peux pas expliquer ton algorithme en Pseudo-code, tu ne pourras le coder dans aucun langage.
 `
                     }
                 ]
@@ -101,63 +101,63 @@ FIN
     },
     {
         id: 'module2',
-        title: "Module 2 : Variables et Stockage",
+        title: "Module 2 : La Mémoire de l'Ordinateur",
         icon: <Database size={20} />,
-        description: "Comprendre comment la machine mémorise les informations : Nombres, Texte et Etats Logiques.",
+        description: "Comprendre comment la machine mémorise les choses. Les Variables sont comme des boîtes en carton magiques.",
         chapters: [
             {
                 id: 'chap2',
-                title: "Gestion des Données",
-                description: "Déclaration, Affectation et Typage.",
+                title: "Les Tiroirs Magiques",
+                description: "Apprends à garder des informations en mémoire pour les réutiliser.",
                 lessons: [
                     {
                         id: 'algo_m_2_1',
                         type: 'theory',
                         title: "Qu'est-ce qu'une Variable ?",
-                        professorSpeech: "Imagine que la mémoire de l'ordinateur est un immense entrepôt rempli de tiroirs. Une variable, c'est un tiroir avec une étiquette.",
+                        professorSpeech: "Imagine que la mémoire de l'ordinateur est comme un gigantesque mur rempli de milliers de tiroirs vides. Une variable, c'est simplement un de ces tiroirs sur lequel tu colles une étiquette.",
                         duration: '15 min',
                         content: `
-# 📦 Les Variables : Stocker l'Information
+# 📦 Les Variables : Garder un Souvenir
 
-En programmation, on ne peut rien faire sans stocker des données temporairement.
+En algorithmique, on ne peut absolument rien faire si l'on ne peut pas **se souvenir** de quelque chose. C'est le rôle de la **Variable**.
 
-**Une variable possède 3 caractéristiques :**
-1.  **Un Nom** (L'étiquette) : Pour la retrouver (ex: \`age_utilisateur\`).
-2.  **Un Type** (La forme) : Qu'est-ce qu'elle contient ? (Un nombre ? Du texte ?).
-3.  **Une Valeur** (Le contenu) : Ce qu'il y a à l'intérieur (ex: \`25\`).
+**Une variable possède 3 pouvoirs :**
+1.  **Un Nom** (L'étiquette) : Pour retrouver la bonne boîte (ex: \`scoreJoueur\`).
+2.  **Un Type** (La forme) : Qu'est-ce qu'elle accepte ? (Seulement des nombres ? Du texte ?).
+3.  **Une Valeur** (Le contenu) : Ce qu'il y a à l'intérieur en ce moment (ex: \`100\`).
 
-## Déclarer vs Affecter
-- **Déclarer** : C'est réserver le tiroir.
-  \`VARIABLE age : Entier\`
-- **Affecter** : C'est mettre quelque chose dedans.
-  \`age <- 25\` (On lit : age reçoit 25)
+## Créer vs Remplir
+- **Déclarer (Créer la boîte)** : On prend un tiroir vide et on met une étiquette.
+  \`VARIABLE score : Entier\` *(Ici on dit : cette boîte s'appelle 'score' et n'accepte que des nombres entiers)*
+- **Affecter (Remplir la boîte)** : On met quelque chose dedans.
+  \`score <- 100\` *(On lit : score "reçoit" 100)*
 
 > [!CAUTION]
-> On ne peut mettre qu'un seul objet à la fois dans une variable. Si vous mettez une nouvelle valeur, l'ancienne est écrasée à jamais !
+> **Règle d'Or Mnémonique** : Une boîte ne peut contenir qu'un seul objet à la fois ! Si le tiroir \`score\` contient 100, et que tu dis \`score <- 50\`, le 100 est détruit pour toujours et remplacé par 50.
 
-[VISUALIZER] {"codeStr": "age <- 25\nnom <- \\"Alice\\"\nage <- age + 1", "steps": [{"line": 1, "state": {"age": 25}, "explanation": "On crée une boîte nommée 'age' et on y range la valeur 25."}, {"line": 2, "state": {"age": 25, "nom": "\\"Alice\\""}, "explanation": "On crée une boîte 'nom' pour stocker du texte."}, {"line": 3, "state": {"age": 26, "nom": "\\"Alice\\""}, "explanation": "On prend l'ancienne valeur de 'age' (25), on ajoute 1, et on range la nouvelle valeur (26) dans la même boîte."}]}
+[VISUALIZER] {"codeStr": "vies <- 3\nnom <- \\"Héros\\"\nvies <- vies - 1", "steps": [{"line": 1, "state": {"vies": 3}, "explanation": "On crée une boîte nommée 'vies' et on y glisse le chiffre 3."}, {"line": 2, "state": {"vies": 3, "nom": "\\"Héros\\""}, "explanation": "On crée une deuxième boîte 'nom' et on y glisse le texte 'Héros'."}, {"line": 3, "state": {"vies": 2, "nom": "\\"Héros\\""}, "explanation": "Aïe, on s'est pris un coup. On regarde ce qu'il y a dans 'vies' (3), on enlève 1, ça fait 2, et on remet ce nouveau résultat (2) dans la boîte 'vies'. L'ancien 3 n'existe plus."}]}
 `
                     },
                     {
                         id: 'algo_m_2_2',
                         type: 'theory',
-                        title: "Les Types de Données",
-                        professorSpeech: "Chaque tiroir a une forme précise. On ne met pas de l'eau dans une boîte à chaussures !",
+                        title: "Les Formes de Boîtes (Typage)",
+                        professorSpeech: "Chaque boîte a une forme précise pour ranger des choses précises. On ne met pas de l'eau dans une boîte à chaussures !",
                         duration: '10 min',
                         content: `
-# 🛠️ Le Typage des Données
+# 🛠️ Les Types de Données
 
-Pour optimiser la mémoire, il faut préciser la nature de ce que l'on stocke :
+Pour que l'ordinateur ne s'emmêle pas les pinceaux et soit ultra-rapide, il faut lui dire à l'avance "ce" qu'on va ranger.
 
-| Type | Description | Exemple |
+| Type | On y met quoi ? | Exemple |
 | :--- | :--- | :--- |
-| **Entier** | Nombres sans virgule | \`10\`, \`-5\`, \`0\` |
-| **Réel** | Nombres à virgule | \`3.14\`, \`1.5\` |
-| **Chaîne** | Texte (entre guillemets) | \`\"Bonjour\"\`, \`\"123\"\` |
-| **Booléen** | État logique | \`Vrai\`, \`Faux\` |
+| **Entier** | Les nombres pile poil | \`10\`, \`-5\`, \`0\` |
+| **Réel** | Les nombres à virgule | \`3.14\`, \`1.5\` |
+| **Chaîne** | Du texte (Toujours entre " ") | \`\"Bonjour\"\`, \`\"Le joueur 1 a gagné\"\` |
+| **Booléen** | Un Oui/Non (Interrupteur) | \`Vrai\`, \`Faux\` |
 
 > [!IMPORTANT]
-> Une chaîne \`\"123\"\` n'est pas un nombre. On ne peut pas l'additionner. C'est juste du dessin pour l'ordinateur.
+> **Attention Piège Mortel** : Une chaîne \`\"123\"\` n'est **PAS** un nombre. Pour l'ordinateur, c'est comme le dessin d'un 1, d'un 2 et d'un 3.  Si tu essaies de faire \`\"123\" + \"1\"\`, l'ordinateur ne fera pas 124, il fera \`\"1231\"\` ! C'est ce qu'on appelle "coller" (concaténer) du texte.
 `
                     }
                 ]
@@ -166,55 +166,71 @@ Pour optimiser la mémoire, il faut préciser la nature de ce que l'on stocke :
     },
     {
         id: 'module3',
-        title: "Module 3 : Opérateurs et Calculs",
+        title: "Module 3 : Les Calculs et la Magie Logique",
         icon: <Zap size={20} />,
-        description: "Opérateurs et expressions. Faites chanter les chiffres.",
+        description: "Apprends à faire des maths comme un ordinateur, et découvre les opérateurs logiques 'ET' et 'OU'.",
         chapters: [
             {
                 id: 'chap3',
-                title: "Opérations Élémentaires",
-                description: "Opérateurs Arithmétiques, de Comparaison et Logiques.",
+                title: "Les Manipulations Basiques",
+                description: "Faisons souffrir les nombres et connectons les fils logiques.",
                 lessons: [
                     {
                         id: 'algo_m_3_1',
                         type: 'theory',
-                        title: "Calculs Arithmétiques",
-                        professorSpeech: "Calculer est la base de tout. Mais attention, la machine a ses propres règles pour la division...",
+                        title: "Les Outils de Calcul",
+                        professorSpeech: "L'ordinateur est le meilleur calculateur du monde. Mais il a sa façon spéciale gérer les divisions. Le reste est de la bouillie pour chat.",
                         duration: '10 min',
                         content: `
-# ➕ Opérateurs Arithmétiques
+# ➕ L'Arithmétique
 
-Les classiques : \`+\`, \`-\`, \`*\`, \`/\`.
+Les classiques que tu connais déjà  : 
+*   **Addition** : \`+\`
+*   **Soustraction** : \`-\`
+*   **Multiplication** : \`*\` *(L'étoile est vitale, oublie la croix 'x' à l'école !)*
+*   **Division** : \`/\`
 
-Mais il y en a deux très spéciaux en algorithmique :
-- **DIV** (Division Entière) : Donne le quotient sans la virgule.
-  \`10 DIV 3 = 3\`
-- **MOD** (Modulo) : Donne le reste de la division.
-  \`10 MOD 3 = 1\`
+## Les deux armes secrètes du Codeur
+
+En plus des classiques, l'algorithmique possède deux armes très spéciales liées à la grande école primaire : la division Euclidienne.
+
+*   **DIV** (La division sans virgule) : Si on a 10 bonbons et qu'on est 3 enfants, combien de bonbons entiers a chaque enfant ? 
+    👉 \`10 DIV 3 = 3\` (Il ne donne que la part entière).
+*   **MOD** (Le Modulo, ou le Reste) : Après avoir distribué ces bonbons, combien reste-t-il dans le sac pour moi ? On a distribué 3x3=9, il restait 10... 
+    👉 \`10 MOD 3 = 1\` (Il donne le Reste !).
 
 > [!TIP]
-> Le Modulo est génial pour savoir si un nombre est pair : \`N MOD 2 = 0\` -> C'est pair !
+> Le Modulo (\`MOD\`) est le meilleur ami du développeur. Il sert par exemple à savoir très vite si un nombre est "Pair" ! Si \`Nombre MOD 2 = 0\`, alors le nombre se coupe parfaitement par deux, donc il est Pair.
 `
                     },
                     {
                         id: 'algo_m_3_2',
                         type: 'theory',
-                        title: "La Logique de Boole (ET, OU, NON)",
-                        professorSpeech: "Le cerveau de l'ordinateur ne connaît que le Vrai ou le Faux. Maîtriser ces liens, c'est maîtriser la décision.",
+                        title: "Les Interrupteurs de la Réalité (ET / OU)",
+                        professorSpeech: "Laisse les chiffres. Pense interrupteur. Allumé ou Éteint. Vrai ou Faux. Voici l'algèbre de Boole.",
                         duration: '12 min',
                         content: `
-# 🚥 Opérateurs Logiques
+# 🚥 La Logique de Boole
 
-Ils permettent de combiner plusieurs conditions :
+L'ordinateur n'est en fait qu'une collection de milliards de petits interrupteurs (des transistors). Un interrupteur est soit allumé (Vrai, 1), soit éteint (Faux, 0).
 
-1.  **ET (AND)** : Vrai seulement si TOUT est vrai.
-2.  **OU (OR)** : Vrai si AU MOINS une est vraie.
-3.  **NON (NOT)** : Inverse le résultat.
+La Logique de Boole permet de lier plusieurs de ces interrupteurs pour prendre des décisions. C'est le **Coeur de l'Intelligence Informatique.**
 
-**Table de vérité simplifiée :**
-- \`VRAI ET FAUX\` -> **FAUX**
-- \`VRAI OU FAUX\` -> **VRAI**
-- \`NON VRAI\` -> **FAUX**
+Il y a 3 portes magiques :
+
+### 1. La Porte "ET" (AND) : Le Garde Sévère
+La porte s'ouvre **SEULEMENT SI** toutes les clés fonctionnent.
+- J'ai mon Billet \`ET\` j'ai mon Passeport ➡️ **L'avion part (VRAI)**
+- J'ai mon Billet \`ET\` je n'ai pas mon Passeport ➡️ **Je reste à terre (FAUX)**
+
+### 2. La Porte "OU" (OR) : Le Garde Sympa
+La porte s'ouvre si **AU MOINS UNE** clé fonctionne.
+- J'ai mon Gilet Jaune \`OU\` j'ai mon Triangle ➡️ **Je suis en règle (VRAI)**
+- Je n'ai ni gilet \`OU\` ni triangle ➡️ **Amende (FAUX)**
+
+### 3. La Porte "NON" (NOT) : L'Adolescent Rebelle
+Il dit l'inverse de tout.
+- Le jour est levé ? (Vrai). \`NON\`(Le jour est levé) ➡️ **La Nuit (Faux)**.
 `
                     }
                 ]
@@ -223,38 +239,42 @@ Ils permettent de combiner plusieurs conditions :
     },
     {
         id: 'module4',
-        title: "Module 4 : Les Conditions",
+        title: "Module 4 : L'Intelligence Artificielle (Les Conditions)",
         icon: <GitBranch size={20} />,
-        description: "Conditions et structures de contrôle. Donnez une conscience à votre programme.",
+        description: "Donnez le pouvoir de choisir à votre programme. C'est ici que l'ordinateur fait semblant d'être intelligent.",
         chapters: [
             {
                 id: 'chap4',
-                title: "Structures de Décision",
-                description: "Apprendre à bifurquer dans le code.",
+                title: "Les Embranchements du Destin",
+                description: "Le fameux SI ... ALORS ... SINON.",
                 lessons: [
                     {
                         id: 'algo_m_4_1',
                         type: 'theory',
-                        title: "La Condition SI... SINON",
-                        professorSpeech: "C'est ici que ton programme commence à 'réfléchir'. S'il pleut, prends un parapluie. C'est aussi simple que cela.",
+                        title: "Le Couteau Suisse : SI... SINON",
+                        professorSpeech: "C'est la brique fondamentale de l'Intelligence Artificielle. Un programme sans 'SI' est comme un train sur de simples rails : il va tout droit sans jamais choisir sa destination.",
                         duration: '15 min',
                         content: `
-# 🛣️ Les Structures Conditionnelles
+# 🛣️ Les Choix : SI / ALORS / SINON
 
-Le programme n'est plus linéaire. Il peut choisir son chemin.
+Jusqu'à maintenant, nos programmes fonçaient tout droit, lisant de haut en bas sans jamais réfléchir. 
+Avec les **Conditions**, on peut créer des embranchements, comme dans un livre dont vous êtes le héros.
 
 \`\`\`pseudo
-SI (condition) ALORS
-    // Bloc exécuté si condition Vraie
+SI (Il pleut) ALORS
+    Je prends mon parapluie
 SINON
-    // Bloc exécuté si condition Fausse
+    Je mets mes lunettes de soleil
 FINSI
 \`\`\`
 
 > [!NOTE]
-> La condition doit toujours avoir un résultat **Booléen** (Vrai ou Faux).
+> La condition entre les parenthèses (Il pleut) doit **TOUJOURS** répondre à une question de type **Booléen** (Vrai ou Faux).
 
-[VISUALIZER] {"codeStr": "age <- 16\nSI age >= 18 ALORS\n    acces <- VRAI\nSINON\n    acces <- FAUX\nFINSI", "steps": [{"line": 1, "state": {"age": 16}, "explanation": "L'âge est initialisé à 16."}, {"line": 2, "state": {"age": 16}, "explanation": "L'ordinateur évalue la condition : 16 est-il supérieur ou égal à 18 ? C'est FAUX."}, {"line": 4, "state": {"age": 16}, "explanation": "Puisque c'est FAUX, on saute directement au bloc SINON."}, {"line": 5, "state": {"age": 16, "acces": false}, "explanation": "La variable 'acces' reçoit la valeur booléenne FAUX."}]}
+## Le jeu du Videur de Boîte de Nuit
+Imagine un script videur appelé *videur.exe* :
+
+[VISUALIZER] {"codeStr": "age_client <- 16\nSI age_client >= 18 ALORS\n    AFFICHER \\"Entrez, amusez-vous !\\"\nSINON\n    AFFICHER \\"Désolé, reviens dans quelques années.\\"\nFINSI", "steps": [{"line": 1, "state": {"age_client": 16}, "explanation": "Un client arrive. Son âge est 16."}, {"line": 2, "state": {"age_client": 16}, "explanation": "Le vigile (l'ordinateur) regarde : 16 est-il supérieur ou égal à 18 ? Non, c'est FAUX."}, {"line": 4, "state": {"age_client": 16}, "explanation": "Puisque c'est FAUX, le vigile ignore complètement la phrase d'entrée et saute directement au bloc SINON."}, {"line": 5, "state": {"age_client": 16}, "explanation": "Le vigile recalera le client poliment."}]}
 `
                     }
                 ]
@@ -263,36 +283,39 @@ FINSI
     },
     {
         id: 'module5',
-        title: "Module 5 : Les Boucles",
+        title: "Module 5 : Le Travail à la Chaîne (Boucles)",
         icon: <Terminal size={20} />,
-        description: "Maîtrisez l'art de l'automatisation. Apprenez à répéter des actions logiques sans effort.",
+        description: "L'ordinateur ne se fatigue jamais. Apprends à lui faire répéter 10 000 fois la même chose en 3 lignes de code.",
         chapters: [
             {
                 id: 'chap5',
-                title: "Tâches Répétitives",
-                description: "POUR, TANT QUE et RÉPÉTER.",
+                title: "L'Automatisation Absolue",
+                description: "Les boucles POUR",
                 lessons: [
                     {
                         id: 'algo_m_5_1',
                         type: 'theory',
-                        title: "La Boucle POUR (For)",
-                        professorSpeech: "Pourquoi écrire 100 fois la même chose ? Utilise une boucle. La boucle POUR est idéale quand tu sais combien de fois tu veux danser.",
+                        title: "La magie de la Boucle POUR",
+                        professorSpeech: "Imaginons qu'on te punisse à écrire 100 fois 'Je ne jetterai plus d'avions en papier'. À la main, c'est dur. En code, c'est fait en 3 lignes et 0.001 seconde.",
                         duration: '10 min',
                         content: `
-# 🔄 La Boucle POUR
+# 🔄 La Boucle POUR (For)
 
-On l'utilise quand on connaît le nombre exact de répétitions à l'avance.
+En informatique, la règle sacrée s'appelle **DRY** (Don't Repeat Yourself / Ne te répète pas).
+Si tu dois faire la même chose 100 fois, tu n'écris pas 100 lignes de code. Tu écris une **Boucle**.
+
+La boucle **POUR** s'utilise quand tu sais **exactement** combien de fois tu veux tourner.
 
 \`\`\`pseudo
-POUR i ALLANT DE 1 À 10
-    AFFICHER \"Tour numéro \", i
+POUR i ALLANT DE 1 À 100
+    AFFICHER "Tour numéro : ", i
 FINPOUR
 \`\`\`
 
 > [!IMPORTANT]
-> **i** est une variable de contrôle (le compteur) qui s'incrémente automatiquement à chaque tour.
+> **i** (pour Indice ou Index) est la variable la plus célèbre du monde. C'est un **Compteur automatique**. Il commence à 1, fait le tour, passe à 2 tout seul, refait le tour, et s'arrête strictement à 100.
 
-[VISUALIZER] {"codeStr": "somme <- 0\nPOUR i ALLANT DE 1 A 3\n    somme <- somme + 10\nFINPOUR", "steps": [{"line": 1, "state": {"somme": 0}, "explanation": "On initialise l'accumulateur 'somme' à 0."}, {"line": 2, "state": {"somme": 0, "i": 1}, "explanation": "La boucle démarre. Le compteur 'i' prend la valeur 1."}, {"line": 3, "state": {"somme": 10, "i": 1}, "explanation": "On ajoute 10 à la somme. (0 + 10 = 10)"}, {"line": 2, "state": {"somme": 10, "i": 2}, "explanation": "Fin du premier tour. 'i' s'incrémente et passe à 2. C'est inférieur ou égal à 3, on continue."}, {"line": 3, "state": {"somme": 20, "i": 2}, "explanation": "On ajoute 10 à la somme. (10 + 10 = 20)"}, {"line": 2, "state": {"somme": 20, "i": 3}, "explanation": "'i' passe à 3. C'est le dernier tour !"}, {"line": 3, "state": {"somme": 30, "i": 3}, "explanation": "On ajoute encore 10. (20 + 10 = 30)"}, {"line": 4, "state": {"somme": 30, "i": 3}, "explanation": "La boucle est terminée car l'itération maximale a été atteinte."}]}
+[VISUALIZER] {"codeStr": "tresor <- 0\nPOUR i ALLANT DE 1 A 3\n    tresor <- tresor + 10\nFINPOUR", "steps": [{"line": 1, "state": {"tresor": 0}, "explanation": "Le coffre est vide au départ (0)."}, {"line": 2, "state": {"tresor": 0, "i": 1}, "explanation": "La boucle démarre. Le compteur 'i' prend la valeur 1. C'est le premier tour."}, {"line": 3, "state": {"tresor": 10, "i": 1}, "explanation": "On met 10 pièces dans le coffre (0 + 10 = 10)."}, {"line": 2, "state": {"tresor": 10, "i": 2}, "explanation": "Fin du tour. Le compteur 'i' avance tout seul à 2."}, {"line": 3, "state": {"tresor": 20, "i": 2}, "explanation": "On remet 10 pièces (10 + 10 = 20)."}, {"line": 2, "state": {"tresor": 20, "i": 3}, "explanation": "Le compteur arrive à 3. C'est le dernier tour !"}, {"line": 3, "state": {"tresor": 30, "i": 3}, "explanation": "On ajoute les dernières 10 pièces (20 + 10 = 30)."}, {"line": 4, "state": {"tresor": 30, "i": 3}, "explanation": "Et voilà, la boucle est finie, on sort !"}]}
 `
                     }
                 ]

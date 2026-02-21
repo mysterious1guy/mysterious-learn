@@ -340,136 +340,36 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   // Mettre à plat toutes les leçons
   const allLessons = courseData.flatMap(m => m.chapters.flatMap(c => c.lessons));
 
-  // Gestion de la responsivité pour le graph
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const isMobile = windowWidth < 768;
-  const isTablet = windowWidth >= 768 && windowWidth < 1200;
-
-  const COLUMNS = isMobile ? 1 : (isTablet ? 2 : 5);
-  const X_SPACING = isMobile ? 0 : (isTablet ? (windowWidth - 120) / (COLUMNS - 1) : (windowWidth - 250) / (COLUMNS - 1));
-  const Y_SPACING = isMobile ? 160 : 200;
+  // =====================================================================
+  // CALCUL DES NŒUDS POUR LA TIMELINE VERTICALE
+  // =====================================================================
+  // Au lieu d'une grille complexe sinueuse, nous allons faire une Timeline verticale simple et belle.
 
   const nodes = allLessons.map((lesson, index) => {
-    const row = Math.floor(index / COLUMNS);
-    const col = index % COLUMNS;
-    // Si ligne impaire, on inverse la direction (serpentin)
-    const xMultiplier = !isMobile && row % 2 !== 0 ? (COLUMNS - 1) - col : col;
-
-    // Centrage horizontal
-    const xBase = isMobile ? windowWidth / 2 : (windowWidth - (COLUMNS - 1) * X_SPACING) / 2;
-
     return {
       ...lesson,
-      x: isMobile ? windowWidth / 2 : xBase + xMultiplier * X_SPACING,
-      y: row * Y_SPACING + 150,
       isUnlocked: index === 0 || completedLessons.includes(allLessons[index - 1].id),
       isCompleted: completedLessons.includes(lesson.id)
     };
   });
 
-  useEffect(() => {
-    if (!user || !API_URL) {
-      setLoadingProgress(false);
-      return;
-    }
-    fetch(`${API_URL}/courses/algo/progress`, {
-      headers: { Authorization: `Bearer ${user.token}` }
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.completedLessons) setCompletedLessons(data.completedLessons);
-        setLoadingProgress(false);
-      })
-      .catch(err => {
-        console.error("Erreur progress:", err);
-        setLoadingProgress(false);
-      });
-  }, [user, API_URL]);
-
-  // Si on ouvre une leçon (clic sur un noeud)
-  const openNode = (lesson) => {
-    if (!lesson.isUnlocked) return;
-    setActiveLessonId(lesson.id);
-
-    // Déclenche l'Oracle
-    window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-      detail: { text: "Ouverture de la leçon... Prépare-toi à coder." }
-    }));
-
-    const eventType = lesson.type;
-    const event = new CustomEvent('mysterious-ai-theater-open', {
-      detail: {
-        type: eventType,
-        title: lesson.title,
-        node: eventType === 'theory' ? (
-          <TheoryViewer
-            title={lesson.title}
-            content={lesson.content}
-            onComplete={(success) => handleLessonCompletion(lesson.id, success)}
-          />
-        ) : eventType === 'quiz' ? (
-          <QuizViewer
-            data={lesson}
-            onComplete={(success) => handleLessonCompletion(lesson.id, success)}
-          />
-        ) : (
-          <CodeEditor lesson={lesson} onComplete={(success) => handleLessonCompletion(lesson.id, success)} />
-        )
-      }
-    });
-    window.dispatchEvent(event);
+  const openNode = (node) => {
+    if (!node?.isUnlocked) return;
+    setActiveLessonId(node.id);
   };
 
-  const handleLessonCompletion = async (id, success) => {
-    if (success && !completedLessons.includes(id)) {
-      setCompletedLessons(prev => [...prev, id]);
-      window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-        detail: { text: "Bravo, tu as validé cette étape ! Le prochain défi est débloqué." }
-      }));
-      if (user && API_URL) {
-        try {
-          await fetch(`${API_URL}/courses/algo/progress`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${user.token}`
-            },
-            body: JSON.stringify({ lessonId: id, totalLessons: allLessons.length })
-          });
-        } catch (err) { }
+  const closeLesson = () => setActiveLessonId(null);
+
+  const handleLessonCompletion = (success) => {
+    if (success && activeLessonId) {
+      if (!completedLessons.includes(activeLessonId)) {
+        setCompletedLessons([...completedLessons, activeLessonId]);
       }
-      setTimeout(() => window.dispatchEvent(new CustomEvent('mysterious-ai-theater-close')), 1500);
+      setTimeout(() => closeLesson(), 1500);
     }
   };
 
-  if (loadingProgress) {
-    return (
-      <div className="fixed inset-0 z-50 bg-[#020617] flex flex-col items-center justify-center">
-        <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-6" />
-        <p className="font-mono text-xs tracking-widest text-emerald-500 uppercase font-black text-center">Initialisation du Réseau Neuronal...</p>
-      </div>
-    );
-  }
-
-  if (showClassroomIntro) {
-    return (
-      <CourseClassroom
-        courseTitle="Protocole: ALGORITHMIQUE"
-        courseDescription="Ici la théorie n'existe pas. Seule la logique fait loi. Explore le réseau neuronal et connecte les concepts."
-        onEnter={() => setShowClassroomIntro(false)}
-      />
-    );
-  }
-
-  // Dimensions virtuelles du canvas draggable (pour le défilement)
-  const canvasWidth = windowWidth; // On utilise toute la largeur
-  const canvasHeight = Math.ceil(allLessons.length / COLUMNS) * Y_SPACING + 300;
+  const activeLesson = activeLessonId ? allLessons.find(l => l.id === activeLessonId) : null;
 
   return (
     <div className="fixed inset-0 z-50 bg-[#020617] text-emerald-50 flex flex-col font-sans overflow-hidden pattern-grid-lg">
@@ -490,12 +390,12 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
             </h1>
             <div className="flex items-center gap-2 text-[10px] text-emerald-500/70 font-mono">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              STATUS: ONLINE // Rendu Neuronal Actif
+              STATUS: ONLINE // Programme d'Initiation
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-1 font-mono">
+        <div className="flex flex-col items-end gap-1 font-mono hidden md:flex">
           <div className="flex gap-2 text-xs font-black tracking-widest text-emerald-500/50">
             <span>NODES:</span>
             <span className="text-emerald-400">{completedLessons.length} / {allLessons.length}</span>
@@ -510,73 +410,169 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
         </div>
       </header>
 
-      {/* Scrollable Map Area */}
-      <div
-        className="flex-1 relative overflow-y-auto overflow-x-hidden custom-scrollbar touch-pan-y"
-        style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}
-      >
-        <div
-          className="relative w-full overflow-x-hidden"
-          style={{ height: canvasHeight }}
-        >
-          {/* SVG Connecting Lines Layer */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-            {nodes.map((node, i) => {
-              if (i === nodes.length - 1) return null;
-              const nextNode = nodes[i + 1];
-              const isPathCompleted = node.isCompleted && nextNode.isCompleted;
-              const isPathUnlocked = node.isCompleted;
+      {/* Scrollable Map Area - TIMELINE VERTICALE */}
+      <div className="flex-1 relative overflow-y-auto custom-scrollbar flex flex-col items-center py-12 px-4 shadow-inner">
+        <div className="w-full max-w-lg relative">
 
-              return (
-                <motion.line
-                  key={`line-${i}`}
-                  x1={node.x} y1={node.y}
-                  x2={nextNode.x} y2={nextNode.y}
-                  stroke={isPathCompleted ? '#10b981' : isPathUnlocked ? '#0ea5e9' : '#1e293b'}
-                  strokeWidth={isPathCompleted ? "3" : "2"}
-                  strokeDasharray={!isPathCompleted ? "5,5" : "none"}
-                  className="transition-colors duration-1000"
-                />
-              );
-            })}
-          </svg>
+          {/* Ligne Centrale Globale */}
+          <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1 bg-slate-800 -translate-x-1/2 z-0" />
 
-          {/* Nodes Render */}
-          {nodes.map((node) => (
-            <motion.div
-              key={node.id}
-              onClick={() => openNode(node)}
-              className="absolute z-10 -translate-x-1/2 -translate-y-1/2"
-              style={{ left: node.x, top: node.y }}
-            >
-              <div className={`
-                        relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all duration-500
-                        ${node.isCompleted ? 'bg-emerald-500/20 border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.4)] text-emerald-400'
-                  : node.isUnlocked ? 'bg-blue-900/40 border-2 border-blue-500 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.3)]'
-                    : 'bg-slate-900/80 border-2 border-slate-800 text-slate-600'}
-                    `}>
-                {node.type === 'theory' && <BookOpen size={24} />}
-                {node.type === 'quiz' && <HelpCircle size={24} />}
-                {node.type === 'practice' && <Code size={24} />}
-
-                {/* Node Label */}
-                <div className="absolute top-20 w-48 text-center pointer-events-none">
-                  <p className={`text-xs font-black tracking-widest uppercase truncate ${node.isCompleted ? 'text-emerald-400' : node.isUnlocked ? 'text-blue-400' : 'text-slate-600'}`}>
-                    {node.title}
-                  </p>
-                  {node.isCompleted && <span className="text-[9px] text-emerald-500 font-mono mt-1 block">DONNÉE_ASSIMILÉE</span>}
+          {courseData.map((module, mIdx) => (
+            <div key={module.id} className="mb-16 w-full relative z-10">
+              {/* Module Header */}
+              <div className="sticky top-0 z-20 bg-[#020617]/95 backdrop-blur-sm py-4 mb-8 border-y border-slate-800/50 flex justify-center shadow-2xl">
+                <div className="flex items-center gap-4 bg-slate-900/80 border border-emerald-500/20 px-6 py-3 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                  <span className="text-emerald-400 bg-emerald-500/20 p-2 rounded-xl border border-emerald-500/30 shadow-inner">
+                    {module.icon}
+                  </span>
+                  <div>
+                    <h3 className="font-black text-white text-base md:text-lg tracking-widest uppercase">{module.title}</h3>
+                    <p className="text-xs text-slate-500 font-mono line-clamp-1">{module.description}</p>
+                  </div>
                 </div>
               </div>
-            </motion.div>
+
+              {/* Lessons dans ce Module */}
+              <div className="flex flex-col gap-10 md:gap-14 w-full">
+                {module.chapters.flatMap(c => c.lessons).map((lessonObj, lIdx) => {
+                  // Recherche globale pour l'état d'unlock
+                  const globalNode = nodes.find(n => n.id === lessonObj.id);
+                  const isUnlocked = globalNode?.isUnlocked;
+                  const isCompleted = globalNode?.isCompleted;
+
+                  // Alterner gauche/droite sur Desktop
+                  const alignLeft = lIdx % 2 === 0;
+
+                  return (
+                    <motion.div
+                      key={lessonObj.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: lIdx * 0.1 }}
+                      className={`flex items-center w-full relative ${alignLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}
+                    >
+                      {/* Ligne Connectrice Horizontale (Desktop uniquement) */}
+                      <div className={`hidden md:block absolute top-1/2 w-[calc(50%-4rem)] h-1 -translate-y-1/2 z-0
+                               ${isCompleted ? 'bg-emerald-500' : isUnlocked ? 'bg-blue-500/50' : 'bg-slate-800'}
+                               ${alignLeft ? 'left-16' : 'right-16'}
+                           `} />
+
+                      {/* Composant Centré (Icone) */}
+                      <div className="absolute left-[39px] md:left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                        <div
+                          onClick={() => openNode(globalNode)}
+                          className={`
+                                w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300
+                                hover:scale-110 active:scale-95 shadow-xl border-[3px]
+                                ${isCompleted ? 'bg-emerald-900 border-emerald-400 text-emerald-400 shadow-[0_0_30px_rgba(16,212,143,0.4)]'
+                              : isUnlocked ? 'bg-blue-900/80 border-blue-400 text-blue-300 shadow-[0_0_20px_rgba(59,130,246,0.5)]'
+                                : 'bg-slate-900 border-slate-700 text-slate-500 opacity-60'}
+                               `}
+                        >
+                          {lessonObj.type === 'theory' && <BookOpen size={26} />}
+                          {lessonObj.type === 'quiz' && <HelpCircle size={26} />}
+                          {lessonObj.type === 'practice' && <Code size={26} />}
+
+                          {isCompleted && (
+                            <div className="absolute -bottom-1 -right-1 bg-[#020617] rounded-full p-0.5">
+                              <CheckCircle size={18} className="text-emerald-400 fill-emerald-950" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Carte de Contenu */}
+                      <div className={`
+                              w-full md:w-[calc(50%-4rem)] pl-24 md:pl-0 
+                              ${alignLeft ? 'md:pr-24 md:text-right' : 'md:pl-24 md:text-left'}
+                           `}>
+                        <div
+                          onClick={() => openNode(globalNode)}
+                          className={`
+                                  p-4 md:p-5 rounded-2xl cursor-pointer transition-all border
+                                  hover:-translate-y-1 hover:shadow-2xl
+                                  ${isCompleted ? 'bg-emerald-900/20 border-emerald-500/30 hover:border-emerald-400'
+                              : isUnlocked ? 'bg-blue-900/20 border-blue-500/40 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.1)]'
+                                : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'}
+                                 `}
+                        >
+                          <div className={`flex items-center gap-2 mb-2 ${alignLeft ? 'md:justify-end' : 'md:justify-start'}`}>
+                            <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded
+                                      ${lessonObj.type === 'theory' ? 'bg-purple-500/20 text-purple-400' :
+                                lessonObj.type === 'quiz' ? 'bg-yellow-500/20 text-yellow-400' :
+                                  'bg-pink-500/20 text-pink-400'}
+                                    `}>
+                              {lessonObj.type === 'theory' ? 'Théorie' : lessonObj.type === 'quiz' ? 'Quiz' : 'Pratique'}
+                            </span>
+                            <span className="text-[10px] text-slate-500 font-mono">{lessonObj.duration}</span>
+                          </div>
+                          <h4 className={`text-base md:text-lg font-bold truncate ${isCompleted ? 'text-emerald-100' : 'text-white'}`}>
+                            {lessonObj.title}
+                          </h4>
+                          <p className="text-slate-400 text-xs md:text-sm mt-1 line-clamp-2 md:line-clamp-none">
+                            {lessonObj.professorSpeech || "Clique pour décrypter cette information."}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
           ))}
+
+          {/* Fin de Timeline */}
+          <div className="w-full flex justify-center py-10 opacity-50 relative z-20">
+            <div className="bg-slate-900 border border-slate-700 px-6 py-3 rounded-full flex items-center gap-3">
+              <Trophy size={16} className="text-slate-500" />
+              <span className="text-xs font-mono font-black tracking-widest text-slate-500 uppercase">Fin de Ligne</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* UI Guidance Overlay */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 text-emerald-500/50 font-mono text-[10px] tracking-widest pointer-events-none uppercase">
-        <span>{'>'} Glisse pour naviguer le réseau</span>
-        <span>// Clique sur un noeud pour l'assimiler {'<'}</span>
-      </div>
+      <AnimatePresence>
+        {activeLesson && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+          >
+            <div className="bg-[#020617] w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-emerald-500/20">
+              <div className="absolute top-4 right-4 z-50">
+                <button
+                  onClick={closeLesson}
+                  className="bg-slate-900 hover:bg-slate-800 text-slate-400 p-2 rounded-full transition-colors border border-slate-700"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden bg-white rounded-3xl m-2 md:m-4 mt-16 md:mt-20">
+                {activeLesson.type === 'theory' && (
+                  <TheoryViewer
+                    title={activeLesson.title}
+                    content={activeLesson.content}
+                    onComplete={handleLessonCompletion}
+                  />
+                )}
+                {activeLesson.type === 'practice' && (
+                  <CodeEditor
+                    lesson={activeLesson}
+                    onComplete={handleLessonCompletion}
+                  />
+                )}
+                {activeLesson.type === 'quiz' && (
+                  <QuizViewer
+                    data={activeLesson}
+                    onComplete={handleLessonCompletion}
+                  />
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

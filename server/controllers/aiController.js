@@ -72,10 +72,6 @@ const aiChat = async (req, res) => {
         const { message, courseId, history } = req.body;
         const user = req.user;
 
-        if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ message: "Clé API Gemini manquante dans les variables d'environnement." });
-        }
-
         // Configuration du système
         const systemInstruction = `Tu es L'Oracle (System Core v2.0), une Intelligence Artificielle intégrée extrêmement avancée au sein de Mysterious Classroom.
         Créé par l'architecte Mouhamed Fall, tu es le Copilot personnel de l'utilisateur.
@@ -110,69 +106,79 @@ const aiChat = async (req, res) => {
             contextPrompt += "\nAucun document spécifique trouvé dans la base. Utilise tes connaissances générales.";
         }
 
-        // Construction du payload pour l'API Gemini (Raw HTTP)
-        const contents = [];
+        // Construction du payload pour Pollinations API (Format OpenAI)
+        const messages = [];
+
+        // Ajout du system prompt
+        messages.push({
+            role: "system",
+            content: systemInstruction
+        });
+
+        // Contexte (s'il y en a)
+        if (contextPrompt !== "Voici tes connaissances internes pour répondre à cette question :\n\nAucun document spécifique trouvé dans la base. Utilise tes connaissances générales.") {
+            messages.push({
+                role: "system",
+                content: contextPrompt
+            });
+        }
 
         // Ajout de l'historique
         if (history && history.length > 0) {
             history.forEach(h => {
-                contents.push({
-                    role: h.role === 'assistant' ? 'model' : 'user',
-                    parts: [{ text: h.text || h.content }]
+                messages.push({
+                    role: h.role === 'assistant' || h.role === 'model' ? 'assistant' : 'user',
+                    content: h.text || h.content
                 });
             });
         }
 
-        // Ajout du prompt actuel au contenu historique
-        contents.push({
+        // Ajout de la question actuelle
+        messages.push({
             role: "user",
-            parts: [{ text: `${contextPrompt}\n\nQUESTION DE L'UTILISATEUR (LOGIQUE) : ${message}` }]
+            content: message
         });
 
-        // Construction du payload UNIVERSEL (Compatible v1 et v1beta)
-        // On n'utilise plus le champ 'system_instruction' qui cause des 400 sur l'endpoint v1
-        const universalContents = [
-            {
-                role: "user",
-                parts: [{ text: `SYSTEM_PROTOCOL:\n${systemInstruction}` }]
-            },
-            {
-                role: "model",
-                parts: [{ text: "Protocole reçu. Je suis prêt. Comment puis-je vous aider ?" }]
-            },
-            ...contents
-        ];
+        const pollinationsUrl = `https://text.pollinations.ai/`;
 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+        console.log(`📡 [AI RELAY] Appel POLLINATIONS (Gratuit) pour: ${user.email}`);
 
-        console.log(`📡 [AI RELAY] Appel PROTOCOLE UNIVERSEL pour: ${user.email}`);
-
-        const response = await fetch(geminiUrl, {
+        const response = await fetch(pollinationsUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: universalContents,
-                generationConfig: {
-                    temperature: 0.7,
-                    topP: 0.95,
-                    topK: 64,
-                    maxOutputTokens: 2048,
-                }
+                messages: messages,
+                model: 'mistral-large', // Ou 'openai', 'llama', etc. On utilise mistral pour le français (et car performant)
+                seed: 42 // Optionnel, pour plus de cohérence
             })
         });
 
-        const data = await response.json();
+        // L'API Pollinations textuelle renvoie directement une string si on ne met pas jsonMode
+        // Mais avec le header JSON elle renvoie parfois la string ou du JSON. On va forcer la lecture en texte pour être sûr.
+        const responseText = await response.text();
 
         if (!response.ok) {
-            console.error("❌ [AI RELAY] Erreur Gemini API:", data);
+            console.error("❌ [AI RELAY] Erreur Pollinations API:", responseText);
             return res.status(response.status).json({
-                message: "Désolé, le Cœur du Système (Gemini) a renvoyé une erreur.",
-                error: data.error?.message || "Erreur inconnue"
+                message: "Désolé, le Cœur du Système (Pollinations) a renvoyé une erreur.",
+                error: responseText || "Erreur inconnue"
             });
         }
 
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Désolé, je n'ai pas pu générer de réponse.";
-        res.json({ response: responseText });
+        // Si la réponse texte commence par '{' ou '[', on essaie de la parser au cas où
+        let finalResponse = responseText;
+        try {
+            const parsed = JSON.parse(responseText);
+            if (parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
+                finalResponse = parsed.choices[0].message.content;
+            } else if (parsed.response) {
+                finalResponse = parsed.response;
+            }
+        } catch (e) {
+            // C'est du texte brut, c'est parfait
+        }
+
+        res.json({ response: finalResponse });
 
     } catch (error) {
         console.error("CRITICAL AI Relay Error:", error);
