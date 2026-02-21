@@ -372,61 +372,61 @@ const CCourse = ({ onClose, user, API_URL }) => {
   const activeLesson = activeLessonId ? allLessons.find(l => l.id === activeLessonId) : null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#020617] text-cyan-50 flex flex-col font-sans overflow-hidden pattern-grid-lg">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#020617] via-[#020617]/90 to-cyan-900/20 pointer-events-none" />
+    <div className="fixed inset-0 z-50 bg-slate-50 text-slate-800 flex flex-col font-sans overflow-hidden pattern-grid-lg">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-blue-50/50 pointer-events-none" />
 
       {/* Glitch Overlay effect */}
-      <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/stardust.png')] opacity-[0.03] pointer-events-none mix-blend-overlay" />
+      <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/stardust.png')] opacity-[0.02] pointer-events-none mix-blend-overlay" />
 
-      {/* Cybernetic HUD Header */}
-      <header className="h-20 bg-black/80 backdrop-blur-md border-b border-cyan-500/20 flex items-center justify-between px-8 shrink-0 z-50">
+      {/* Header */}
+      <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-50 shadow-sm relative">
         <div className="flex items-center gap-6">
-          <button onClick={onClose} className="p-2 hover:bg-cyan-500/10 rounded-xl text-cyan-500 transition-all border border-transparent hover:border-cyan-500/30">
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl text-slate-500 hover:text-slate-800 transition-all border border-transparent hover:border-slate-200">
             <ArrowLeft size={20} />
           </button>
           <div className="flex flex-col">
-            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-white uppercase">
-              <Cpu size={20} className="text-cyan-500" /> SYSTEM.C
+            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-slate-900 uppercase">
+              <Cpu size={20} className="text-blue-600" /> SYSTEM.C
             </h1>
-            <div className="flex items-center gap-2 text-[10px] text-cyan-500/70 font-mono">
-              <span className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+            <div className="flex items-center gap-2 text-[10px] text-blue-600/70 font-mono">
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
               STATUS: ONLINE // Langage Fondateur
             </div>
           </div>
         </div>
 
         <div className="flex flex-col items-end gap-1 font-mono hidden md:flex">
-          <div className="flex gap-2 text-xs font-black tracking-widest text-cyan-500/50">
+          <div className="flex gap-2 text-xs font-black tracking-widest text-slate-400">
             <span>NODES:</span>
-            <span className="text-cyan-400">{completedLessons.length} / {allLessons.length}</span>
+            <span className="text-blue-600">{completedLessons.length} / {allLessons.length}</span>
           </div>
-          <div className="w-40 h-1 bg-cyan-900/30 rounded-full overflow-hidden shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+          <div className="w-40 h-1 bg-slate-200 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${(completedLessons.length / allLessons.length) * 100}%` }}
-              className="h-full bg-cyan-500 shadow-[0_0_10px_#06b6d4]"
+              className="h-full bg-blue-500"
             />
           </div>
         </div>
       </header>
 
       {/* Scrollable Map Area - TIMELINE VERTICALE */}
-      <div className="flex-1 relative overflow-y-auto custom-scrollbar flex flex-col items-center py-12 px-4 shadow-inner">
+      <div className="flex-1 relative overflow-y-auto overflow-x-hidden touch-pan-y custom-scrollbar flex flex-col items-center py-12 px-4">
         <div className="w-full max-w-lg relative">
 
           {/* Ligne Centrale Globale */}
-          <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1 bg-slate-800 -translate-x-1/2 z-0" />
+          <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1 bg-slate-200 -translate-x-1/2 z-0" />
 
           {courseData.map((module, mIdx) => (
             <div key={module.id} className="mb-16 w-full relative z-10">
               {/* Module Header */}
-              <div className="sticky top-0 z-20 bg-[#020617]/95 backdrop-blur-sm py-4 mb-8 border-y border-slate-800/50 flex justify-center shadow-2xl">
-                <div className="flex items-center gap-4 bg-slate-900/80 border border-cyan-500/20 px-6 py-3 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                  <span className="text-cyan-400 bg-cyan-500/20 p-2 rounded-xl border border-cyan-500/30 shadow-inner">
+              <div className="sticky top-0 z-20 bg-slate-50/95 backdrop-blur-sm py-4 mb-8 border-y border-slate-200 flex justify-center">
+                <div className="flex items-center gap-4 bg-white border border-slate-200 px-6 py-3 rounded-2xl shadow-sm">
+                  <span className="text-blue-600 bg-blue-50 p-2 rounded-xl border border-blue-100">
                     {module.icon}
                   </span>
                   <div>
-                    <h3 className="font-black text-white text-base md:text-lg tracking-widest uppercase">{module.title}</h3>
+                    <h3 className="font-black text-slate-900 text-base md:text-lg tracking-widest uppercase">{module.title}</h3>
                     <p className="text-xs text-slate-500 font-mono line-clamp-1">{module.description}</p>
                   </div>
                 </div>
@@ -452,30 +452,30 @@ const CCourse = ({ onClose, user, API_URL }) => {
                       className={`flex items-center w-full relative ${alignLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}
                     >
                       {/* Ligne Connectrice Horizontale (Desktop uniquement) */}
-                      <div className={`hidden md:block absolute top-1/2 w-[calc(50%-4rem)] h-1 -translate-y-1/2 z-0
-                               ${isCompleted ? 'bg-cyan-500' : isUnlocked ? 'bg-blue-500/50' : 'bg-slate-800'}
+                      <div className={`hidden md:block absolute top-1/2 w-[calc(50%-4rem)] h-1 -translate-y-1/2 -z-10
+                               ${isCompleted ? 'bg-blue-500' : isUnlocked ? 'bg-blue-200' : 'bg-slate-200'}
                                ${alignLeft ? 'left-16' : 'right-16'}
                            `} />
 
                       {/* Composant Centré (Icone) */}
-                      <div className="absolute left-[39px] md:left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                      <div className="absolute left-[39px] md:left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-slate-50 rounded-full p-1 border border-slate-50">
                         <div
                           onClick={() => openNode(globalNode)}
                           className={`
-                                w-16 h-16 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300
-                                hover:scale-110 active:scale-95 shadow-xl border-[3px]
-                                ${isCompleted ? 'bg-cyan-900 border-cyan-400 text-cyan-400 shadow-[0_0_30px_rgba(16,212,143,0.4)]'
-                              : isUnlocked ? 'bg-blue-900/80 border-blue-400 text-blue-300 shadow-[0_0_20px_rgba(59,130,246,0.5)]'
-                                : 'bg-slate-900 border-slate-700 text-slate-500 opacity-60'}
+                                w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300
+                                hover:scale-110 active:scale-95 border-2
+                                ${isCompleted ? 'bg-blue-100 border-blue-500 text-blue-600 shadow-[0_0_15px_rgba(59,130,246,0.2)]'
+                              : isUnlocked ? 'bg-white border-blue-300 text-blue-400 shadow-[0_5px_15px_rgba(0,0,0,0.05)]'
+                                : 'bg-slate-100 border-slate-200 text-slate-400 opacity-80'}
                                `}
                         >
-                          {lessonObj.type === 'theory' && <BookOpen size={26} />}
-                          {lessonObj.type === 'quiz' && <HelpCircle size={26} />}
-                          {lessonObj.type === 'practice' && <Code size={26} />}
+                          {lessonObj.type === 'theory' && <BookOpen size={24} />}
+                          {lessonObj.type === 'quiz' && <HelpCircle size={24} />}
+                          {lessonObj.type === 'practice' && <Code size={24} />}
 
                           {isCompleted && (
-                            <div className="absolute -bottom-1 -right-1 bg-[#020617] rounded-full p-0.5">
-                              <CheckCircle size={18} className="text-cyan-400 fill-cyan-950" />
+                            <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm">
+                              <CheckCircle size={18} className="text-green-500 fill-white" />
                             </div>
                           )}
                         </div>
@@ -489,27 +489,27 @@ const CCourse = ({ onClose, user, API_URL }) => {
                         <div
                           onClick={() => openNode(globalNode)}
                           className={`
-                                  p-4 md:p-5 rounded-2xl cursor-pointer transition-all border
-                                  hover:-translate-y-1 hover:shadow-2xl
-                                  ${isCompleted ? 'bg-cyan-900/20 border-cyan-500/30 hover:border-cyan-400'
-                              : isUnlocked ? 'bg-blue-900/20 border-blue-500/40 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.1)]'
-                                : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'}
+                                  relative z-10 bg-white p-4 md:p-5 rounded-2xl cursor-pointer transition-all border
+                                  hover:-translate-y-1 hover:shadow-lg
+                                  ${isCompleted ? 'border-blue-300 shadow-sm'
+                              : isUnlocked ? 'border-blue-200 shadow-sm'
+                                : 'border-slate-200 bg-slate-50 opacity-70'}
                                  `}
                         >
                           <div className={`flex items-center gap-2 mb-2 ${alignLeft ? 'md:justify-end' : 'md:justify-start'}`}>
                             <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded
-                                      ${lessonObj.type === 'theory' ? 'bg-purple-500/20 text-purple-400' :
-                                lessonObj.type === 'quiz' ? 'bg-yellow-500/20 text-yellow-400' :
-                                  'bg-pink-500/20 text-pink-400'}
+                                      ${lessonObj.type === 'theory' ? 'bg-purple-100 text-purple-700' :
+                                lessonObj.type === 'quiz' ? 'bg-yellow-100 text-yellow-700' :
+                                  'bg-pink-100 text-pink-700'}
                                     `}>
                               {lessonObj.type === 'theory' ? 'Théorie' : lessonObj.type === 'quiz' ? 'Quiz' : 'Pratique'}
                             </span>
-                            <span className="text-[10px] text-slate-500 font-mono">{lessonObj.duration}</span>
+                            <span className="text-[10px] text-slate-400 font-mono">{lessonObj.duration}</span>
                           </div>
-                          <h4 className={`text-base md:text-lg font-bold truncate ${isCompleted ? 'text-cyan-100' : 'text-white'}`}>
+                          <h4 className={`text-base md:text-lg font-bold truncate text-slate-900`}>
                             {lessonObj.title}
                           </h4>
-                          <p className="text-slate-400 text-xs md:text-sm mt-1 line-clamp-2 md:line-clamp-none">
+                          <p className="text-slate-500 text-xs md:text-sm mt-1 line-clamp-2 md:line-clamp-none">
                             {lessonObj.professorSpeech || "Clique pour décrypter cette information."}
                           </p>
                         </div>
@@ -522,9 +522,9 @@ const CCourse = ({ onClose, user, API_URL }) => {
           ))}
 
           {/* Fin de Timeline */}
-          <div className="w-full flex justify-center py-10 opacity-50 relative z-20">
-            <div className="bg-slate-900 border border-slate-700 px-6 py-3 rounded-full flex items-center gap-3">
-              <Trophy size={16} className="text-slate-500" />
+          <div className="w-full flex justify-center py-10 opacity-70 relative z-20">
+            <div className="bg-white border border-slate-200 px-6 py-3 rounded-full flex items-center gap-3 shadow-sm">
+              <Trophy size={16} className="text-blue-500" />
               <span className="text-xs font-mono font-black tracking-widest text-slate-500 uppercase">Fin de Ligne</span>
             </div>
           </div>
@@ -537,13 +537,13 @@ const CCourse = ({ onClose, user, API_URL }) => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+            className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
           >
-            <div className="bg-[#020617] w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-cyan-500/20">
+            <div className="bg-slate-50 w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-slate-200">
               <div className="absolute top-4 right-4 z-50">
                 <button
                   onClick={closeLesson}
-                  className="bg-slate-900 hover:bg-slate-800 text-slate-400 p-2 rounded-full transition-colors border border-slate-700"
+                  className="bg-white hover:bg-slate-100 text-slate-500 hover:text-slate-800 p-2 rounded-full transition-colors border border-slate-200 shadow-sm"
                 >
                   <X size={24} />
                 </button>

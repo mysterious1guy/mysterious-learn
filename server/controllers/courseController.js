@@ -57,8 +57,16 @@ const getCourseById = async (req, res) => {
   }
 
   try {
-    const course = await Course.findById(req.params.id)
-      .populate('prerequisites', 'title description');
+    const { id } = req.params;
+    let course;
+
+    // Check if it's a valid ObjectId (for standard MongoDB generated ids)
+    if (id && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id)) {
+      course = await Course.findById(id).populate('prerequisites', 'title description');
+    } else {
+      // Fallback for custom string IDs like 'c' or 'algo'
+      course = await Course.findOne({ $or: [{ id: id }] }).populate('prerequisites', 'title description');
+    }
 
     if (!course) {
       return res.status(404).json({ message: 'Cours non trouvé' });

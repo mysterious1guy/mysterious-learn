@@ -380,20 +380,20 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
   const activeLesson = activeLessonId ? allLessons.find(l => l.id === activeLessonId) : null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 flex flex-col font-sans overflow-hidden pattern-grid-lg">
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-blue-50 dark:from-slate-900 dark:via-[#020617] dark:to-slate-900 pointer-events-none" />
+    <div className="fixed inset-0 z-50 bg-slate-50 text-slate-800 flex flex-col font-sans overflow-hidden pattern-grid-lg">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-blue-50/50 pointer-events-none" />
 
       {/* Glitch Overlay effect (Lightened) */}
-      <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/stardust.png')] opacity-[0.05] pointer-events-none mix-blend-multiply" />
+      <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/stardust.png')] opacity-[0.02] pointer-events-none mix-blend-overlay" />
 
-      {/* Cybernetic HUD Header -> Light Clean Header */}
-      <header className="h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 shrink-0 z-50 shadow-sm">
+      {/* Header */}
+      <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shrink-0 z-50 shadow-sm relative">
         <div className="flex items-center gap-6">
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl text-slate-500 transition-all border border-transparent hover:border-slate-200">
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl text-slate-500 hover:text-slate-800 transition-all border border-transparent hover:border-slate-200">
             <ArrowLeft size={20} />
           </button>
           <div className="flex flex-col">
-            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-slate-800 dark:text-slate-100 uppercase">
+            <h1 className="font-black text-sm md:text-xl tracking-widest flex items-center gap-3 text-slate-900 uppercase">
               <Cpu size={20} className="text-blue-600" /> SYSTEM.ALGO
             </h1>
             <div className="flex items-center gap-2 text-[10px] text-blue-600/70 font-mono font-bold">
@@ -418,30 +418,31 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
         </div>
       </header>
 
-      {/* Scrollable Map Area - TIMELINE VERTICALE */}
-      <div className="flex-1 relative overflow-y-auto custom-scrollbar flex flex-col items-center py-12 px-4 shadow-inner">
+      {/* Scrollable Area - TIMELINE VERTICALE */}
+      <div className="flex-1 relative overflow-y-auto overflow-x-hidden touch-pan-y px-4 py-12 custom-scrollbar flex flex-col items-center">
         <div className="w-full max-w-3xl relative">
 
           {/* Ligne Centrale Globale */}
           <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1 bg-slate-200 -translate-x-1/2 z-0" />
 
           {courseData.map((module, mIdx) => (
-            <div key={module.id} className="mb-16 w-full relative z-10">
+            <div key={module.id} className="mb-20 w-full relative z-10">
+
               {/* Module Header */}
-              <div className="sticky top-0 z-20 bg-slate-50/95 dark:bg-[#020617]/95 backdrop-blur-sm py-4 mb-8 border-y border-slate-200 dark:border-slate-800 flex justify-center shadow-sm">
-                <div className="flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-6 py-3 rounded-2xl shadow-sm">
-                  <span className="text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 p-2 rounded-xl border border-blue-100 dark:border-blue-900/50 shadow-inner">
+              <div className="sticky top-0 z-20 bg-slate-50/95 backdrop-blur-sm py-4 mb-12 border-y border-slate-200 flex justify-center shadow-sm">
+                <div className="flex items-center gap-4 bg-white border border-slate-200 px-6 py-4 rounded-2xl shadow-sm">
+                  <span className="text-blue-600 bg-blue-50 p-3 rounded-xl border border-blue-100 shadow-inner">
                     {module.icon}
                   </span>
                   <div>
-                    <h3 className="font-black text-slate-800 dark:text-slate-100 text-base md:text-lg tracking-widest uppercase">{module.title}</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-mono line-clamp-1">{module.description}</p>
+                    <h3 className="font-black text-slate-900 text-lg md:text-xl tracking-widest uppercase">{module.title}</h3>
+                    <p className="text-sm text-slate-500 font-mono font-medium">{module.description}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Lessons dans ce Module */}
-              <div className="flex flex-col gap-10 md:gap-14 w-full">
+              {/* Lessons */}
+              <div className="flex flex-col gap-12 md:gap-20 w-full">
                 {module.chapters.flatMap(c => c.lessons).map((lessonObj, lIdx) => {
                   // Recherche globale pour l'état d'unlock
                   const globalNode = nodes.find(n => n.id === lessonObj.id);
@@ -460,13 +461,13 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                       className={`flex items-center w-full relative ${alignLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}
                     >
                       {/* Ligne Connectrice Horizontale (Desktop uniquement) */}
-                      <div className={`hidden md:block absolute top-1/2 w-[calc(50%-4rem)] h-1 -translate-y-1/2 z-0
+                      <div className={`hidden md:block absolute top-1/2 w-[calc(50%-4rem)] h-1 -translate-y-1/2 -z-10
                                ${isCompleted ? 'bg-green-500' : isUnlocked ? 'bg-blue-300' : 'bg-slate-200'}
                                ${alignLeft ? 'left-16' : 'right-16'}
                            `} />
 
                       {/* Composant Centré (Icone) */}
-                      <div className="absolute left-[39px] md:left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                      <div className="absolute left-[39px] md:left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-slate-50 rounded-full p-1 border border-slate-50">
                         <div
                           onClick={() => openNode(globalNode)}
                           className={`
@@ -497,11 +498,11 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                         <div
                           onClick={() => openNode(globalNode)}
                           className={`
-                                  p-4 md:p-5 rounded-2xl cursor-pointer transition-all border
+                                  relative z-10 p-4 md:p-5 rounded-2xl cursor-pointer transition-all border
                                   hover:-translate-y-1 hover:shadow-xl
-                                  ${isCompleted ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 hover:border-green-400 shadow-sm'
-                              : isUnlocked ? 'bg-white dark:bg-slate-900 border-blue-200 dark:border-blue-800 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.05)]'
-                                : 'bg-slate-50 dark:bg-[#020617] border-slate-200 dark:border-slate-800 hover:border-slate-300 shadow-sm'}
+                                  ${isCompleted ? 'bg-green-50 border-green-200 hover:border-green-400 shadow-sm'
+                              : isUnlocked ? 'bg-white border-blue-200 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.05)]'
+                                : 'bg-slate-50 border-slate-200 hover:border-slate-300 shadow-sm'}
                                  `}
                         >
                           <div className={`flex items-center gap-2 mb-2 ${alignLeft ? 'md:justify-end' : 'md:justify-start'}`}>
@@ -514,10 +515,10 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
                             </span>
                             <span className="text-[10px] text-slate-500 font-mono font-bold">{lessonObj.duration}</span>
                           </div>
-                          <h4 className={`text-base md:text-lg font-bold ${isCompleted ? 'text-green-800 dark:text-green-400' : 'text-slate-800 dark:text-slate-200'}`}>
+                          <h4 className={`text-base md:text-lg font-bold ${isCompleted ? 'text-green-800' : 'text-slate-800'}`}>
                             {lessonObj.title}
                           </h4>
-                          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1 leading-relaxed">
+                          <p className="text-slate-500 text-sm mt-1 leading-relaxed">
                             {lessonObj.professorSpeech || "Clique pour décrypter cette information."}
                           </p>
                         </div>
@@ -547,11 +548,11 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
             exit={{ opacity: 0, scale: 0.95 }}
             className="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
           >
-            <div className="bg-slate-50 dark:bg-[#020617] w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-slate-200 dark:border-slate-800">
+            <div className="bg-slate-50 w-full max-w-5xl h-full md:h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex flex-col relative border border-slate-200">
               <div className="absolute top-4 right-4 z-50">
                 <button
                   onClick={closeLesson}
-                  className="bg-white hover:bg-slate-100 text-slate-500 p-2 rounded-full transition-colors border border-slate-200 shadow-sm"
+                  className="bg-white hover:bg-slate-100 text-slate-500 hover:text-slate-800 p-2 rounded-full transition-colors border border-slate-200 shadow-sm"
                 >
                   <X size={24} />
                 </button>

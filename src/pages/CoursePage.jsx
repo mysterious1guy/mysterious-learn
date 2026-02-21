@@ -23,6 +23,7 @@ const CoursePage = ({ user, API_URL, setToast }) => {
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [expandedChapter, setExpandedChapter] = useState(null);
+    const [showCustomTimeline, setShowCustomTimeline] = useState(false);
 
     const normalizedCourseId = courseId?.toLowerCase();
 
@@ -77,12 +78,13 @@ const CoursePage = ({ user, API_URL, setToast }) => {
         );
     }
 
-    if (normalizedCourseId === 'algo') {
-        return <AlgoCourse onClose={() => navigate(user?.role === 'admin' ? '/admin' : '/dashboard')} user={user} API_URL={API_URL} />;
-    }
-
-    if (normalizedCourseId === 'c') {
-        return <CCourse onClose={() => navigate(user?.role === 'admin' ? '/admin' : '/dashboard')} user={user} API_URL={API_URL} />;
+    if (showCustomTimeline) {
+        if (normalizedCourseId === 'algo') {
+            return <AlgoCourse onClose={() => setShowCustomTimeline(false)} user={user} API_URL={API_URL} />;
+        }
+        if (normalizedCourseId === 'c') {
+            return <CCourse onClose={() => setShowCustomTimeline(false)} user={user} API_URL={API_URL} />;
+        }
     }
 
     return (
@@ -147,6 +149,18 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                     <span>{course.rating}/5</span>
                                 </div>
                             </div>
+
+                            {(normalizedCourseId === 'algo' || normalizedCourseId === 'c') && (
+                                <div className="mt-8">
+                                    <button
+                                        onClick={() => setShowCustomTimeline(true)}
+                                        className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all flex items-center justify-center gap-3 w-full md:w-auto transform hover:-translate-y-1"
+                                    >
+                                        <PlayCircle size={24} />
+                                        DÉMARRER LA CARTE DU COURS
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex items-center justify-center">
@@ -214,7 +228,13 @@ const CoursePage = ({ user, API_URL, setToast }) => {
                                         <div className="flex items-center justify-between mb-4">
                                             <h4 className="text-slate-700 dark:text-slate-300 font-medium">Objectifs d'apprentissage</h4>
                                             <button
-                                                onClick={() => startLesson(index)}
+                                                onClick={() => {
+                                                    if (normalizedCourseId === 'algo' || normalizedCourseId === 'c') {
+                                                        setShowCustomTimeline(true);
+                                                    } else {
+                                                        startLesson(index);
+                                                    }
+                                                }}
                                                 className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all active:scale-95 flex items-center gap-2 font-medium"
                                             >
                                                 <PlayCircle size={18} />
