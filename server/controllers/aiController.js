@@ -72,8 +72,8 @@ const aiChat = async (req, res) => {
         const { message, courseId, history } = req.body;
         const user = req.user;
 
-        // Vérification si l'utilisateur est le créateur
-        const isAdmin = user.email === 'mouhamedfall221@gmail.com' || user.email === 'mouhamedfall502@gmail.com' || (user.firstName === 'Mouhamed' && user.lastName === 'Fall');
+        // Vérification stricte si l'utilisateur est le créateur (uniquement via cet email précis)
+        const isAdmin = user.email === 'mouhamedfall@esp.sn';
 
         let adminGreeting = '';
         if (isAdmin) {
