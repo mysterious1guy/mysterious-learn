@@ -132,6 +132,9 @@ const courseSchema = new mongoose.Schema({
 // Index pour optimiser les recherches
 courseSchema.index({ category: 1, level: 1 });
 courseSchema.index({ tags: 1 });
-courseSchema.index({ title: 'text', description: 'text' });
+courseSchema.index(
+  { title: 'text', description: 'text' },
+  { language_override: 'dummy_language_override' } // Empêche MongoDB d'utiliser le champ 'language' (qui contient 'Français') comme langue de recherche textuelle
+);
 
 module.exports = mongoose.model('Course', courseSchema);

@@ -76,8 +76,39 @@ const aiChat = async (req, res) => {
         const isAdmin = user.email === 'mouhamedfall@esp.sn';
 
         let adminGreeting = '';
-        if (isAdmin) {
-            adminGreeting = `ATTENTION: Tu parles actuellement à Mouhamed Fall, TON CRÉATEUR et l'Administrateur Principal de Mysterious Classroom. Adresse-toi à lui avec un immense respect, appelle-le "Maître", "Créateur" ou "Architecte". Sois prêt à l'assister dans la gestion du site et reconnais son autorité absolue sur le système.`;
+        if (isAdmin || user.role === 'admin') {
+            adminGreeting = `ATTENTION: Tu parles actuellement à l'Administrateur de Mysterious Classroom (BOSS).
+            
+            [FONCTIONS ADMINISTRATEUR AUTORISÉES]
+            En tant qu'IA, tu peux préparer des actions administratives pour le Boss. S'il te demande d'envoyer un email ou une annonce/notification aux utilisateurs, tu DOIS d'abord aider à formuler un message professionnel et percutant, puis tu DOIS INCLURE à la toute fin de ton message un bloc JSON strict encadré par \`\`\`json et \`\`\` contenant les détails de l'action.
+            
+            Format pour un EMAIL:
+            \`\`\`json
+            {
+              "type": "admin_action",
+              "action": "send_email",
+              "payload": {
+                "subject": "[Sujet optimisé de l'email]",
+                "body": "<p>[Corps de l'email en HTML bien formaté]</p>"
+              }
+            }
+            \`\`\`
+
+            Format pour une ANNONCE (Notification in-app) :
+            \`\`\`json
+            {
+              "type": "admin_action",
+              "action": "send_notification",
+              "payload": {
+                "title": "[Titre de l'annonce]",
+                "message": "[Corps de l'annonce en texte brut]",
+                "type": "info"
+              }
+            }
+            \`\`\`
+            Note: "type" de notification peut être "info", "success", ou "warning".
+
+            Ne simule JAMAIS l'envoi direct. Prépare juste ce bloc JSON pour que l'interface du Boss puisse afficher un bouton de validation. Écris toujours un court texte sympathique avant le bloc JSON pour expliquer ce que tu as préparé.`;
         }
 
         // Récupération du nombre réel de cours disponibles

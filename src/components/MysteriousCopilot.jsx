@@ -6,7 +6,7 @@ import AnimatedAIAvatar from './AnimatedAIAvatar';
 
 const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const [messages, setMessages] = useState([
-        { role: 'system', content: `Initialisation... Bonjour ${safeGetUserName(user, 'Voyageur')}. Prêt à apprendre l'algorithmique aujourd'hui ?` }
+        { role: 'system', content: `Bonjour ${safeGetUserName(user, 'Voyageur')}. Prêt à apprendre l'algorithmique aujourd'hui ?` }
     ]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -86,7 +86,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
             // Dispatch murmur for real-time visibility outside the sidebar
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: aiResponse }
+                detail: { text: "Nouvelle réponse prête." }
             }));
         } catch (error) {
             console.error('Erreur Assistant:', error);
@@ -100,6 +100,96 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         } finally {
             setIsTyping(false);
         }
+    };
+
+    const executeAdminAction = async (actionData) => {
+        try {
+            const endpoint = actionData.action === 'send_email' ? '/admin/send-email' : '/admin/send-notification';
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.token || localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(actionData.payload)
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.message || 'Erreur lors de l\'exécution');
+            }
+
+            setMessages(prev => [...prev, {
+                role: 'system',
+                content: `✅ Action administratives confirmée et exécutée avec succès !`
+            }]);
+        } catch (error) {
+            setMessages(prev => [...prev, {
+                role: 'system',
+                content: `❌ Échec de l'action: ${error.message}`
+            }]);
+        }
+    };
+
+    const renderMessageContent = (msg, role) => {
+        if (role === 'user') return <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{msg}</p>;
+
+        // Look for our specific JSON block
+        const jsonMatch = msg.match(/```json\s*(\{[\s\S]*?"type":\s*"admin_action"[\s\S]*?\})\s*```/);
+
+        if (jsonMatch) {
+            const preText = msg.substring(0, jsonMatch.index).trim();
+            const postText = msg.substring(jsonMatch.index + jsonMatch[0].length).trim();
+            let actionData = null;
+
+            try {
+                actionData = JSON.parse(jsonMatch[1]);
+            } catch (e) {
+                console.error("Failed to parse admin action JSON", e);
+            }
+
+            return (
+                <div className="space-y-3">
+                    {preText && <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{preText}</p>}
+
+                    {actionData && (
+                        <div className="bg-slate-950 border border-blue-500/30 rounded-xl p-4 my-2 shadow-inner">
+                            <div className="flex items-center gap-2 mb-3 text-blue-400">
+                                <Terminal size={14} />
+                                <span className="font-mono text-xs uppercase font-bold tracking-wider">Demande d'Action Admin</span>
+                            </div>
+
+                            <div className="text-xs text-slate-300 space-y-2 mb-4">
+                                {actionData.action === 'send_email' && (
+                                    <>
+                                        <p><span className="text-slate-500">Action:</span> Envoi d'Email Brut</p>
+                                        <p><span className="text-slate-500">Sujet:</span> {actionData.payload.subject}</p>
+                                    </>
+                                )}
+                                {actionData.action === 'send_notification' && (
+                                    <>
+                                        <p><span className="text-slate-500">Action:</span> Envoi de Notification</p>
+                                        <p><span className="text-slate-500">Titre:</span> {actionData.payload.title}</p>
+                                        <p><span className="text-slate-500">Message:</span> {actionData.payload.message}</p>
+                                    </>
+                                )}
+                            </div>
+
+                            <button
+                                onClick={() => executeAdminAction(actionData)}
+                                className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
+                            >
+                                <Send size={14} /> Confirmer & Exécuter
+                            </button>
+                        </div>
+                    )}
+
+                    {postText && <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{postText}</p>}
+                </div>
+            );
+        }
+
+        return <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{msg}</p>;
     };
 
     return (
@@ -121,7 +211,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full border border-black animate-pulse z-10"></div>
                             </div>
                             <span className="font-mono font-bold text-white tracking-widest text-sm">
-                                Mysterious Assistant <span className="text-blue-500 text-xs ml-1">v2.0</span>
+                                Mysterious Assistant
                             </span>
                         </div>
                         <button onClick={onClose} className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
@@ -138,7 +228,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 animate={{ opacity: 1, y: 0 }}
                                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
-                                <div className={`flex items-end gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                                <div className={`flex items-end gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} w-full`}>
                                     {/* Avatar Column */}
                                     <div className="shrink-0 mb-1">
                                         <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden border ${msg.role === 'user' ? 'border-blue-400/30' : 'border-slate-700'}`}>
@@ -173,9 +263,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                                 </span>
                                             </div>
                                         )}
-                                        <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>
-                                            {msg.content}
-                                        </p>
+
+                                        {renderMessageContent(msg.content, msg.role)}
                                     </div>
                                 </div>
                             </motion.div>
