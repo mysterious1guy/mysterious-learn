@@ -53,26 +53,26 @@ const buttonStyles = `
 const getVerificationEmail = (name, code) => `
 <div style="${baseStyles}">
   <div style="${headerStyles}">
-    <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MYSTERIOUS CLASSROOM</h1>
-    <p style="margin: 10px 0 0; color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Système d'Activation Core</p>
+    <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; color: #ffffff;">MYSTERIOUS CLASSROOM</h1>
+    <p style="margin: 10px 0 0; color: #64748b; font-size: 11px; font-weight: bold; text-transform: uppercase;">CODE DE VALIDATION</p>
   </div>
   
   <div style="${bodyStyles}">
-    <h2 style="color: #ffffff; margin-top: 0;">Bonjour ${name} ! 👋</h2>
-    <p style="color: #cbd5e1; font-size: 16px;">Bienvenue à bord. Pour finaliser ton inscription et libérer le potentiel de l'Oracle, veuillez utiliser le code d'activation suivant :</p>
+    <h2 style="color: #ffffff; margin-top: 0; font-size: 20px;">Bonjour ${name} ! 👋</h2>
+    <p style="color: #cbd5e1; font-size: 16px;">Heureux de te voir parmi nous. Pour finaliser ton inscription sur la plateforme, saisis le code suivant :</p>
     
     <div style="text-align: center; margin: 40px 0;">
-      <div style="display: inline-block; background: #0f172a; border: 2px solid #3b82f6; padding: 20px 40px; border-radius: 20px; font-size: 42px; font-family: monospace; font-weight: 900; letter-spacing: 10px; color: #60a5fa; text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);">
+      <div style="display: inline-block; background: #0f172a; border: 2px solid #3b82f6; padding: 25px 45px; border-radius: 20px; font-size: 48px; font-family: 'Courier New', monospace; font-weight: 900; letter-spacing: 8px; color: #60a5fa; box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);">
         ${code}
       </div>
     </div>
     
-    <p style="color: #64748b; font-size: 14px; text-align: center;">Ce code possède une validité temporelle de 30 minutes.</p>
+    <p style="color: #64748b; font-size: 13px; text-align: center;">Ce code expirera dans 30 minutes pour ta sécurité.</p>
   </div>
   
   <div style="${footerStyles}">
-    <p>Si tu n'es pas à l'origine de cette demande, ton système a peut-être été infiltré. Ignore cet email.</p>
-    <p style="margin-top: 20px;">&copy; 2026 Mysterious Classroom — Advanced AI Learning</p>
+    <p>Merci de rejoindre notre communauté d'apprentissage.</p>
+    <p style="margin-top: 15px; font-weight: bold;">&copy; 2026 Mysterious Classroom</p>
   </div>
 </div>
 `;
@@ -83,36 +83,36 @@ const getVerificationEmail = (name, code) => `
 const getWelcomeEmail = (name) => `
 <div style="${baseStyles}">
   <div style="${headerStyles}">
-    <div style="margin-bottom: 20px;">
-      <div style="width: 80px; height: 80px; margin: 0 auto; background: #3b82f6; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #3b82f6, #8b5cf6);">
-           <img src="https://em-content.zobj.net/source/apple/354/brain_1f9e0.png" width="80" height="80" alt="Oracle Logo" style="border-radius: 50%;">
+    <div style="margin-bottom: 25px;">
+      <div style="width: 70px; height: 70px; margin: 0 auto; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 20px; display: flex; align-items: center; justify-content: center; transform: rotate(5deg);">
+           <span style="font-size: 35px;">🚀</span>
       </div>
     </div>
-    <h1 style="margin: 0; font-size: 24px; letter-spacing: 2px; color: #ffffff;">BIENVENUE, ${name.toUpperCase()}</h1>
-    <p style="margin: 10px 0 0; color: #10b981; font-size: 12px; font-weight: bold; text-transform: uppercase;">ACCÈS AUTORISÉ — COMPTE ACTIF</p>
+    <h1 style="margin: 0; font-size: 22px; letter-spacing: 1px; color: #ffffff;">INSCRIPTION VALIDÉE</h1>
+    <p style="margin: 8px 0 0; color: #10b981; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">ACCÈS ACTIVÉ</p>
   </div>
   
   <div style="${bodyStyles}">
-    <h2 style="color: #ffffff; text-align: center;">Félicitations ! 🎉</h2>
-    <p style="color: #cbd5e1; font-size: 16px; text-align: center;">Ton compte Mysterious Classroom est désormais pleinement opérationnel. Tu as franchi la première étape vers la maîtrise de la logique pure.</p>
+    <h2 style="color: #ffffff; text-align: center; font-size: 24px;">Prêt à explorer, ${name} ?</h2>
+    <p style="color: #cbd5e1; font-size: 16px; text-align: center; margin-bottom: 30px;">Ton compte est désormais actif. Tu as maintenant un accès complet à la plateforme et au catalogue de cours.</p>
     
-    <div style="background: #0f172a; border-radius: 16px; padding: 25px; margin: 30px 0; border: 1px solid #1e293b;">
-       <h4 style="color: #60a5fa; margin-top: 0; text-transform: uppercase; font-size: 12px;">Ce qui t'attend :</h4>
-       <ul style="color: #94a3b8; padding-left: 20px; margin-bottom: 0;">
-         <li style="margin-bottom: 10px;">L'Oracle v2.0 disponible 24/7 pour répondre à tes questions.</li>
-         <li style="margin-bottom: 10px;">Des cours d'algorithmique interactifs et immersifs.</li>
-         <li>Une progression sauvegardée en temps réel.</li>
+    <div style="background: rgba(30, 41, 59, 0.5); border-radius: 20px; padding: 30px; margin: 30px 0; border: 1px solid #1e293b;">
+       <h4 style="color: #60a5fa; margin-top: 0; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">TES AVANTAGES :</h4>
+       <ul style="color: #94a3b8; padding-left: 20px; margin-bottom: 0; font-size: 15px;">
+         <li style="margin-bottom: 12px;">Accès illimité au catalogue de cours.</li>
+         <li style="margin-bottom: 12px;">Assistant intelligent disponible 24/7.</li>
+         <li>Suivi de progression en temps réel.</li>
        </ul>
     </div>
     
-    <div style="text-align: center;">
-      <a href="https://mysterious-classroom-free-courses.onrender.com" style="${buttonStyles}">Accéder au Dashboard</a>
+    <div style="text-align: center; margin-top: 40px;">
+      <a href="https://mysterious-classroom-free-courses.onrender.com" style="${buttonStyles}">Accéder à mon espace</a>
     </div>
   </div>
   
   <div style="${footerStyles}">
-    <p>Préparez-vous à repousser les limites de votre esprit.</p>
-    <p style="margin-top: 20px;">Mysterious Classroom — Powered by L'Oracle</p>
+    <p>L'apprentissage commence ici.</p>
+    <p style="margin-top: 15px; font-weight: bold;">Mysterious Classroom Team</p>
   </div>
 </div>
 `;
@@ -165,8 +165,8 @@ const getPasswordResetEmail = (name, url) => `
 `;
 
 module.exports = {
-    getVerificationEmail,
-    getWelcomeEmail,
-    getEmailChangeEmail,
-    getPasswordResetEmail
+  getVerificationEmail,
+  getWelcomeEmail,
+  getEmailChangeEmail,
+  getPasswordResetEmail
 };

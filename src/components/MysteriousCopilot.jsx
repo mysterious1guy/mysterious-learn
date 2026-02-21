@@ -5,7 +5,7 @@ import { safeGetUserName } from '../utils/userUtils';
 
 const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const [messages, setMessages] = useState([
-        { role: 'system', content: `Initialisation du Système Core... Bonjour ${safeGetUserName(user, 'Voyageur')}. Je suis l'Oracle. Prêt à décoder les mystères de l'algorithmique ?` }
+        { role: 'system', content: `Initialisation... Bonjour ${safeGetUserName(user, 'Voyageur')}. Prêt à apprendre l'algorithmique aujourd'hui ?` }
     ]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -23,7 +23,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: `Bonjour ${safeGetUserName(user, 'Voyageur')}. Je suis l'Oracle. Prêt à apprendre la logique des algorithmes ?` }
+                detail: { text: `Bonjour ${safeGetUserName(user, 'Voyageur')}. Prêt à apprendre la logique des algorithmes ?` }
             }));
         }, 2000);
         return () => clearTimeout(timer);
@@ -88,13 +88,13 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 detail: { text: aiResponse }
             }));
         } catch (error) {
-            console.error('Erreur Copilot:', error);
+            console.error('Erreur Assistant:', error);
             const errorMsg = error.name === 'TypeError' && error.message === 'Failed to fetch'
                 ? "Impossible de joindre le serveur. Vérifie si le backend est bien démarré."
                 : error.message;
             setMessages(prev => [...prev, {
                 role: 'system',
-                content: `DÉFAILLANCE CORE : ${errorMsg}.`
+                content: `ERREUR SYSTÈME : ${errorMsg}.`
             }]);
         } finally {
             setIsTyping(false);
@@ -121,7 +121,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full border border-black animate-pulse"></div>
                             </div>
                             <span className="font-mono font-bold text-white tracking-widest text-sm">
-                                L'ORACLE <span className="text-blue-500 text-xs ml-1">v2.0</span>
+                                MYSTERIOUS ASSISTANT <span className="text-blue-500 text-xs ml-1">v2.0</span>
                             </span>
                         </div>
                         <button onClick={onClose} className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
@@ -138,23 +138,45 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 animate={{ opacity: 1, y: 0 }}
                                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
-                                <div className={`max-w-[85%] rounded-2xl p-4 shadow-lg ${msg.role === 'user'
-                                    ? 'bg-blue-600 text-white rounded-tr-sm border border-blue-500/50'
-                                    : msg.type === 'suggestion'
-                                        ? 'bg-amber-900/40 text-amber-100 border border-amber-500/30 rounded-tl-sm'
-                                        : 'bg-slate-900/80 text-slate-200 border border-white/5 rounded-tl-sm'
-                                    }`}>
-                                    {msg.role !== 'user' && (
-                                        <div className="flex items-center gap-2 mb-2 opacity-70">
-                                            {msg.type === 'suggestion' ? <Sparkles size={12} className="text-amber-400" /> : <Terminal size={12} className="text-blue-400" />}
-                                            <span className="text-[10px] font-mono tracking-wider uppercase">
-                                                {msg.type === 'suggestion' ? 'Proactif' : 'Système Core'}
-                                            </span>
+                                <div className={`flex items-end gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                                    {/* Avatar Column */}
+                                    <div className="shrink-0 mb-1">
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden border ${msg.role === 'user' ? 'border-blue-400/30' : 'border-slate-700'}`}>
+                                            {msg.role === 'user' ? (
+                                                user?.avatar ? (
+                                                    <img src={user.avatar} alt="Me" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="w-full h-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white">
+                                                        {user?.firstName?.charAt(0) || 'U'}
+                                                    </div>
+                                                )
+                                            ) : (
+                                                <div className="w-full h-full bg-slate-900 flex items-center justify-center">
+                                                    <BrainCircuit size={14} className="text-blue-400" />
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                    <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>
-                                        {msg.content}
-                                    </p>
+                                    </div>
+
+                                    {/* Message Column */}
+                                    <div className={`max-w-[85%] rounded-2xl p-4 shadow-lg ${msg.role === 'user'
+                                        ? 'bg-blue-600 text-white rounded-br-none border border-blue-500/50'
+                                        : msg.type === 'suggestion'
+                                            ? 'bg-amber-900/40 text-amber-100 border border-amber-500/30 rounded-bl-none'
+                                            : 'bg-slate-900/80 text-slate-200 border border-white/5 rounded-bl-none'
+                                        }`}>
+                                        {msg.role !== 'user' && (
+                                            <div className="flex items-center gap-2 mb-2 opacity-70">
+                                                {msg.type === 'suggestion' ? <Sparkles size={12} className="text-amber-400" /> : <Terminal size={12} className="text-blue-400" />}
+                                                <span className="text-[10px] font-mono tracking-wider uppercase">
+                                                    {msg.type === 'suggestion' ? 'Proactif' : 'Système'}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>
+                                            {msg.content}
+                                        </p>
+                                    </div>
                                 </div>
                             </motion.div>
                         ))}
@@ -185,7 +207,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Pose ta question à l'Oracle..."
+                                placeholder="Pose ta question..."
                                 className="w-full bg-slate-900 border border-slate-700/50 text-white placeholder-slate-500 rounded-xl py-3 pl-4 pr-12 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all font-medium text-sm shadow-inner"
                             />
                             <button
