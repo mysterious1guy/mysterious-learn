@@ -23,7 +23,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: `Bonjour ${safeGetUserName(user, 'Voyageur')}. Je suis l'Oracle. Prêt à décoder les mystères de la logique ?` }
+                detail: { text: `Bonjour ${safeGetUserName(user, 'Voyageur')}. Je suis l'Oracle. Prêt à apprendre la logique des algorithmes ?` }
             }));
         }, 2000);
         return () => clearTimeout(timer);

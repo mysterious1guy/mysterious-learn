@@ -35,15 +35,14 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
         };
         fetchStats();
 
-        // Proactive Dashboard Murmur
         const timer = setTimeout(() => {
             const completedCount = Object.values(progressions).filter(p => p.progress === 100).length;
-            let text = `Bon retour dans La Matrice, ${user?.firstName}. Content de voir tes systèmes actifs.`;
+            let text = `Bon retour, ${user?.firstName}. Prêt à continuer ton apprentissage de l'algorithmique ?`;
 
             if (completedCount > 0) {
-                text = `Félicitations pour tes ${completedCount} certifications. Ton potentiel d'assimilation est impressionnant.`;
+                text = `Bravo pour tes ${completedCount} leçons terminées ! Tu progresses bien en logique.`;
             } else if (Object.keys(progressions).length > 0) {
-                text = "Ton parcours progresse. Ne laisse pas la logique se dissiper, continue l'entraînement.";
+                text = "Tu as commencé ton parcours. Continue comme ça pour maîtriser les bases.";
             }
 
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {

@@ -26,7 +26,7 @@ const InteractiveInsight = ({ prompt, answer }) => {
           setIsOpen(!isOpen);
           if (!isOpen) {
             const event = new CustomEvent('mysterious-ai-murmur', {
-              detail: { text: "Excellente curiosité ! Découvrir par soi-même vaut mille explications." }
+              detail: { text: "C'est une excellente question ! Apprendre par soi-même est très efficace." }
             });
             window.dispatchEvent(event);
           }
@@ -156,7 +156,7 @@ const TheoryViewer = ({ title, content, onComplete }) => {
           <button
             onClick={() => {
               const event = new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: "Bravo ! Passons à la suite. La curiosité est ton meilleur atout." }
+                detail: { text: "C'est compris ! Ton apprentissage avance bien." }
               });
               window.dispatchEvent(event);
               onComplete(true);
@@ -185,7 +185,7 @@ const QuizViewer = ({ data, onComplete }) => {
 
     // AI Murmur on Quiz result
     const event = new CustomEvent('mysterious-ai-murmur', {
-      detail: { text: correct ? "Excellent ! Ton raisonnement est parfaitement logique." : "Pas tout à fait... Mais comme on dit : 'On ne perd jamais, soit on gagne, soit on apprend !'" }
+      detail: { text: correct ? "C'est juste ! Ton raisonnement est très bon." : "Pas tout à fait... Analyse bien la question et réessaye !" }
     });
     window.dispatchEvent(event);
   };
@@ -399,7 +399,7 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
 
     // Déclenche l'Oracle
     window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-      detail: { text: "Accès à la mémoire du noeud en cours... Analyse de la logique." }
+      detail: { text: "Ouverture de la leçon... Prépare-toi à coder." }
     }));
 
     const eventType = lesson.type;
@@ -430,7 +430,7 @@ const AlgoCourse = ({ onClose, user, API_URL }) => {
     if (success && !completedLessons.includes(id)) {
       setCompletedLessons(prev => [...prev, id]);
       window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-        detail: { text: "Séquence validée. Connexion au prochain noeud établie." }
+        detail: { text: "Bravo, tu as validé cette étape ! Le prochain défi est débloqué." }
       }));
       if (user && API_URL) {
         try {
