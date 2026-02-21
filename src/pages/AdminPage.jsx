@@ -621,13 +621,21 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       </select>
                     </div>
                     {emailContent.recipients === 'specific' && (
-                      <input
-                        type="email"
-                        placeholder="email@example.com"
-                        value={emailContent.specificEmail}
-                        onChange={(e) => setEmailContent({ ...emailContent, specificEmail: e.target.value })}
-                        className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
-                      />
+                      <div className="space-y-2">
+                        <input
+                          type="email"
+                          list="user-emails"
+                          placeholder="email@example.com"
+                          value={emailContent.specificEmail}
+                          onChange={(e) => setEmailContent({ ...emailContent, specificEmail: e.target.value })}
+                          className="w-full p-4 bg-slate-950 border border-slate-800 rounded-2xl outline-none focus:border-purple-600 transition-colors"
+                        />
+                        <datalist id="user-emails">
+                          {users.map(u => (
+                            <option key={u._id} value={u.email}>{u.name}</option>
+                          ))}
+                        </datalist>
+                      </div>
                     )}
                     <input
                       type="text"
