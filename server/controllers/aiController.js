@@ -148,7 +148,7 @@ const aiChat = async (req, res) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 messages: messages,
-                model: 'mistral-large', // Ou 'openai', 'llama', etc. On utilise mistral pour le français (et car performant)
+                model: 'openai', // Changé de 'mistral-large' à 'openai' suite à obsolescence sur l'API legacy
                 seed: 42 // Optionnel, pour plus de cohérence
             })
         });
