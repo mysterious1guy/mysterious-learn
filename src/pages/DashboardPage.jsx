@@ -81,9 +81,30 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                     animate={{ opacity: 1, y: 0 }}
                     className="max-w-7xl mx-auto"
                 >
-                    <h1 className="text-4xl md:text-5xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-4">
-                        Bienvenue, {user?.firstName} ! 👋
-                    </h1>
+                    <div className="flex items-center flex-wrap gap-3 mb-4">
+                        <h1 className="text-4xl md:text-5xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                            Bienvenue, {user?.firstName} !
+                        </h1>
+                        <motion.div
+                            animate={{ rotate: [0, 20, -10, 20, -10, 0] }}
+                            transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                repeatDelay: 3,
+                                ease: 'easeInOut'
+                            }}
+                            whileHover={{
+                                scale: 1.2,
+                                rotate: [0, 25, -15, 25, -15, 0],
+                                transition: { duration: 0.8, repeat: Infinity }
+                            }}
+                            whileTap={{ scale: 0.9 }}
+                            className="text-4xl md:text-5xl inline-block origin-bottom-right cursor-pointer drop-shadow-lg"
+                            title="Coucou !"
+                        >
+                            👋
+                        </motion.div>
+                    </div>
                     <p className="text-gray-400 text-lg font-medium opacity-80">
                         Prêt à continuer ton apprentissage mystérieux ?
                     </p>
