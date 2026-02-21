@@ -1,19 +1,21 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
+
+// Forcer IPv4 en premier pour éviter les erreurs ENETUNREACH sur Render (IPv6 instable)
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 console.log('📧 Initialisation du service email...');
 console.log('📧 EMAIL_USER configuré:', process.env.EMAIL_USER ? 'OUI' : 'NON');
-
-console.log('📧 Tentative de connexion au SMTP Gmail via Port 465 (SSL)...');
+console.log('🌐 Ordre DNS : IPv4 en priorité');
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // Use STARTTLS
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  family: 4, // Force IPv4 to avoid ENETUNREACH errors on IPv6
   connectionTimeout: 10000,
   greetingTimeout: 10000,
 });
