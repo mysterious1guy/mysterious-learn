@@ -22,9 +22,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     lastName: user?.lastName || '',
     email: user?.email || '',
     phone: user?.phone || '',
-    bio: user?.bio || '',
     location: user?.location || '',
-    website: user?.website || '',
     language: user?.language || 'fr',
     notifications: user?.notifications || true,
     privacy: user?.privacy || 'public',
@@ -247,9 +245,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       lastName: user?.lastName || '',
       email: user?.email || '',
       phone: user?.phone || '',
-      bio: user?.bio || '',
       location: user?.location || '',
-      website: user?.website || '',
       language: user?.language || 'fr',
       notifications: user?.notifications || true,
       privacy: user?.privacy || 'public',
@@ -301,6 +297,23 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     { id: 'activity', label: 'Activité', icon: TrendingUp }
   ];
 
+  const renderTabButton = (tab) => {
+    const isActive = activeTab === tab.id;
+    return (
+      <button
+        key={tab.id}
+        onClick={() => setActiveTab(tab.id)}
+        className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all ${isActive
+          ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25 scale-105'
+          : 'text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-800'
+          }`}
+      >
+        <tab.icon size={16} />
+        {tab.label}
+      </button>
+    );
+  };
+
   const renderProfileTab = () => (
     <div className="space-y-6">
       {/* Photo de profil */}
@@ -327,17 +340,17 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
             className="hidden"
           />
         </div>
-        <div>
-          <h3 className="text-xl font-semibold">{user?.firstName} {user?.lastName}</h3>
-          <p className="text-gray-400">{user?.email}</p>
-          <p className="text-sm text-gray-500 mt-1">Membre depuis {new Date(user?.createdAt || Date.now()).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</p>
+        <div className="flex-1">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white">{user?.firstName} {user?.lastName}</h3>
+          <p className="text-slate-500 dark:text-gray-400">{user?.email}</p>
+          <p className="text-xs text-slate-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-bold">Membre depuis {new Date(user?.createdAt || Date.now()).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</p>
         </div>
       </div>
 
       {/* Informations personnelles */}
-      <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-lg font-semibold">Informations personnelles</h4>
+      <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-8 shadow-sm dark:shadow-none">
+        <div className="flex justify-between items-center mb-8">
+          <h4 className="text-lg font-bold text-slate-800 dark:text-white uppercase tracking-tight">Informations personnelles</h4>
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
@@ -367,116 +380,92 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Prénom</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Prénom</label>
               {isEditing ? (
                 <input
                   type="text"
                   value={editForm.firstName}
                   onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
-                  className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                  className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
                 />
               ) : (
-                <p className="text-white">{user?.firstName || '-'}</p>
+                <p className="text-slate-900 dark:text-white font-medium">{user?.firstName || '-'}</p>
               )}
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-1">Nom</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Nom</label>
               {isEditing ? (
                 <input
                   type="text"
                   value={editForm.lastName}
                   onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
-                  className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                  className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
                 />
               ) : (
-                <p className="text-white">{user?.lastName || '-'}</p>
+                <p className="text-slate-900 dark:text-white font-medium">{user?.lastName || '-'}</p>
               )}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm text-gray-400 mb-1">Email</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Email</label>
             <div className="flex gap-2">
               <input
                 type="email"
                 value={editForm.email}
                 onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                 disabled={!isEditing}
-                className={`w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white outline-none focus:border-blue-500 ${!isEditing ? 'opacity-60' : ''}`}
+                className={`w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white outline-none focus:border-blue-500 transition-all ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
                 placeholder="Votre email"
               />
               {isEditing && (
-                <div className="flex items-center text-xs text-yellow-500 bg-yellow-500/10 px-2 rounded-lg border border-yellow-500/20">
+                <div className="flex items-center text-[10px] uppercase font-black text-yellow-600 dark:text-yellow-500 bg-yellow-500/10 px-3 rounded-xl border border-yellow-500/20 whitespace-nowrap">
                   <Shield size={12} className="mr-1" />
-                  Nécessite vérification
+                  Vérification Requise
                 </div>
               )}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm text-gray-400 mb-1">Téléphone</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Téléphone</label>
             {isEditing ? (
               <input
                 type="tel"
                 value={editForm.phone}
                 onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
               />
             ) : (
-              <p className="text-white">{user?.phone || '-'}</p>
+              <p className="text-slate-900 dark:text-white font-medium">{user?.phone || '-'}</p>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Bio</label>
-            {isEditing ? (
-              <textarea
-                value={editForm.bio}
-                onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                rows={3}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none resize-none"
-              />
-            ) : (
-              <p className="text-white">{user?.bio || 'Aucune bio'}</p>
-            )}
-          </div>
+
 
           <div>
-            <label className="block text-sm text-gray-400 mb-1">Localisation</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Localisation</label>
             {isEditing ? (
               <input
                 type="text"
                 value={editForm.location}
                 onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
               />
             ) : (
-              <p className="text-white">{user?.location || '-'}</p>
+              <p className="text-slate-900 dark:text-white font-medium">{user?.location || '-'}</p>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">Site web</label>
-            {isEditing ? (
-              <input
-                type="url"
-                value={editForm.website}
-                onChange={(e) => setEditForm({ ...editForm, website: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
-              />
-            ) : (
-              <p className="text-white">{user?.website ? <a href={user.website} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">{user.website}</a> : '-'}</p>
-            )}
-          </div>
+
 
           <div>
-            <label className="block text-sm text-gray-400 mb-1">Niveau d'expertise</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Niveau d'expertise</label>
             {isEditing ? (
               <select
                 value={editForm.programmingLevel}
                 onChange={(e) => setEditForm({ ...editForm, programmingLevel: e.target.value })}
-                className="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
               >
                 <option value="beginner">Débutant</option>
                 <option value="intermediate">Intermédiaire</option>
@@ -485,7 +474,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               </select>
             ) : (
               <div className="flex items-center gap-2">
-                <p className="text-white uppercase tracking-wider font-bold text-sm">
+                <p className="text-slate-900 dark:text-white uppercase tracking-wider font-black text-sm">
                   {editForm.programmingLevel === 'beginner' ? 'Débutant' :
                     editForm.programmingLevel === 'intermediate' ? 'Intermédiaire' :
                       editForm.programmingLevel === 'advanced' ? 'Avancé' : 'Expert'}
@@ -502,33 +491,33 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
       {/* Statistiques */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+        <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-6 shadow-sm dark:shadow-none">
           <div className="flex items-center gap-2 mb-2">
-            <BookOpen className="text-blue-400" size={20} />
-            <span className="text-sm text-gray-400">Cours favoris</span>
+            <Star className="text-blue-500 dark:text-blue-400" size={20} />
+            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">Favoris</span>
           </div>
-          <p className="text-2xl font-bold text-blue-400">{favorites?.length || 0}</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white">{favorites?.length || 0}</p>
         </div>
-        <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+        <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-6 shadow-sm dark:shadow-none">
           <div className="flex items-center gap-2 mb-2">
-            <Target className="text-green-400" size={20} />
-            <span className="text-sm text-gray-400">Cours en cours</span>
+            <BookOpen className="text-green-500 dark:text-green-400" size={20} />
+            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">En cours</span>
           </div>
-          <p className="text-2xl font-bold text-green-400">{Object.keys(progressions || {}).length}</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white">{Object.keys(progressions || {}).length}</p>
         </div>
-        <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+        <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-6 shadow-sm dark:shadow-none">
           <div className="flex items-center gap-2 mb-2">
-            <Award className="text-purple-400" size={20} />
-            <span className="text-sm text-gray-400">Streak de jours</span>
+            <Target className="text-purple-500 dark:text-purple-400" size={20} />
+            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">Série</span>
           </div>
-          <p className="text-2xl font-bold text-purple-400">{userStats.streak || 0} 🔥</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white">{userStats.streak || 0} jours</p>
         </div>
-        <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-4">
+        <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-6 shadow-sm dark:shadow-none">
           <div className="flex items-center gap-2 mb-2">
-            <Clock className="text-orange-400" size={20} />
-            <span className="text-sm text-gray-400">Minutes d'apprentissage</span>
+            <Clock className="text-orange-500 dark:text-orange-400" size={20} />
+            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">Temps</span>
           </div>
-          <p className="text-2xl font-bold text-orange-400">{userStats.totalTime || 0}</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white">{userStats.totalTime || 0}m</p>
         </div>
       </div>
     </div>
@@ -536,21 +525,21 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
   const renderSecurityTab = () => (
     <div className="space-y-6">
-      <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-        <h4 className="text-lg font-semibold mb-4">Sécurité du compte</h4>
+      <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-8 shadow-sm dark:shadow-none">
+        <h4 className="text-lg font-bold text-slate-800 dark:text-white uppercase tracking-tight mb-6">Sécurité du compte</h4>
         <div className="space-y-4">
           <button
             onClick={() => setShowPasswordChange(!showPasswordChange)}
-            className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
+            className="w-full flex items-center justify-between p-5 bg-slate-50 dark:bg-gray-800 rounded-2xl border border-slate-200 dark:border-gray-700 hover:border-blue-500/30 transition-all group"
           >
-            <div className="flex items-center gap-3">
-              <Lock className="text-gray-400" size={20} />
+            <div className="flex items-center gap-4">
+              <Lock className="text-slate-400 dark:text-gray-400 group-hover:text-blue-500 transition-colors" size={20} />
               <div className="text-left">
-                <p className="text-white">Changer le mot de passe</p>
-                <p className="text-sm text-gray-400">Dernière modification: Inconnue</p>
+                <p className="text-sm font-bold text-slate-800 dark:text-white">Changer le mot de passe</p>
+                <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-wider">Sécurité renforcée</p>
               </div>
             </div>
-            <ChevronRight className={`text-gray-400 transition-transform ${showPasswordChange ? 'rotate-90' : ''}`} size={20} />
+            <ChevronRight className={`text-slate-400 dark:text-gray-400 transition-transform ${showPasswordChange ? 'rotate-90' : ''}`} size={20} />
           </button>
 
           <AnimatePresence>
@@ -642,8 +631,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
   const renderPreferencesTab = () => (
     <div className="space-y-6">
-      <div className="bg-gray-900/50 border border-gray-700 rounded-[2.5rem] p-8 space-y-8">
-        <h4 className="text-xl font-bold mb-4 flex items-center gap-2 text-white">
+      <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-[2.5rem] p-8 shadow-sm dark:shadow-none space-y-8">
+        <h4 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white uppercase tracking-tight">
           <Settings size={20} className="text-blue-500" /> Préférences du Compte
         </h4>
 
@@ -793,38 +782,13 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
   const renderActivityTab = () => (
     <div className="space-y-6">
-      <div className="bg-gray-900/50 border border-gray-700 rounded-xl p-6">
-        <h4 className="text-lg font-semibold mb-4">Activité récente</h4>
-        <div className="space-y-4">
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-blue-500/20 rounded-lg">
-              <BookOpen className="text-blue-400" size={16} />
-            </div>
-            <div className="flex-1">
-              <p className="text-white">Dernière connexion</p>
-              <p className="text-sm text-gray-400">{user?.lastLogin ? formatTimeAgo(user.lastLogin) : 'Première connexion'}</p>
-            </div>
+      <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-8 shadow-sm dark:shadow-none">
+        <h4 className="text-lg font-bold text-slate-800 dark:text-white uppercase tracking-tight mb-6">Activités récentes</h4>
+        <div className="space-y-4 text-center py-12">
+          <div className="w-16 h-16 bg-slate-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 grayscale opacity-50">
+            <TrendingUp size={32} className="text-slate-400 dark:text-gray-600" />
           </div>
-
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-green-500/20 rounded-lg">
-              <CheckCircle className="text-green-400" size={16} />
-            </div>
-            <div className="flex-1">
-              <p className="text-white">A terminé le module "Variables et Types"</p>
-              <p className="text-sm text-gray-400">Il y a 1 jour</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <div className="p-2 bg-purple-500/20 rounded-lg">
-              <Star className="text-purple-400" size={16} />
-            </div>
-            <div className="flex-1">
-              <p className="text-white">A ajouté "JavaScript Avancé" aux favoris</p>
-              <p className="text-sm text-gray-400">Il y a 3 jours</p>
-            </div>
-          </div>
+          <p className="text-slate-500 dark:text-gray-500 font-medium">Aucune activité enregistrée pour le moment.</p>
         </div>
       </div>
     </div>
@@ -833,23 +797,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   return (
     <div className="max-w-4xl mx-auto p-6">
       {/* Onglets */}
-      <div className="flex space-x-1 mb-6 bg-gray-800/50 rounded-lg p-1">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition ${activeTab === tab.id
-                ? 'bg-blue-500 text-white'
-                : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                }`}
-            >
-              <Icon size={16} />
-              <span className="hidden md:inline">{tab.label}</span>
-            </button>
-          );
-        })}
+      <div className="flex bg-slate-100 dark:bg-gray-900/50 rounded-2xl p-1 mb-8 border border-slate-200 dark:border-gray-800 overflow-x-auto no-scrollbar">
+        {tabs.map((tab) => renderTabButton(tab))}
       </div>
 
       {/* Contenu de l'onglet */}
@@ -924,7 +873,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
+              className="w-full max-w-md bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
             >
               {/* Effet de fond */}
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-red-500/10 blur-[60px] rounded-full" />

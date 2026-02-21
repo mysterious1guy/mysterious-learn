@@ -44,7 +44,7 @@ const ConfirmModal = ({
                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                    className="w-full max-w-md bg-gray-900 border border-gray-800 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
+                    className="w-full max-w-md bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
                 >
                     {/* Effet de fond */}
                     <div className={`absolute -top-24 -right-24 w-48 h-48 ${c.glow} blur-[60px] rounded-full`} />
@@ -62,10 +62,10 @@ const ConfirmModal = ({
                         </div>
 
                         <div className="space-y-2">
-                            <h3 className="text-2xl font-black text-white brand-font">
+                            <h3 className="text-2xl font-black text-slate-900 dark:text-white brand-font">
                                 {title}
                             </h3>
-                            <p className="text-gray-400">
+                            <p className="text-slate-500 dark:text-gray-400">
                                 {message}
                             </p>
                         </div>
@@ -83,7 +83,7 @@ const ConfirmModal = ({
 
                             <button
                                 onClick={onClose}
-                                className="w-full py-4 bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white font-bold rounded-2xl transition-all"
+                                className="w-full py-4 bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white font-bold rounded-2xl transition-all"
                             >
                                 {cancelText}
                             </button>

@@ -154,7 +154,7 @@ if (age >= 18) {
 > [!NOTE]
 > Les accolades \`{\` et \`}\` délimitent ce qu'on appelle "un bloc". C'est pour dire au compilateur "Voici tout ce que tu dois faire si la condition est remplie".
 
-[VISUALIZER] {"codeStr": "int x = 5;\nif (x > 10) {\n  x = 100;\n} else {\n  x = 0;\n}", "steps": [{"line": 1, "state": {"x": 5}, "explanation": "x vaut 5."}, {"line": 2, "state": {"x": 5}, "explanation": "Est-ce que 5 est plus grand que 10 ? Faux."}, {"line": 4, "state": {"x": 5}, "explanation": "On saute dans le bloc 'else'."}, {"line": 5, "state": {"x": 0}, "explanation": "x est écrasé par la valeur 0."}]}
+[VISUALIZER] {"codeStr": "int x = 5;\\nif (x > 10) {\\n  x = 100;\\n} else {\\n  x = 0;\\n}", "steps": [{"line": 1, "state": {"x": 5}, "explanation": "x vaut 5."}, {"line": 2, "state": {"x": 5}, "explanation": "Est-ce que 5 est plus grand que 10 ? Faux."}, {"line": 4, "state": {"x": 5}, "explanation": "On saute dans le bloc 'else'."}, {"line": 5, "state": {"x": 0}, "explanation": "x est écrasé par la valeur 0."}]}
 `
                     },
                     {

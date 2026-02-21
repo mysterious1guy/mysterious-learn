@@ -127,35 +127,60 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="max-w-7xl mx-auto"
+                    className="max-w-7xl mx-auto flex flex-col items-center text-center"
                 >
-                    <div className="flex items-center flex-wrap gap-3 mb-4">
-                        <h1 className="text-4xl md:text-5xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                            Bienvenue, {user?.firstName} !
-                        </h1>
-                        <motion.div
-                            animate={{ rotate: [0, 20, -10, 20, -10, 0] }}
-                            transition={{
-                                duration: 1.5,
-                                repeat: Infinity,
-                                repeatDelay: 3,
-                                ease: 'easeInOut'
-                            }}
-                            whileHover={{
-                                scale: 1.2,
-                                rotate: [0, 25, -15, 25, -15, 0],
-                                transition: { duration: 0.8, repeat: Infinity }
-                            }}
-                            whileTap={{ scale: 0.9 }}
-                            className="text-4xl md:text-5xl inline-block origin-bottom-right cursor-pointer drop-shadow-lg"
-                            title="Coucou !"
+                    <div className="relative group cursor-default mb-2">
+                        <motion.h1
+                            className="text-5xl md:text-7xl font-black mb-4 tracking-tighter leading-tight"
                         >
-                            👋
-                        </motion.div>
+                            <span className="block text-slate-400 dark:text-slate-500 text-xl md:text-2xl font-bold tracking-[0.3em] uppercase mb-2 opacity-80">
+                                Bienvenue,
+                            </span>
+                            <span className="inline-block bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-sm pb-2">
+                                {user?.firstName?.toUpperCase() || 'MYSTÉRIEUX'} !
+                            </span>
+                            <motion.div
+                                animate={{ rotate: [0, 20, -10, 20, -10, 0] }}
+                                transition={{
+                                    duration: 1.5,
+                                    repeat: Infinity,
+                                    repeatDelay: 3,
+                                    ease: 'easeInOut'
+                                }}
+                                whileHover={{
+                                    scale: 1.2,
+                                    rotate: [0, 25, -15, 25, -15, 0],
+                                    transition: { duration: 0.8, repeat: Infinity }
+                                }}
+                                whileTap={{ scale: 0.9 }}
+                                className="inline-block ml-4 origin-bottom-right cursor-pointer drop-shadow-lg"
+                                title="Coucou !"
+                            >
+                                👋
+                            </motion.div>
+                        </motion.h1>
+
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5, duration: 1 }}
+                            className="text-lg md:text-xl text-slate-600 dark:text-gray-400 font-medium max-w-2xl mx-auto opacity-90 leading-relaxed"
+                        >
+                            Prêt à continuer ton apprentissage mystérieux ? <br className="hidden md:block" />
+                            Ta quête vers la maîtrise technologique continue ici.
+                        </motion.p>
                     </div>
-                    <p className="text-slate-600 dark:text-gray-400 text-lg font-medium opacity-80">
-                        Prêt à continuer ton apprentissage mystérieux ?
-                    </p>
+
+                    <motion.div
+                        initial={{ opacity: 0, scaleX: 0 }}
+                        animate={{ opacity: 1, scaleX: 1 }}
+                        transition={{ delay: 0.8, duration: 0.8 }}
+                        className="mt-8 flex items-center gap-4 justify-center"
+                    >
+                        <div className="h-[2px] w-12 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent rounded-full" />
+                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                        <div className="h-[2px] w-12 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent rounded-full" />
+                    </motion.div>
                 </motion.div>
             </div>
 
@@ -175,16 +200,16 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                         </div>
 
                         <div className="overflow-x-auto pb-8 custom-horizontal-scrollbar pr-6 scroll-smooth">
-                            <div className="flex gap-6 w-max">
+                            <div className={`flex gap-6 w-full ${category.items.length === 1 ? '' : 'w-max'}`}>
                                 {category.items.map((course) => (
                                     <motion.div
                                         key={course.id}
                                         whileHover={{ scale: 1.02, y: -5 }}
                                         onClick={() => navigate(`/course/${course.id}`)}
-                                        className="w-[280px] md:w-[350px] flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer group"
+                                        className={`${category.items.length === 1 ? 'w-full max-w-2xl' : 'w-[280px] md:w-[350px]'} flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer group`}
                                     >
                                         {/* Image du cours */}
-                                        <div className="h-40 relative overflow-hidden">
+                                        <div className={`${category.items.length === 1 ? 'h-64' : 'h-40'} relative overflow-hidden`}>
                                             <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
                                             <img
                                                 src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.id}`}
@@ -210,7 +235,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                                             </div>
                                             <div className="absolute top-3 left-3 z-20 flex gap-2">
                                                 {course.tags?.slice(0, 2).map((tag, i) => (
-                                                    <span key={i} className="px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full backdrop-blur-md">
+                                                    <span key={i} className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full backdrop-blur-md ${category.items.length === 1 ? 'text-xs px-3 py-1' : ''}`}>
                                                         {tag}
                                                     </span>
                                                 ))}
@@ -219,10 +244,10 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
 
                                         {/* Contenu */}
                                         <div className="p-5">
-                                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight">
+                                            <h3 className={`${category.items.length === 1 ? 'text-2xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
                                                 {course.name}
                                             </h3>
-                                            <p className="text-slate-600 dark:text-gray-400 text-xs font-medium mb-5 line-clamp-2 min-h-[32px] leading-relaxed">
+                                            <p className={`${category.items.length === 1 ? 'text-sm' : 'text-xs'} text-slate-600 dark:text-gray-400 font-medium mb-5 line-clamp-2 min-h-[32px] leading-relaxed`}>
                                                 {course.desc}
                                             </p>
 

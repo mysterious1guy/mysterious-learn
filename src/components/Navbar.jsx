@@ -10,10 +10,10 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
   const { t } = useLanguage();
   const isCoursePage = location.pathname.startsWith('/course/') || location.pathname.startsWith('/chapter/');
   return (
-    <nav className="fixed top-0 left-0 right-0 p-2 sm:p-4 border-b border-gray-800 bg-gray-900/80 backdrop-blur-md z-40">
+    <nav className="fixed top-0 left-0 right-0 p-2 sm:p-4 border-b border-slate-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-40 transition-colors duration-300">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-2 sm:gap-4">
-          <button onClick={onMenuClick} className="md:hidden p-2 hover:bg-gray-800 rounded-lg transition shrink-0">
+          <button onClick={onMenuClick} className="md:hidden p-2 hover:bg-slate-100 dark:hover:bg-gray-800 rounded-lg transition shrink-0 text-slate-600 dark:text-gray-300">
             <Menu size={20} />
           </button>
 
@@ -49,10 +49,10 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
 
               <Link
                 to="/account"
-                className="flex items-center gap-2 hover:bg-gray-800 px-3 py-2 rounded-lg transition"
+                className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-gray-800 px-3 py-2 rounded-lg transition"
               >
                 <div className="flex flex-col items-end hidden md:flex">
-                  <span className="text-sm font-bold text-white leading-none">
+                  <span className="text-sm font-bold text-slate-800 dark:text-white leading-none">
                     {user.firstName} {user.lastName}
                   </span>
                   <span className="text-[10px] text-blue-400 font-medium uppercase tracking-wider">

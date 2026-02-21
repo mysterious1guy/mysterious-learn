@@ -457,7 +457,8 @@ const updateProfile = async (req, res) => {
       firstName,
       lastName,
       preferences,
-      hasCompletedOnboarding
+      hasCompletedOnboarding,
+      programmingLevel
     } = req.body;
 
     const user = await User.findById(req.user._id);
@@ -481,6 +482,7 @@ const updateProfile = async (req, res) => {
       if (preferences.soundEnabled !== undefined) user.preferences.soundEnabled = preferences.soundEnabled;
     }
     if (hasCompletedOnboarding !== undefined) user.hasCompletedOnboarding = hasCompletedOnboarding;
+    if (programmingLevel !== undefined) user.programmingLevel = programmingLevel;
 
     await user.save();
 
@@ -495,6 +497,7 @@ const updateProfile = async (req, res) => {
       joinedAt: user.joinedAt,
       isEmailVerified: user.isEmailVerified,
       hasCompletedOnboarding: user.hasCompletedOnboarding,
+      programmingLevel: user.programmingLevel,
       preferences: user.preferences,
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],

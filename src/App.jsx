@@ -262,6 +262,7 @@ function App() {
                         user={user}
                         API_URL={API_URL}
                         setToast={setToast}
+                        fetchProgressions={fetchProgressions}
                       />
                     ) : (
                       <Navigate to="/onboarding" replace />
@@ -278,6 +279,7 @@ function App() {
                         user={user}
                         API_URL={API_URL}
                         setToast={setToast}
+                        fetchProgressions={fetchProgressions}
                       />
                     ) : (
                       <Navigate to="/onboarding" replace />

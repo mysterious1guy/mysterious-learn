@@ -5,7 +5,7 @@ import { ArrowLeft, Trophy } from 'lucide-react';
 import InteractiveModule from '../components/InteractiveModule';
 import Confetti from 'react-confetti';
 
-const ChapterPage = ({ user, API_URL, setToast }) => {
+const ChapterPage = ({ user, API_URL, setToast, fetchProgressions }) => {
     const { courseId, chapterIndex } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
@@ -78,6 +78,7 @@ const ChapterPage = ({ user, API_URL, setToast }) => {
                         totalLessons: course.chapters.length
                     })
                 });
+                if (fetchProgressions) fetchProgressions();
             } catch (e) {
                 console.error("Impossible de sauvegarder la progression", e);
             }

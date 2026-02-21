@@ -331,7 +331,7 @@ const CodeEditor = ({ lesson, onComplete }) => {
   );
 };
 
-const CCourse = ({ onClose, user, API_URL }) => {
+const CCourse = ({ onClose, user, API_URL, fetchProgressions }) => {
   const [activeLessonId, setActiveLessonId] = useState(null);
   const [completedLessons, setCompletedLessons] = useState([]);
   const [loadingProgress, setLoadingProgress] = useState(true);
@@ -340,11 +340,33 @@ const CCourse = ({ onClose, user, API_URL }) => {
   // Mettre à plat toutes les leçons
   const allLessons = courseData.flatMap(m => m.chapters.flatMap(c => c.lessons));
 
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (!user?.token) {
+        setLoadingProgress(false);
+        return;
+      }
+      try {
+        const response = await fetch(`${API_URL}/courses/c/progress`, {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setCompletedLessons(data.completedLessons || []);
+        }
+      } catch (err) {
+        console.error('Erreur chargement progression:', err);
+      } finally {
+        setLoadingProgress(false);
+      }
+    };
+
+    fetchProgress();
+  }, [user, API_URL]);
+
   // =====================================================================
   // CALCUL DES NŒUDS POUR LA TIMELINE VERTICALE
   // =====================================================================
-  // Au lieu d'une grille complexe sinueuse, nous allons faire une Timeline verticale simple et belle.
-
   const nodes = allLessons.map((lesson, index) => {
     return {
       ...lesson,
@@ -360,10 +382,31 @@ const CCourse = ({ onClose, user, API_URL }) => {
 
   const closeLesson = () => setActiveLessonId(null);
 
-  const handleLessonCompletion = (success) => {
+  const handleLessonCompletion = async (success) => {
     if (success && activeLessonId) {
       if (!completedLessons.includes(activeLessonId)) {
-        setCompletedLessons([...completedLessons, activeLessonId]);
+        const newCompleted = [...completedLessons, activeLessonId];
+        setCompletedLessons(newCompleted);
+
+        // Sauvegarder dans le backend
+        if (user?.token) {
+          try {
+            await fetch(`${API_URL}/courses/c/progress`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${user.token}`,
+              },
+              body: JSON.stringify({
+                lessonId: activeLessonId,
+                totalLessons: allLessons.length
+              }),
+            });
+            if (fetchProgressions) fetchProgressions();
+          } catch (err) {
+            console.error('Erreur sauvegarde progression:', err);
+          }
+        }
       }
       setTimeout(() => closeLesson(), 1500);
     }
@@ -412,7 +455,7 @@ const CCourse = ({ onClose, user, API_URL }) => {
 
       {/* Scrollable Map Area - TIMELINE VERTICALE */}
       <div className="flex-1 relative overflow-y-auto overflow-x-hidden touch-pan-y custom-scrollbar flex flex-col items-center py-12 px-4">
-        <div className="w-full max-w-lg relative">
+        <div className="w-full max-w-4xl relative">
 
           {/* Ligne Centrale Globale */}
           <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1 bg-slate-200 -translate-x-1/2 z-0" />

@@ -7,7 +7,7 @@ const AccountPage = ({ user, onUpdateUser, onLogout, progressions, favorites, on
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 pt-20">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300 pt-20">
             <div className="max-w-6xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
