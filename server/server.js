@@ -1,5 +1,4 @@
-// 1. Initialisation DNS et Environnement
-require('dns').setDefaultResultOrder?.('ipv4first');
+// 1. Initialisation Environnement
 require('dotenv').config();
 
 const express = require('express');
@@ -11,7 +10,6 @@ const connectDB = require('./config/db');
 
 // 2. Connexion à MongoDB & Services
 connectDB();
-require('./utils/emailService');
 
 const app = express();
 

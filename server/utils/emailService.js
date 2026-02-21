@@ -1,9 +1,6 @@
 const { Resend } = require('resend');
 
-console.log('📧 Initialisation du service email (Resend API)...');
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-console.log('📧 RESEND_API_KEY configuré:', process.env.RESEND_API_KEY ? 'OUI' : 'NON');
 
 /**
  * Envoie un email formaté via Resend API
