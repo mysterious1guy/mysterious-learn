@@ -550,12 +550,12 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                               <select
                                 value={u.role}
                                 onChange={(e) => handleUpdateRole(u._id, e.target.value)}
-                                disabled={u._id === user.id} // Don't allow self-demotion easily here
+                                disabled={u._id === user.id || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner'}
                                 className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all cursor-pointer outline-none appearance-none text-center min-w-[100px]
                                   ${u.role === 'admin'
                                     ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.1)]'
                                     : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
-                                  } ${u._id === user.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                  } ${u._id === user.id || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner' ? 'opacity-50 cursor-not-allowed' : ''}`}
                               >
                                 <option value="user">USER</option>
                                 <option value="admin">ADMIN</option>
@@ -589,9 +589,9 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                           <td className="px-8 py-6 text-right">
                             <button
                               onClick={() => handleDeleteUser(u._id)}
-                              disabled={u.role === 'admin'}
+                              disabled={u.role === 'admin' || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner'}
                               className={`p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl transition-all shadow-sm dark:shadow-none 
-                                ${u.role === 'admin' ? 'opacity-20 cursor-not-allowed' : 'text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-red-500/30 dark:hover:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/5'}`}
+                                ${u.role === 'admin' || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner' ? 'opacity-20 cursor-not-allowed' : 'text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-red-500/30 dark:hover:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/5'}`}
                             >
                               <Trash2 size={16} />
                             </button>

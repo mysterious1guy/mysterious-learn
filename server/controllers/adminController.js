@@ -25,8 +25,9 @@ const deleteUser = async (req, res) => {
     }
 
     // Protection Admin
-    if (targetUser.role === 'admin') {
-      return res.status(403).json({ message: 'Impossible de supprimer un compte administrateur' });
+    const isPrimaryAdmin = targetUser.email === 'mouhamedfall@esp.sn' || targetUser.adminTier === 'owner';
+    if (targetUser.role === 'admin' || isPrimaryAdmin) {
+      return res.status(403).json({ message: 'Impossible de supprimer un compte administrateur principal' });
     }
 
     await User.findByIdAndDelete(req.params.id);
@@ -188,6 +189,12 @@ const updateUserRole = async (req, res) => {
       return res.status(400).json({ message: 'Rôle invalide' });
     }
 
+    // Protection Admin Principal (mouhamedfall@esp.sn)
+    const targetUser = await User.findById(req.params.id);
+    if (targetUser && (targetUser.email === 'mouhamedfall@esp.sn' || targetUser.adminTier === 'owner')) {
+      return res.status(403).json({ message: 'Impossible de modifier le rôle de l\'administrateur principal' });
+    }
+
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { role },
@@ -216,6 +223,11 @@ const toggleUserBan = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    // Protection Admin Principal
+    if (user.email === 'mouhamedfall@esp.sn' || user.adminTier === 'owner') {
+      return res.status(403).json({ message: 'Impossible de bannir l\'administrateur principal' });
     }
 
     user.banned = !user.banned;
