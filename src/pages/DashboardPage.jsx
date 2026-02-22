@@ -131,12 +131,12 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                 >
                     <div className="relative group cursor-default mb-2">
                         <motion.h1
-                            className="text-5xl md:text-7xl font-black mb-4 tracking-tighter leading-tight"
+                            className="text-center font-black tracking-tighter leading-[0.8] flex flex-col items-center"
                         >
-                            <span className="block text-slate-400 dark:text-slate-500 text-xl md:text-2xl font-bold tracking-[0.3em] uppercase mb-2 opacity-80">
-                                Bienvenue,
+                            <span className="block text-6xl md:text-[10rem] text-slate-900 dark:text-white mb-2 opacity-100">
+                                BIENVENUE,
                             </span>
-                            <span className="inline-block bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-sm pb-2">
+                            <span className="inline-block text-5xl md:text-8xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-sm pb-4 mt-2">
                                 {user?.firstName?.toUpperCase() || 'MYSTÉRIEUX'} !
                             </span>
                             <motion.div
