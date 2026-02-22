@@ -70,7 +70,7 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
         />
       )}
 
-      <main className="relative z-10 pt-16">
+      <main className="relative z-10 pt-24">
         <Outlet />
       </main>
 

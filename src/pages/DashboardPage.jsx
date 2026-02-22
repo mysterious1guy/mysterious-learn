@@ -113,7 +113,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
     return (
         <div className="min-h-screen transition-colors duration-500 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 dark:from-gray-900 dark:via-[#0a0f1e] dark:to-black pb-20">
             {/* Header */}
-            <div className="pt-24 pb-12 px-6 lg:px-12 relative overflow-hidden">
+            <div className="pt-8 pb-12 px-6 lg:px-12 relative overflow-hidden">
                 {/* Background Blobs */}
                 <motion.div
                     style={{ x: mousePosition.x * 0.8, y: mousePosition.y * 0.8 }}

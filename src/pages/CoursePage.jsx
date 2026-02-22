@@ -155,7 +155,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                 <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple-200 rounded-full blur-3xl" />
             </div>
 
-            <div className="max-w-6xl mx-auto p-6 pt-24 relative z-10">
+            <div className="max-w-6xl mx-auto p-6 pt-4 relative z-10">
                 {/* Header */}
                 <button
                     onClick={() => navigate(-1)}

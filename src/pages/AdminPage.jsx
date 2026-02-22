@@ -361,7 +361,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 transition-colors duration-300">
       {/* Sidebar */}
-      <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col z-50`}>
+      <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col z-50 pt-24`}>
         <div className="p-6 flex items-center justify-between">
           {isSidebarOpen && <span className="font-black text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">ADMIN</span>}
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400">
@@ -406,7 +406,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-8 pt-24">
+      <main className="flex-1 overflow-y-auto p-8">
         {loading ? (
           <div className="flex items-center justify-center h-full">
             <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
