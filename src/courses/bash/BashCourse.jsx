@@ -1,8 +1,100 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Lock, Play, RefreshCw, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Terminal, Lock, Play, RefreshCw, CheckCircle2, ArrowLeft, HelpCircle, ChevronDown, Check, Sparkles, BookOpen } from 'lucide-react';
 import { courseData } from './bashCourseContent';
-import InteractiveModule from '../../components/InteractiveModule';
+import LogicVisualizer from '../../components/LogicVisualizer';
+
+const InteractiveInsight = ({ prompt, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="my-6">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-full text-left p-5 rounded-2xl border transition-all flex items-center justify-between ${isOpen ? 'bg-slate-800 border-slate-700 rounded-b-none' : 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 shadow-sm'}`}
+      >
+        <span className="font-bold text-green-400 flex items-center gap-3">
+          <HelpCircle size={20} className={isOpen ? 'text-green-400' : 'text-slate-500'} />
+          {prompt}
+        </span>
+        <ChevronDown size={20} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="p-6 bg-slate-900/50 border border-t-0 border-slate-700 rounded-b-2xl">
+              <p className="text-slate-300 font-medium ">{answer}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const TheoryViewer = ({ title, content, onComplete }) => {
+  const renderRichText = (text) => {
+    const parts = text.split(/(\*\*.*?\*\*|""|''|`.*?`|\[!.*?\])/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="text-green-400 font-black">{part.slice(2, -2)}</strong>;
+      }
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return <code key={i} className="px-2 py-0.5 bg-slate-800 border border-slate-700 rounded text-green-500 font-mono text-sm shadow-sm">{part.slice(1, -1)}</code>;
+      }
+      return part;
+    });
+  };
+
+  const renderContent = (text) => {
+    return text.split('\n').map((line, idx) => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('# ')) return <h1 key={idx} className="text-2xl md:text-3xl font-black text-white mb-6 mt-4 italic tracking-tighter uppercase">{trimmed.replace('# ', '')}</h1>;
+      if (trimmed.startsWith('## ')) return <h2 key={idx} className="text-xl md:text-2xl font-black text-green-500 mb-4 mt-6 italic tracking-tight uppercase">{trimmed.replace('## ', '')}</h2>;
+      if (trimmed.startsWith('### ')) return <h3 key={idx} className="text-lg md:text-xl font-black text-slate-200 mb-3 mt-5 uppercase">{trimmed.replace('### ', '')}</h3>;
+      if (trimmed.startsWith('> ')) return (
+        <blockquote key={idx} className="border-l-4 border-green-500 pl-6 italic text-slate-300 my-6 bg-slate-800/50 p-6 rounded-r-3xl text-base shadow-sm">
+          {renderRichText(trimmed.replace('> ', ''))}
+        </blockquote>
+      );
+      if (trimmed.startsWith('* ')) {
+        return <li key={idx} className="ml-4 md:ml-8 list-disc text-slate-300 mb-2 text-sm md:text-base font-medium">{renderRichText(trimmed.replace('* ', ''))}</li>;
+      }
+      if (trimmed.startsWith('[?] ')) {
+        const parts = trimmed.replace('[?] ', '').split('|');
+        if (parts.length >= 2) {
+          return <InteractiveInsight key={idx} prompt={parts[0].trim()} answer={parts.slice(1).join('|').trim()} />;
+        }
+      }
+      if (trimmed === '') return <div key={idx} className="h-3"></div>;
+
+      if (trimmed.startsWith('[VISUALIZER]')) {
+        try {
+          const jsonStr = trimmed.replace('[VISUALIZER]', '').trim();
+          const visualizerData = JSON.parse(jsonStr);
+          return <LogicVisualizer key={idx} {...visualizerData} />;
+        } catch (e) {
+          console.error("Invalid Visualizer JSON", e);
+          return null;
+        }
+      }
+
+      return <p key={idx} className="text-slate-300 leading-relaxed mb-6 text-base md:text-lg font-medium">{renderRichText(line)}</p>;
+    });
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-4 md:p-8 pb-24 h-full">
+      <div className="bg-slate-900/40 p-4 md:p-8 rounded-3xl border border-slate-700/50 backdrop-blur-sm shadow-sm">
+        {renderContent(content)}
+      </div>
+    </div>
+  );
+};
 
 const ModalTheoryViewer = ({ title, content, onComplete }) => {
   const [canValidate, setCanValidate] = useState(false);
@@ -38,8 +130,9 @@ const ModalTheoryViewer = ({ title, content, onComplete }) => {
 
         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
           <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white to-transparent pointer-events-none" />
-          <InteractiveModule
-            moduleData={{ type: 'theory', content: content }}
+          <TheoryViewer
+            title={title}
+            content={content}
             onComplete={() => { }}
           />
           <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none" />
