@@ -143,9 +143,40 @@ const aiChat = async (req, res) => {
                 adminGreeting += `\n\n[LISTE DES UTILISATEURS DU SYSTÈME]
                 Voici la liste de tous les utilisateurs inscrits. Si on te demande de les lister, fais de vrais retours à la ligne clairs avec des émojis pour bien les séparer visuellement :
 ${usersListText}`;
+
+                // AJOUT DU POUVOIR DE MÉMORISATION (ADMIN ONLY)
+                adminGreeting += `
+                
+                [POUVOIR DE MÉMORISATION]
+                Si l'utilisateur (le BOSS) te donne une information importante qu'il veut que tu retiennes définitivement (ex: "Retiens que le mot de passe du serveur est X" ou "Apprends ce nouveau concept : ..."), tu DOIS lui proposer de la mémoriser dans ta base de données interne.
+                
+                Pour cela, après ton explication, ajoute ce bloc JSON :
+                \`\`\`json
+                {
+                  "type": "admin_action",
+                  "action": "add_knowledge",
+                  "payload": {
+                    "title": "Titre court et clair de l'info",
+                    "content": "Le contenu détaillé à mémoriser",
+                    "category": "general",
+                    "tags": ["tag1", "tag2"]
+                  }
+                }
+                \`\`\`
+                `;
             } catch (err) {
                 console.error("Erreur récupération utilisateurs pour IA", err);
             }
+        }
+
+        // Estimation de la taille de la base (pour respecter les 512MB)
+        let storageInfo = "Taille de la base : Inconnue. Limite : 512 Mo.";
+        try {
+            const stats = await mongoose.connection.db.command({ dbStats: 1 });
+            const sizeMB = (stats.dataSize / (1024 * 1024)).toFixed(2);
+            storageInfo = `Taille actuelle des données : ~${sizeMB} Mo / 512 Mo autorisés.`;
+        } catch (e) {
+            console.error("Erreur stats DB:", e);
         }
 
         // Récupération des cours réels
@@ -162,13 +193,14 @@ ${usersListText}`;
         [DONNÉES SYSTÈME ACTUELLES]
         La plateforme propose les cours et parcours suivants : ${coursesList}, ainsi que le "Langage C" et "Algo" qui ont des cartes de cours (Timelines) dédiées. Tu as accès à l'intégralité du contenu pédagogique pour aider.
 
-        Règles d'or : 
+        [RÈGLES DE FORMATAGE PREMIUM] 
         1. Ton rôle est d'aider les étudiants à comprendre les cours du site, de corriger leur code et de les encourager.
         2. Adopte un ton bienveillant, clair et direct. BANNIS les excuses inutiles ("je suis désolé", "pardon"). Ne répète jamais "Bonjour".
-        3. Fournis des explications directes, avec des snippets de code clairs.
-        4. Évite les gros titres Markdown (#) et l'abus d'astérisques (***). Utilise des retours à la ligne réguliers et aérés.
-        5. Tes réponses doivent être propres et fluides. N'hésite pas à utiliser des émojis pertinents avec parcimonie.
-        6. NE RÉPÈTE JAMAIS l'historique de la conversation. Réponds UNIQUEMENT au dernier message de l'utilisateur.`;
+        3. CODE : Entoure TOUT snippet de code par des blocs \`\`\`lang ... \`\`\`. Sois précis sur le langage.
+        4. STRUCTURE : Utilise des listes à puces (•) et des titres en GRAS pour organiser tes réponses.
+        5. LISIBILITÉ : Fais des paragraphes courts. Utilise des émojis pour rendre la lecture agréable.
+        6. LIMITES : ${storageInfo}. Si tu ajoutes des connaissances, sois CONCIS et efficace pour ne pas saturer l'espace inutilement.
+        7. NE RÉPÈTE JAMAIS l'historique. Réponds UNIQUEMENT au dernier message.`;
 
         // RECHERCHE DE CONTEXTE DYNAMIQUE (Tag-free)
         const relevantDocs = await GlobalKnowledge.find({

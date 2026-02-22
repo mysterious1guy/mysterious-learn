@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Code2, Terminal, Layout, Palette, Globe, Server, Database, FileCode, Coffee, Box, Figma, Sparkles,
-  Smartphone, Cloud, Shield, Cpu, Zap, Activity, Layers, PenTool, Hash, Gem, Search, Heart, User, Clock, Calendar, BookOpen, Users, Play, ShieldAlert, BadgeCheck
+  Smartphone, Cloud, Shield, Cpu, Zap, Activity, Layers, PenTool, Hash, Gem, Search, Heart, User, Calendar, BookOpen, Users, Play, ShieldAlert, BadgeCheck
 } from 'lucide-react';
 
 const GemIcon = () => (
@@ -12,8 +12,6 @@ const GemIcon = () => (
     <path d="M2 9h20" />
   </svg>
 );
-// Use GemIcon instead of Gem to avoid naming conflict with lucide if any, 
-// though lucide doesn't have Gem (it has Diamond).
 
 export const coursesData = [
   {
@@ -32,9 +30,9 @@ export const coursesData = [
         tags: ["Logique", "Bases"],
         students: 1234,
         lessons: [
-          { id: 'algo1', title: "Les variables", duration: "10 min" },
-          { id: 'algo2', title: "Les boucles", duration: "15 min" },
-          { id: 'algo3', title: "Les conditions", duration: "12 min" },
+          { id: 'algo1', title: "Les variables" },
+          { id: 'algo2', title: "Les boucles" },
+          { id: 'algo3', title: "Les conditions" },
         ]
       },
       {
@@ -50,8 +48,8 @@ export const coursesData = [
         tags: ["Système", "Mémoire"],
         students: 890,
         lessons: [
-          { id: 'c1', title: "Syntaxe & Types", duration: "20 min" },
-          { id: 'c2', title: "Pointeurs basics", duration: "25 min" },
+          { id: 'c1', title: "Syntaxe & Types" },
+          { id: 'c2', title: "Pointeurs basics" },
         ]
       },
       {
@@ -67,9 +65,9 @@ export const coursesData = [
         tags: ["Data", "Scripting"],
         students: 2100,
         lessons: [
-          { id: 'py1', title: "Installation & Premier script", duration: "15 min" },
-          { id: 'py2', title: "Les Listes & Dictionnaires", duration: "20 min" },
-          { id: 'py3', title: "Les Fonctions & Modules", duration: "25 min" },
+          { id: 'py1', title: "Installation & Premier script" },
+          { id: 'py2', title: "Les Listes & Dictionnaires" },
+          { id: 'py3', title: "Les Fonctions & Modules" },
         ]
       },
       {
@@ -85,9 +83,9 @@ export const coursesData = [
         tags: ["Web", "Productivité"],
         students: 450,
         lessons: [
-          { id: 'rb1', title: "L'esprit Ruby", duration: "10 min" },
-          { id: 'rb2', title: "Les Blocs & Procs", duration: "20 min" },
-          { id: 'rb3', title: "Classes & Objets", duration: "25 min" },
+          { id: 'rb1', title: "L'esprit Ruby" },
+          { id: 'rb2', title: "Les Blocs & Procs" },
+          { id: 'rb3', title: "Classes & Objets" },
         ]
       },
       {
@@ -103,421 +101,319 @@ export const coursesData = [
         tags: ["Hardware", "Bas niveau"],
         students: 120,
         lessons: [
-          { id: 'asm1', title: "Registres & Mémoire", duration: "30 min" },
-          { id: 'asm2', title: "Instructions Arithmétiques", duration: "35 min" },
-          { id: 'asm3', title: "Sauts & Conditions", duration: "40 min" },
+          { id: 'asm1', title: "Registres & Mémoire" },
+          { id: 'asm2', title: "Instructions de base" },
         ]
       },
       {
         id: 'cpp',
         name: "C++",
         icon: <Terminal />,
-        color: "text-blue-600",
-        desc: "Puissance et contrôle.",
-        longDesc: "Le successeur du C, ajoutant l'orienté objet et la performance brute pour les jeux et systèmes.",
+        color: "text-blue-500",
+        desc: "Performance et POO.",
+        longDesc: "Maîtrise la programmation orientée objet avec ce langage de haute performance utilisé partout.",
         code: "std::cout << \"Hello\";",
-        level: "Avancé",
-        image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
-        tags: ["Jeux", "Performance"],
-        students: 950,
-        lessons: [
-          { id: 'cpp1', title: "Classes & Héritage", duration: "25 min" },
-          { id: 'cpp2', title: "Templates & STL", duration: "30 min" },
-          { id: 'cpp3', title: "Smart Pointers", duration: "25 min" },
-        ]
-      },
-      {
-        id: 'csharp',
-        name: "C#",
-        icon: <Code2 />,
-        color: "text-purple-600",
-        desc: "L'écosystème .NET.",
-        longDesc: "Polyvalent et puissant, idéal pour le développement Windows, les jeux avec Unity et le backend.",
-        code: "Console.WriteLine(\"Hi\");",
         level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
-        tags: ["Microsoft", "Unity"],
+        image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+        tags: ["Performance", "POO"],
         students: 1100,
         lessons: [
-          { id: 'cs1', title: "Syntaxe & Types .NET", duration: "20 min" },
-          { id: 'cs2', title: "LINQ & Collections", duration: "25 min" },
-          { id: 'cs3', title: "Async / Await", duration: "20 min" },
+          { id: 'cpp1', title: "Classes & Objets" },
+          { id: 'cpp2', title: "La STL" },
         ]
       }
     ]
   },
   {
-    category: "🌐 Web Modern",
+    category: "🌐 Web & Frontend",
     items: [
       {
-        id: 'html',
-        name: "HTML5",
-        icon: <Layout />,
-        color: "text-orange-500",
-        desc: "La structure du web.",
-        longDesc: "Apprends à baliser le contenu de tes pages pour un web sémantique et accessible.",
-        code: "<h1>Hello</h1>",
-        level: "Débutant",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
-        tags: ["Frontend", "Structure"],
-        students: 3450,
-        lessons: [
-          { id: 'html1', title: "Sémantique & Structure", duration: "10 min" },
-          { id: 'html2', title: "Formulaires & Validation", duration: "15 min" },
-          { id: 'html3', title: "Audio & Vidéo", duration: "10 min" },
-        ]
-      },
-      {
-        id: 'css',
-        name: "CSS3",
-        icon: <Palette />,
-        color: "text-blue-300",
-        desc: "Design et animations.",
-        longDesc: "Stylise tes applications avec Flexbox, Grid et des animations fluides.",
-        code: "body { color: blue; }",
-        level: "Débutant",
-        image: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
-        tags: ["Style", "Responsive"],
-        students: 2980,
-        lessons: [
-          { id: 'css1', title: "Flexbox & Grid", duration: "15 min" },
-          { id: 'css2', title: "Animations & Transitions", duration: "20 min" },
-          { id: 'css3', title: "Responsive Design", duration: "15 min" },
-        ]
-      },
-      {
-        id: 'js',
-        name: "JavaScript",
-        icon: <Globe />,
-        color: "text-yellow-400",
-        desc: "L'interactivité dynamique.",
-        longDesc: "Maîtrise ES6+, les promesses et la manipulation du DOM.",
-        code: "console.log('JS');",
-        level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=800&q=80",
-        tags: ["Logique", "Frontend"],
-        students: 1870,
-        lessons: [
-          { id: 'js1', title: "ES6 Fundamentals", duration: "20 min" },
-          { id: 'js2', title: "Async / Await & Fetch", duration: "25 min" },
-          { id: 'js3', title: "Manipulation du DOM", duration: "20 min" },
-        ]
-      },
-      {
-        id: 'typescript',
-        name: "TypeScript",
-        icon: <Shield />,
-        color: "text-blue-600",
-        desc: "JavaScript avec des types.",
-        longDesc: "Évite les erreurs au runtime et améliore ton expérience de développement avec le typage statique.",
-        code: "const x: number = 5;",
-        level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
-        tags: ["Sécurité", "Scalabilité"],
-        students: 1200,
-        lessons: [
-          { id: 'ts1', title: "Interfaces & Types", duration: "15 min" },
-          { id: 'ts2', title: "Generics", duration: "20 min" },
-          { id: 'ts3', title: "Enums & Unions", duration: "15 min" },
-        ]
-      },
-      {
         id: 'react',
-        name: "React",
-        icon: <Code2 />,
+        name: "React.js",
+        icon: <Layout />,
         color: "text-cyan-400",
-        desc: "Interfaces basées sur les composants.",
-        longDesc: "La bibliothèque UI la plus utilisée au monde par Meta.",
-        code: "const App = () => <div>Hi</div>",
-        level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
-        tags: ["UI", "Meta"],
-        students: 1560,
+        desc: "Interfaces réactives.",
+        longDesc: "Apprends à créer des composants modernes et performants avec la bibliothèque la plus utilisée.",
+        code: "const App = () => {}",
+        level: "Débutant",
+        image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee5?w=800&q=80",
+        tags: ["Frontend", "UI"],
+        students: 3500,
         lessons: [
-          { id: 'react1', title: "Hooks (useState, useEffect)", duration: "20 min" },
-          { id: 'react2', title: "Custom Hooks", duration: "25 min" },
-          { id: 'react3', title: "Context API", duration: "20 min" },
+          { id: 're1', title: "Introduction aux Composants" },
+          { id: 're2', title: "Le State & useEffect" },
+        ]
+      },
+      {
+        id: 'tailwind',
+        name: "Tailwind CSS",
+        icon: <Palette />,
+        color: "text-blue-400",
+        desc: "Design rapide et flexible.",
+        longDesc: "Stylise tes sites sans quitter ton HTML grâce aux classes utilitaires.",
+        code: "class=\"flex p-4\"",
+        level: "Débutant",
+        image: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800&q=80",
+        tags: ["CSS", "Design"],
+        students: 2800,
+        lessons: [
+          { id: 'tw1', title: "Bases & Utilitaires" },
+        ]
+      },
+      {
+        id: 'nextjs',
+        name: "Next.js",
+        icon: <Globe />,
+        color: "text-white",
+        desc: "Le futur du React.",
+        longDesc: "SSR, SSG, et performances ultimes pour tes applications de production.",
+        code: "export default Page",
+        level: "Avancé",
+        image: "https://images.unsplash.com/photo-1629910260311-6733f52423bb?w=800&q=80",
+        tags: ["Framework", "Fullstack"],
+        students: 1540,
+        lessons: [
+          { id: 'nx1', title: "Routing & Layouts" },
         ]
       },
       {
         id: 'vue',
         name: "Vue.js",
         icon: <Layers />,
-        color: "text-emerald-400",
-        desc: "Progressif et performant.",
-        longDesc: "Une alternative élégante et facile à apprendre pour construire des interfaces modernes.",
-        code: "new Vue({ el: '#app' })",
+        color: "text-emerald-500",
+        desc: "Progressif et intuitif.",
+        longDesc: "Un framework accessible pour créer des interfaces web performantes.",
+        code: "<template>{{ msg }}</template>",
         level: "Débutant",
-        image: "https://images.unsplash.com/photo-1608306448197-e83633f1261c?w=800&q=80",
-        tags: ["Simplicité", "Frontend"],
-        students: 950,
-        lessons: [
-          { id: 'vue1', title: "Composition API", duration: "15 min" },
-          { id: 'vue2', title: "Vuex / Pinia", duration: "20 min" },
-          { id: 'vue3', title: "Vue Router", duration: "15 min" },
-        ]
-      },
-      {
-        id: 'svelte',
-        name: "Svelte",
-        icon: <Zap />,
-        color: "text-orange-600",
-        desc: "Zéro runtime, pur JS.",
-        longDesc: "Compile ton code en pur JavaScript efficace sans virtual DOM.",
-        code: "let count = 0;",
-        level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
-        tags: ["Performance", "Compilateur"],
-        students: 600,
-        lessons: [
-          { id: 'svelte1', title: "Réactivité & Stores", duration: "12 min" },
-          { id: 'svelte2', title: "Components & Props", duration: "15 min" },
-          { id: 'svelte3', title: "Animations Svelte", duration: "12 min" },
-        ]
-      },
-      {
-        id: 'markdown',
-        name: "Markdown",
-        icon: <FileCode />,
-        color: "text-gray-400",
-        desc: "Écrire pour le web.",
-        longDesc: "Le standard pour la documentation, les README et le contenu structuré ultra-léger.",
-        code: "# Titre\n**Gras**",
-        level: "Débutant",
-        image: "https://images.unsplash.com/photo-1585241936939-be05368a5bc3?w=800&q=80",
-        tags: ["Docs", "Rédaction"],
-        students: 1800,
-        lessons: [
-          { id: 'md1', title: "Syntaxe de base", duration: "10 min" },
-          { id: 'md2', title: "Tableaux & Listes", duration: "12 min" },
-        ]
-      }
-    ]
-  },
-  {
-    category: "📱 Mobile App",
-    items: [
-      {
-        id: 'swift',
-        name: "Swift",
-        icon: <Smartphone />,
-        color: "text-orange-400",
-        desc: "Apps iOS & macOS.",
-        longDesc: "Le langage puissant et intuitif d'Apple pour créer des applications natives fluides.",
-        code: "print('Hello Swift')",
-        level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1599658880436-125054692aa6?w=800&q=80",
-        tags: ["Apple", "iOS"],
-        students: 780,
-        lessons: [
-          { id: 'sw1', title: "SwiftUI Basics", duration: "20 min" },
-          { id: 'sw2', title: "Swift Concurrency", duration: "25 min" },
-          { id: 'sw3', title: "Core Data", duration: "30 min" },
-        ]
-      },
-      {
-        id: 'kotlin',
-        name: "Kotlin",
-        icon: <Smartphone />,
-        color: "text-purple-500",
-        desc: "Standard Android moderne.",
-        longDesc: "Le successeur de Java pour le développement Android, moderne, sûr et concis.",
-        code: "println('Hello Kotlin')",
-        level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=800&q=80",
-        tags: ["Android", "Google"],
-        students: 820,
-        lessons: [
-          { id: 'kt1', title: "Jetpack Compose", duration: "25 min" },
-          { id: 'kt2', title: "Coroutines", duration: "20 min" },
-          { id: 'kt3', title: "Ktor Client", duration: "25 min" },
-        ]
-      },
-      {
-        id: 'dart',
-        name: "Dart & Flutter",
-        icon: <Smartphone />,
-        color: "text-cyan-500",
-        desc: "Multiplateforme haute performance.",
-        longDesc: "Crée des apps iOS, Android, Web et Desktop avec une seule base de code.",
-        code: "void main() => print('Flutter');",
-        level: "Débutant",
-        image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&q=80",
-        tags: ["Cross-platform", "UI"],
+        image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+        tags: ["JS", "Frontend"],
         students: 1100,
         lessons: [
-          { id: 'dart1', title: "Widgets & State", duration: "18 min" },
-          { id: 'dart2', title: "Flutter Navigation", duration: "20 min" },
-          { id: 'dart3', title: "Provider / Riverpod", duration: "22 min" },
+          { id: 'vu1', title: "La Réactivité" },
+        ]
+      },
+      {
+        id: 'angular',
+        name: "Angular",
+        icon: <Layout />,
+        color: "text-red-600",
+        desc: "Le framework robuste.",
+        longDesc: "Développe des applications d'entreprise puissantes avec TypeScript et une structure solide.",
+        code: "@Component({})",
+        level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
+        tags: ["Enterprise", "Google"],
+        students: 900,
+        lessons: [
+          { id: 'ang1', title: "Modules & Services" },
         ]
       }
     ]
   },
   {
-    category: "🗄️ Backend & Performance",
+    category: "⚙️ Backend & Données",
     items: [
       {
-        id: 'node',
+        id: 'nodejs',
         name: "Node.js",
         icon: <Server />,
         color: "text-green-500",
         desc: "JS côté serveur.",
-        longDesc: "Gère des milliers de connexions simultanées avec l'event loop de Node.",
-        code: "const http = require('http');",
+        longDesc: "Construis des API rapides et scalables avec JavaScript partout.",
+        code: "http.createServer()",
         level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&q=80",
-        tags: ["Backend", "JavaScript"],
-        students: 1300,
+        image: "https://images.unsplash.com/photo-1522252234503-e356532cafd5?w=800&q=80",
+        tags: ["Runtime", "API"],
+        students: 2400,
         lessons: [
-          { id: 'node1', title: "Express API & Middleware", duration: "22 min" },
-          { id: 'node2', title: "Authentification JWT", duration: "25 min" },
-        ]
-      },
-      {
-        id: 'go',
-        name: "Golang",
-        icon: <Server />,
-        color: "text-blue-300",
-        desc: "Efficacité et simplicité.",
-        longDesc: "Développé par Google pour la performance système et les microservices.",
-        code: "package main\nfunc main() {}",
-        level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1649180556628-9ba704115795?w=800&q=80",
-        tags: ["Google", "Cloud"],
-        students: 670,
-        lessons: [
-          { id: 'go1', title: "Goroutines & Channels", duration: "20 min" },
-          { id: 'go2', title: "Interfaces & Structs", duration: "25 min" },
-        ]
-      },
-      {
-        id: 'rust',
-        name: "Rust",
-        icon: <Shield />,
-        color: "text-orange-700",
-        desc: "Sécurité mémoire.",
-        longDesc: "Performance du C++ sans les plantages mémoires. Devenu favori des développeurs.",
-        code: "fn main() { println!(\"Hi\"); }",
-        level: "Avancé",
-        image: "https://images.unsplash.com/photo-1549605658-29ea39485b04?w=800&q=80",
-        tags: ["Système", "Sûr"],
-        students: 520,
-        lessons: [
-          { id: 'rust1', title: "Ownership & Borrowing", duration: "30 min" },
-          { id: 'rust2', title: "Pattern Matching", duration: "25 min" },
-        ]
-      },
-      {
-        id: 'java',
-        name: "Java",
-        icon: <Coffee />,
-        color: "text-red-400",
-        desc: "Robuste et entreprise.",
-        longDesc: "Le standard de l'industrie pour les applications backend critiques.",
-        code: "public class Main { }",
-        level: "Avancé",
-        image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
-        tags: ["Entreprise", "Backend"],
-        students: 1800,
-        lessons: [
-          { id: 'java1', title: "POO & Interfaces", duration: "25 min" },
-          { id: 'java2', title: "Streams & Lambda", duration: "20 min" },
-        ]
-      },
-      {
-        id: 'php',
-        name: "PHP 8",
-        icon: <FileCode />,
-        color: "text-indigo-400",
-        desc: "Le moteur du web.",
-        longDesc: "Plus rapide et moderne que jamais. Idéal pour Laravel et WordPress.",
-        code: "<?php echo 'Hi'; ?>",
-        level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1599507593499-a3f7d7d97663?w=800&q=80",
-        tags: ["Web", "Laravel"],
-        students: 1400,
-        lessons: [{ id: 'php1', title: "Laravel Intro", duration: "20 min" }]
-      },
-      {
-        id: 'elixir',
-        name: "Elixir",
-        icon: <Sparkles />,
-        color: "text-purple-400",
-        desc: "Scalabilité distribuée.",
-        longDesc: "Basé sur la VM Erlang, parfait pour les systèmes temps réel et hautement disponibles.",
-        code: "def hello, do: :world",
-        level: "Avancé",
-        image: "https://images.unsplash.com/photo-1614624532983-4ce03382d63d?w=800&q=80",
-        tags: ["Fonctionnel", "Temps réel"],
-        students: 310,
-        lessons: [{ id: 'ex1', title: "Processus", duration: "25 min" }]
-      }
-    ]
-  },
-  {
-    category: "📊 Data & Cloud",
-    items: [
-      {
-        id: 'sql',
-        name: "SQL & Postgres",
-        icon: <Database />,
-        color: "text-blue-400",
-        desc: "Maîtrise des données.",
-        longDesc: "Apprends à requêter des bases de données relationnelles complexes.",
-        code: "SELECT * FROM users;",
-        level: "Débutant",
-        image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
-        tags: ["Bases de données", "Requêtes"],
-        students: 2200,
-        lessons: [
-          { id: 'sql1', title: "Requêtes JOIN & Unions", duration: "15 min" },
-          { id: 'sql2', title: "Sous-requêtes & Index", duration: "20 min" },
+          { id: 'nd1', title: "Système de fichiers" },
         ]
       },
       {
         id: 'mongodb',
         name: "MongoDB",
         icon: <Database />,
-        color: "text-green-600",
-        desc: "NoSQL flexible.",
-        longDesc: "Stocke tes données sous forme de documents JSON pour plus de scalabilité.",
-        code: "db.users.find()",
+        color: "text-emerald-600",
+        desc: "NoSQL moderne.",
+        longDesc: "Gère tes données sans schémas rigides de manière flexible et rapide.",
+        code: "db.collection.find()",
         level: "Débutant",
-        image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
-        tags: ["NoSQL", "JSON"],
-        students: 900,
+        image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
+        tags: ["NoSQL", "Document"],
+        students: 1600,
         lessons: [
-          { id: 'mongo1', title: "Documents & Schémas", duration: "12 min" },
-          { id: 'mongo2', title: "Indexation & Performance", duration: "15 min" },
+          { id: 'mg1', title: "CRUD Basics" },
         ]
       },
       {
-        id: 'r',
-        name: "R Lang",
-        icon: <Activity />,
-        color: "text-blue-800",
-        desc: "Statistiques & Data Science.",
-        longDesc: "Le standard pour l'analyse de données, les graphiques et les bio-statistiques.",
-        code: "summary(my_data)",
+        id: 'postgresql',
+        name: "PostgreSQL",
+        icon: <Database />,
+        color: "text-blue-600",
+        desc: "Puissance relationnelle.",
+        longDesc: "La base de données relationnelle la plus avancée au monde.",
+        code: "SELECT * FROM users",
         level: "Intermédiaire",
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
-        tags: ["Statistiques", "Data Science"],
-        students: 430,
-        lessons: [{ id: 'r1', title: "Dataframes", duration: "18 min" }]
+        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+        tags: ["SQL", "Relationnel"],
+        students: 1300,
+        lessons: [
+          { id: 'pg1', title: "Requêtes & Jointures" },
+        ]
+      },
+      {
+        id: 'graphql',
+        name: "GraphQL",
+        icon: <Zap />,
+        color: "text-pink-600",
+        desc: "API moderne.",
+        longDesc: "Demande exactement ce dont tu as besoin, rien de plus, rien de moins.",
+        code: "query { user { id } }",
+        level: "Avancé",
+        image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+        tags: ["API", "Meta"],
+        students: 850,
+        lessons: [
+          { id: 'gq1', title: "Schémas & Types" },
+        ]
+      }
+    ]
+  },
+  {
+    category: "📱 Mobile & Cloud",
+    items: [
+      {
+        id: 'reactnative',
+        name: "React Native",
+        icon: <Smartphone />,
+        color: "text-sky-400",
+        desc: "iOS & Android.",
+        longDesc: "Développe des applications mobiles natives avec React.",
+        code: "<View><Text /></View>",
+        level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80",
+        tags: ["Native", "Mobile"],
+        students: 1100,
+        lessons: [
+          { id: 'rn1', title: "Composants Natifs" },
+        ]
+      },
+      {
+        id: 'flutter',
+        name: "Flutter",
+        icon: <Smartphone />,
+        color: "text-blue-400",
+        desc: "UI magnifiques.",
+        longDesc: "Le framework de Google pour créer des apps compilées en un clin d'œil.",
+        code: "Widget build() {}",
+        level: "Débutant",
+        image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&q=80",
+        tags: ["Dart", "Google"],
+        students: 1200,
+        lessons: [
+          { id: 'fl1', title: "Widgets Basics" },
+        ]
+      },
+      {
+        id: 'aws',
+        name: "AWS",
+        icon: <Cloud />,
+        color: "text-orange-400",
+        desc: "Cloud Computing.",
+        longDesc: "Déploie tes applications sur l'infrastructure du leader mondial du cloud.",
+        code: "s3://bucket-name",
+        level: "Avancé",
+        image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
+        tags: ["Cloud", "DevOps"],
+        students: 750,
+        lessons: [
+          { id: 'aw1', title: "Services EC2 & S3" },
+        ]
+      },
+      {
+        id: 'cybersecurity',
+        name: "Cybersécurité",
+        icon: <Shield />,
+        color: "text-red-500",
+        desc: "Défendre le web.",
+        longDesc: "Apprends les bases de la protection des systèmes et la chasse aux vulnérabilités.",
+        code: "nmap -sV target",
+        level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+        tags: ["Sécurité", "Réseau"],
+        students: 950,
+        lessons: [
+          { id: 'cs1', title: "Menaces & Protections" },
+        ]
+      }
+    ]
+  },
+  {
+    category: "🚀 Machine Learning & IA",
+    items: [
+      {
+        id: 'pytorch',
+        name: "PyTorch",
+        icon: <Cpu />,
+        color: "text-orange-600",
+        desc: "Deep Learning.",
+        longDesc: "Le framework de recherche par excellence pour créer des réseaux de neurones.",
+        code: "torch.nn.Linear()",
+        level: "Avancé",
+        image: "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=800&q=80",
+        tags: ["IA", "Deep Learning"],
+        students: 650,
+        lessons: [
+          { id: 'pt1', title: "Tenseurs & Gradients" },
+        ]
+      },
+      {
+        id: 'tensorflow',
+        name: "TensorFlow",
+        icon: <Activity />,
+        color: "text-yellow-600",
+        desc: "IA en production.",
+        longDesc: "L'écosystème complet de Google pour l'IA, du mobile au serveur.",
+        code: "tf.keras.Sequential()",
+        level: "Avancé",
+        image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
+        tags: ["IA", "Google"],
+        students: 900,
+        lessons: [
+          { id: 'tf1', title: "Modèles de Base" },
+        ]
+      },
+      {
+        id: 'dataanalysis',
+        name: "Data Analysis",
+        icon: <Search />,
+        color: "text-blue-500",
+        desc: "Parler aux données.",
+        longDesc: "Maîtrise Pandas et NumPy pour transformer tes données brutes en informations précieuses.",
+        code: "df.describe()",
+        level: "Débutant",
+        image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+        tags: ["Pandas", "NumPy"],
+        students: 1400,
+        lessons: [
+          { id: 'da1', title: "Manipulation de DataFrames" },
+        ]
       },
       {
         id: 'julia',
         name: "Julia",
-        icon: <Activity />,
-        color: "text-purple-500",
-        desc: "Calcul scientifique ultra-rapide.",
-        longDesc: "Combine la facilité de Python et la rapidité du C pour la science des données.",
-        code: "f(x) = 2x + 1",
-        level: "Avancé",
-        image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&q=80",
-        tags: ["Maths", "Haute Performance"],
+        icon: <Zap />,
+        color: "text-purple-600",
+        desc: "Calcul scientifique.",
+        longDesc: "La rapidité du C avec la facilité de Python pour les sciences et les maths.",
+        code: "println(sqrt(2))",
+        level: "Intermédiaire",
+        image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&q=80",
+        tags: ["Maths", "Science"],
         students: 280,
-        lessons: [{ id: 'jl1', title: "Vectorisation", duration: "20 min" }]
+        lessons: [
+          { id: 'jl1', title: "Vectorisation" },
+        ]
       }
     ]
   },
@@ -536,7 +432,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
         tags: ["Collab", "Version Control"],
         students: 2500,
-        lessons: [{ id: 'git1', title: "Workflow", duration: "15 min" }]
+        lessons: [
+          { id: 'git1', title: "Workflow" },
+        ]
       },
       {
         id: 'bash',
@@ -550,7 +448,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
         tags: ["Terminal", "Automatisation"],
         students: 1500,
-        lessons: [{ id: 'bash1', title: "Scripts Basics", duration: "15 min" }]
+        lessons: [
+          { id: 'bash1', title: "Scripts Basics" },
+        ]
       },
       {
         id: 'docker',
@@ -564,7 +464,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800&q=80",
         tags: ["DevOps", "Containers"],
         students: 1100,
-        lessons: [{ id: 'docker1', title: "Images & Containers", duration: "20 min" }]
+        lessons: [
+          { id: 'docker1', title: "Images & Containers" },
+        ]
       },
       {
         id: 'json_yaml',
@@ -578,7 +480,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80",
         tags: ["Config", "API"],
         students: 1900,
-        lessons: [{ id: 'json1', title: "Structure & Schémas", duration: "10 min" }]
+        lessons: [
+          { id: 'json1', title: "Structure & Schémas" },
+        ]
       }
     ]
   },
@@ -597,7 +501,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
         tags: ["UI/UX", "Prototypage"],
         students: 1200,
-        lessons: [{ id: 'figma1', title: "Composants", duration: "20 min" }]
+        lessons: [
+          { id: 'figma1', title: "Composants" },
+        ]
       },
       {
         id: 'processing',
@@ -611,7 +517,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1509343256512-d77a5cb3791b?w=800&q=80",
         tags: ["Art", "Créatif"],
         students: 350,
-        lessons: [{ id: 'proc1', title: "Formes & Couleurs", duration: "15 min" }]
+        lessons: [
+          { id: 'proc1', title: "Formes & Couleurs" },
+        ]
       }
     ]
   },
@@ -630,7 +538,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=800&q=80",
         tags: ["JVM", "Mixte"],
         students: 420,
-        lessons: [{ id: 'sc1', title: "Immuabilité", duration: "25 min" }]
+        lessons: [
+          { id: 'sc1', title: "Immuabilité" },
+        ]
       },
       {
         id: 'haskell',
@@ -644,7 +554,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&q=80",
         tags: ["Maths", "Fonctionnel"],
         students: 150,
-        lessons: [{ id: 'hs1', title: "Monades", duration: "40 min" }]
+        lessons: [
+          { id: 'hs1', title: "Monades" },
+        ]
       },
       {
         id: 'lua',
@@ -658,7 +570,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?w=800&q=80",
         tags: ["Jeux", "Script"],
         students: 600,
-        lessons: [{ id: 'lua1', title: "Tables & Scripts", duration: "15 min" }]
+        lessons: [
+          { id: 'lua1', title: "Tables & Scripts" },
+        ]
       },
       {
         id: 'lisp',
@@ -672,7 +586,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1550439062-609e1531270e?w=800&q=80",
         tags: ["IA", "Historique"],
         students: 90,
-        lessons: [{ id: 'lisp1', title: "S-Expressions", duration: "35 min" }]
+        lessons: [
+          { id: 'lisp1', title: "S-Expressions" },
+        ]
       }
     ]
   },
@@ -691,7 +607,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&q=80",
         tags: ["Blockchain", "Web3"],
         students: 750,
-        lessons: [{ id: 'sol1', title: "Web3 Basics", duration: "25 min" }]
+        lessons: [
+          { id: 'sol1', title: "Web3 Basics" },
+        ]
       },
       {
         id: 'arduino',
@@ -705,7 +623,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1555412654-72a95a495858?w=800&q=80",
         tags: ["IoT", "Hardware"],
         students: 800,
-        lessons: [{ id: 'ard1', title: "Circuits & LED", duration: "20 min" }]
+        lessons: [
+          { id: 'ard1', title: "Circuits & LED" },
+        ]
       },
       {
         id: 'zig',
@@ -719,7 +639,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1592424002053-21f369ad7fdb?w=800&q=80",
         tags: ["Système", "Moderne"],
         students: 200,
-        lessons: [{ id: 'zig1', title: "Comptime", duration: "30 min" }]
+        lessons: [
+          { id: 'zig1', title: "Comptime" },
+        ]
       },
       {
         id: 'scratch',
@@ -733,7 +655,9 @@ export const coursesData = [
         image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&q=80",
         tags: ["Enfants", "Logique"],
         students: 5000,
-        lessons: [{ id: 'scratch1', title: "Logique par blocs", duration: "10 min" }]
+        lessons: [
+          { id: 'scratch1', title: "Logique par blocs" },
+        ]
       }
     ]
   }

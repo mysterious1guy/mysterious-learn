@@ -1,8 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2 } from 'lucide-react';
+import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2, Copy, Check } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
 import AnimatedAIAvatar from './AnimatedAIAvatar';
+
+const TerminalBlock = ({ code, lang }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="my-4 rounded-xl overflow-hidden border border-white/10 bg-[#0d1117] shadow-2xl group/term">
+            <div className="flex items-center justify-between px-4 py-2 bg-white/5 border-b border-white/5">
+                <div className="flex items-center gap-2">
+                    <div className="flex gap-1.5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
+                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+                    </div>
+                    <span className="ml-2 text-[10px] font-mono text-slate-500 uppercase tracking-widest">{lang || 'code'}</span>
+                </div>
+                <button
+                    onClick={handleCopy}
+                    className="p-1.5 hover:bg-white/10 rounded-md transition-colors text-slate-400 hover:text-white"
+                    title="Copier"
+                >
+                    {copied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
+                </button>
+            </div>
+            <div className="p-4 overflow-x-auto custom-scrollbar">
+                <pre className="font-mono text-xs text-blue-100 leading-relaxed">
+                    <code>{code}</code>
+                </pre>
+            </div>
+        </div>
+    );
+};
 
 const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const [messages, setMessages] = useState([
@@ -113,6 +150,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
             if (actionData.action === 'send_email') endpoint = '/admin/send-email';
             else if (actionData.action === 'send_notification') endpoint = '/admin/send-notification';
+            else if (actionData.action === 'add_knowledge') {
+                endpoint = '/ai/knowledge';
+                method = 'POST';
+                body = JSON.stringify(actionData.payload);
+            }
             else if (actionData.action === 'delete_user') {
                 endpoint = `/admin/users/${actionData.payload.userId}`;
                 method = 'DELETE';
@@ -154,76 +196,120 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const renderMessageContent = (msg, role) => {
         if (role === 'user') return <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{msg}</p>;
 
-        // Look for our specific JSON block
-        const jsonMatch = msg.match(/```json\s*(\{[\s\S]*?"type":\s*"admin_action"[\s\S]*?\})\s*```/);
+        const parts = [];
+        let lastIndex = 0;
 
-        if (jsonMatch) {
-            const preText = msg.substring(0, jsonMatch.index).trim();
-            const postText = msg.substring(jsonMatch.index + jsonMatch[0].length).trim();
-            let actionData = null;
+        // Regex to find Code blocks and JSON actions
+        const combinedRegex = /(```(?:json)?\s*[\s\S]*?```)/g;
+        let match;
 
-            try {
-                actionData = JSON.parse(jsonMatch[1]);
-            } catch (e) {
-                console.error("Failed to parse admin action JSON", e);
+        while ((match = combinedRegex.exec(msg)) !== null) {
+            // Add preceding text
+            if (match.index > lastIndex) {
+                parts.push({ type: 'text', content: msg.substring(lastIndex, match.index) });
             }
 
-            return (
-                <div className="space-y-3">
-                    {preText && <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{preText}</p>}
-
-                    {actionData && (
-                        <div className="bg-slate-950 border border-blue-500/30 rounded-xl p-4 my-2 shadow-inner">
-                            <div className="flex items-center gap-2 mb-3 text-blue-400">
-                                <Terminal size={14} />
-                                <span className="font-mono text-xs uppercase font-bold tracking-wider">Demande d'Action Admin</span>
-                            </div>
-
-                            <div className="text-xs text-slate-300 space-y-2 mb-4">
-                                {actionData.action === 'send_email' && (
-                                    <>
-                                        <p><span className="text-slate-500">Action:</span> Envoi d'Email Brut</p>
-                                        <p><span className="text-slate-500">Sujet:</span> {actionData.payload.subject}</p>
-                                    </>
-                                )}
-                                {actionData.action === 'send_notification' && (
-                                    <>
-                                        <p><span className="text-slate-500">Action:</span> Envoi de Notification</p>
-                                        <p><span className="text-slate-500">Titre:</span> {actionData.payload.title}</p>
-                                        <p><span className="text-slate-500">Message:</span> {actionData.payload.message}</p>
-                                    </>
-                                )}
-                                {actionData.action === 'delete_user' && (
-                                    <>
-                                        <p><span className="text-slate-500">Action:</span> ⚠️ SUPPRESSION UTILISATEUR</p>
-                                        <p><span className="text-slate-500">ID Cible:</span> {actionData.payload.userId}</p>
-                                        <p className="text-red-400 font-bold mt-2">Cette action est irréversible.</p>
-                                    </>
-                                )}
-                                {actionData.action === 'update_role' && (
-                                    <>
-                                        <p><span className="text-slate-500">Action:</span> MODIFICATION RÔLE</p>
-                                        <p><span className="text-slate-500">ID Cible:</span> {actionData.payload.userId}</p>
-                                        <p><span className="text-slate-500">Nouveau Rôle:</span> <span className="text-amber-400 font-bold uppercase">{actionData.payload.role}</span></p>
-                                    </>
-                                )}
-                            </div>
-
-                            <button
-                                onClick={() => executeAdminAction(actionData)}
-                                className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center gap-2"
-                            >
-                                <Send size={14} /> Confirmer & Exécuter
-                            </button>
-                        </div>
-                    )}
-
-                    {postText && <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{postText}</p>}
-                </div>
-            );
+            const rawBlock = match[0];
+            if (rawBlock.startsWith('```json') && rawBlock.includes('"type": "admin_action"')) {
+                parts.push({ type: 'action', content: rawBlock });
+            } else {
+                parts.push({ type: 'code', content: rawBlock });
+            }
+            lastIndex = combinedRegex.lastIndex;
         }
 
-        return <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{msg}</p>;
+        if (lastIndex < msg.length) {
+            parts.push({ type: 'text', content: msg.substring(lastIndex) });
+        }
+
+        return (
+            <div className="space-y-4">
+                {parts.map((part, pIdx) => {
+                    if (part.type === 'text') {
+                        // Simple Markdown-like parsing for text segments
+                        const lines = part.content.split('\n');
+                        return lines.map((line, lIdx) => {
+                            if (!line.trim()) return <div key={lIdx} className="h-2" />;
+
+                            // Check for list items
+                            const isListItem = line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*');
+
+                            // Check for bold text
+                            const boldParsed = line.split(/(\*\*.*?\*\*)/g).map((seg, sIdx) => {
+                                if (seg.startsWith('**') && seg.endsWith('**')) {
+                                    return <strong key={sIdx} className="text-blue-400 font-bold">{seg.slice(2, -2)}</strong>;
+                                }
+                                return seg;
+                            });
+
+                            return (
+                                <p key={lIdx} className={`text-sm font-medium leading-relaxed ${isListItem ? 'pl-4 relative' : ''}`} style={{ wordBreak: 'break-word' }}>
+                                    {isListItem && <span className="absolute left-0 text-blue-500">•</span>}
+                                    {boldParsed}
+                                </p>
+                            );
+                        });
+                    }
+
+                    if (part.type === 'code') {
+                        const codeMatch = part.content.match(/```(\w+)?\n?([\s\S]*?)```/);
+                        const lang = codeMatch?.[1] || '';
+                        const code = codeMatch?.[2]?.trim() || '';
+                        return <TerminalBlock key={pIdx} code={code} lang={lang} />;
+                    }
+
+                    if (part.type === 'action') {
+                        const jsonContent = part.content.match(/```json\s*(\{[\s\S]*?\})\s*```/)?.[1];
+                        let actionData = null;
+                        try {
+                            actionData = JSON.parse(jsonContent);
+                        } catch (e) { return null; }
+
+                        return (
+                            <div key={pIdx} className="bg-slate-950 border border-blue-500/30 rounded-xl p-4 my-2 shadow-inner">
+                                <div className="flex items-center gap-2 mb-3 text-blue-400">
+                                    <BrainCircuit size={14} />
+                                    <span className="font-mono text-[10px] uppercase font-black tracking-widest">
+                                        ACTION REQUISE : {actionData.action.replace('_', ' ')}
+                                    </span>
+                                </div>
+
+                                <div className="text-xs text-slate-300 space-y-2 mb-4">
+                                    {actionData.action === 'send_email' && (
+                                        <>
+                                            <p><span className="text-slate-500">Action:</span> Envoi d'Email</p>
+                                            <p><span className="text-slate-500">Sujet:</span> {actionData.payload.subject}</p>
+                                        </>
+                                    )}
+                                    {actionData.action === 'send_notification' && (
+                                        <>
+                                            <p><span className="text-slate-500">Action:</span> Notification In-App</p>
+                                            <p><span className="text-slate-500">Titre:</span> {actionData.payload.title}</p>
+                                        </>
+                                    )}
+                                    {actionData.action === 'add_knowledge' && (
+                                        <>
+                                            <p><span className="text-slate-500">Action:</span> MÉMORISATION</p>
+                                            <p><span className="text-slate-500">Sujet:</span> <span className="text-blue-400">{actionData.payload.title}</span></p>
+                                        </>
+                                    )}
+                                    {actionData.action === 'delete_user' && <p className="text-red-400">⚠️ SUPPRESSION : {actionData.payload.userId}</p>}
+                                    {actionData.action === 'update_role' && <p>Rôle → <span className="text-amber-400">{actionData.payload.role}</span></p>}
+                                </div>
+
+                                <button
+                                    onClick={() => executeAdminAction(actionData)}
+                                    className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                                >
+                                    <Send size={12} /> Confirmer l'Action
+                                </button>
+                            </div>
+                        );
+                    }
+                    return null;
+                })}
+            </div>
+        );
     };
 
     return (

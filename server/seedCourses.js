@@ -61,7 +61,6 @@ const coursesData = [
     description: "Apprenez les bases fondamentales de l'algorithmique avec des exemples concrets et des exercices pratiques.",
     category: "Théorie",
     level: "Débutant",
-    duration: "8h",
     image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
     rating: 4.8,
     students: 2341,
@@ -71,7 +70,7 @@ const coursesData = [
         title: "Introduction aux Algorithmes",
         description: "Découvrez ce qu'est un algorithme et pourquoi c'est fondamental en programmation",
         order: 1,
-        duration: "45min",
+        order: 1,
         content: "Un algorithme est une suite d'instructions précises qui résout un problème spécifique...",
         objectives: ["Comprendre la notion d'algorithme", "Reconnaître les algorithmes du quotidien"],
         exercises: [
@@ -87,7 +86,7 @@ const coursesData = [
         title: "Variables et Types de Données",
         description: "Apprenez à stocker et manipuler différentes sortes de données",
         order: 2,
-        duration: "60min",
+        order: 2,
         content: "Les variables sont comme des boîtes qui stockent des informations...",
         objectives: ["Déclarer des variables", "Comprendre les types de base"],
         exercises: [
@@ -107,7 +106,6 @@ const coursesData = [
     description: "Maîtrisez les fondamentaux du langage C, base de nombreux autres langages de programmation.",
     category: "Programmation",
     level: "Débutant",
-    duration: "12h",
     image: "https://images.unsplash.com/photo-1516116216624-98e6e351d85e?w=400",
     rating: 4.8,
     students: 1540,
@@ -117,7 +115,7 @@ const coursesData = [
         title: "Premiers Pas en C",
         description: "Installation et premier programme Hello World.",
         order: 1,
-        duration: "30min",
+        order: 1,
         content: "Le langage C a été créé dans les années 70. Il est le père de nombreux langages modernes...",
         objectives: ["Comprendre la compilation", "Écrire un Hello World"],
         exercises: [
@@ -131,13 +129,33 @@ const coursesData = [
       }
     ]
   },
+  {
+    id: "bash",
+    title: "Bash & Linux : Le Terminal",
+    description: "Maîtrisez la ligne de commande et devenez le maître de votre système Linux.",
+    category: "Système",
+    level: "Débutant",
+    image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
+    rating: 4.8,
+    students: 1540,
+    tags: ["Bash", "Linux", "Terminal", "CLI"],
+    chapters: [
+      {
+        title: "Bases du Terminal",
+        description: "Ouvrir et utiliser son premier shell.",
+        order: 1,
+        content: "Le terminal est l'endroit où vous donnez des ordres directs à l'ordinateur...",
+        objectives: ["Usage du CLI"],
+        exercises: []
+      }
+    ]
+  },
 
   {
     title: "Python Complet",
     description: "De zéro à expert : apprenez Python avec des projets pratiques et des concepts avancés",
     category: "Programmation",
     level: "Débutant",
-    duration: "15h",
     image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400",
     rating: 4.9,
     students: 3124,
@@ -147,7 +165,6 @@ const coursesData = [
         title: "Introduction à Python",
         description: "Découvrez pourquoi Python est le langage parfait pour débuter",
         order: 1,
-        duration: "40min",
         content: "Python a été créé par Guido van Rossum en 1991...",
         objectives: ["Installer Python", "Comprendre la syntaxe de base"],
         exercises: [
@@ -166,7 +183,6 @@ const coursesData = [
     description: "Apprenez JavaScript ES6+ et construisez des applications web interactives",
     category: "Web",
     level: "Intermédiaire",
-    duration: "10h",
     image: "https://images.unsplash.com/photo-1579468458835-cd73b7b7dfd5?w=400",
     rating: 4.8,
     students: 2567,
@@ -176,7 +192,6 @@ const coursesData = [
         title: "Fondamentaux JavaScript",
         description: "Maîtrisez les bases du langage qui fait vivre le web",
         order: 1,
-        duration: "50min",
         content: "JavaScript est le langage de programmation du web...",
         objectives: ["Comprendre la syntaxe JS", "Manipuler le DOM"],
         exercises: [
@@ -195,7 +210,6 @@ const coursesData = [
     description: "Construisez des applications web modernes avec React, Hooks et les meilleures pratiques",
     category: "Web",
     level: "Avancé",
-    duration: "20h",
     image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee5?w=400",
     rating: 4.9,
     students: 1432,
@@ -205,7 +219,6 @@ const coursesData = [
         title: "React et Composants",
         description: "Comprendre l'architecture basée sur les composants",
         order: 1,
-        duration: "60min",
         content: "React est une bibliothèque JavaScript pour créer des interfaces...",
         objectives: ["Créer des composants", "Comprendre le state et props"],
         exercises: [
@@ -224,7 +237,6 @@ const coursesData = [
     description: "Apprenez à concevoir et interroger des bases de données relationnelles avec SQL",
     category: "Data",
     level: "Intermédiaire",
-    duration: "14h",
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400",
     rating: 4.6,
     students: 1893,
@@ -234,7 +246,7 @@ const coursesData = [
         title: "Introduction aux Bases de Données",
         description: "Comprendre le modèle relationnel et les concepts fondamentaux",
         order: 1,
-        duration: "45min",
+        order: 1,
         content: "Une base de données est une collection organisée de données...",
         objectives: ["Comprendre le modèle relationnel", "Connaître les types de relations"],
         exercises: [

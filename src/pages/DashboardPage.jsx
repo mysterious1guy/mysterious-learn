@@ -204,12 +204,12 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                                 {category.items.map((course) => (
                                     <motion.div
                                         key={course.id}
-                                        whileHover={{ scale: 1.02, y: -5 }}
+                                        whileHover={{ scale: 1.01, y: -5 }}
                                         onClick={() => navigate(`/course/${course.id}`)}
-                                        className={`${category.items.length === 1 ? 'w-full max-w-2xl' : 'w-[280px] md:w-[350px]'} flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer group`}
+                                        className={`${category.items.length === 1 ? 'w-full max-w-5xl' : 'w-[300px] md:w-[400px]'} flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer group`}
                                     >
                                         {/* Image du cours */}
-                                        <div className={`${category.items.length === 1 ? 'h-64' : 'h-40'} relative overflow-hidden`}>
+                                        <div className={`${category.items.length === 1 ? 'h-80' : 'h-48'} relative overflow-hidden`}>
                                             <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
                                             <img
                                                 src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.id}`}
@@ -243,29 +243,27 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                                         </div>
 
                                         {/* Contenu */}
-                                        <div className="p-5">
-                                            <h3 className={`${category.items.length === 1 ? 'text-2xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
+                                        <div className={`p-6 md:p-8 ${category.items.length === 1 ? 'md:flex md:flex-col md:justify-center' : ''}`}>
+                                            <h3 className={`${category.items.length === 1 ? 'text-3xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
                                                 {course.name}
                                             </h3>
-                                            <p className={`${category.items.length === 1 ? 'text-sm' : 'text-xs'} text-slate-600 dark:text-gray-400 font-medium mb-5 line-clamp-2 min-h-[32px] leading-relaxed`}>
+                                            <p className={`${category.items.length === 1 ? 'text-base' : 'text-xs'} text-slate-600 dark:text-gray-400 font-medium mb-6 line-clamp-2 min-h-[40px] leading-relaxed`}>
                                                 {course.desc}
                                             </p>
 
-                                            {/* Métadonnées */}
-                                            <div className="flex items-center justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">
-                                                <div className="flex items-center gap-1.5">
-                                                    <Clock size={12} className="text-blue-500/50" />
-                                                    <span>{course.duration || '10h'}</span>
+                                            {/* Métadonnées - Admin Only */}
+                                            {user?.role === 'admin' && (
+                                                <div className="flex items-center justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Users size={12} className="text-purple-500/50" />
+                                                        <span>{courseStats[course.id] || 0}</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Star size={12} className="text-yellow-500 fill-yellow-500/20" />
+                                                        <span>{course.rating || '4.8'}</span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex items-center gap-1.5">
-                                                    <Users size={12} className="text-purple-500/50" />
-                                                    <span>{courseStats[course.id] || 0}</span>
-                                                </div>
-                                                <div className="flex items-center gap-1.5">
-                                                    <Star size={12} className="text-yellow-500 fill-yellow-500/20" />
-                                                    <span>{course.rating || '4.8'}</span>
-                                                </div>
-                                            </div>
+                                            )}
 
                                             {/* Barre de progression ou bouton */}
                                             {progressions[course.id] ? (

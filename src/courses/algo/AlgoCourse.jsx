@@ -6,7 +6,7 @@ import {
   Layers, AlertTriangle, Info, Check, X, RefreshCw,
   Maximize2, Minimize2, Save, Trophy, Lock, FileText,
   HelpCircle, Lightbulb, Award, Star, Target, GitBranch,
-  TrendingUp, Clock, Filter, Search, Repeat, Zap, Sparkles
+  TrendingUp, Filter, Search, Repeat, Zap, Sparkles
 } from 'lucide-react';
 
 import CourseClassroom from '../../components/CourseClassroom';
@@ -463,7 +463,7 @@ const AlgoCourse = ({ onClose, user, API_URL, fetchProgressions }) => {
 
       {/* Scrollable Area - TIMELINE VERTICALE */}
       <div className="flex-1 relative overflow-y-auto overflow-x-hidden touch-pan-y px-4 py-12 custom-scrollbar flex flex-col items-center">
-        <div className="w-full max-w-4xl relative">
+        <div className="w-full max-w-5xl relative">
 
           {/* Ligne Centrale Globale */}
           <div className="absolute left-[39px] md:left-1/2 top-0 bottom-0 w-1 bg-slate-200 -translate-x-1/2 z-0" />
@@ -504,9 +504,9 @@ const AlgoCourse = ({ onClose, user, API_URL, fetchProgressions }) => {
                       className={`flex items-center w-full relative ${alignLeft ? 'md:flex-row' : 'md:flex-row-reverse'} flex-row`}
                     >
                       {/* Ligne Connectrice Horizontale (Desktop uniquement) */}
-                      <div className={`hidden md:block absolute top-1/2 w-[calc(50%-4rem)] h-1 -translate-y-1/2 -z-10
+                      <div className={`hidden md:block absolute top-1/2 w-[calc(50%-5rem)] h-1 -translate-y-1/2 -z-10
                                ${isCompleted ? 'bg-green-500' : isUnlocked ? 'bg-blue-300' : 'bg-slate-200'}
-                               ${alignLeft ? 'left-16' : 'right-16'}
+                               ${alignLeft ? 'left-20' : 'right-20'}
                            `} />
 
                       {/* Composant Centré (Icone) */}
@@ -535,14 +535,14 @@ const AlgoCourse = ({ onClose, user, API_URL, fetchProgressions }) => {
 
                       {/* Carte de Contenu */}
                       <div className={`
-                              w-full md:w-[calc(50%-4rem)] pl-24 md:pl-0 
-                              ${alignLeft ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'}
+                              w-full md:w-1/2 pl-20 md:pl-0 
+                              ${alignLeft ? 'md:pr-16 md:text-right' : 'md:pl-16 md:text-left'}
                            `}>
                         <div
                           onClick={() => openNode(globalNode)}
                           className={`
-                                  relative z-10 p-4 md:p-5 rounded-2xl cursor-pointer transition-all border
-                                  hover:-translate-y-1 hover:shadow-xl
+                                  relative z-10 p-5 md:p-6 rounded-[2rem] cursor-pointer transition-all border
+                                  hover:-translate-y-2 hover:shadow-2xl hover:border-blue-400
                                   ${isCompleted ? 'bg-green-50 border-green-200 hover:border-green-400 shadow-sm'
                               : isUnlocked ? 'bg-white border-blue-200 hover:border-blue-400 shadow-[0_10px_20px_rgba(59,130,246,0.05)]'
                                 : 'bg-slate-50 border-slate-200 hover:border-slate-300 shadow-sm'}
@@ -556,7 +556,6 @@ const AlgoCourse = ({ onClose, user, API_URL, fetchProgressions }) => {
                                     `}>
                               {lessonObj.type === 'theory' ? 'Théorie' : lessonObj.type === 'quiz' ? 'Quiz' : 'Pratique'}
                             </span>
-                            <span className="text-[10px] text-slate-500 font-mono font-bold">{lessonObj.duration}</span>
                           </div>
                           <h4 className={`text-base md:text-lg font-bold ${isCompleted ? 'text-green-800' : 'text-slate-800'}`}>
                             {lessonObj.title}
