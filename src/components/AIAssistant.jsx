@@ -104,7 +104,7 @@ const AIAssistant = ({ user, currentView, courseId, API_URL }) => {
                 API_URL={API_URL}
             />
 
-            {/* Theater Mode Overlay (Fullscreen popups from Professor) */}
+            {/* Theater Mode Overlay (Fullscreen popups from Assistant) */}
             <AnimatePresence>
                 {theaterContent && (
                     <motion.div

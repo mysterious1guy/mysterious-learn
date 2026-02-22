@@ -1,6 +1,7 @@
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useSound } from '../context/SoundContext';
+import AnimatedAIAvatar from '../components/AnimatedAIAvatar';
 
 const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
     const [step, setStep] = useState(1);
@@ -342,23 +343,19 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                     <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-pulse blur-2xl"></div>
                                     <div className="relative w-full h-full bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-blue-500/30 rounded-[2.5rem] flex items-center justify-center shadow-xl dark:shadow-[0_0_50px_rgba(59,130,246,0.2)] overflow-hidden transition-colors duration-500">
                                         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
-                                        <div className="flex flex-col items-center gap-2">
-                                            <div className="relative">
-                                                <Cpu className="w-16 h-16 text-blue-500 dark:text-blue-400 animate-pulse" />
-                                                <Zap className="w-6 h-6 text-yellow-500 absolute -top-1 -right-1 animate-bounce" />
-                                            </div>
-                                            <div className="h-1 w-12 bg-blue-500/20 rounded-full"></div>
+                                        <div className="w-24 h-24">
+                                            <AnimatedAIAvatar isTyping={true} />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                    <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight">Rencontre le Professeur Mysterious</h2>
+                                    <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase tracking-tight text-center">Ton Mysterious Assistant</h2>
                                     <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-800/50 inline-block text-left text-sm text-slate-600 dark:text-slate-300 space-y-3 max-w-lg shadow-sm">
                                         <p>Salutations <span className="text-blue-600 dark:text-blue-400 font-bold">{formData.firstName || 'Aventurier'}</span> ! 🎓</p>
-                                        <p>Je suis le <strong>Professeur Mysterious</strong>, ton mentor sur cette plateforme conçue par <strong>Mouhamed Fall</strong>.</p>
-                                        <p>Mon rôle est de t'enseigner les secrets du code et de t'accompagner à chaque étape. Si tu as un doute ou si tu veux approfondir un sujet, je suis là pour toi.</p>
-                                        <p className="text-slate-400 dark:text-slate-500 italic font-medium">Prêt à commencer ton apprentissage avec moi ?</p>
+                                        <p>Je suis ton <strong>Mysterious Assistant</strong>, ton copilote sur cette plateforme conçue par <strong>Mouhamed Fall</strong>.</p>
+                                        <p>Mon rôle est de t'accompagner, de répondre à tes questions et de t'aider à percer les mystères du code à chaque étape.</p>
+                                        <p className="text-slate-400 dark:text-slate-500 italic font-medium">Prêt à commencer l'aventure avec moi ?</p>
                                     </div>
                                 </div>
                             </motion.div>

@@ -111,7 +111,7 @@ const TheoryViewer = ({ title, content, onComplete }) => {
                 <div className="w-3 h-3 rounded-full bg-yellow-400" />
                 <div className="w-3 h-3 rounded-full bg-green-400" />
               </div>
-              <span className="text-[10px] font-black font-mono text-slate-400 uppercase tracking-[0.2em] ml-3">Terminal Professeur</span>
+              <span className="text-[10px] font-black font-mono text-slate-400 uppercase tracking-[0.2em] ml-3">Terminal Assistant</span>
             </div>
             <div className="font-mono text-sm md:text-base text-blue-700 bg-white px-4 md:px-8 py-4 md:py-6 rounded-b-[2rem] border border-slate-200 border-t-0 shadow-lg shadow-blue-500/5 group-hover:shadow-blue-500/10 transition-all overflow-x-auto max-w-full">
               {line}

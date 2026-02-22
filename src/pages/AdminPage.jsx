@@ -1148,7 +1148,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                           value={config.aiTemperature * 100}
                           onChange={(e) => setConfig({ ...config, aiTemperature: e.target.value / 100 })}
                         />
-                        <p className="text-[9px] text-slate-400 dark:text-white/30 italic">Une valeur plus haute rend le Professeur plus imprévisible mais plus "humain".</p>
+                        <p className="text-[9px] text-slate-400 dark:text-white/30 italic">Une valeur plus haute rend l'Assistant plus imprévisible mais plus "humain".</p>
                       </div>
 
                       <div
