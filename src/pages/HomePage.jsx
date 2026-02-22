@@ -15,99 +15,6 @@ const HomePage = ({ API_URL }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [config, setConfig] = useState(null);
 
-    // Advanced Canvas Background Component
-    const InteractiveBackground = () => {
-        const canvasRef = useEffect(() => {
-            const canvas = document.getElementById('bg-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            let animationFrameId;
-            let particles = [];
-            let w, h;
-
-            const resize = () => {
-                w = canvas.width = window.innerWidth;
-                h = canvas.height = window.innerHeight;
-            };
-
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * w;
-                    this.y = Math.random() * h;
-                    this.vx = (Math.random() - 0.5) * 0.5;
-                    this.vy = (Math.random() - 0.5) * 0.5;
-                    this.radius = Math.random() * 1.5 + 0.5;
-                }
-
-                update(mouseX, mouseY) {
-                    this.x += this.vx;
-                    this.y += this.vy;
-
-                    if (this.x < 0 || this.x > w) this.vx *= -1;
-                    if (this.y < 0 || this.y > h) this.vy *= -1;
-
-                    // Mouse interaction
-                    const dx = (mouseX || 0) * 10 - (this.x - w / 2) / 10;
-                    const dy = (mouseY || 0) * 10 - (this.y - h / 2) / 10;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 150) {
-                        this.x += dx * 0.01;
-                        this.y += dy * 0.01;
-                    }
-                }
-
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
-                    ctx.fill();
-                }
-            }
-
-            const init = () => {
-                resize();
-                particles = Array.from({ length: 80 }, () => new Particle());
-            };
-
-            const animate = () => {
-                ctx.clearRect(0, 0, w, h);
-
-                // Draw connections
-                ctx.beginPath();
-                ctx.strokeStyle = 'rgba(59, 130, 246, 0.05)';
-                ctx.lineWidth = 0.5;
-                for (let i = 0; i < particles.length; i++) {
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < 120) {
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                        }
-                    }
-                }
-                ctx.stroke();
-
-                particles.forEach(p => {
-                    p.update(mousePosition.x, mousePosition.y);
-                    p.draw();
-                });
-                animationFrameId = requestAnimationFrame(animate);
-            };
-
-            window.addEventListener('resize', resize);
-            init();
-            animate();
-
-            return () => {
-                window.removeEventListener('resize', resize);
-                cancelAnimationFrame(animationFrameId);
-            };
-        }, [mousePosition]);
-
-        return <canvas id="bg-canvas" className="absolute inset-0 pointer-events-none -z-10 opacity-60" />;
-    };
 
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -173,7 +80,6 @@ const HomePage = ({ API_URL }) => {
     return (
         <div className="min-h-screen bg-slate-950 font-sans selection:bg-blue-500/30">
             {/* Background elements */}
-            <InteractiveBackground />
 
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-4 md:px-6 overflow-hidden">

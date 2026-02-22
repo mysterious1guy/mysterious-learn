@@ -8,37 +8,45 @@ class Particle {
     this.y = Math.random() * canvas.height;
     this.baseSize = Math.random() * 2.5 + 0.5;
     this.size = this.baseSize;
-    this.speedX = (Math.random() - 0.5) * 0.3;
-    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.speedX = (Math.random() - 0.5) * 0.4;
+    this.speedY = (Math.random() - 0.5) * 0.4;
+    this.vx = this.speedX;
+    this.vy = this.speedY;
     this.pulseSpeed = Math.random() * 0.02 + 0.01;
     this.pulseOffset = Math.random() * Math.PI * 2;
     this.opacity = Math.random() * 0.4 + 0.1;
+    this.friction = 0.95;
     this.hue = theme === 'dark'
       ? 210 + Math.random() * 40  // Blue-purple range
       : 0;
   }
-  update(time, mouseX, mouseY) {
-    // Mouse repulsion
+  update(time, mouseX, mouseY, isClicking) {
+    // Mouse interaction
     const dx = this.x - mouseX;
     const dy = this.y - mouseY;
     const dist = Math.sqrt(dx * dx + dy * dy);
+
     if (dist < 150) {
       const force = (150 - dist) / 150;
-      this.x += (dx / dist) * force * 2;
-      this.y += (dy / dist) * force * 2;
+      const multiplier = isClicking ? 15 : 2;
+      this.vx += (dx / dist) * force * multiplier;
+      this.vy += (dy / dist) * force * multiplier;
     }
 
-    this.x += this.speedX;
-    this.y += this.speedY;
+    this.vx *= this.friction;
+    this.vy *= this.friction;
+
+    this.x += this.vx + this.speedX;
+    this.y += this.vy + this.speedY;
 
     // Pulsing size
     this.size = this.baseSize + Math.sin(time * this.pulseSpeed + this.pulseOffset) * 0.5;
 
     // Wrap around
-    if (this.x > this.canvas.width + 10) this.x = -10;
-    if (this.x < -10) this.x = this.canvas.width + 10;
-    if (this.y > this.canvas.height + 10) this.y = -10;
-    if (this.y < -10) this.y = this.canvas.height + 10;
+    if (this.x > this.canvas.width + 50) this.x = -50;
+    if (this.x < -50) this.x = this.canvas.width + 50;
+    if (this.y > this.canvas.height + 50) this.y = -50;
+    if (this.y < -50) this.y = this.canvas.height + 50;
   }
   draw(time, theme) {
     const pulsedOpacity = this.opacity + Math.sin(time * 0.003 + this.pulseOffset) * 0.1;
@@ -63,6 +71,7 @@ const Particles = ({ theme }) => {
     let particlesList = [];
     let mouseX = -1000;
     let mouseY = -1000;
+    let isClicking = false;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -71,14 +80,19 @@ const Particles = ({ theme }) => {
     window.addEventListener('resize', resize);
     resize();
 
-    // Mouse interaction
+    // Interaction listeners
     const handleMouseMove = (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
     };
-    window.addEventListener('mousemove', handleMouseMove);
+    const handleMouseDown = () => isClicking = true;
+    const handleMouseUp = () => isClicking = false;
 
-    const PARTICLE_COUNT = 120;
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    const PARTICLE_COUNT = Math.min(120, Math.floor((window.innerWidth * window.innerHeight) / 10000));
     const CONNECTION_DISTANCE = 120;
 
     const initParticles = () => {
@@ -94,7 +108,7 @@ const Particles = ({ theme }) => {
       time++;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw connections (constellation effect)
+      // Draw connections
       for (let i = 0; i < particlesList.length; i++) {
         for (let j = i + 1; j < particlesList.length; j++) {
           const dx = particlesList[i].x - particlesList[j].x;
@@ -117,18 +131,9 @@ const Particles = ({ theme }) => {
 
       // Draw and update particles
       particlesList.forEach(p => {
-        p.update(time, mouseX, mouseY);
+        p.update(time, mouseX, mouseY, isClicking);
         p.draw(time, theme);
       });
-
-      // Draw mouse attraction zone (subtle glow)
-      if (mouseX > 0 && mouseY > 0) {
-        const gradient = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 100);
-        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.03)');
-        gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(mouseX - 100, mouseY - 100, 200, 200);
-      }
 
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -137,6 +142,8 @@ const Particles = ({ theme }) => {
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
       cancelAnimationFrame(animationFrameId);
     };
   }, [theme]);
