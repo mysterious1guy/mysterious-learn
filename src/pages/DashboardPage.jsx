@@ -1,13 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { coursesData } from '../courses/data.jsx';
-import { ChevronRight, Star, Clock, Users, Lock } from 'lucide-react';
-import { useEffect } from 'react';
+import { ChevronRight, Star, Clock, Users, Lock, BookOpen } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
 
 const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions, API_URL, setToast, searchQuery = '' }) => {
     const navigate = useNavigate();
+    const [courses, setCourses] = useState([]);
     const [courseStats, setCourseStats] = useState({});
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [selectedLockedCourse, setSelectedLockedCourse] = useState(null);
@@ -15,21 +14,25 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
 
     const isCourseUnlocked = (item) => {
         if (!item || item.level === 'Débutant') return true;
-        if (user?.unlockedCourses?.includes(item.id)) return true;
+        const itemId = item._id || item.id;
+        if (user?.unlockedCourses?.includes(itemId)) return true;
 
         let targetLevelToCheck = '';
         if (item.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
         if (item.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
 
-        for (const cat of coursesData) {
-            if (cat.items.some(i => i.id === item.id)) {
-                const reqCourse = cat.items.find(i => i.level === targetLevelToCheck);
-                if (reqCourse) {
-                    const reqProgress = progressions?.[reqCourse.id]?.progress || 0;
-                    return reqProgress >= 100;
-                }
-            }
+        // Extract the base subject name (e.g. "Algorithmique" from "Algorithmique - Niveau Intermédiaire")
+        const subjectName = item.title.split(' - ')[0];
+
+        // Find the prerequisite course in the SAME subject
+        const reqCourse = courses.find(c => c.level === targetLevelToCheck && c.title.split(' - ')[0] === subjectName);
+
+        if (reqCourse) {
+            const reqId = reqCourse._id || reqCourse.id;
+            const reqProgress = progressions?.[reqId]?.progress || 0;
+            return reqProgress >= 100;
         }
+
         return false;
     };
 
@@ -42,7 +45,7 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                     Authorization: `Bearer ${user.token}`
                 },
                 body: JSON.stringify({
-                    unlockedCourses: [...(user.unlockedCourses || []), courseToUnlock.id]
+                    unlockedCourses: [...(user.unlockedCourses || []), courseToUnlock._id || courseToUnlock.id]
                 })
             });
             if (res.ok) {
@@ -68,6 +71,19 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
     }, []);
 
     useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await fetch(`${API_URL}/courses`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setCourses(data);
+                }
+            } catch (err) {
+                console.error('Erreur fetch cours:', err);
+            }
+        };
+        fetchCourses();
+
         const fetchStats = async () => {
             try {
                 const res = await fetch(`${API_URL}/courses/stats`);
@@ -83,12 +99,12 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
 
         const timer = setTimeout(() => {
             const completedCount = Object.values(progressions).filter(p => p.progress === 100).length;
-            let text = `Bon retour, ${user?.firstName}. Prêt à continuer ton apprentissage de l'algorithmique ?`;
+            let text = `Bon retour, ${user?.firstName}. Prêt à continuer ton apprentissage intensif ?`;
 
             if (completedCount > 0) {
-                text = `Bravo pour tes ${completedCount} leçons terminées ! Tu progresses bien en logique.`;
+                text = `Bravo pour tes ${completedCount} leçons terminées ! L'expertise approche.`;
             } else if (Object.keys(progressions).length > 0) {
-                text = "Tu as commencé ton parcours. Continue comme ça pour maîtriser les bases.";
+                text = "Tu as commencé ton parcours. Reste concentré pour maîtriser ces fondations.";
             }
 
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
@@ -99,11 +115,30 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
         return () => clearTimeout(timer);
     }, [API_URL, progressions, user]);
 
-    const filteredCourses = coursesData.map(category => ({
+    // Regrouper les cours dynamiques par niveau
+    const categoriesMap = {
+        'Débutant': { id: 'deb', category: 'Niveau Débutant', items: [] },
+        'Intermédiaire': { id: 'int', category: 'Niveau Intermédiaire', items: [] },
+        'Avancé': { id: 'adv', category: 'Niveau Avancé', items: [] }
+    };
+
+    courses.forEach(course => {
+        const matchingLevel = course.level || 'Débutant';
+        if (categoriesMap[matchingLevel]) {
+            categoriesMap[matchingLevel].items.push(course);
+        } else {
+            if (!categoriesMap['Autres']) categoriesMap['Autres'] = { id: 'other', category: 'Spécialisations', items: [] };
+            categoriesMap['Autres'].items.push(course);
+        }
+    });
+
+    const groupedCourses = Object.values(categoriesMap).filter(cat => cat.items.length > 0);
+
+    const filteredCourses = groupedCourses.map(category => ({
         ...category,
         items: category.items.filter(course =>
-            course.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            course.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (course.title && course.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
             (course.tags && course.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
         )
     })).filter(category => category.items.length > 0);
@@ -119,11 +154,7 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
             .map(([id]) => id);
 
         const inProgressCourses = inProgressCoursesIds.map(id => {
-            for (const cat of coursesData) {
-                const c = cat.items.find(item => item.id === id);
-                if (c) return c;
-            }
-            return null;
+            return courses.find(c => (c._id === id || c.id === id));
         }).filter(Boolean);
 
         if (inProgressCourses.length > 0) {
@@ -138,11 +169,7 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
     // 2. Favoris
     if (favorites && favorites.length > 0) {
         const favoriteCourses = favorites.map(id => {
-            for (const cat of coursesData) {
-                const c = cat.items.find(item => item.id === id);
-                if (c) return c;
-            }
-            return null;
+            return courses.find(c => (c._id === id || c.id === id));
         }).filter(Boolean);
 
         if (favoriteCourses.length > 0) {
@@ -262,7 +289,7 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                             whileHover={unlocked ? { scale: 1.01, y: -5 } : { scale: 1 }}
                                             onClick={() => {
                                                 if (unlocked) {
-                                                    navigate(`/course/${course.id}`);
+                                                    navigate(`/course/${course._id || course.id}`);
                                                 }
                                             }}
                                             className={`${category.items.length === 1 ? 'w-full max-w-5xl' : 'w-[300px] md:w-[400px]'} flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl transition-all group relative ${unlocked ? 'hover:shadow-blue-500/10 cursor-pointer' : 'cursor-default grayscale'}`}
@@ -287,8 +314,8 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                             <div className={`${category.items.length === 1 ? 'h-80' : 'h-48'} relative overflow-hidden`}>
                                                 <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
                                                 <img
-                                                    src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.id}`}
-                                                    alt={course.name}
+                                                    src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course._id || course.id}`}
+                                                    alt={course.title || course.name}
                                                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100"
                                                     onError={(e) => {
                                                         e.target.src = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'; // Fallback image
@@ -320,10 +347,10 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                             {/* Contenu */}
                                             <div className={`p-6 md:p-8 ${category.items.length === 1 ? 'md:flex md:flex-col md:justify-center' : ''}`}>
                                                 <h3 className={`${category.items.length === 1 ? 'text-3xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
-                                                    {course.name}
+                                                    {course.title || course.name}
                                                 </h3>
                                                 <p className={`${category.items.length === 1 ? 'text-base' : 'text-xs'} text-slate-600 dark:text-gray-400 font-medium mb-6 line-clamp-2 min-h-[40px] leading-relaxed`}>
-                                                    {course.desc}
+                                                    {course.description || course.desc}
                                                 </p>
 
                                                 {/* Métadonnées - Admin Only */}
@@ -341,16 +368,16 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                                 )}
 
                                                 {/* Barre de progression ou bouton */}
-                                                {progressions[course.id] ? (
+                                                {progressions[course._id || course.id] ? (
                                                     <div className="space-y-2 pt-2">
                                                         <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-blue-400">
                                                             <span>Progression</span>
-                                                            <span>{progressions[course.id].progress}%</span>
+                                                            <span>{progressions[course._id || course.id].progress}%</span>
                                                         </div>
                                                         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
                                                             <div
                                                                 className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
-                                                                style={{ width: `${progressions[course.id].progress}%` }}
+                                                                style={{ width: `${progressions[course._id || course.id].progress}%` }}
                                                             />
                                                         </div>
                                                     </div>

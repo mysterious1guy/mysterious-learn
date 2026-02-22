@@ -9,7 +9,8 @@ const {
   getVerificationEmail,
   getPasswordResetEmail,
   getEmailChangeEmail,
-  getAccountDeletionEmail
+  getAccountDeletionEmail,
+  getAdminNotificationEmail
 } = require('../utils/emailTemplates');
 
 // Initialisation du client Google
@@ -145,6 +146,16 @@ const verifyEmail = async (req, res) => {
     // 5. Envoi du mail de félicitations (Bienvenue)
     sendWelcomeEmail(newUser.email, newUser.firstName).catch(err => {
       console.error('❌ Échec envoi mail de bienvenue:', err);
+    });
+
+    // 6. Notification à l'administrateur
+    const adminHtml = getAdminNotificationEmail(newUser.name, newUser.email);
+    sendEmail({
+      to: 'mouhamedfall@esp.sn',
+      subject: 'Nouveau membre sur Mysterious Classroom',
+      html: adminHtml
+    }).catch(err => {
+      console.error('❌ Échec envoi notification admin:', err);
     });
 
     res.json({
@@ -407,6 +418,16 @@ const googleCallback = async (req, res) => {
       // 5. Envoi du mail de félicitations (Bienvenue) pour les nouveaux inscrits Google
       sendWelcomeEmail(user.email, user.firstName).catch(err => {
         console.error('❌ Échec envoi mail de bienvenue (Google Auth):', err);
+      });
+
+      // 6. Notification à l'administrateur
+      const adminHtml = getAdminNotificationEmail(user.name, user.email);
+      sendEmail({
+        to: 'mouhamedfall@esp.sn',
+        subject: 'Nouveau membre sur Mysterious Classroom (Google)',
+        html: adminHtml
+      }).catch(err => {
+        console.error('❌ Échec envoi notification admin:', err);
       });
     }
 

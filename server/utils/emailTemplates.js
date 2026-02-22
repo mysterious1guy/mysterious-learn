@@ -216,11 +216,40 @@ const getAccountDeletionEmail = (name) => `
 </div>
 `;
 
+/**
+ * Template Notification Administrateur (Nouvel Inscrit)
+ */
+const getAdminNotificationEmail = (newUserName, newUserEmail) => `
+<div style="${baseStyles}">
+  <div style="${headerStyles}">
+    <div style="margin-bottom: 25px;">
+      <div style="width: 70px; height: 70px; margin: 0 auto; background: linear-gradient(135deg, #10b981, #059669); border-radius: 20px; display: flex; align-items: center; justify-content: center; transform: rotate(5deg);">
+           <span style="font-size: 35px;">👤</span>
+      </div>
+    </div>
+    <h1 style="margin: 0; font-size: 24px; color: #ffffff;">NOUVEL INSCRIT</h1>
+  </div>
+  <div style="${bodyStyles}">
+    <h2 style="color: #ffffff;">Un nouvel étudiant a rejoint Mysterious Classroom</h2>
+    <p style="color: #cbd5e1; font-size: 16px;">Voici les informations du nouveau membre :</p>
+    
+    <div style="background: rgba(30, 41, 59, 0.5); border-radius: 20px; padding: 25px; margin: 30px 0; border: 1px solid #1e293b;">
+       <p style="color: #cbd5e1; font-size: 15px; margin-bottom: 10px;"><strong>Nom :</strong> ${newUserName}</p>
+       <p style="color: #cbd5e1; font-size: 15px; margin-bottom: 0;"><strong>Email :</strong> ${newUserEmail}</p>
+    </div>
+  </div>
+  <div style="${footerStyles}">
+    <p>Système de Notification Automatique - Mysterious Classroom</p>
+  </div>
+</div>
+`;
+
 module.exports = {
   getVerificationEmail,
   getWelcomeEmail,
   getEmailChangeEmail,
   getPasswordResetEmail,
   getMarketingEmail,
-  getAccountDeletionEmail
+  getAccountDeletionEmail,
+  getAdminNotificationEmail
 };
