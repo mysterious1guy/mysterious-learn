@@ -329,18 +329,47 @@ ${usersListText}`;
             }
         }
 
-        // Nettoyage des publicités injectées par Pollinations.ai
+        // Nettoyage des publicités injectées par Pollinations.ai (Plus agressif)
         if (typeof finalResponse === 'string') {
+            // Liste de marqueurs textuels
             const adMarkers = [
-                '--- **Support Pollinations.AI:** ---',
-                '**Ad** 🌸 Powered by Pollinations.AI',
-                '**Ad** Powered by Pollinations.AI'
+                'Support Pollinations.AI',
+                'Powered by Pollinations.AI',
+                '🌸 Ad 🌸',
+                '--- **Support',
+                '--- Support'
             ];
 
+            // 1. Recherche via index simple pour les marqueurs connus
+            let earliestIndex = -1;
             for (const marker of adMarkers) {
-                const adIndex = finalResponse.indexOf(marker);
-                if (adIndex !== -1) {
-                    finalResponse = finalResponse.substring(0, adIndex).trim();
+                const index = finalResponse.toLowerCase().indexOf(marker.toLowerCase());
+                if (index !== -1 && (earliestIndex === -1 || index < earliestIndex)) {
+                    earliestIndex = index;
+                }
+            }
+
+            // 2. Recherche via Regex pour les motifs complexes (ex: avec des puces • ou des séparateurs)
+            // On cherche n'importe quelle ligne contenant "Support Pollinations.AI" ou "Powered by Pollinations.AI"
+            const adRegex = /(?:\n|^).*?(?:Support Pollinations\.AI|Powered by Pollinations\.AI|🌸 Ad 🌸).*$/im;
+            const regexMatch = finalResponse.match(adRegex);
+
+            if (regexMatch) {
+                const regexIndex = regexMatch.index;
+                if (earliestIndex === -1 || regexIndex < earliestIndex) {
+                    earliestIndex = regexIndex;
+                }
+            }
+
+            // Si on a trouvé un marqueur, on coupe tout ce qui suit (et on nettoie la fin)
+            if (earliestIndex !== -1) {
+                // On essaie de remonter un peu si le marqueur est précédé par une ligne de séparation "---"
+                const beforeAd = finalResponse.substring(0, earliestIndex);
+                const lastSeparator = beforeAd.lastIndexOf('---');
+                if (lastSeparator !== -1 && (earliestIndex - lastSeparator < 50)) {
+                    finalResponse = finalResponse.substring(0, lastSeparator).trim();
+                } else {
+                    finalResponse = beforeAd.trim();
                 }
             }
         }
