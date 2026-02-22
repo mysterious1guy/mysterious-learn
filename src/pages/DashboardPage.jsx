@@ -252,7 +252,7 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
                                             </p>
 
                                             {/* Métadonnées - Admin Only */}
-                                            {user?.role === 'admin' && (
+                                            {user?.email === 'mouhamedfall@esp.sn' && (
                                                 <div className="flex items-center justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">
                                                     <div className="flex items-center gap-1.5">
                                                         <Users size={12} className="text-purple-500/50" />

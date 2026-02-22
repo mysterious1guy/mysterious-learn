@@ -35,9 +35,8 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                 description: "Apprenez les bases fondamentales de l'algorithmique avec des exemples concrets et des exercices pratiques.",
                 category: "Théorie",
                 level: "Débutant",
-                duration: "8h",
-                rating: 4.8,
-                students: 2341,
+                category: "Théorie",
+                level: "Débutant",
                 image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
                 chapters: [
                     { title: "Introduction aux Algorithmes", description: "Découvrez ce qu'est un algorithme et pourquoi c'est fondamental", duration: "45min", objectives: ["Comprendre l'algorithmique"], exercises: [] },
@@ -51,9 +50,8 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                 description: "Maîtrisez les fondamentaux du langage C, base de nombreux autres langages de programmation.",
                 category: "Programmation",
                 level: "Débutant",
-                duration: "12h",
-                rating: 4.8,
-                students: 1540,
+                category: "Programmation",
+                level: "Débutant",
                 image: "https://images.unsplash.com/photo-1516116216624-98e6e351d85e?w=400",
                 chapters: [
                     { title: "Premiers Pas en C", description: "Installation et premier programme Hello World.", duration: "30min", objectives: ["Hello World en C"], exercises: [] }
@@ -66,8 +64,8 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                 description: "Maîtrisez la ligne de commande et devenez le maître de votre système Linux.",
                 category: "Système",
                 level: "Débutant",
-                rating: 4.8,
-                students: 1540,
+                category: "Système",
+                level: "Débutant",
                 image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
                 chapters: [
                     { title: "Bases du Terminal", description: "Ouvrir et utiliser son premier shell.", objectives: ["Usage du CLI"], exercises: [] }
@@ -183,7 +181,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                                 {course.description}
                             </p>
 
-                            {user?.role === 'admin' && (
+                            {user?.email === 'mouhamedfall@esp.sn' && (
                                 <div className="flex flex-wrap gap-6 text-sm">
                                     <div className="flex items-center gap-2 text-slate-500">
                                         <Users size={16} />

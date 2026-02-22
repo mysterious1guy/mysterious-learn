@@ -28,7 +28,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
         tags: ["Logique", "Bases"],
-        students: 1234,
         lessons: [
           { id: 'algo1', title: "Les variables" },
           { id: 'algo2', title: "Les boucles" },
@@ -46,7 +45,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
         tags: ["Système", "Mémoire"],
-        students: 890,
         lessons: [
           { id: 'c1', title: "Syntaxe & Types" },
           { id: 'c2', title: "Pointeurs basics" },
@@ -63,7 +61,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&q=80",
         tags: ["Data", "Scripting"],
-        students: 2100,
         lessons: [
           { id: 'py1', title: "Installation & Premier script" },
           { id: 'py2', title: "Les Listes & Dictionnaires" },
@@ -81,7 +78,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
         tags: ["Web", "Productivité"],
-        students: 450,
         lessons: [
           { id: 'rb1', title: "L'esprit Ruby" },
           { id: 'rb2', title: "Les Blocs & Procs" },
@@ -99,7 +95,6 @@ export const coursesData = [
         level: "Expert",
         image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
         tags: ["Hardware", "Bas niveau"],
-        students: 120,
         lessons: [
           { id: 'asm1', title: "Registres & Mémoire" },
           { id: 'asm2', title: "Instructions de base" },
@@ -116,7 +111,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
         tags: ["Performance", "POO"],
-        students: 1100,
         lessons: [
           { id: 'cpp1', title: "Classes & Objets" },
           { id: 'cpp2', title: "La STL" },
@@ -138,7 +132,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee5?w=800&q=80",
         tags: ["Frontend", "UI"],
-        students: 3500,
         lessons: [
           { id: 're1', title: "Introduction aux Composants" },
           { id: 're2', title: "Le State & useEffect" },
@@ -155,7 +148,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800&q=80",
         tags: ["CSS", "Design"],
-        students: 2800,
         lessons: [
           { id: 'tw1', title: "Bases & Utilitaires" },
         ]
@@ -171,7 +163,6 @@ export const coursesData = [
         level: "Avancé",
         image: "https://images.unsplash.com/photo-1629910260311-6733f52423bb?w=800&q=80",
         tags: ["Framework", "Fullstack"],
-        students: 1540,
         lessons: [
           { id: 'nx1', title: "Routing & Layouts" },
         ]
@@ -187,7 +178,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
         tags: ["JS", "Frontend"],
-        students: 1100,
         lessons: [
           { id: 'vu1', title: "La Réactivité" },
         ]
@@ -203,7 +193,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
         tags: ["Enterprise", "Google"],
-        students: 900,
         lessons: [
           { id: 'ang1', title: "Modules & Services" },
         ]
@@ -224,7 +213,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1522252234503-e356532cafd5?w=800&q=80",
         tags: ["Runtime", "API"],
-        students: 2400,
         lessons: [
           { id: 'nd1', title: "Système de fichiers" },
         ]
@@ -240,7 +228,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
         tags: ["NoSQL", "Document"],
-        students: 1600,
         lessons: [
           { id: 'mg1', title: "CRUD Basics" },
         ]
@@ -256,7 +243,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
         tags: ["SQL", "Relationnel"],
-        students: 1300,
         lessons: [
           { id: 'pg1', title: "Requêtes & Jointures" },
         ]
@@ -272,7 +258,6 @@ export const coursesData = [
         level: "Avancé",
         image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
         tags: ["API", "Meta"],
-        students: 850,
         lessons: [
           { id: 'gq1', title: "Schémas & Types" },
         ]
@@ -293,7 +278,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80",
         tags: ["Native", "Mobile"],
-        students: 1100,
         lessons: [
           { id: 'rn1', title: "Composants Natifs" },
         ]
@@ -309,7 +293,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&q=80",
         tags: ["Dart", "Google"],
-        students: 1200,
         lessons: [
           { id: 'fl1', title: "Widgets Basics" },
         ]
@@ -325,7 +308,6 @@ export const coursesData = [
         level: "Avancé",
         image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80",
         tags: ["Cloud", "DevOps"],
-        students: 750,
         lessons: [
           { id: 'aw1', title: "Services EC2 & S3" },
         ]
@@ -341,7 +323,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
         tags: ["Sécurité", "Réseau"],
-        students: 950,
         lessons: [
           { id: 'cs1', title: "Menaces & Protections" },
         ]
@@ -362,7 +343,6 @@ export const coursesData = [
         level: "Avancé",
         image: "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=800&q=80",
         tags: ["IA", "Deep Learning"],
-        students: 650,
         lessons: [
           { id: 'pt1', title: "Tenseurs & Gradients" },
         ]
@@ -378,7 +358,6 @@ export const coursesData = [
         level: "Avancé",
         image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
         tags: ["IA", "Google"],
-        students: 900,
         lessons: [
           { id: 'tf1', title: "Modèles de Base" },
         ]
@@ -394,7 +373,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
         tags: ["Pandas", "NumPy"],
-        students: 1400,
         lessons: [
           { id: 'da1', title: "Manipulation de DataFrames" },
         ]
@@ -410,7 +388,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&q=80",
         tags: ["Maths", "Science"],
-        students: 280,
         lessons: [
           { id: 'jl1', title: "Vectorisation" },
         ]
@@ -431,7 +408,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
         tags: ["Collab", "Version Control"],
-        students: 2500,
         lessons: [
           { id: 'git1', title: "Workflow" },
         ]
@@ -447,7 +423,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
         tags: ["Terminal", "Automatisation"],
-        students: 1500,
         lessons: [
           { id: 'bash1', title: "Scripts Basics" },
         ]
@@ -463,7 +438,6 @@ export const coursesData = [
         level: "Intermédiaire",
         image: "https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800&q=80",
         tags: ["DevOps", "Containers"],
-        students: 1100,
         lessons: [
           { id: 'docker1', title: "Images & Containers" },
         ]
@@ -479,7 +453,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80",
         tags: ["Config", "API"],
-        students: 1900,
         lessons: [
           { id: 'json1', title: "Structure & Schémas" },
         ]
@@ -500,7 +473,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
         tags: ["UI/UX", "Prototypage"],
-        students: 1200,
         lessons: [
           { id: 'figma1', title: "Composants" },
         ]
@@ -516,7 +488,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1509343256512-d77a5cb3791b?w=800&q=80",
         tags: ["Art", "Créatif"],
-        students: 350,
         lessons: [
           { id: 'proc1', title: "Formes & Couleurs" },
         ]
@@ -537,7 +508,6 @@ export const coursesData = [
         level: "Avancé",
         image: "https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=800&q=80",
         tags: ["JVM", "Mixte"],
-        students: 420,
         lessons: [
           { id: 'sc1', title: "Immuabilité" },
         ]
@@ -553,7 +523,6 @@ export const coursesData = [
         level: "Expert",
         image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&q=80",
         tags: ["Maths", "Fonctionnel"],
-        students: 150,
         lessons: [
           { id: 'hs1', title: "Monades" },
         ]
@@ -569,7 +538,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?w=800&q=80",
         tags: ["Jeux", "Script"],
-        students: 600,
         lessons: [
           { id: 'lua1', title: "Tables & Scripts" },
         ]
@@ -585,7 +553,6 @@ export const coursesData = [
         level: "Expert",
         image: "https://images.unsplash.com/photo-1550439062-609e1531270e?w=800&q=80",
         tags: ["IA", "Historique"],
-        students: 90,
         lessons: [
           { id: 'lisp1', title: "S-Expressions" },
         ]
@@ -606,7 +573,6 @@ export const coursesData = [
         level: "Avancé",
         image: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=800&q=80",
         tags: ["Blockchain", "Web3"],
-        students: 750,
         lessons: [
           { id: 'sol1', title: "Web3 Basics" },
         ]
@@ -622,7 +588,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1555412654-72a95a495858?w=800&q=80",
         tags: ["IoT", "Hardware"],
-        students: 800,
         lessons: [
           { id: 'ard1', title: "Circuits & LED" },
         ]
@@ -638,7 +603,6 @@ export const coursesData = [
         level: "Avancé",
         image: "https://images.unsplash.com/photo-1592424002053-21f369ad7fdb?w=800&q=80",
         tags: ["Système", "Moderne"],
-        students: 200,
         lessons: [
           { id: 'zig1', title: "Comptime" },
         ]
@@ -654,7 +618,6 @@ export const coursesData = [
         level: "Débutant",
         image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&q=80",
         tags: ["Enfants", "Logique"],
-        students: 5000,
         lessons: [
           { id: 'scratch1', title: "Logique par blocs" },
         ]
