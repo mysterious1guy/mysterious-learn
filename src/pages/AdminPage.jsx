@@ -914,357 +914,355 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                   </div>
                 </div>
 
-              </div>
-
-                  {/* Bio & Bio lines */}
-            <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-2xl space-y-8 md:col-span-2">
-              <h3 className="text-sm font-black uppercase text-amber-600 dark:text-amber-500 tracking-widest flex items-center gap-2">
-                <Database size={20} /> Parcours & Expertise (Points listés)
-              </h3>
-              <div className="space-y-4">
-                {config.creatorBio.map((line, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={line}
-                      onChange={(e) => {
-                        const newBio = [...config.creatorBio];
-                        newBio[index] = e.target.value;
-                        setConfig({ ...config, creatorBio: newBio });
-                      }}
-                      className="flex-1 p-3 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
-                    />
-                    <button
-                      onClick={() => {
-                        const newBio = config.creatorBio.filter((_, i) => i !== index);
-                        setConfig({ ...config, creatorBio: newBio });
-                      }}
-                      className="p-3 text-red-500 hover:bg-red-500/10 rounded-xl"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  onClick={() => setConfig({ ...config, creatorBio: [...config.creatorBio, 'Nouveau point...'] })}
-                  className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300"
-                >
-                  <UserPlus size={16} /> Ajouter une ligne
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === 'ai-brain' && (
-          <motion.div key="ai" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-            <div className="flex justify-between items-center mb-10">
-              <h2 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
-                <Database size={32} className="text-blue-600 dark:text-blue-400" /> Cerveau de l'IA
-              </h2>
-              <button
-                onClick={() => {
-                  setAIBrainFormData({ title: '', content: '', category: 'general', tags: '', source: '' });
-                  setShowAIBrainModal(true);
-                }}
-                className="flex items-center gap-3 px-8 py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all shadow-xl shadow-blue-900/40"
-              >
-                <UserPlus size={20} /> NOUVELLE CONNAISSANCE
-              </button>
-            </div>
-
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] overflow-hidden shadow-sm dark:shadow-2xl">
-              <table className="w-full text-left">
-                <thead className="bg-slate-50 dark:bg-slate-950/50 border-b border-slate-100 dark:border-slate-800">
-                  <tr>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Document / Titre</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Catégorie</th>
-                    <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Mise à jour</th>
-                    <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {aiKnowledge.map(k => (
-                    <tr key={k._id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
-                      <td className="px-8 py-6">
-                        <div>
-                          <p className="text-sm font-bold text-slate-800 dark:text-white">{k.title}</p>
-                          <div className="flex gap-1 mt-1">
-                            {k.tags?.split(',').map((t, idx) => (
-                              <span key={idx} className="text-[9px] font-bold bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded uppercase">
-                                {t.trim()}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 text-center">
-                        <span className="text-[10px] font-black uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">
-                          {k.category}
-                        </span>
-                      </td>
-                      <td className="px-8 py-6 text-center">
-                        <p className="text-[10px] font-mono text-slate-400 dark:text-white/20">{new Date(k.updatedAt).toLocaleDateString()}</p>
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                        <div className="flex justify-end gap-2">
-                          <button
-                            onClick={() => {
-                              setAIBrainFormData({ ...k });
-                              setShowAIBrainModal(true);
-                            }}
-                            className="p-2 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-all"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteAIKnowledge(k._id)}
-                            className="p-2 text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {aiKnowledge.length === 0 && (
-                <div className="p-20 text-center text-slate-400 dark:text-slate-600">
-                  <Sparkles size={48} className="mx-auto mb-4 opacity-20" />
-                  <p>Aucun document dans le cerveau central.</p>
-                </div>
-              )}
-            </div>
-
-            {/* AI Knowledge Modal */}
-            {showAIBrainModal && (
-              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] w-full max-w-3xl p-10 max-h-[90vh] overflow-y-auto shadow-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 blur-[100px] -mr-32 -mt-32" />
-                  <div className="relative z-10 flex justify-between items-center mb-8">
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Document de Connaissance</h2>
-                    <button onClick={() => setShowAIBrainModal(false)} className="text-slate-400 dark:text-white/60 hover:text-slate-900 dark:hover:text-white transition-colors"><X size={24} /></button>
-                  </div>
-
-                  <form onSubmit={handleSaveAIKnowledge} className="relative z-10 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <label className="text-xs font-black uppercase text-slate-500 dark:text-white/60 tracking-wider pl-1">Titre</label>
+                {/* Bio & Bio lines */}
+                <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-2xl space-y-8 md:col-span-2">
+                  <h3 className="text-sm font-black uppercase text-amber-600 dark:text-amber-500 tracking-widest flex items-center gap-2">
+                    <Database size={20} /> Parcours & Expertise (Points listés)
+                  </h3>
+                  <div className="space-y-4">
+                    {config.creatorBio.map((line, index) => (
+                      <div key={index} className="flex gap-2">
                         <input
                           type="text"
-                          required
-                          value={aiBrainFormData.title}
-                          onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, title: e.target.value })}
-                          className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
-                          placeholder="Ex: Les bases de la récursivité"
+                          value={line}
+                          onChange={(e) => {
+                            const newBio = [...config.creatorBio];
+                            newBio[index] = e.target.value;
+                            setConfig({ ...config, creatorBio: newBio });
+                          }}
+                          className="flex-1 p-3 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
                         />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-black uppercase text-slate-500 dark:text-white/60 tracking-wider pl-1">Catégorie</label>
-                        <select
-                          value={aiBrainFormData.category}
-                          onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, category: e.target.value })}
-                          className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
+                        <button
+                          onClick={() => {
+                            const newBio = config.creatorBio.filter((_, i) => i !== index);
+                            setConfig({ ...config, creatorBio: newBio });
+                          }}
+                          className="p-3 text-red-500 hover:bg-red-500/10 rounded-xl"
                         >
-                          <option value="general">Général</option>
-                          <option value="pedagogy">Pédagogie</option>
-                          <option value="research">Recherche / Documentation</option>
-                          <option value="documentation">Documentation Technique</option>
-                        </select>
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => setConfig({ ...config, creatorBio: [...config.creatorBio, 'Nouveau point...'] })}
+                      className="flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300"
+                    >
+                      <UserPlus size={16} /> Ajouter une ligne
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'ai-brain' && (
+              <motion.div key="ai" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                <div className="flex justify-between items-center mb-10">
+                  <h2 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
+                    <Database size={32} className="text-blue-600 dark:text-blue-400" /> Cerveau de l'IA
+                  </h2>
+                  <button
+                    onClick={() => {
+                      setAIBrainFormData({ title: '', content: '', category: 'general', tags: '', source: '' });
+                      setShowAIBrainModal(true);
+                    }}
+                    className="flex items-center gap-3 px-8 py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all shadow-xl shadow-blue-900/40"
+                  >
+                    <UserPlus size={20} /> NOUVELLE CONNAISSANCE
+                  </button>
+                </div>
+
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] overflow-hidden shadow-sm dark:shadow-2xl">
+                  <table className="w-full text-left">
+                    <thead className="bg-slate-50 dark:bg-slate-950/50 border-b border-slate-100 dark:border-slate-800">
+                      <tr>
+                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Document / Titre</th>
+                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Catégorie</th>
+                        <th className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Mise à jour</th>
+                        <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-gray-500">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                      {aiKnowledge.map(k => (
+                        <tr key={k._id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                          <td className="px-8 py-6">
+                            <div>
+                              <p className="text-sm font-bold text-slate-800 dark:text-white">{k.title}</p>
+                              <div className="flex gap-1 mt-1">
+                                {k.tags?.split(',').map((t, idx) => (
+                                  <span key={idx} className="text-[9px] font-bold bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded uppercase">
+                                    {t.trim()}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-8 py-6 text-center">
+                            <span className="text-[10px] font-black uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700">
+                              {k.category}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6 text-center">
+                            <p className="text-[10px] font-mono text-slate-400 dark:text-white/20">{new Date(k.updatedAt).toLocaleDateString()}</p>
+                          </td>
+                          <td className="px-8 py-6 text-right">
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => {
+                                  setAIBrainFormData({ ...k });
+                                  setShowAIBrainModal(true);
+                                }}
+                                className="p-2 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-all"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteAIKnowledge(k._id)}
+                                className="p-2 text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-all"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {aiKnowledge.length === 0 && (
+                    <div className="p-20 text-center text-slate-400 dark:text-slate-600">
+                      <Sparkles size={48} className="mx-auto mb-4 opacity-20" />
+                      <p>Aucun document dans le cerveau central.</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* AI Knowledge Modal */}
+                {showAIBrainModal && (
+                  <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] w-full max-w-3xl p-10 max-h-[90vh] overflow-y-auto shadow-2xl relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 blur-[100px] -mr-32 -mt-32" />
+                      <div className="relative z-10 flex justify-between items-center mb-8">
+                        <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Document de Connaissance</h2>
+                        <button onClick={() => setShowAIBrainModal(false)} className="text-slate-400 dark:text-white/60 hover:text-slate-900 dark:hover:text-white transition-colors"><X size={24} /></button>
+                      </div>
+
+                      <form onSubmit={handleSaveAIKnowledge} className="relative z-10 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-xs font-black uppercase text-slate-500 dark:text-white/60 tracking-wider pl-1">Titre</label>
+                            <input
+                              type="text"
+                              required
+                              value={aiBrainFormData.title}
+                              onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, title: e.target.value })}
+                              className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
+                              placeholder="Ex: Les bases de la récursivité"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs font-black uppercase text-slate-500 dark:text-white/60 tracking-wider pl-1">Catégorie</label>
+                            <select
+                              value={aiBrainFormData.category}
+                              onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, category: e.target.value })}
+                              className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
+                            >
+                              <option value="general">Général</option>
+                              <option value="pedagogy">Pédagogie</option>
+                              <option value="research">Recherche / Documentation</option>
+                              <option value="documentation">Documentation Technique</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs font-black uppercase text-slate-500 dark:text-white/60 tracking-wider pl-1">Tags (séparés par des virgules)</label>
+                          <input
+                            type="text"
+                            value={aiBrainFormData.tags}
+                            onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, tags: e.target.value })}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
+                            placeholder="algorithme, récursivité, base"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-wider pl-1">Contenu Systémique (Base de Connaissance)</label>
+                          <textarea
+                            required
+                            rows="8"
+                            value={aiBrainFormData.content}
+                            onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, content: e.target.value })}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all resize-none font-mono text-xs"
+                            placeholder="Indiquez ici les informations que l'IA doit posséder..."
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-wider pl-1">Source de Validation</label>
+                          <input
+                            type="text"
+                            value={aiBrainFormData.source}
+                            onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, source: e.target.value })}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
+                            placeholder="Ex: Documentation MDN, Livre de l'auteur..."
+                          />
+                        </div>
+
+                        <button type="submit" className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all shadow-xl shadow-blue-900/40">
+                          ENREGISTRER DANS LE CERVEAU
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {activeTab === 'settings' && (
+              <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="max-w-5xl space-y-10">
+                <div className="flex items-center gap-4 mb-10">
+                  <div className="p-4 bg-blue-600/20 text-blue-600 dark:text-blue-400 rounded-3xl shadow-sm dark:shadow-none"><Settings size={32} /></div>
+                  <h2 className="text-3xl font-black text-slate-800 dark:text-white">Paramètres Avancés du Système</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* AI Engine Behavior */}
+                  <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-2xl space-y-8 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-3xl -mr-16 -mt-16 group-hover:bg-blue-600/10 transition-colors transition-all" />
+                    <h3 className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-[0.2em] flex items-center gap-2">
+                      <Bot size={18} /> Cerveau de l'IA (LLM)
+                    </h3>
+
+                    <div className="space-y-8">
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-end">
+                          <label className="text-xs font-black text-slate-600 dark:text-white/60 uppercase tracking-widest">Créativité (Température)</label>
+                          <span className="text-[10px] font-black font-mono text-blue-500 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded">
+                            {config.aiTemperature} ({config.aiTemperature < 0.4 ? 'Précis' : config.aiTemperature < 0.8 ? 'Équilibré' : 'Créatif'})
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          className="w-full accent-blue-600 cursor-pointer"
+                          min="0"
+                          max="100"
+                          value={config.aiTemperature * 100}
+                          onChange={(e) => setConfig({ ...config, aiTemperature: e.target.value / 100 })}
+                        />
+                        <p className="text-[9px] text-slate-400 dark:text-white/30 italic">Une valeur plus haute rend le Professeur plus imprévisible mais plus "humain".</p>
+                      </div>
+
+                      <div
+                        onClick={() => setConfig({ ...config, aiMemory: !config.aiMemory })}
+                        className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-blue-500/30 transition-all group/toggle"
+                      >
+                        <div className="space-y-1">
+                          <p className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-tight">Mémoire Multi-Session</p>
+                          <p className="text-[10px] text-slate-400 dark:text-white/40">L'IA se souvient des discussions passées.</p>
+                        </div>
+                        <div className={`w-12 h-6 rounded-full relative transition-all duration-300 ${config.aiMemory ? 'bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${config.aiMemory ? 'right-1' : 'left-1'}`} />
+                        </div>
                       </div>
                     </div>
-
-                    <div className="space-y-2">
-                      <label className="text-xs font-black uppercase text-slate-500 dark:text-white/60 tracking-wider pl-1">Tags (séparés par des virgules)</label>
-                      <input
-                        type="text"
-                        value={aiBrainFormData.tags}
-                        onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, tags: e.target.value })}
-                        className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
-                        placeholder="algorithme, récursivité, base"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-wider pl-1">Contenu Systémique (Base de Connaissance)</label>
-                      <textarea
-                        required
-                        rows="8"
-                        value={aiBrainFormData.content}
-                        onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, content: e.target.value })}
-                        className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all resize-none font-mono text-xs"
-                        placeholder="Indiquez ici les informations que l'IA doit posséder..."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-wider pl-1">Source de Validation</label>
-                      <input
-                        type="text"
-                        value={aiBrainFormData.source}
-                        onChange={(e) => setAIBrainFormData({ ...aiBrainFormData, source: e.target.value })}
-                        className="w-full p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none focus:border-blue-500 text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
-                        placeholder="Ex: Documentation MDN, Livre de l'auteur..."
-                      />
-                    </div>
-
-                    <button type="submit" className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-500 transition-all shadow-xl shadow-blue-900/40">
-                      ENREGISTRER DANS LE CERVEAU
-                    </button>
-                  </form>
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )}
-
-      {activeTab === 'settings' && (
-        <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="max-w-5xl space-y-10">
-          <div className="flex items-center gap-4 mb-10">
-            <div className="p-4 bg-blue-600/20 text-blue-600 dark:text-blue-400 rounded-3xl shadow-sm dark:shadow-none"><Settings size={32} /></div>
-            <h2 className="text-3xl font-black text-slate-800 dark:text-white">Paramètres Avancés du Système</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* AI Engine Behavior */}
-            <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-2xl space-y-8 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/5 blur-3xl -mr-16 -mt-16 group-hover:bg-blue-600/10 transition-colors transition-all" />
-              <h3 className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-[0.2em] flex items-center gap-2">
-                <Bot size={18} /> Cerveau de l'IA (LLM)
-              </h3>
-
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-end">
-                    <label className="text-xs font-black text-slate-600 dark:text-white/60 uppercase tracking-widest">Créativité (Température)</label>
-                    <span className="text-[10px] font-black font-mono text-blue-500 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded">
-                      {config.aiTemperature} ({config.aiTemperature < 0.4 ? 'Précis' : config.aiTemperature < 0.8 ? 'Équilibré' : 'Créatif'})
-                    </span>
                   </div>
-                  <input
-                    type="range"
-                    className="w-full accent-blue-600 cursor-pointer"
-                    min="0"
-                    max="100"
-                    value={config.aiTemperature * 100}
-                    onChange={(e) => setConfig({ ...config, aiTemperature: e.target.value / 100 })}
-                  />
-                  <p className="text-[9px] text-slate-400 dark:text-white/30 italic">Une valeur plus haute rend le Professeur plus imprévisible mais plus "humain".</p>
-                </div>
 
-                <div
-                  onClick={() => setConfig({ ...config, aiMemory: !config.aiMemory })}
-                  className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-blue-500/30 transition-all group/toggle"
-                >
-                  <div className="space-y-1">
-                    <p className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-tight">Mémoire Multi-Session</p>
-                    <p className="text-[10px] text-slate-400 dark:text-white/40">L'IA se souvient des discussions passées.</p>
-                  </div>
-                  <div className={`w-12 h-6 rounded-full relative transition-all duration-300 ${config.aiMemory ? 'bg-blue-600 shadow-[0_0_15px_rgba(37,99,235,0.4)]' : 'bg-slate-200 dark:bg-slate-800'}`}>
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${config.aiMemory ? 'right-1' : 'left-1'}`} />
-                  </div>
-                </div>
-              </div>
-            </div>
+                  {/* Gamification & Logic */}
+                  <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-2xl space-y-8 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/5 blur-3xl -mr-16 -mt-16 group-hover:bg-purple-600/10 transition-all" />
+                    <h3 className="text-[10px] font-black uppercase text-purple-600 dark:text-purple-400 tracking-[0.2em] flex items-center gap-2">
+                      <Sparkles size={18} /> Gamification & Engagement
+                    </h3>
 
-            {/* Gamification & Logic */}
-            <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-2xl space-y-8 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/5 blur-3xl -mr-16 -mt-16 group-hover:bg-purple-600/10 transition-all" />
-              <h3 className="text-[10px] font-black uppercase text-purple-600 dark:text-purple-400 tracking-[0.2em] flex items-center gap-2">
-                <Sparkles size={18} /> Gamification & Engagement
-              </h3>
-
-              <div className="space-y-6">
-                <div
-                  onClick={() => setConfig({ ...config, gamificationStreaks: !config.gamificationStreaks })}
-                  className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-purple-500/30 transition-all group/toggle"
-                >
-                  <div className="space-y-1">
-                    <p className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-tight">Système de Streaks</p>
-                    <p className="text-[10px] text-slate-400 dark:text-white/40">Encourager la connexion quotidienne.</p>
-                  </div>
-                  <div className={`w-12 h-6 rounded-full relative transition-all duration-300 ${config.gamificationStreaks ? 'bg-purple-600 shadow-[0_0_15px_rgba(147,51,234,0.4)]' : 'bg-slate-200 dark:bg-slate-800'}`}>
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${config.gamificationStreaks ? 'right-1' : 'left-1'}`} />
-                  </div>
-                </div>
-
-                <div
-                  onClick={() => setConfig({ ...config, gamificationBadges: !config.gamificationBadges })}
-                  className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-purple-500/30 transition-all group/toggle"
-                >
-                  <div className="space-y-1">
-                    <p className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-tight">Badges Dynamiques</p>
-                    <p className="text-[10px] text-slate-400 dark:text-white/40">Génération de succès via l'IA.</p>
-                  </div>
-                  <div className={`w-12 h-6 rounded-full relative transition-all duration-300 ${config.gamificationBadges ? 'bg-purple-600 shadow-[0_0_15px_rgba(147,51,234,0.4)]' : 'bg-slate-200 dark:bg-slate-800'}`}>
-                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${config.gamificationBadges ? 'right-1' : 'left-1'}`} />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* UI & Theme Force */}
-            <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-2xl space-y-8 md:col-span-2 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-600/5 blur-[100px] -mr-32 -mt-32" />
-              <h3 className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-500 tracking-[0.2em] flex items-center gap-2">
-                <LayoutDashboard size={18} /> Expérience Visuelle Globale
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="p-6 bg-slate-50 dark:bg-slate-950/50 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 space-y-4">
-                  <p className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-widest pl-1">Configuration du Thème</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {['AUTO', 'DARK'].map(mode => (
-                      <button
-                        key={mode}
-                        onClick={() => setConfig({ ...config, themeForce: mode })}
-                        className={`py-2.5 rounded-xl text-[10px] font-black transition-all border ${config.themeForce === mode ? 'bg-amber-500 border-amber-400 text-white shadow-lg' : 'bg-white dark:bg-slate-900 text-slate-400 border-slate-200 dark:border-slate-800 hover:border-amber-500/50'}`}
+                    <div className="space-y-6">
+                      <div
+                        onClick={() => setConfig({ ...config, gamificationStreaks: !config.gamificationStreaks })}
+                        className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-purple-500/30 transition-all group/toggle"
                       >
-                        {mode}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                        <div className="space-y-1">
+                          <p className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-tight">Système de Streaks</p>
+                          <p className="text-[10px] text-slate-400 dark:text-white/40">Encourager la connexion quotidienne.</p>
+                        </div>
+                        <div className={`w-12 h-6 rounded-full relative transition-all duration-300 ${config.gamificationStreaks ? 'bg-purple-600 shadow-[0_0_15px_rgba(147,51,234,0.4)]' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${config.gamificationStreaks ? 'right-1' : 'left-1'}`} />
+                        </div>
+                      </div>
 
-                <div
-                  onClick={() => setConfig({ ...config, ultraImmersiveMode: !config.ultraImmersiveMode })}
-                  className="p-6 bg-slate-50 dark:bg-slate-950/50 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 space-y-5 cursor-pointer hover:border-amber-500/30 transition-all group/toggle"
-                >
-                  <p className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-widest pl-1">Mode Immersion</p>
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs font-bold text-slate-800 dark:text-white">Filtres CRT/FX</p>
-                    <div className={`w-10 h-5 rounded-full relative transition-all duration-300 ${config.ultraImmersiveMode ? 'bg-amber-500 shadow-lg' : 'bg-slate-200 dark:bg-slate-800'}`}>
-                      <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300 shadow-sm ${config.ultraImmersiveMode ? 'right-1' : 'left-1'}`} />
+                      <div
+                        onClick={() => setConfig({ ...config, gamificationBadges: !config.gamificationBadges })}
+                        className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-purple-500/30 transition-all group/toggle"
+                      >
+                        <div className="space-y-1">
+                          <p className="text-xs font-black text-slate-800 dark:text-white uppercase tracking-tight">Badges Dynamiques</p>
+                          <p className="text-[10px] text-slate-400 dark:text-white/40">Génération de succès via l'IA.</p>
+                        </div>
+                        <div className={`w-12 h-6 rounded-full relative transition-all duration-300 ${config.gamificationBadges ? 'bg-purple-600 shadow-[0_0_15px_rgba(147,51,234,0.4)]' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                          <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${config.gamificationBadges ? 'right-1' : 'left-1'}`} />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div
-                  onClick={() => setConfig({ ...config, maintenanceMode: !config.maintenanceMode })}
-                  className={`p-6 rounded-[1.5rem] border transition-all cursor-pointer group/toggle ${config.maintenanceMode ? 'bg-red-500/10 border-red-500/30' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-red-500/30'}`}
-                >
-                  <p className={`text-[10px] font-black uppercase tracking-widest pl-1 mb-5 transition-colors ${config.maintenanceMode ? 'text-red-500' : 'text-slate-500 dark:text-white/40'}`}>Mode Maintenance</p>
-                  <div className="flex items-center justify-between">
-                    <p className={`text-xs font-black uppercase transition-colors ${config.maintenanceMode ? 'text-red-500' : 'text-slate-400 dark:text-slate-600'}`}>ALERTE ROUGE</p>
-                    <div className={`w-10 h-5 rounded-full relative transition-all duration-300 ${config.maintenanceMode ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'bg-slate-200 dark:bg-slate-800'}`}>
-                      <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300 shadow-sm ${config.maintenanceMode ? 'right-1' : 'left-1'}`} />
+                  {/* UI & Theme Force */}
+                  <div className="bg-white dark:bg-slate-900 p-10 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-2xl space-y-8 md:col-span-2 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-amber-600/5 blur-[100px] -mr-32 -mt-32" />
+                    <h3 className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-500 tracking-[0.2em] flex items-center gap-2">
+                      <LayoutDashboard size={18} /> Expérience Visuelle Globale
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                      <div className="p-6 bg-slate-50 dark:bg-slate-950/50 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 space-y-4">
+                        <p className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-widest pl-1">Configuration du Thème</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {['AUTO', 'DARK'].map(mode => (
+                            <button
+                              key={mode}
+                              onClick={() => setConfig({ ...config, themeForce: mode })}
+                              className={`py-2.5 rounded-xl text-[10px] font-black transition-all border ${config.themeForce === mode ? 'bg-amber-500 border-amber-400 text-white shadow-lg' : 'bg-white dark:bg-slate-900 text-slate-400 border-slate-200 dark:border-slate-800 hover:border-amber-500/50'}`}
+                            >
+                              {mode}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div
+                        onClick={() => setConfig({ ...config, ultraImmersiveMode: !config.ultraImmersiveMode })}
+                        className="p-6 bg-slate-50 dark:bg-slate-950/50 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 space-y-5 cursor-pointer hover:border-amber-500/30 transition-all group/toggle"
+                      >
+                        <p className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-widest pl-1">Mode Immersion</p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-bold text-slate-800 dark:text-white">Filtres CRT/FX</p>
+                          <div className={`w-10 h-5 rounded-full relative transition-all duration-300 ${config.ultraImmersiveMode ? 'bg-amber-500 shadow-lg' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                            <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300 shadow-sm ${config.ultraImmersiveMode ? 'right-1' : 'left-1'}`} />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        onClick={() => setConfig({ ...config, maintenanceMode: !config.maintenanceMode })}
+                        className={`p-6 rounded-[1.5rem] border transition-all cursor-pointer group/toggle ${config.maintenanceMode ? 'bg-red-500/10 border-red-500/30' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-red-500/30'}`}
+                      >
+                        <p className={`text-[10px] font-black uppercase tracking-widest pl-1 mb-5 transition-colors ${config.maintenanceMode ? 'text-red-500' : 'text-slate-500 dark:text-white/40'}`}>Mode Maintenance</p>
+                        <div className="flex items-center justify-between">
+                          <p className={`text-xs font-black uppercase transition-colors ${config.maintenanceMode ? 'text-red-500' : 'text-slate-400 dark:text-slate-600'}`}>ALERTE ROUGE</p>
+                          <div className={`w-10 h-5 rounded-full relative transition-all duration-300 ${config.maintenanceMode ? 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)]' : 'bg-slate-200 dark:bg-slate-800'}`}>
+                            <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300 shadow-sm ${config.maintenanceMode ? 'right-1' : 'left-1'}`} />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
 
-            <div className="p-10 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-blue-900/40 border border-white/10 overflow-hidden relative group">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 blur-3xl rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-150" />
-              <div className="relative z-10 space-y-3">
-                <h3 className="text-3xl font-black italic tracking-tighter">"Le contrôle est une illusion, la maîtrise est un art."</h3>
-                <p className="text-blue-100/70 text-sm font-bold uppercase tracking-widest">Réglages Système Expérimentaux</p>
-              </div>
-              <button onClick={handleUpdateConfig} className="relative z-10 px-12 py-5 bg-white text-blue-700 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20 flex items-center gap-3">
-                <Save size={20} /> APPLIQUER LES CHANGEMENTS
-              </button>
-            </div>
+                  <div className="p-10 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl shadow-blue-900/40 border border-white/10 overflow-hidden relative group">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 blur-3xl rounded-full -mr-32 -mt-32 transition-transform group-hover:scale-150" />
+                    <div className="relative z-10 space-y-3">
+                      <h3 className="text-3xl font-black italic tracking-tighter">"Le contrôle est une illusion, la maîtrise est un art."</h3>
+                      <p className="text-blue-100/70 text-sm font-bold uppercase tracking-widest">Réglages Système Expérimentaux</p>
+                    </div>
+                    <button onClick={handleUpdateConfig} className="relative z-10 px-12 py-5 bg-white text-blue-700 font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/20 flex items-center gap-3">
+                      <Save size={20} /> APPLIQUER LES CHANGEMENTS
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             )}
@@ -1280,100 +1278,100 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
         message={confirmModal.message}
       />
 
-      {/* User Activity Modal */ }
-  <AnimatePresence>
-    {isStatsModalOpen && (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setIsStatsModalOpen(false)}
-          className="absolute inset-0 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.9, y: 20 }}
-          className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden"
-        >
-          <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
-            <div className="flex items-center gap-4">
-              <div className="p-4 bg-blue-600/10 text-blue-600 dark:text-blue-400 rounded-2xl">
-                <Activity size={24} />
-              </div>
-              <div>
-                <h2 className="text-xl font-black text-slate-800 dark:text-white">Analyse du Voyageur</h2>
-                <p className="text-sm font-bold text-slate-400 dark:text-white/40">{selectedUserStats?.user?.firstName} {selectedUserStats?.user?.lastName}</p>
-              </div>
-            </div>
-            <button onClick={() => setIsStatsModalOpen(false)} className="p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-400 dark:text-white/40 transition-colors">
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className="p-8">
-            {loadingStats ? (
-              <div className="py-20 flex flex-col items-center gap-4 text-slate-400 dark:text-white/40">
-                <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-                <p className="font-bold animate-pulse uppercase tracking-widest text-xs">Extraction des données...</p>
-              </div>
-            ) : selectedUserStats ? (
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-inner">
-                  <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest mb-2">Sessions Totales</p>
-                  <p className="text-3xl font-black text-slate-800 dark:text-white">{selectedUserStats.totalSessions}</p>
-                </div>
-                <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-inner">
-                  <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest mb-2">Temps Appris</p>
-                  <p className="text-3xl font-black text-slate-800 dark:text-white">{selectedUserStats.totalTime} <span className="text-sm">min</span></p>
-                </div>
-                <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-inner">
-                  <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest mb-2">Cours Consultés</p>
-                  <p className="text-3xl font-black text-slate-800 dark:text-white">{selectedUserStats.coursesViewed}</p>
-                </div>
-                <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-inner">
-                  <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest mb-2">Série (Streak)</p>
-                  <p className="text-3xl font-black text-orange-500 flex items-center gap-3">
-                    {selectedUserStats.streak} <span className="text-lg">🔥</span>
-                  </p>
-                </div>
-
-                <div className="col-span-2 bg-blue-600/5 dark:bg-blue-600/10 p-6 rounded-3xl border border-blue-500/10 dark:border-blue-500/20 flex items-center justify-between">
-                  <div>
-                    <p className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 mb-1">Expertise Déclarée</p>
-                    <p className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">
-                      {selectedUserStats.user?.programmingLevel
-                        ? { beginner: 'Débutant', intermediate: 'Intermédiaire', advanced: 'Avancé', expert: 'Expert' }[selectedUserStats.user.programmingLevel] || selectedUserStats.user.programmingLevel
-                        : "Non défini"}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black uppercase text-slate-400 dark:text-white/40 mb-1">Dernière activité</p>
-                    <p className="text-sm font-black text-slate-600 dark:text-white">{formatTimeAgo(selectedUserStats.lastLogin)}</p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="py-20 text-center text-slate-400 italic">
-                <Database size={48} className="mx-auto mb-4 opacity-10" />
-                Impossible de charger les données du voyageur.
-              </div>
-            )}
-          </div>
-
-          <div className="p-8 bg-slate-50/50 dark:bg-slate-950/30 text-center border-t border-slate-100 dark:border-slate-800">
-            <button
+      {/* User Activity Modal */}
+      <AnimatePresence>
+        {isStatsModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               onClick={() => setIsStatsModalOpen(false)}
-              className="w-full py-4 bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 dark:hover:bg-slate-600 text-white font-black rounded-2xl transition-all shadow-lg shadow-slate-900/20"
+              className="absolute inset-0 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden"
             >
-              FERMER LE RAPPORT
-            </button>
+              <div className="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
+                <div className="flex items-center gap-4">
+                  <div className="p-4 bg-blue-600/10 text-blue-600 dark:text-blue-400 rounded-2xl">
+                    <Activity size={24} />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-black text-slate-800 dark:text-white">Analyse du Voyageur</h2>
+                    <p className="text-sm font-bold text-slate-400 dark:text-white/40">{selectedUserStats?.user?.firstName} {selectedUserStats?.user?.lastName}</p>
+                  </div>
+                </div>
+                <button onClick={() => setIsStatsModalOpen(false)} className="p-3 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-400 dark:text-white/40 transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-8">
+                {loadingStats ? (
+                  <div className="py-20 flex flex-col items-center gap-4 text-slate-400 dark:text-white/40">
+                    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                    <p className="font-bold animate-pulse uppercase tracking-widest text-xs">Extraction des données...</p>
+                  </div>
+                ) : selectedUserStats ? (
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-inner">
+                      <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest mb-2">Sessions Totales</p>
+                      <p className="text-3xl font-black text-slate-800 dark:text-white">{selectedUserStats.totalSessions}</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-inner">
+                      <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest mb-2">Temps Appris</p>
+                      <p className="text-3xl font-black text-slate-800 dark:text-white">{selectedUserStats.totalTime} <span className="text-sm">min</span></p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-inner">
+                      <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest mb-2">Cours Consultés</p>
+                      <p className="text-3xl font-black text-slate-800 dark:text-white">{selectedUserStats.coursesViewed}</p>
+                    </div>
+                    <div className="bg-slate-50 dark:bg-slate-950/50 p-6 rounded-3xl border border-slate-100 dark:border-slate-800/50 shadow-inner">
+                      <p className="text-[10px] font-black uppercase text-slate-400 dark:text-slate-600 tracking-widest mb-2">Série (Streak)</p>
+                      <p className="text-3xl font-black text-orange-500 flex items-center gap-3">
+                        {selectedUserStats.streak} <span className="text-lg">🔥</span>
+                      </p>
+                    </div>
+
+                    <div className="col-span-2 bg-blue-600/5 dark:bg-blue-600/10 p-6 rounded-3xl border border-blue-500/10 dark:border-blue-500/20 flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 mb-1">Expertise Déclarée</p>
+                        <p className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">
+                          {selectedUserStats.user?.programmingLevel
+                            ? { beginner: 'Débutant', intermediate: 'Intermédiaire', advanced: 'Avancé', expert: 'Expert' }[selectedUserStats.user.programmingLevel] || selectedUserStats.user.programmingLevel
+                            : "Non défini"}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] font-black uppercase text-slate-400 dark:text-white/40 mb-1">Dernière activité</p>
+                        <p className="text-sm font-black text-slate-600 dark:text-white">{formatTimeAgo(selectedUserStats.lastLogin)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-20 text-center text-slate-400 italic">
+                    <Database size={48} className="mx-auto mb-4 opacity-10" />
+                    Impossible de charger les données du voyageur.
+                  </div>
+                )}
+              </div>
+
+              <div className="p-8 bg-slate-50/50 dark:bg-slate-950/30 text-center border-t border-slate-100 dark:border-slate-800">
+                <button
+                  onClick={() => setIsStatsModalOpen(false)}
+                  className="w-full py-4 bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 dark:hover:bg-slate-600 text-white font-black rounded-2xl transition-all shadow-lg shadow-slate-900/20"
+                >
+                  FERMER LE RAPPORT
+                </button>
+              </div>
+            </motion.div>
           </div>
-        </motion.div>
-      </div>
-    )}
-  </AnimatePresence>
+        )}
+      </AnimatePresence>
     </div >
   );
 };
