@@ -37,7 +37,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                 level: "Débutant",
                 students: 0,
                 rating: 0,
-                image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400",
+                image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
                 chapters: [
                     { title: "Introduction aux Algorithmes", description: "Découvrez ce qu'est un algorithme et pourquoi c'est fondamental", duration: "45min", objectives: ["Comprendre l'algorithmique"], exercises: [] },
                     { title: "Variables et Types", description: "Apprenez à stocker et manipuler des données", duration: "60min", objectives: ["Variables et types de base"], exercises: [] }
@@ -52,7 +52,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                 level: "Débutant",
                 students: 0,
                 rating: 0,
-                image: "https://images.unsplash.com/photo-1516116216624-98e6e351d85e?w=400",
+                image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
                 chapters: [
                     { title: "Premiers Pas en C", description: "Installation et premier programme Hello World.", duration: "30min", objectives: ["Hello World en C"], exercises: [] }
                 ]
@@ -207,11 +207,14 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                             )}
                         </div>
 
-                        <div className="flex items-center justify-center">
+                        <div className="flex items-center justify-center overflow-hidden rounded-2xl shadow-xl">
                             <img
-                                src={course.image}
+                                src={course.image || "https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800&q=80"}
                                 alt={course.title}
-                                className="w-full h-64 object-cover rounded-2xl shadow-xl hover:scale-[1.02] transition-transform duration-500"
+                                className="w-full h-64 object-cover hover:scale-[1.02] transition-transform duration-500"
+                                onError={(e) => {
+                                    e.target.src = "https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=800&q=80";
+                                }}
                             />
                         </div>
                     </div>
