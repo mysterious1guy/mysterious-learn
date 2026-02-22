@@ -15,7 +15,7 @@ export const Toast = ({ message, type = 'info', onClose }) => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -50 }}
-      className={`fixed top-24 left-1/2 transform -translate-x-1/2 z-50 ${bgColor} text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2`}
+      className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-[100] ${bgColor} text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2`}
     >
       {message}
       <button onClick={onClose} className="ml-2"><X size={16} /></button>
