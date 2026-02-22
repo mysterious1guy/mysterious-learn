@@ -78,7 +78,7 @@ const HomePage = ({ API_URL }) => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-950 font-sans selection:bg-blue-500/30">
+        <div className="min-h-screen bg-transparent font-sans selection:bg-blue-500/30">
             {/* Background elements */}
 
             {/* Hero Section */}

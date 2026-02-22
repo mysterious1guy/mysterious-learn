@@ -227,7 +227,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 {parts.map((part, pIdx) => {
                     if (part.type === 'text') {
                         // Simple Markdown-like parsing for text segments
-                        const lines = part.content.split('\n');
+                        const sanitizedContent = part.content.replace(/\\'/g, "'");
+                        const lines = sanitizedContent.split('\n');
                         return lines.map((line, lIdx) => {
                             if (!line.trim()) return <div key={lIdx} className="h-2" />;
 
