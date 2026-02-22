@@ -32,8 +32,10 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 
 import { API_URL } from './config';
+import { SoundProvider } from './context/SoundContext';
 
 function App() {
+  const { theme } = useTheme();
   const [user, setUser] = useLocalStorage('user', null);
   const [toast, setToast] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -169,151 +171,153 @@ function App() {
 
   return (
     <ThemeProvider>
-      <LanguageProvider>
-        <Router>
-          <ScrollToTop />
-          <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
-            <Particles theme="dark" />
+      <SoundProvider>
+        <LanguageProvider>
+          <Router>
+            <ScrollToTop />
+            <div className="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
+              <Particles theme={theme} />
 
-            <AnimatePresence>
-              {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
-            </AnimatePresence>
+              <AnimatePresence>
+                {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+              </AnimatePresence>
 
-            <Routes>
-              <Route element={<AuthLayout />}>
-                <Route path="/" element={<HomePage API_URL={API_URL} />} />
-                <Route path="/privacy" element={<PrivacyPage />} />
-                <Route path="/terms" element={<TermsPage />} />
-                <Route path="/auth" element={
-                  user ? <Navigate to={user.hasCompletedOnboarding ? "/dashboard" : "/onboarding"} replace /> :
-                    <AuthPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
-                } />
-                {/* ✅ Nouvelle route pour le callback Google */}
-                <Route path="/auth/callback" element={
-                  <CallbackPage
-                    setUser={handleUpdateUser}
-                    setToast={setToast}
-                    fetchProgressions={fetchProgressions}
-                  />
-                } />
-                {/* Route Admin Login */}
-                <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />
+              <Routes>
+                <Route element={<AuthLayout />}>
+                  <Route path="/" element={<HomePage API_URL={API_URL} />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/auth" element={
+                    user ? <Navigate to={user.hasCompletedOnboarding ? "/dashboard" : "/onboarding"} replace /> :
+                      <AuthPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
+                  } />
+                  {/* ✅ Nouvelle route pour le callback Google */}
+                  <Route path="/auth/callback" element={
+                    <CallbackPage
+                      setUser={handleUpdateUser}
+                      setToast={setToast}
+                      fetchProgressions={fetchProgressions}
+                    />
+                  } />
+                  {/* Route Admin Login */}
+                  <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />
 
-                {/* Onboarding Flow: Requires auth, but not explicitly MainLayout yet */}
-                <Route path="/onboarding" element={
-                  user ? (
-                    user.hasCompletedOnboarding ? (
-                      <Navigate to="/dashboard" replace />
+                  {/* Onboarding Flow: Requires auth, but not explicitly MainLayout yet */}
+                  <Route path="/onboarding" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <Navigate to="/dashboard" replace />
+                      ) : (
+                        <OnboardingPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
+                      )
                     ) : (
-                      <OnboardingPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
+                      <Navigate to="/auth" replace />
                     )
-                  ) : (
-                    <Navigate to="/auth" replace />
-                  )
-                } />
-              </Route>
+                  } />
+                </Route>
 
-              <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} onSearch={setSearchQuery} />}>
-                <Route index element={user ? <Navigate to="/dashboard" replace /> : <HomePage API_URL={API_URL} />} />
-                <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
-                <Route path="dashboard" element={
-                  user ? (
-                    user.hasCompletedOnboarding ? (
-                      <DashboardPage
-                        user={user}
-                        favorites={favorites}
-                        toggleFavorite={handleToggleFavorite}
-                        progressions={progressions}
-                        API_URL={API_URL}
-                        setToast={setToast}
-                        searchQuery={searchQuery}
-                      />
+                <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} onSearch={setSearchQuery} />}>
+                  <Route index element={user ? <Navigate to="/dashboard" replace /> : <HomePage API_URL={API_URL} />} />
+                  <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
+                  <Route path="dashboard" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <DashboardPage
+                          user={user}
+                          favorites={favorites}
+                          toggleFavorite={handleToggleFavorite}
+                          progressions={progressions}
+                          API_URL={API_URL}
+                          setToast={setToast}
+                          searchQuery={searchQuery}
+                        />
+                      ) : (
+                        <Navigate to="/onboarding" replace />
+                      )
                     ) : (
-                      <Navigate to="/onboarding" replace />
+                      <Navigate to="/auth" replace />
                     )
-                  ) : (
-                    <Navigate to="/auth" replace />
-                  )
-                } />
+                  } />
 
-                <Route path="/account" element={
-                  user ? (
-                    user.hasCompletedOnboarding ? (
-                      <AccountPage
-                        user={user}
-                        onUpdateUser={handleUpdateUser}
-                        onLogout={handleLogout}
-                        progressions={progressions}
-                        favorites={favorites}
-                        onToggleFavorite={handleToggleFavorite}
-                        API_URL={API_URL}
-                        setToast={setToast}
-                      />
+                  <Route path="/account" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <AccountPage
+                          user={user}
+                          onUpdateUser={handleUpdateUser}
+                          onLogout={handleLogout}
+                          progressions={progressions}
+                          favorites={favorites}
+                          onToggleFavorite={handleToggleFavorite}
+                          API_URL={API_URL}
+                          setToast={setToast}
+                        />
+                      ) : (
+                        <Navigate to="/onboarding" replace />
+                      )
                     ) : (
-                      <Navigate to="/onboarding" replace />
+                      <Navigate to="/auth" replace />
                     )
-                  ) : (
-                    <Navigate to="/auth" replace />
-                  )
-                } />
+                  } />
 
-                <Route path="/course/:courseId" element={
-                  user ? (
-                    user.hasCompletedOnboarding ? (
-                      <CoursePage
-                        user={user}
-                        API_URL={API_URL}
-                        setToast={setToast}
-                        fetchProgressions={fetchProgressions}
-                      />
+                  <Route path="/course/:courseId" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <CoursePage
+                          user={user}
+                          API_URL={API_URL}
+                          setToast={setToast}
+                          fetchProgressions={fetchProgressions}
+                        />
+                      ) : (
+                        <Navigate to="/onboarding" replace />
+                      )
                     ) : (
-                      <Navigate to="/onboarding" replace />
+                      <Navigate to="/auth" replace />
                     )
-                  ) : (
-                    <Navigate to="/auth" replace />
-                  )
-                } />
+                  } />
 
-                <Route path="/course/:courseId/chapter/:chapterIndex" element={
-                  user ? (
-                    user.hasCompletedOnboarding ? (
-                      <ChapterPage
-                        user={user}
-                        API_URL={API_URL}
-                        setToast={setToast}
-                        fetchProgressions={fetchProgressions}
-                      />
+                  <Route path="/course/:courseId/chapter/:chapterIndex" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <ChapterPage
+                          user={user}
+                          API_URL={API_URL}
+                          setToast={setToast}
+                          fetchProgressions={fetchProgressions}
+                        />
+                      ) : (
+                        <Navigate to="/onboarding" replace />
+                      )
                     ) : (
-                      <Navigate to="/onboarding" replace />
+                      <Navigate to="/auth" replace />
                     )
-                  ) : (
-                    <Navigate to="/auth" replace />
-                  )
-                } />
+                  } />
 
-                {/* Route 2FA Setup */}
-                <Route path="/two-factor-setup" element={
-                  user ? (
-                    user.hasCompletedOnboarding ? (
-                      <TwoFactorSetupPage
-                        user={user}
-                        API_URL={API_URL}
-                        setToast={setToast}
-                      />
+                  {/* Route 2FA Setup */}
+                  <Route path="/two-factor-setup" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <TwoFactorSetupPage
+                          user={user}
+                          API_URL={API_URL}
+                          setToast={setToast}
+                        />
+                      ) : (
+                        <Navigate to="/onboarding" replace />
+                      )
                     ) : (
-                      <Navigate to="/onboarding" replace />
+                      <Navigate to="/auth" replace />
                     )
-                  ) : (
-                    <Navigate to="/auth" replace />
-                  )
-                } />
-              </Route>
+                  } />
+                </Route>
 
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </div>
-        </Router>
-      </LanguageProvider>
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes>
+            </div>
+          </Router>
+        </LanguageProvider>
+      </SoundProvider>
     </ThemeProvider>
   );
 }
