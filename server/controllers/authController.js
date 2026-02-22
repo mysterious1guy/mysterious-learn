@@ -409,6 +409,11 @@ const googleCallback = async (req, res) => {
         hasCompletedOnboarding: false,
         joinedAt: new Date()
       });
+
+      // 5. Envoi du mail de félicitations (Bienvenue) pour les nouveaux inscrits Google
+      sendWelcomeEmail(user.email, user.firstName).catch(err => {
+        console.error('❌ Échec envoi mail de bienvenue (Google Auth):', err);
+      });
     }
 
     const token = generateToken(user._id);

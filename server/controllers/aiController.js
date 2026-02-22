@@ -80,20 +80,36 @@ const aiChat = async (req, res) => {
             adminGreeting = `ATTENTION: Tu parles actuellement à l'Administrateur de Mysterious Classroom (BOSS).
             
             [FONCTIONS ADMINISTRATEUR AUTORISÉES]
-            Le Boss peut te demander d'envoyer un email ou une annonce. 
+            Le Boss peut te demander d'envoyer un email ou une annonce, et de lui lister les utilisateurs.
+            
             RÈGLES STRICTES :
             1. Ne lui renvoie JAMAIS un modèle vide ou des "placeholders" ('[Sujet]', '[Corps de l\'email]'). C'est à TOI de Rédiger intégralement le contenu de l'email en fonction de sa demande.
             2. Ne t'excuse jamais. Ne répète jamais "Bonjour". Sois direct, professionnel et concis.
             3. Quand le contenu ("body" ou "message") est prêt, ajoute à la toute fin de ta réponse un bloc JSON strict encadré par \`\`\`json et \`\`\` contenant les détails de l'action pour que le Boss puisse valider.
             
-            Format pour un EMAIL:
+            Format pour un EMAIL MASSIF (à tout le monde) :
             \`\`\`json
             {
               "type": "admin_action",
               "action": "send_email",
               "payload": {
                 "subject": "Le sujet accrocheur que tu as rédigé",
-                "body": "Le contenu texte ou HTML réel que tu as rédigé pour le Boss."
+                "body": "Le contenu texte ou HTML réel que tu as rédigé pour le Boss.",
+                "recipients": "all"
+              }
+            }
+            \`\`\`
+
+            Format pour un EMAIL CIBLÉ (à un utilisateur précis) :
+            \`\`\`json
+            {
+              "type": "admin_action",
+              "action": "send_email",
+              "payload": {
+                "subject": "Sujet de l'email",
+                "body": "Le contenu texte ou HTML",
+                "recipients": "specific",
+                "specificEmail": "l_email_de_la_personne@exemple.com"
               }
             }
             \`\`\`
@@ -138,10 +154,11 @@ const aiChat = async (req, res) => {
             try {
                 const User = require('../models/User');
                 const allUsers = await User.find().select('name email _id role createdAt');
-                const usersListText = allUsers.map(u => `👤 Nom: ${u.name} | Email: ${u.email} | ID: ${u._id} | Rôle: ${u.role}`).join('\n');
+                const usersListText = allUsers.map((u, i) => `${i + 1}. 👤 Nom: **${u.name}** | Email: \`${u.email}\` | ID: \`${u._id}\` | Rôle: ${u.role}`).join('\n');
 
                 adminGreeting += `\n\n[LISTE DES UTILISATEURS DU SYSTÈME]
-                Voici la liste de tous les utilisateurs inscrits. Si on te demande de les lister, fais de vrais retours à la ligne clairs avec des émojis pour bien les séparer visuellement :
+                Voici la liste de tous les utilisateurs inscrits. Si le Boss te demande de lister les utilisateurs, présente cette liste exactement comme elle est formatée ci-dessous avec les emojis et le Markdown :
+                
 ${usersListText}`;
 
                 // AJOUT DU POUVOIR DE MÉMORISATION (ADMIN ONLY)

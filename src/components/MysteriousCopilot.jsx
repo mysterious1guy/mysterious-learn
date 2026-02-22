@@ -278,6 +278,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                     {actionData.action === 'send_email' && (
                                         <>
                                             <p><span className="text-slate-500">Action:</span> Envoi d'Email</p>
+                                            <p><span className="text-slate-500">Destinataires:</span> <span className={actionData.payload.recipients === 'specific' ? 'text-blue-400 font-bold' : 'text-amber-400 font-bold'}>{actionData.payload.recipients === 'specific' ? 'Email Ciblé' : 'TOUS LES UTILISATEURS'}</span></p>
+                                            {actionData.payload.recipients === 'specific' && actionData.payload.specificEmail && (
+                                                <p><span className="text-slate-500">Pour:</span> {actionData.payload.specificEmail}</p>
+                                            )}
                                             <p><span className="text-slate-500">Sujet:</span> {actionData.payload.subject}</p>
                                         </>
                                     )}
