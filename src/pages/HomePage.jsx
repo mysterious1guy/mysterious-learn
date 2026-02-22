@@ -104,14 +104,42 @@ const HomePage = ({ API_URL }) => {
                         >
                             <h1 className="flex flex-col items-center">
                                 <motion.span
-                                    className="text-5xl sm:text-7xl md:text-9xl lg:text-[11rem] brand-font text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 leading-[0.85] flex"
+                                    style={{ x: mousePosition.x * 0.5, y: mousePosition.y * 0.5 }}
+                                    className="text-5xl sm:text-7xl md:text-9xl lg:text-[11rem] brand-font text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 text-glow-blue leading-[0.85] flex"
                                 >
-                                    MYSTERIOUS
+                                    {"MYSTERIOUS".split('').map((char, i) => (
+                                        <motion.span
+                                            key={i}
+                                            animate={{ opacity: [0, 0, 1, 1, 0, 0] }}
+                                            transition={{
+                                                duration: 6,
+                                                times: [0, (i * 0.15) / 6, (i * 0.15 + 0.1) / 6, 0.8, 0.85, 1],
+                                                repeat: Infinity,
+                                                ease: "linear"
+                                            }}
+                                        >
+                                            {char}
+                                        </motion.span>
+                                    ))}
                                 </motion.span>
                                 <motion.span
-                                    className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-2 md:mt-4 leading-[0.85] flex"
+                                    style={{ x: mousePosition.x * -0.5, y: mousePosition.y * -0.5 }}
+                                    className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-2 md:mt-4 text-glow-purple leading-[0.85] flex"
                                 >
-                                    CLASSROOM
+                                    {"CLASSROOM".split('').map((char, i) => (
+                                        <motion.span
+                                            key={i}
+                                            animate={{ opacity: [0, 0, 1, 1, 0, 0] }}
+                                            transition={{
+                                                duration: 6,
+                                                times: [0, ((i + 10) * 0.15) / 6, ((i + 10) * 0.15 + 0.1) / 6, 0.8, 0.85, 1],
+                                                repeat: Infinity,
+                                                ease: "linear"
+                                            }}
+                                        >
+                                            {char}
+                                        </motion.span>
+                                    ))}
                                 </motion.span>
                             </h1>
 
