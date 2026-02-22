@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, Users, Star, BookOpen, CheckCircle, PlayCircle } from
 import AlgoCourse from '../courses/algo/AlgoCourse';
 import CCourse from '../courses/c/CCourse';
 import BashCourse from '../courses/bash/BashCourse';
+import ComingSoon from '../components/ComingSoon';
 
 const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
     const { courseId } = useParams();
@@ -86,8 +87,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                 const courseData = await response.json();
                 setCourse(courseData);
             } else {
-                setToast({ message: 'Cours non trouvé', type: 'error' });
-                navigate(user?.role === 'admin' ? '/admin' : '/dashboard');
+                setCourse(null);
             }
         } catch (error) {
             console.error('Erreur:', error);
@@ -115,8 +115,11 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
 
     if (!course && normalizedCourseId !== 'algo' && normalizedCourseId !== 'c' && normalizedCourseId !== 'bash') {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="text-white">Cours non trouvé</div>
+            <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
+                <ComingSoon
+                    title="Cours en préparation"
+                    message="Oups ! Ce cours n'a pas encore été ouvert par nos professeurs. Un peu de patience, il arrive bientôt !"
+                />
             </div>
         );
     }
@@ -155,7 +158,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
             <div className="max-w-6xl mx-auto p-6 pt-24 relative z-10">
                 {/* Header */}
                 <button
-                    onClick={() => navigate(user?.role === 'admin' ? '/admin' : '/dashboard')}
+                    onClick={() => navigate(-1)}
                     className="flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-8 transition group"
                 >
                     <ArrowLeft size={20} className="group-hover:-translate-x-1 transition" />

@@ -12,11 +12,11 @@ const InteractiveInsight = ({ prompt, answer }) => {
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full text-left p-5 rounded-2xl border transition-all flex items-center justify-between ${isOpen ? 'bg-slate-800 border-slate-700 rounded-b-none' : 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 shadow-sm'}`}
       >
-        <span className="font-bold text-green-400 flex items-center gap-3">
-          <HelpCircle size={20} className={isOpen ? 'text-green-400' : 'text-slate-500'} />
+        <span className="font-bold text-green-600 dark:text-green-400 flex items-center gap-3">
+          <HelpCircle size={20} className={isOpen ? 'text-green-600 dark:text-green-500' : 'text-slate-400'} />
           {prompt}
         </span>
-        <ChevronDown size={20} className={`text-slate-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown size={20} className={`text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
       <AnimatePresence>
         {isOpen && (
@@ -26,8 +26,8 @@ const InteractiveInsight = ({ prompt, answer }) => {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="p-6 bg-slate-900/50 border border-t-0 border-slate-700 rounded-b-2xl">
-              <p className="text-slate-300 font-medium ">{answer}</p>
+            <div className="p-6 bg-slate-50 dark:bg-slate-900/50 border border-t-0 border-slate-200 dark:border-slate-700 rounded-b-2xl">
+              <p className="text-slate-600 dark:text-slate-300 font-medium ">{answer}</p>
             </div>
           </motion.div>
         )}
@@ -53,16 +53,16 @@ const TheoryViewer = ({ title, content, onComplete }) => {
   const renderContent = (text) => {
     return text.split('\n').map((line, idx) => {
       const trimmed = line.trim();
-      if (trimmed.startsWith('# ')) return <h1 key={idx} className="text-2xl md:text-3xl font-black text-white mb-6 mt-4 italic tracking-tighter uppercase">{trimmed.replace('# ', '')}</h1>;
-      if (trimmed.startsWith('## ')) return <h2 key={idx} className="text-xl md:text-2xl font-black text-green-500 mb-4 mt-6 italic tracking-tight uppercase">{trimmed.replace('## ', '')}</h2>;
-      if (trimmed.startsWith('### ')) return <h3 key={idx} className="text-lg md:text-xl font-black text-slate-200 mb-3 mt-5 uppercase">{trimmed.replace('### ', '')}</h3>;
+      if (trimmed.startsWith('# ')) return <h1 key={idx} className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-6 mt-4 italic tracking-tighter uppercase">{trimmed.replace('# ', '')}</h1>;
+      if (trimmed.startsWith('## ')) return <h2 key={idx} className="text-xl md:text-2xl font-black text-green-600 dark:text-green-500 mb-4 mt-6 italic tracking-tight uppercase">{trimmed.replace('## ', '')}</h2>;
+      if (trimmed.startsWith('### ')) return <h3 key={idx} className="text-lg md:text-xl font-black text-slate-700 dark:text-slate-200 mb-3 mt-5 uppercase">{trimmed.replace('### ', '')}</h3>;
       if (trimmed.startsWith('> ')) return (
-        <blockquote key={idx} className="border-l-4 border-green-500 pl-6 italic text-slate-300 my-6 bg-slate-800/50 p-6 rounded-r-3xl text-base shadow-sm">
+        <blockquote key={idx} className="border-l-4 border-green-500 pl-6 italic text-slate-600 dark:text-slate-300 my-6 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-r-3xl text-base shadow-sm">
           {renderRichText(trimmed.replace('> ', ''))}
         </blockquote>
       );
       if (trimmed.startsWith('* ')) {
-        return <li key={idx} className="ml-4 md:ml-8 list-disc text-slate-300 mb-2 text-sm md:text-base font-medium">{renderRichText(trimmed.replace('* ', ''))}</li>;
+        return <li key={idx} className="ml-4 md:ml-8 list-disc text-slate-600 dark:text-slate-300 mb-2 text-sm md:text-base font-medium">{renderRichText(trimmed.replace('* ', ''))}</li>;
       }
       if (trimmed.startsWith('[?] ')) {
         const parts = trimmed.replace('[?] ', '').split('|');
@@ -83,13 +83,13 @@ const TheoryViewer = ({ title, content, onComplete }) => {
         }
       }
 
-      return <p key={idx} className="text-slate-300 leading-relaxed mb-6 text-base md:text-lg font-medium">{renderRichText(line)}</p>;
+      return <p key={idx} className="text-slate-600 dark:text-slate-300 leading-relaxed mb-6 text-base md:text-lg font-medium">{renderRichText(line)}</p>;
     });
   };
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 pb-24 h-full">
-      <div className="bg-slate-900/40 p-4 md:p-8 rounded-3xl border border-slate-700/50 backdrop-blur-sm shadow-sm">
+      <div className="bg-white dark:bg-slate-900/40 p-4 md:p-8 rounded-3xl border border-slate-200 dark:border-slate-700/50 backdrop-blur-sm shadow-sm font-sans">
         {renderContent(content)}
       </div>
     </div>
@@ -129,16 +129,20 @@ const ModalTheoryViewer = ({ title, content, onComplete }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
-          <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white to-transparent pointer-events-none" />
           <TheoryViewer
             title={title}
             content={content}
             onComplete={() => { }}
           />
-          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent pointer-events-none" />
         </div>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end">
+        <div className="p-6 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row justify-end items-center gap-4">
+          <button
+            onClick={() => onComplete(false)}
+            className="w-full sm:w-auto px-8 py-4 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl font-bold transition-all text-sm"
+          >
+            Quitter sans valider
+          </button>
           <button
             onClick={() => onComplete(true)}
             disabled={!canValidate}
@@ -224,12 +228,18 @@ const ModalPracticeViewer = ({ lesson, onComplete }) => {
           </div>
         </div>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-4">
+        <div className="p-6 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row justify-end items-center gap-4">
+          <button
+            onClick={() => onComplete(false)}
+            className="w-full sm:w-auto px-8 py-4 bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl font-bold transition-all text-sm"
+          >
+            Quitter sans valider
+          </button>
           <button
             onClick={handleValidate}
             disabled={isRunning}
             className={`
-              flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all
+              w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-white transition-all
               ${isRunning ? 'bg-slate-400' : 'bg-green-600 hover:bg-green-500 shadow-lg shadow-green-500/30'}
             `}
           >

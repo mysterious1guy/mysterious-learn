@@ -35,7 +35,6 @@ import { API_URL } from './config';
 import { SoundProvider } from './context/SoundContext';
 
 function App() {
-  const { theme } = useTheme();
   const [user, setUser] = useLocalStorage('user', null);
   const [toast, setToast] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -176,7 +175,7 @@ function App() {
           <Router>
             <ScrollToTop />
             <div className="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
-              <Particles theme={theme} />
+              <Particles />
 
               <AnimatePresence>
                 {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}

@@ -137,7 +137,7 @@ const TheoryViewer = ({ title, content, onComplete }) => {
 
   return (
     <div className="max-w-4xl mx-auto p-0 md:p-8 pb-24 h-full">
-      <div className="bg-white/40 p-4 md:p-8 rounded-3xl border border-slate-200 backdrop-blur-sm shadow-sm">
+      <div className="bg-white/40 p-4 md:p-8 rounded-3xl border border-slate-200 backdrop-blur-md shadow-sm">
         <div className="flex items-center gap-3 mb-8 border-b border-slate-100 pb-4">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900">{title}</h2>
         </div>
@@ -150,22 +150,30 @@ const TheoryViewer = ({ title, content, onComplete }) => {
           <div>
             <h4 className="text-xl font-bold text-slate-900 mb-2">Prêt pour la suite ?</h4>
             <p className="text-slate-500 text-sm max-w-md">
-              Si tu as bien assimilé ces concepts, clique sur le bouton ci-dessous pour valider cette étape.
+              Si tu as bien assimilé ces concepts, clique sur le bouton ci-dessous pour valider cette étape. Tu peux aussi quitter sans valider.
             </p>
           </div>
-          <button
-            onClick={() => {
-              const event = new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: "C'est compris ! Ton apprentissage avance bien." }
-              });
-              window.dispatchEvent(event);
-              onComplete(true);
-            }}
-            className="px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(59,130,246,0.1)] hover:shadow-[0_15px_30px_rgba(59,130,246,0.2)] hover:scale-105 active:scale-95 flex items-center gap-3 group"
-          >
-            <Sparkles size={20} className="group-hover:animate-pulse" />
-            J'ai compris !
-          </button>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <button
+              onClick={() => {
+                const event = new CustomEvent('mysterious-ai-murmur', {
+                  detail: { text: "C'est compris ! Ton apprentissage avance bien." }
+                });
+                window.dispatchEvent(event);
+                onComplete(true);
+              }}
+              className="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-[0_10px_20px_rgba(59,130,246,0.1)] hover:shadow-[0_15px_30px_rgba(59,130,246,0.2)] hover:scale-105 active:scale-95 flex items-center gap-3 group"
+            >
+              <Sparkles size={20} className="group-hover:animate-pulse" />
+              J'ai compris !
+            </button>
+            <button
+              onClick={() => onComplete(false)}
+              className="px-8 py-4 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-bold rounded-2xl transition-all"
+            >
+              Quitter sans valider
+            </button>
+          </div>
         </div>
       </div>
     </div>

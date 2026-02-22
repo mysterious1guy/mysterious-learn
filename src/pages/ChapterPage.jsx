@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Trophy } from 'lucide-react';
+import { ArrowLeft, Trophy, ChevronRight } from 'lucide-react';
 import InteractiveModule from '../components/InteractiveModule';
 import Confetti from 'react-confetti';
+import ComingSoon from '../components/ComingSoon';
 
 const ChapterPage = ({ user, API_URL, setToast, fetchProgressions }) => {
     const { courseId, chapterIndex } = useParams();
@@ -31,8 +32,7 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions }) => {
                 const courseData = await response.json();
                 setCourse(courseData);
             } else {
-                setToast({ message: 'Cours non trouvé', type: 'error' });
-                navigate('/dashboard');
+                setCourse(null);
             }
         } catch (error) {
             console.error('Erreur:', error);
@@ -42,15 +42,21 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions }) => {
         }
     };
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center text-white">Chargement...</div>;
-    if (!course) return <div className="min-h-screen flex items-center justify-center text-white">Cours introuvable</div>;
+    if (loading) return <div className="min-h-screen flex items-center justify-center text-white bg-slate-950">Chargement...</div>;
+    if (!course) return (
+        <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
+            <ComingSoon />
+        </div>
+    );
 
     const chapter = course.chapters[parseInt(chapterIndex)];
     if (!chapter || !chapter.modules) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center text-white gap-4">
-                <p>Ce chapitre n'est pas encore interactif.</p>
-                <button onClick={() => navigate(`/course/${courseId}`)} className="px-4 py-2 bg-blue-600 rounded-lg">Retour</button>
+            <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
+                <ComingSoon
+                    title="Chapitre en construction"
+                    message="Désolé ! Ce chapitre n'est pas encore interactif. Nos équipes travaillent pour le rendre disponible très bientôt."
+                />
             </div>
         );
     }

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from './context/ThemeContext';
 
 class Particle {
   constructor(canvas, ctx, theme) {
@@ -61,7 +62,8 @@ class Particle {
   }
 }
 
-const Particles = ({ theme }) => {
+const Particles = () => {
+  const { theme } = useTheme();
   const canvasRef = useRef(null);
 
   useEffect(() => {
