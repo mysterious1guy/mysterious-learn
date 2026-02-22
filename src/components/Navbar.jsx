@@ -21,8 +21,8 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
             to={user ? "/dashboard" : "/"}
             className="flex items-center gap-2 sm:gap-3 cursor-pointer group min-w-0"
           >
-            <MysteriousGeometricLogo className="w-6 h-6 sm:w-8 sm:h-8 group-hover:rotate-180 transition-transform duration-700 shrink-0" />
-            <span className="font-black text-[11px] sm:text-lg tracking-tighter bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent truncate">
+            <MysteriousGeometricLogo className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12 group-hover:rotate-180 transition-transform duration-700 shrink-0" />
+            <span className="font-black text-[11px] sm:text-xl md:text-2xl tracking-tighter bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent truncate">
               MYSTERIOUS CLASSROOM
             </span>
           </Link>
