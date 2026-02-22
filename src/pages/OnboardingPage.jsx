@@ -1,3 +1,10 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+    User, TrendingUp, Palette, ShieldCheck, Bot,
+    Check, ArrowRight, Monitor, Zap, Cpu,
+    Moon, Sun, Globe, Volume2, VolumeX
+} from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useSound } from '../context/SoundContext';
