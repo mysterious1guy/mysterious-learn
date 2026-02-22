@@ -598,7 +598,7 @@ const CCourse = ({ onClose, user, API_URL, fetchProgressions }) => {
                   <X size={24} />
                 </button>
               </div>
-              <div className="flex-1 overflow-hidden bg-white rounded-3xl m-2 md:m-4 mt-16 md:mt-20">
+              <div className="flex-1 overflow-y-auto custom-scrollbar bg-white rounded-3xl m-2 md:m-4 mt-16 md:mt-20">
                 {activeLesson.type === 'theory' && (
                   <TheoryViewer
                     title={activeLesson.title}

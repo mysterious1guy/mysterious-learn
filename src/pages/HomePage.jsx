@@ -124,7 +124,7 @@ const HomePage = ({ API_URL }) => {
                                 </motion.span>
                                 <motion.span
                                     style={{ x: mousePosition.x * -0.5, y: mousePosition.y * -0.5 }}
-                                    className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-2 md:mt-4 text-glow-purple drop-shadow-[0_0_50px_rgba(168,85,247,0.4)] leading-[0.85] flex"
+                                    className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mt-2 md:mt-4 text-glow-purple leading-[0.85] flex"
                                 >
                                     {"CLASSROOM".split('').map((char, i) => (
                                         <motion.span
