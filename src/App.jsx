@@ -29,6 +29,7 @@ import { Toast } from './components/Toast';
 import Particles from './Particles';
 import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 import { API_URL } from './config';
 
@@ -170,6 +171,7 @@ function App() {
     <ThemeProvider>
       <LanguageProvider>
         <Router>
+          <ScrollToTop />
           <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
             <Particles theme="dark" />
 
