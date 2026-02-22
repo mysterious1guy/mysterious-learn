@@ -930,7 +930,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                             newBio[index] = e.target.value;
                             setConfig({ ...config, creatorBio: newBio });
                           }}
-                          className="flex-1 p-3 bg-slate-950 border border-slate-800 rounded-2xl outline-none"
+                          className="flex-1 p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl outline-none text-slate-900 dark:text-white shadow-inner dark:shadow-none transition-all"
                         />
                         <button
                           onClick={() => {
