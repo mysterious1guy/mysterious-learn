@@ -5,8 +5,9 @@ import { ArrowLeft, Trophy, ChevronRight } from 'lucide-react';
 import InteractiveModule from '../components/InteractiveModule';
 import Confetti from 'react-confetti';
 import ComingSoon from '../components/ComingSoon';
+import { coursesData } from '../courses/data.jsx';
 
-const ChapterPage = ({ user, API_URL, setToast, fetchProgressions }) => {
+const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions }) => {
     const { courseId, chapterIndex } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
@@ -19,11 +20,47 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions }) => {
 
     useEffect(() => {
         fetchCourse();
+    }, [courseId]);
 
+    useEffect(() => {
         const handleResize = () => setWindowDimensions({ width: window.innerWidth, height: window.innerHeight });
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    }, [courseId]);
+    }, []);
+
+    useEffect(() => {
+        if (!course || !user || !progressions) return;
+
+        // Tous les débutants sont débloqués par défaut
+        if (course.level === 'Débutant') return;
+
+        // Si l'utilisateur l'a débloqué individuellement
+        if (user?.unlockedCourses?.includes(course.id)) return;
+
+        let targetLevelToCheck = '';
+        if (course.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
+        if (course.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
+
+        if (!targetLevelToCheck) return;
+
+        let unlocked = false;
+        for (const cat of coursesData) {
+            if (cat.items.some(i => i.id === course.id)) {
+                const reqCourse = cat.items.find(i => i.level === targetLevelToCheck);
+                if (reqCourse) {
+                    const reqProgress = progressions?.[reqCourse.id]?.progress || 0;
+                    if (reqProgress >= 100) unlocked = true;
+                } else {
+                    unlocked = true;
+                }
+            }
+        }
+
+        if (!unlocked) {
+            if (setToast) setToast({ message: "Vous devez terminer le niveau précédent pour accéder à ce cours.", type: 'warning' });
+            navigate('/dashboard', { replace: true });
+        }
+    }, [course, user, progressions, navigate, setToast]);
 
     const fetchCourse = async () => {
         try {
@@ -161,16 +198,16 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions }) => {
                             <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full flex items-center justify-center mx-auto shadow-xl shadow-yellow-500/20 mb-6">
                                 <Trophy className="w-10 h-10 text-white" />
                             </div>
-                            <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Chapitre Terminé !</h2>
-                            <p className="text-slate-400 text-lg max-w-md mx-auto">
-                                Excellent travail ! Tu as débloqué de nouvelles connaissances. Prêt pour la suite ?
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Chapitre Terminé !</h2>
+                            <p className="text-slate-600 text-lg max-w-md mx-auto font-medium">
+                                Quel talent ! Tu as débloqué de nouvelles connaissances indispensables. Prêt(e) pour le prochain défi ?
                             </p>
 
                             <button
                                 onClick={() => navigate(`/course/${courseId}`)}
-                                className="mt-8 px-8 py-4 bg-blue-600 hover:bg-blue-500 font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25"
+                                className="mt-8 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center mx-auto gap-2 group transform hover:-translate-y-1"
                             >
-                                Retour au plan du cours
+                                Retour au plan du cours <ArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                             </button>
                         </motion.div>
                     )}

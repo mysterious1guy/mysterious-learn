@@ -12,8 +12,7 @@ import HomePage from './pages/HomePage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import AuthPage from './pages/AuthPage';
-import CallbackPage from './pages/CallbackPage'; // ← AJOUTÉ
-import OnboardingPage from './pages/OnboardingPage';
+import CallbackPage from './pages/CallbackPage';
 import DashboardPage from './pages/DashboardPage';
 import AccountPage from './pages/AccountPage';
 import CoursePage from './pages/CoursePage';
@@ -200,19 +199,6 @@ function App() {
                   } />
                   {/* Route Admin Login */}
                   <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />
-
-                  {/* Onboarding Flow: Requires auth, but not explicitly MainLayout yet */}
-                  <Route path="/onboarding" element={
-                    user ? (
-                      user.hasCompletedOnboarding ? (
-                        <Navigate to="/dashboard" replace />
-                      ) : (
-                        <OnboardingPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
-                      )
-                    ) : (
-                      <Navigate to="/auth" replace />
-                    )
-                  } />
                 </Route>
 
                 <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} onSearch={setSearchQuery} />}>
@@ -223,6 +209,7 @@ function App() {
                       user.hasCompletedOnboarding ? (
                         <DashboardPage
                           user={user}
+                          setUser={handleUpdateUser}
                           favorites={favorites}
                           toggleFavorite={handleToggleFavorite}
                           progressions={progressions}
@@ -231,7 +218,7 @@ function App() {
                           searchQuery={searchQuery}
                         />
                       ) : (
-                        <Navigate to="/onboarding" replace />
+                        <Navigate to="/dashboard" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -252,7 +239,7 @@ function App() {
                           setToast={setToast}
                         />
                       ) : (
-                        <Navigate to="/onboarding" replace />
+                        <Navigate to="/dashboard" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -267,9 +254,10 @@ function App() {
                           API_URL={API_URL}
                           setToast={setToast}
                           fetchProgressions={fetchProgressions}
+                          progressions={progressions}
                         />
                       ) : (
-                        <Navigate to="/onboarding" replace />
+                        <Navigate to="/dashboard" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -284,9 +272,10 @@ function App() {
                           API_URL={API_URL}
                           setToast={setToast}
                           fetchProgressions={fetchProgressions}
+                          progressions={progressions}
                         />
                       ) : (
-                        <Navigate to="/onboarding" replace />
+                        <Navigate to="/dashboard" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -303,7 +292,7 @@ function App() {
                           setToast={setToast}
                         />
                       ) : (
-                        <Navigate to="/onboarding" replace />
+                        <Navigate to="/dashboard" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />

@@ -826,22 +826,6 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     </div>
                   ))}
 
-                  {/* Card for AlgoCourse specifically as it might not be in the Mongo DB depending on the seed */}
-                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 shadow-sm dark:shadow-xl group hover:border-purple-500/50 transition-all flex flex-col relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/5 blur-3xl rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150"></div>
-                    <div className="flex justify-between items-start mb-6">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10 px-3 py-1.5 rounded-full border border-purple-100 dark:border-purple-500/20">Fondamentaux</span>
-                      <button onClick={() => navigate(`/course/algo`)} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all shadow-sm" title="Voir le cours">
-                        <Eye size={18} />
-                      </button>
-                    </div>
-                    <h3 className="text-xl font-black text-slate-800 dark:text-white mb-3">Algorithmique</h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 line-clamp-2 flex-grow leading-relaxed">Mondial Algo Grimoire - Le cours interactif ultime pour comprendre la logique.</p>
-                    <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-white/40 pt-6 border-t border-slate-100 dark:border-slate-800">
-                      <div className="flex items-center gap-2"><BookOpen size={14} className="text-purple-500" /> 7 modules</div>
-                      <div className="flex items-center gap-2"><Users size={14} className="text-blue-500" /> Débutant</div>
-                    </div>
-                  </div>
 
                   {courses.length === 0 && (
                     <div className="col-span-full h-64 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-[3rem] text-slate-600">

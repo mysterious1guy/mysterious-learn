@@ -1,0 +1,3368 @@
+[
+  {
+    "title": "Algorithmique - Niveau Débutant",
+    "description": "Plongez dans les bases de l'algorithmique. Apprenez à penser comme un ordinateur, à structurer votre logique et à résoudre des problèmes simples étape par étape.",
+    "category": "Théorie",
+    "level": "Débutant",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1516116216624-98e6e351d85e?w=800&q=80",
+    "rating": 4.9,
+    "students": 12050,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "algorithme",
+      "logique",
+      "débutant",
+      "bases"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et Pensée Logique",
+        "description": "Découvrez ce qu'est un algorithme au travers d'exemples de la vie courante.",
+        "order": 1,
+        "duration": "2 heures",
+        "content": "Un algorithme n'est rien d'autre qu'une suite d'instructions précises pour accomplir une tâche. Pensez à une recette de cuisine : vous avez des ingrédients (les données en entrée), une série d'étapes (le traitement) et un plat final (le résultat en sortie). Dans ce chapitre, nous allons déconstruire des actions quotidiennes pour comprendre comment un ordinateur 'pense'. L'objectif est de vous familiariser avec la séquentialité et la précision requises en programmation.",
+        "objectives": [
+          "Comprendre la définition d'un algorithme",
+          "Décomposer une tâche en étapes logiques",
+          "Identifier les entrées et sorties"
+        ],
+        "exercises": [
+          {
+            "title": "La recette de cuisine algorithmique",
+            "description": "Écrivez les étapes séquentielles pour faire cuire des pâtes, en incluant des conditions (ex: si l'eau bout).",
+            "difficulty": "Facile",
+            "solution": "1. Prendre une casserole\n2. Mettre de l'eau\n3. Chauffer\n4. SI l'eau bout ALORS mettre les pâtes\n5. Attendre 10 min\n6. Égoutter",
+            "hints": [
+              "Pensez à chaque petite action",
+              "N'oubliez pas les conditions (SI... ALORS...)"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "C'est quoi un algorithme ?",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/6iZiqQZBQNY"
+          }
+        ]
+      },
+      {
+        "title": "Variables et Types de Données",
+        "description": "Comment stocker l'information en mémoire pour la réutiliser.",
+        "order": 2,
+        "duration": "3 heures",
+        "content": "Pour manipuler des données, un algorithme doit les stocker. Nous utilisons pour cela des 'variables'. Une variable est comme une boîte portant une étiquette (son nom) et contenant un objet (sa valeur). Cette valeur peut être de différents types : un nombre entier, un nombre à virgule, du texte (chaîne de caractères) ou un booléen (Vrai ou Faux). Bien nommer ses variables est la première étape vers un code propre et compréhensible.",
+        "objectives": [
+          "Déclarer une variable",
+          "Différencier les types de données fondamentaux",
+          "Affecter et modifier des valeurs"
+        ],
+        "exercises": [
+          {
+            "title": "Échange de valeurs",
+            "description": "Soit A = 5 et B = 10. Écrivez un algorithme pour échanger leurs valeurs en utilisant une variable temporaire C.",
+            "difficulty": "Moyen",
+            "solution": "C = A\nA = B\nB = C",
+            "hints": [
+              "Utilisez une troisième 'boîte' (variable) pour ne pas perdre la valeur de A."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Comprendre les variables",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/ZiaJ0tBwEw0"
+          },
+          {
+            "title": "Testez vos variables (Terminal)",
+            "type": "code",
+            "url": "sandbox://algo/variables"
+          }
+        ]
+      },
+      {
+        "title": "Les Conditions (Si, Sinon)",
+        "description": "Apprenez à votre algorithme à prendre des décisions.",
+        "order": 3,
+        "duration": "4 heures",
+        "content": "Un programme linéaire fait toujours la même chose. Pour le rendre intelligent, il faut qu'il s'adapte aux données. C'est le rôle des structures conditionnelles (SI condition ALORS action SINON autre action). Nous allons explorer les opérateurs de comparaison (égal, différent, plus grand que) et les opérateurs logiques (ET, OU, NON) pour construire des conditions complexes.",
+        "objectives": [
+          "Utiliser IF/ELSE",
+          "Maîtriser les opérateurs logiques",
+          "Imbriquer des conditions"
+        ],
+        "exercises": [
+          {
+            "title": "Vérification de majorité",
+            "description": "Créez un algorithme qui demande l'âge de l'utilisateur et affiche s'il est majeur ou mineur.",
+            "difficulty": "Facile",
+            "solution": "LIRE age\nSI age >= 18 ALORS\n  AFFICHER 'Majeur'\nSINON\n  AFFICHER 'Mineur'\nFIN SI",
+            "hints": [
+              "L'âge de la majorité est 18 ans."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les structures conditionnelles",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/0B2k5E4bZJ4"
+          }
+        ]
+      },
+      {
+        "title": "Les Boucles (Tant Que, Pour)",
+        "description": "Répéter des actions de manière efficace.",
+        "order": 4,
+        "duration": "6 heures",
+        "content": "Les ordinateurs sont excellents pour répéter des tâches sans se fatiguer. Les boucles (POUR, TANT QUE) permettent d'exécuter un bloc d'instructions plusieurs fois. La boucle POUR est utilisée quand on connaît le nombre de répétitions à l'avance. La boucle TANT QUE est utilisée quand on répète jusqu'à ce qu'une condition soit remplie (attention aux boucles infinies !).",
+        "objectives": [
+          "Mettre en place une boucle FOR",
+          "Mettre en place une boucle WHILE",
+          "Éviter les boucles infinies"
+        ],
+        "exercises": [
+          {
+            "title": "Compte à rebours",
+            "description": "Faites un algorithme qui affiche les nombres de 10 à 1 en utilisant une boucle TANT QUE.",
+            "difficulty": "Moyen",
+            "solution": "N = 10\nTANT QUE N > 0 FAIRE\n  AFFICHER N\n  N = N - 1\nFIN TANT QUE\nAFFICHER 'Décollage'",
+            "hints": [
+              "N'oubliez pas de décrémenter (réduire) N à chaque tour."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Comprendre les boucles",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/9Bv_A0M2M1Y"
+          }
+        ]
+      }
+    ],
+    "_id": "course_1",
+    "id": "course_1"
+  },
+  {
+    "title": "Algorithmique - Niveau Intermédiaire",
+    "description": "Passez à la vitesse supérieure. Découvrez les structures de données complexes et les algorithmes de tri classiques.",
+    "category": "Théorie",
+    "level": "Intermédiaire",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+    "rating": 4.8,
+    "students": 8540,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "algorithme",
+      "tableaux",
+      "tris",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Les Tableaux (Arrays)",
+        "description": "Stocker et parcourir des listes de données.",
+        "order": 1,
+        "duration": "5 heures",
+        "content": "Jusqu'à présent, une variable stockait une seule valeur. Un tableau permet de stocker une collection ordonnée de valeurs sous un seul nom de variable. Chaque élément est accessible via son 'index' (sa position). Nous verrons comment parcourir un tableau avec une boucle POUR, comment trouver le maximum, le minimum, ou calculer la moyenne des éléments.",
+        "objectives": [
+          "Déclarer et initialiser un tableau",
+          "Accéder aux éléments par leur index",
+          "Parcourir un tableau avec une boucle"
+        ],
+        "exercises": [
+          {
+            "title": "Recherche du maximum",
+            "description": "Écrire un algorithme qui trouve la plus grande valeur dans un tableau d'entiers naturels non vides T de taille N.",
+            "difficulty": "Moyen",
+            "solution": "Max = T[0]\nPOUR i ALLANT DE 1 A N-1 FAIRE\n  SI T[i] > Max ALORS\n    Max = T[i]\n  FIN SI\nFIN POUR\nAFFICHER Max",
+            "hints": [
+              "Initialisez votre variable Max avec le premier élément du tableau."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les Tableaux expliqués",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/5mFpPbcXgB0"
+          }
+        ]
+      },
+      {
+        "title": "Les Fonctions et Procédures",
+        "description": "Modularisez votre code pour le rendre réutilisable.",
+        "order": 2,
+        "duration": "5 heures",
+        "content": "Dès qu'un algorithme devient long, il faut le diviser en sous-programmes appelés fonctions ou procédures. Une fonction prend des entrées (paramètres), effectue un calcul, et retourne une sortie (valeur de retour). Cela permet de ne pas se répéter (principe DRY : Don't Repeat Yourself) et de rendre le code beaucoup plus lisible.",
+        "objectives": [
+          "Créer une fonction avec paramètres",
+          "Comprendre la portée (scope) des variables",
+          "Retourner une valeur"
+        ],
+        "exercises": [
+          {
+            "title": "Fonction addition",
+            "description": "Créez une fonction 'Somme' qui prend deux paramètres A et B et retourne leur somme.",
+            "difficulty": "Facile",
+            "solution": "FONCTION Somme(A, B)\n  RETOURNER A + B\nFIN FONCTION",
+            "hints": [
+              "N'oubliez pas le mot-clé RETOURNER."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Fonctions en programmation",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/8vOaO9I8WJU"
+          }
+        ]
+      },
+      {
+        "title": "Algorithmes de Tri Fondamentaux",
+        "description": "Comment ordonner efficacement des données.",
+        "order": 3,
+        "duration": "10 heures",
+        "content": "Trier des données est l'un des problèmes les plus classiques en informatique. Nous allons étudier plusieurs algorithmes de tri simples : le tri à bulles (Bubble Sort), le tri par sélection (Selection Sort) et le tri par insertion (Insertion Sort). Pour chacun, nous analyserons son fonctionnement étape par étape et sa logique.",
+        "objectives": [
+          "Comprendre le Tri à bulles",
+          "Comprendre le Tri par sélection",
+          "Appliquer ces tris sur un tableau"
+        ],
+        "exercises": [
+          {
+            "title": "Tri à bulles",
+            "description": "Écrivez le pseudo-code du tri à bulles pour trier un tableau T de taille N dans l'ordre croissant.",
+            "difficulty": "Difficile",
+            "solution": "POUR i ALLANT DE 0 A N-1 FAIRE\n  POUR j ALLANT DE 0 A N-i-2 FAIRE\n    SI T[j] > T[j+1] ALORS\n      Echanger(T[j], T[j+1])\n    FIN SI\n  FIN POUR\nFIN POUR",
+            "hints": [
+              "Comparez les éléments adjacents et échangez-les s'ils sont dans le mauvais ordre."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Comprendre les algorithmes de tri",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/kgBjXUE_Nwc"
+          }
+        ]
+      }
+    ],
+    "_id": "course_2",
+    "id": "course_2"
+  },
+  {
+    "title": "Algorithmique - Niveau Expert (Avancé)",
+    "description": "Maîtrisez la complexité algorithmique, la récursivité et les arbres. Devenez un pur ingénieur logiciel.",
+    "category": "Théorie",
+    "level": "Avancé",
+    "duration": "25 heures",
+    "image": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&q=80",
+    "rating": 5,
+    "students": 4200,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "algorithme",
+      "avancé",
+      "récursivité",
+      "arbres",
+      "complexité"
+    ],
+    "chapters": [
+      {
+        "title": "Complexité Algorithmique (Big O)",
+        "description": "Évaluez les performances de vos algorithmes.",
+        "order": 1,
+        "duration": "5 heures",
+        "content": "Un programme qui fonctionne n'est pas toujours un *bon* programme. S'il met 10 ans à trier un milliard de données, il est inutile. La notation Big O permet d'évaluer la complexité temporelle (en temps) et spatiale (en mémoire) d'un algorithme asymptotiquement. Nous étudierons O(1), O(n), O(n^2), O(log n) et O(n log n).",
+        "objectives": [
+          "Comprendre la notation Big O",
+          "Calculer la complexité d'un algorithme simple",
+          "Optimiser le temps d'exécution"
+        ],
+        "exercises": [
+          {
+            "title": "Calcul de complexité",
+            "description": "Quelle est la complexité du Tri à Bulles vu au niveau intermédiaire ?",
+            "difficulty": "Moyen",
+            "solution": "O(n^2) car il y a deux boucles POUR imbriquées qui dépendent de la taille N du tableau.",
+            "hints": [
+              "Regardez le nombre de boucles imbriquées."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "La notation Grand O",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/v4cd1O4zkGw"
+          }
+        ]
+      },
+      {
+        "title": "La Récursivité",
+        "description": "Quand une fonction s'appelle elle-même.",
+        "order": 2,
+        "duration": "8 heures",
+        "content": "La récursivité est une méthode de programmation où une fonction fait appel à elle-même pour résoudre une plus petite instance du même problème. Il est crucial d'avoir une 'condition d'arrêt' (cas de base) pour éviter une boucle de pile infinie (Stack Overflow). Nous verrons des classiques comme le calcul de factorielle ou la suite de Fibonacci.",
+        "objectives": [
+          "Définir un cas de base",
+          "Écrire une fonction récursive",
+          "Comprendre la pile d'exécution (Call Stack)"
+        ],
+        "exercises": [
+          {
+            "title": "Factorielle récursive",
+            "description": "Écrivez une fonction récursive qui calcule la factorielle d'un entier n positif (n!).",
+            "difficulty": "Difficile",
+            "solution": "FONCTION Fact(n)\n  SI n == 0 OU n == 1 ALORS\n    RETOURNER 1\n  SINON\n    RETOURNER n * Fact(n - 1)\n  FIN SI\nFIN FONCTION",
+            "hints": [
+              "Quel est le résultat de Fact(1) ou Fact(0) ? C'est votre cas de base !"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Récursivité expliquée",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/Mv9NEXX1VHc"
+          }
+        ]
+      },
+      {
+        "title": "Tris Avancés et Recherche Dichotomique",
+        "description": "Les algorithmes les plus rapides du monde.",
+        "order": 3,
+        "duration": "12 heures",
+        "content": "Nous abordons ici les algorithmes en O(n log n) comme le Tri Rapide (Quick Sort) et le Tri Fusion (Merge Sort). Ils utilisent l'approche 'Diviser pour Régner' (Divide and Conquer). Nous verrons également comment chercher efficacement un élément dans un tableau trié grâce à la recherche dichotomique (Binary Search), qui élimine la moitié des possibilités à chaque étape (O(log n)).",
+        "objectives": [
+          "Implémenter la recherche dichotomique",
+          "Comprendre le concept Divide and Conquer",
+          "Différencier Merge Sort et Quick Sort"
+        ],
+        "exercises": [
+          {
+            "title": "Recherche Dichotomique",
+            "description": "Faites l'algorithme de recherche dichotomique pour trouver la valeur X dans un tableau T trié.",
+            "difficulty": "Difficile",
+            "solution": "debut = 0, fin = N-1\nTANT QUE debut <= fin FAIRE\n  milieu = (debut + fin) / 2\n  SI T[milieu] == X ALORS RETOURNER milieu\n  SI T[milieu] < X ALORS debut = milieu + 1\n  SINON fin = milieu - 1\nFIN TANT QUE\nRETOURNER -1",
+            "hints": [
+              "Coupez l'intervalle en deux à chaque étape."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "La Recherche Dichotomique",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/P3YcAW7jM"
+          }
+        ]
+      }
+    ],
+    "_id": "course_3",
+    "id": "course_3"
+  },
+  {
+    "title": "Langage C - Niveau Débutant",
+    "description": "Apprenez le langage C, la fondation de nombreux langages modernes (C++, Java, Python). Maitrisez la syntaxe de base, la compilation et l'affichage.",
+    "category": "Programmation",
+    "level": "Débutant",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+    "rating": 4.8,
+    "students": 11020,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "C",
+      "compilation",
+      "débutant",
+      "syntaxe"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et Hello World",
+        "description": "Votre premier programme en C et le processus de compilation.",
+        "order": 1,
+        "duration": "3 heures",
+        "content": "Le C est un langage compilé, inventé dans les années 70. Avant d'exécuter du C, il faut utiliser un 'compilateur' (comme GCC) qui traduit votre code (lisible par vous) en langage machine (lisible par l'ordinateur). Un programme C basique contient toujours la fonction `main()`, qui est le point de départ de l'exécution, et la directive `#include <stdio.h>` pour inclure la bibliothèque standard permettant de faire des affichages.",
+        "objectives": [
+          "Comprendre le rôle du compilateur",
+          "Écrire une structure de base",
+          "Utiliser la fonction printf()"
+        ],
+        "exercises": [
+          {
+            "title": "Mon premier programme",
+            "description": "Écrivez le code complet pour afficher 'Bonjour le monde' suivi d'un retour à la ligne.",
+            "difficulty": "Facile",
+            "solution": "#include <stdio.h>\\n\\nint main() {\\n    printf(\"Bonjour le monde\\\\n\");\\n    return 0;\\n}",
+            "hints": [
+              "N'oubliez pas d'inclure stdio.h et de retourner 0 à la fin de la fonction main."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Introduction au C",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/KJgsSFOSQv0"
+          },
+          {
+            "title": "TerminalInteractif_C",
+            "type": "code",
+            "url": "sandbox://c/hello_world"
+          }
+        ]
+      },
+      {
+        "title": "Variables et Types de Base",
+        "description": "Manipuler les nombres et les lettres en C.",
+        "order": 2,
+        "duration": "4 heures",
+        "content": "En C, vous devez toujours spécifier le type de la variable lors de sa déclaration (on dit que le typage est statique). Les types fondamentaux sont : `int` (entier), `float` et `double` (nombres à virgule), et `char` (un seul caractère). L'affichage des variables avec `printf` nécessite des 'spécificateurs de format' : `%d` pour un int, `%f` pour un float, `%c` pour un char.",
+        "objectives": [
+          "Déclarer des variables",
+          "Utiliser int, float, char",
+          "Afficher et lire des variables (printf / scanf)"
+        ],
+        "exercises": [
+          {
+            "title": "Calcul d'âge",
+            "description": "Déclarez une variable constante pour l'année actuelle, demandez (supposez qu'on utilise scanf) l'année de naissance et calculez l'âge.",
+            "difficulty": "Moyen",
+            "solution": "#include <stdio.h>\\n\\nint main() {\\n    int annee_naissance = 1995;\\n    int age = 2024 - annee_naissance;\\n    printf(\"Vous avez %d ans\\\\n\", age);\\n    return 0;\\n}",
+            "hints": [
+              "Utilisez %d dans votre printf pour afficher un entier."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Variables en C",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/8vRZEZ20l0Q"
+          }
+        ]
+      },
+      {
+        "title": "Opérateurs et Conditions",
+        "description": "Contrôlez le flux de votre programme.",
+        "order": 3,
+        "duration": "4 heures",
+        "content": "Les conditions en C s'écrivent avec les mots clés `if`, `else if` et `else`. Les opérateurs de comparaison sont `==` (égal), `!=` (différent), `>`, `<`, `>=`, `<=`. L'opérateur logique 'ET' est `&&` et l'opérateur 'OU' est `||`. Il faut bien faire attention à utiliser double égal `==` pour la comparaison, le simple `=` est réservé à l'affectation !",
+        "objectives": [
+          "Utiliser les opérateurs logiques",
+          "Écrire des blocs if-else complets",
+          "Comprendre le switch case"
+        ],
+        "exercises": [
+          {
+            "title": "Pair ou Impair",
+            "description": "Affichez 'Pair' si une variable nombre est paire, sinon 'Impair' (utilisez le modulo %).",
+            "difficulty": "Facile",
+            "solution": "int n = 4;\\nif (n % 2 == 0) {\\n    printf(\"Pair\");\\n} else {\\n    printf(\"Impair\");\\n}",
+            "hints": [
+              "L'opérateur modulo % renvoie le reste de la division."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Conditions en C",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/-hK_QWJmU_k"
+          }
+        ]
+      },
+      {
+        "title": "Les Boucles en C",
+        "description": "for, while et do-while.",
+        "order": 4,
+        "duration": "4 heures",
+        "content": "Les boucles for en C ont une syntaxe très compacte : `for (initialisation; condition; incrémentation) { ... }`. Elles sont parfaites quand on connait le nombre exact de tours. La boucle `while (condition) { ... }` tourne tant que la condition est (et reste) vraie. Enfin `do { ... } while (condition);` tourne au moins une fois quoiqu'il arrive.",
+        "objectives": [
+          "Maîtriser la boucle for",
+          "Maîtriser la boucle while",
+          "Savoir éviter les boucles infinies"
+        ],
+        "exercises": [
+          {
+            "title": "Boucle de 1 à 10",
+            "description": "Affichez les nombres de 1 à 10 en utilisant une boucle for.",
+            "difficulty": "Facile",
+            "solution": "for (int i = 1; i <= 10; i++) {\\n    printf(\"%d \", i);\\n}",
+            "hints": [
+              "L'incrémentation typique est i++"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les boucles en C",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/uAlW20z5J6I"
+          },
+          {
+            "title": "Boucle Terminal",
+            "type": "code",
+            "url": "sandbox://c/loops"
+          }
+        ]
+      }
+    ],
+    "_id": "course_4",
+    "id": "course_4"
+  },
+  {
+    "title": "Langage C - Niveau Intermédiaire",
+    "description": "Apprenez les spécificités du bas niveau. Maitrisez la gestion de la mémoire, les pointeurs et les tableaux.",
+    "category": "Programmation",
+    "level": "Intermédiaire",
+    "duration": "25 heures",
+    "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+    "rating": 4.7,
+    "students": 7600,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "C",
+      "pointeurs",
+      "mémoire",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Fonctions et Modularité",
+        "description": "Découpez votre code en multiples fichiers",
+        "order": 1,
+        "duration": "5 heures",
+        "content": "En C, on sépare généralement les déclarations des fonctions de leurs définitions. On place les prototypes (les déclarations) dans des fichiers d'en-tête (fichiers `.h`) et on place le code de la fonction dans des fichiers source (fichiers `.c`). Cela permet de compiler le programme de manière séparée et modulaire.",
+        "objectives": [
+          "Écrire des fonctions en C",
+          "Comprendre les prototypes",
+          "Savoir quoi mettre dans un fichier .h"
+        ],
+        "exercises": [
+          {
+            "title": "Prototype de fonction",
+            "description": "Écrivez le prototype d'une fonction nommée 'calculerSurface' prenant deux nombres à virgule 'largeur' et 'longueur' et retournant un nombre à virgule.",
+            "difficulty": "Facile",
+            "solution": "double calculerSurface(double largeur, double longueur);",
+            "hints": [
+              "N'oubliez pas le point-virgule final pour un prototype."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les fonctions en C",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/3lqxgqaA_H8"
+          }
+        ]
+      },
+      {
+        "title": "Les Pointeurs : Le Cœur du C",
+        "description": "L'apprentissage indispensable pour tout développeur C.",
+        "order": 2,
+        "duration": "10 heures",
+        "content": "Un pointeur est une variable qui stocke non pas une valeur (comme 42), mais **l'adresse mémoire** d'une autre variable. L'opérateur `&` permet de récupérer l'adresse d'une variable. L'opérateur étoile `*` (déréférencement) permet d'accéder à la valeur située à cette adresse. Comprendre les pointeurs est vital pour manipuler les tableaux, passer des variables complexes par référence aux fonctions et gérer l'allocation dynamique.",
+        "objectives": [
+          "Comprendre le concept d'adresse mémoire",
+          "Déclarer et utiliser des pointeurs",
+          "Passer des arguments par référence (par adresse) aux fonctions"
+        ],
+        "exercises": [
+          {
+            "title": "Pointeur simple",
+            "description": "Déclarez une variable a = 10, puis un pointeur 'ptr' qui contient l'adresse de a. Affichez la valeur de a en utilisant uniquement le pointeur.",
+            "difficulty": "Moyen",
+            "solution": "int a = 10;\\nint *ptr = &a;\\nprintf(\"%d\", *ptr);",
+            "hints": [
+              "Utilisez &a pour l'adresse de a, et *ptr pour accéder à sa valeur."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Comprendre enfin les pointeurs",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/zuegQmMdy8M"
+          },
+          {
+            "title": "Pointeurs: Sandbox",
+            "type": "code",
+            "url": "sandbox://c/pointers"
+          }
+        ]
+      },
+      {
+        "title": "Les Tableaux et Chaines de caractères",
+        "description": "Gérer des suites de données et du texte.",
+        "order": 3,
+        "duration": "10 heures",
+        "content": "Un tableau statique en C est une suite contiguë d'éléments de même type. Le nom du tableau correspond en réalité à l'adresse de son premier élément (un pointeur constant). Les chaînes de caractères n'existent pas nativement en tant que 'type string' : ce sont simplement des tableaux de caractères (`char[]`) qui doivent obligatoirement se terminer par le caractère spécial (caractère nul ou fin de chaine) `\\0`.",
+        "objectives": [
+          "Manipuler des tableaux avec des index",
+          "Comprendre le lien tableau/pointeur",
+          "Utiliser strcpy et strlen de string.h"
+        ],
+        "exercises": [
+          {
+            "title": "Tableau de zéros",
+            "description": "Initialisez un tableau d'entiers de taille 10 avec que des zéros, en une seule ligne.",
+            "difficulty": "Facile",
+            "solution": "int tab[10] = {0};",
+            "hints": [
+              "Les accolades permettent d'initialiser rapidement un petit tableau."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Chaines de caractères en C",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/jZ_2X5YhB98"
+          }
+        ]
+      }
+    ],
+    "_id": "course_5",
+    "id": "course_5"
+  },
+  {
+    "title": "Langage C - Niveau Expert (Avancé)",
+    "description": "Programmez sans limites : allocation dynamique, structures avancées, fichiers et manipulation directe du système.",
+    "category": "Programmation",
+    "level": "Avancé",
+    "duration": "30 heures",
+    "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80",
+    "rating": 4.9,
+    "students": 3100,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "C",
+      "malloc",
+      "mémoire dynamique",
+      "système",
+      "fichiers"
+    ],
+    "chapters": [
+      {
+        "title": "Allocation Dynamique de Mémoire",
+        "description": "Demandez de la mémoire au système quand vous en avez besoin.",
+        "order": 1,
+        "duration": "10 heures",
+        "content": "Les tableaux statiques ont une taille fixe déterminée à la compilation. Avec les fonctions `malloc()`, `calloc()`, `realloc()` (incluses dans `stdlib.h`), vous pouvez demander au système d'exploitation une taille de mémoire précise pendant l'exécution du programme. Attention : toute mémoire allouée dynamiquement DOIT être libérée manuellement avec la fonction `free()`, sinon vous créez des fuites de mémoire (Memory Leaks).",
+        "objectives": [
+          "Utiliser malloc proprement",
+          "Éviter les fuites de mémoire (free)",
+          "Redimensionner un tableau avec realloc"
+        ],
+        "exercises": [
+          {
+            "title": "Allocation d'un entier",
+            "description": "Allouez dynamiquement l'espace pour un entier, donnez lui la valeur 50, puis libérez la mémoire.",
+            "difficulty": "Moyen",
+            "solution": "int *n = malloc(sizeof(int));\\n*n = 50;\\nfree(n);",
+            "hints": [
+              "Utilisez toujours sizeof() pour allouer le bon nombre d'octets."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Allocation dynamique expliquée",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/xdGQevQ1sH"
+          },
+          {
+            "title": "Terminal malloc/free",
+            "type": "code",
+            "url": "sandbox://c/malloc"
+          }
+        ]
+      },
+      {
+        "title": "Structures et Types Personnalisés",
+        "description": "Créez vos propres types de données complexes.",
+        "order": 2,
+        "duration": "10 heures",
+        "content": "Les tableaux regroupent des éléments du même type. Les 'structures' (mot-clé `struct`) permettent de grouper des éléments de types différents sous un seul nom. Par exemple, une structure Joueur contenant un int (points) et un char[] (pseudo). Nous verrons l'utilisation de `typedef` pour aliéner les types et alléger l'écriture, ainsi que la manipulation de variables structure via pointeurs avec l'opérateur flèche `->`.",
+        "objectives": [
+          "Définir une struct",
+          "Utiliser struct avec typedef",
+          "Accéder aux attributs avec . et ->"
+        ],
+        "exercises": [
+          {
+            "title": "Structure Point",
+            "description": "Créez une structure Point comportant deux champs entiers x et y.",
+            "difficulty": "Facile",
+            "solution": "struct Point {\\n    int x;\\n    int y;\\n};",
+            "hints": [
+              "La struct doit finir par un point-virgule."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les structures en C",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/uAlW20z5J6I"
+          }
+        ]
+      },
+      {
+        "title": "Lecture et Écriture de Fichiers",
+        "description": "Persistez vos donnees sur le disque dur.",
+        "order": 3,
+        "duration": "10 heures",
+        "content": "Apprenez à utiliser l'API standard `FILE* fopen(nom, mode)`. Les modes sont 'r' (read), 'w' (write), 'a' (append). Les fonctions `fprintf`, `fscanf`, `fgets` et `fputs` vous permettent de manipuler le contenu textuel et binaire d'un fichier. Tout fichier ouvert doit impérativement être fermé avec `fclose(fichier)`. Vous aborderez les erreurs systèmes via `perror`.",
+        "objectives": [
+          "Ouvrir un fichier",
+          "Lire ligne par ligne",
+          "Gérer les problèmes d'ouverture"
+        ],
+        "exercises": [
+          {
+            "title": "Toujours fermer ses fichiers",
+            "description": "Ouvrez le fichier 'test.txt' en mode écriture (w), sans rien y écrire, puis fermez-le.",
+            "difficulty": "Facile",
+            "solution": "FILE *f = fopen(\"test.txt\", \"w\");\\nif (f != NULL) {\\n    fclose(f);\\n}",
+            "hints": [
+              "Vérifiez toujours que le pointeur FILE n'est pas NULL avant de le fermer/manipuler."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Manipulation des fichiers C",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/KJgsSFOSQv0"
+          }
+        ]
+      }
+    ],
+    "_id": "course_6",
+    "id": "course_6"
+  },
+  {
+    "title": "Python - Niveau Débutant",
+    "description": "Découvrez Python, le langage le plus populaire et polyvalent. Apprenez la syntaxe, les types de données et construisez vos premiers scripts.",
+    "category": "Programmation",
+    "level": "Débutant",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&q=80",
+    "rating": 4.9,
+    "students": 23150,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "python",
+      "script",
+      "débutant",
+      "syntaxe"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et Premier Script",
+        "description": "L'écosystème Python et l'outil interactif REPL.",
+        "order": 1,
+        "duration": "2 heures",
+        "content": "Python est un langage interprété (pas de phase de compilation explicite). Vous pouvez écrire le code dans un fichier `.py` et le lancer via `python fichier.py`, ou utiliser le REPL interactif. C'est un langage extrêmement lisible grâce à son utilisation de l'indentation (les espaces) pour définir les blocs de code (au lieu des accolades comme en C).",
+        "objectives": [
+          "Comprendre l'interpréteur",
+          "Utiliser print() et input()",
+          "Comprendre l'indentation"
+        ],
+        "exercises": [
+          {
+            "title": "Salutation",
+            "description": "Demandez le nom de l'utilisateur avec input() et affichez 'Bonjour [Nom] !'",
+            "difficulty": "Facile",
+            "solution": "nom = input('Votre nom ? ')\\nprint(f'Bonjour {nom} !')",
+            "hints": [
+              "Les f-strings (format) simplifient beaucoup l'affichage des variables."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Installation et premier script",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/8ext9G7xspg"
+          },
+          {
+            "title": "Terminal Python",
+            "type": "code",
+            "url": "sandbox://python/hello"
+          }
+        ]
+      },
+      {
+        "title": "Types et Opérations de base",
+        "description": "Manipuler les nombres et les chaînes de caractères.",
+        "order": 2,
+        "duration": "4 heures",
+        "content": "Python typifie dynamiquement les variables. Un entier (int), un nombre à virgule (float), une chaîne (str) ou un booléen (bool). Python apporte aussi des opérateurs puissants comme la division entière `//` et l'élévation à la puissance `**`.",
+        "objectives": [
+          "Utiliser les opérateurs mathématiques",
+          "Convertir des types (cast)",
+          "Manipuler des chaînes (slices)"
+        ],
+        "exercises": [
+          {
+            "title": "Calculateur d'IMC",
+            "description": "Calculez l'IMC = poids / (taille ** 2).",
+            "difficulty": "Moyen",
+            "solution": "poids = 70.0\\ntaille = 1.75\\nimc = poids / (taille ** 2)\\nprint('Votre IMC est', imc)",
+            "hints": [
+              "N'oubliez pas que taille doit être en mètres (ici 1.75)."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Variables et Types Python",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/vEQ8CXFWLZU"
+          }
+        ]
+      },
+      {
+        "title": "Contrôle de Flux (if, for, while)",
+        "description": "Contrôlez l'exécution de votre script.",
+        "order": 3,
+        "duration": "5 heures",
+        "content": "Le contrôle de flux en Python utilise `if`, `elif`, et `else`. Pour itérer sur une plage de valeurs, on utilise `for i in range(n)`. L'indentation est stricte pour délimiter les blocs, sous peine de déclencher un `IndentationError`. Les opérateurs logiques sont écrits en toutes lettres : `and`, `or`, `not`.",
+        "objectives": [
+          "Gérer les conditions avec if/elif/else",
+          "Itérer avec une boucle for",
+          "Créer une boucle while"
+        ],
+        "exercises": [
+          {
+            "title": "FizzBuzz",
+            "description": "Pour les nombres de 1 à 15 inclusivement, affichez Fizz si divisible par 3, Buzz si divisible par 5, et FizzBuzz si divisible par 15.",
+            "difficulty": "Difficile",
+            "solution": "for i in range(1, 16):\\n    if i % 15 == 0:\\n        print('FizzBuzz')\\n    elif i % 3 == 0:\\n        print('Fizz')\\n    elif i % 5 == 0:\\n        print('Buzz')\\n    else:\\n        print(i)",
+            "hints": [
+              "L'ordre des conditions est important ! Commencez par le test mod 15."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Contrôle de flux",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/z69RPUzFp0k"
+          }
+        ]
+      }
+    ],
+    "_id": "course_7",
+    "id": "course_7"
+  },
+  {
+    "title": "Python - Niveau Intermédiaire",
+    "description": "Structures de données, fonctions et manipulations de fichiers. Écrivez un code pythonique.",
+    "category": "Programmation",
+    "level": "Intermédiaire",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
+    "rating": 4.8,
+    "students": 15400,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "python",
+      "listes",
+      "dictionnaires",
+      "fonctions",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Structures de Données",
+        "description": "Listes, tuples, ensembles et dictionnaires.",
+        "order": 1,
+        "duration": "6 heures",
+        "content": "La puissance de Python réside dans ses collections prêtes à l'emploi. Les `list` (modifiables), les `tuple` (non modifiables), les `set` (collections non-ordonnées et sans doublons), et les `dict` (tableaux associatifs clé-valeur). Vous apprendrez également la puissance des compréhensions de listes (`[x*2 for x in list]`).",
+        "objectives": [
+          "Maitriser les méthodes des listes (append, pop, etc.)",
+          "Gérer la mémoire avec dictionnaires (clés-valeurs)",
+          "Maîtriser les list comprehensions"
+        ],
+        "exercises": [
+          {
+            "title": "Extraction de carrés",
+            "description": "Créez une liste contenant les carrés des nombres pairs entre 0 et 10, en une seule ligne (list comprehension).",
+            "difficulty": "Moyen",
+            "solution": "carres_pairs = [x**2 for x in range(11) if x % 2 == 0]",
+            "hints": [
+              "Utilisez range(11) pour inclure 10."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Listes et Dictionnaires en profondeur",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/tw7ror9x32s"
+          }
+        ]
+      },
+      {
+        "title": "Fonctions et Modules",
+        "description": "Réutilisez le code de la communauté et le vôtre.",
+        "order": 2,
+        "duration": "6 heures",
+        "content": "On définit une fonction avec `def nom_fonction(arguments):`. Python permet de retourner plusieurs valeurs d'un coup. Nous verrons aussi l'importation de modules de la librairie standard (comme `math` ou `random`) ou de librairies externes (via `pip`). On parlera aussi des fonctions anonymes (lambdas).",
+        "objectives": [
+          "Créer des fonctions complexes avec des arguments nommés",
+          "Retourner des tuples",
+          "Importer des modules avec from/import"
+        ],
+        "exercises": [
+          {
+            "title": "Fonction de stats",
+            "description": "Créez une fonction get_stats(liste) qui retourne le minimum, le maximum et la somme.",
+            "difficulty": "Facile",
+            "solution": "def get_stats(L):\\n    return min(L), max(L), sum(L)\\n\\nmini, maxi, total = get_stats([10, 5, 20])",
+            "hints": [
+              "Retourner min(L), max(L), sum(L) se fait de manière implicite via un tuple."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Ecrire de meilleures fonctions Python",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/9Os0O3WzOig"
+          }
+        ]
+      },
+      {
+        "title": "Gestion de Fichiers et Exceptions",
+        "description": "Rendre son code robuste.",
+        "order": 3,
+        "duration": "8 heures",
+        "content": "Un bon script ne plante pas violemment : il gère les erreurs. Nous introduirons le bloc `try / except / finally` pour attraper les exceptions de type `ValueError`, `FileNotFoundError`, etc. Nous manipulerons des fichiers (TXT, CSV, JSON) en toute sécurité avec le context manager `with open(fichier) as f:` qui ferme automatiquement les ressources.",
+        "objectives": [
+          "Attraper des erreurs avec try/except",
+          "Ouvrir et lire de la data structurée (JSON)",
+          "Sécuriser les flux avec WITH"
+        ],
+        "exercises": [
+          {
+            "title": "Diviser sans planter",
+            "description": "Demandez deux nombres à l'utilisateur, divisez-les. Si le second est 0, affichez 'Division par zéro !' au lieu de faire crasher le script.",
+            "difficulty": "Moyen",
+            "solution": "try:\\n    a = int(input())\\n    b = int(input())\\n    print(a/b)\\nexcept ZeroDivisionError:\\n    print('Division par zéro !')",
+            "hints": [
+              "L'erreur générée par python est ZeroDivisionError."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Exceptions et Context Managers",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/NIWwJbo-9_8"
+          }
+        ]
+      }
+    ],
+    "_id": "course_8",
+    "id": "course_8"
+  },
+  {
+    "title": "Python - Niveau Expert (Avancé)",
+    "description": "Programmation Orientée Objet, décorateurs, et algorithmes performants en Python.",
+    "category": "Programmation",
+    "level": "Avancé",
+    "duration": "25 heures",
+    "image": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80",
+    "rating": 5,
+    "students": 9200,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "python",
+      "OOP",
+      "décorateurs",
+      "avancé",
+      "classes"
+    ],
+    "chapters": [
+      {
+        "title": "Programmation Orientée Objet (POO)",
+        "description": "Modélisez le monde réel avec des classes et des objets.",
+        "order": 1,
+        "duration": "10 heures",
+        "content": "En Python, tout est objet. Il est temps de créer les vôtres. Vous apprendrez à utiliser le mot-clé `class`, le constructeur `__init__(self)`, et l'encapsulation basique. Nous explorerons l'héritage (super() class) et le polymorphisme, ainsi que les méthodes magiques ou dunder (`__str__`, `__len__`, `__add__`) qui rendent vos objets compatibles avec les comportements standard de Python.",
+        "objectives": [
+          "Définir une classe complète",
+          "Surcharger des méthodes",
+          "Gérer l'héritage parent-enfant"
+        ],
+        "exercises": [
+          {
+            "title": "Classe Chien",
+            "description": "Créez une classe Chien avec un attribut nom, et une méthode aboyer qui retourne 'Ouaf je suis [nom]'.",
+            "difficulty": "Moyen",
+            "solution": "class Chien:\\n    def __init__(self, nom):\\n        self.nom = nom\\n    def aboyer(self):\\n        return f'Ouaf je suis {self.nom}'",
+            "hints": [
+              "N'esquebez pas le premier paramètre 'self' dans les méthodes !"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "La POO en Python Mode Avancé",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/ZDa-Z5JzLYM"
+          }
+        ]
+      },
+      {
+        "title": "Décorateurs et Fonctions Avancées",
+        "description": "Modifiez le comportement de vos fonctions à la volée.",
+        "order": 2,
+        "duration": "8 heures",
+        "content": "Les fonctions en Python sont des objets de 'Première classe', elles peuvent être passées en paramètres d'autres fonctions. Un décorateur (la syntaxe avec `@decorateur`) est un *wrapper* (enveloppe) autour d'une fonction pour ajouter un comportement avant et après l'exécution de la fonction sans en modifier le contenu (ex: mesurer le temps d'exécution, forcer une authentification).",
+        "objectives": [
+          "Passer des fonctions en paramètres",
+          "Créer un décorateur simple",
+          "Comprendre *args et **kwargs"
+        ],
+        "exercises": [
+          {
+            "title": "Décorateur logueur",
+            "description": "Créez un décorateur @log_exec qui affiche 'Fonction exécutée' avant d'appeler la fonction passée en argument.",
+            "difficulty": "Difficile",
+            "solution": "def log_exec(func):\\n    def wrapper(*args, **kwargs):\\n        print('Fonction exécutée')\\n        return func(*args, **kwargs)\\n    return wrapper",
+            "hints": [
+              "Vous devez définir une fonction wrapper au sein du décorateur."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Mystificateurs ? Non, des décorateurs !",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/FsAPt_9Bf3U"
+          }
+        ]
+      }
+    ],
+    "_id": "course_9",
+    "id": "course_9"
+  },
+  {
+    "title": "C++ - Niveau Débutant",
+    "description": "Découvrez l'un des langages les plus puissants au monde. Apprenez la syntaxe C++ moderne, la manipulation d'objets standards et la compilation.",
+    "category": "Programmation",
+    "level": "Débutant",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?w=800&q=80",
+    "rating": 4.8,
+    "students": 18500,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "cpp",
+      "C++",
+      "débutant",
+      "syntaxe"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et Différences avec le C",
+        "description": "Votre premier pas dans l'écosystème C++.",
+        "order": 1,
+        "duration": "4 heures",
+        "content": "C++ repose sur les concepts du C mais ajoute, entre autres, la Programmation Orientée Objet formelle. L'affichage ne se fait plus avec `printf`, mais avec les flux d'E/S standard: `std::cout` pour afficher et `std::cin` pour lire. Vous découvrirez l'inclusion de la librairie `<iostream>` et l'espace de nom (`namespace`) std.",
+        "objectives": [
+          "Différencier C et C++",
+          "Afficher en console avec cout",
+          "Lire avec cin"
+        ],
+        "exercises": [
+          {
+            "title": "Hello C++",
+            "description": "Oubliez printf. Affichez 'Bienvenue en C++' et faites un saut de ligne en utilisant cout et endl.",
+            "difficulty": "Facile",
+            "solution": "#include <iostream>\\n\\nint main() {\\n    std::cout << \"Bienvenue en C++\" << std::endl;\\n    return 0;\\n}",
+            "hints": [
+              "Rappelez-vous des opérateurs '<<' pour rediriger les données vers le flux de sortie cout."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Démarrer en C++",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/vLnPwxZdW4Y"
+          }
+        ]
+      },
+      {
+        "title": "Variables, Strings et Flux Modifiés",
+        "description": "Types de données modernes en C++.",
+        "order": 2,
+        "duration": "5 heures",
+        "content": "Contrairement au C qui s'appuie sur des tableaux de `char`, C++ apporte le puissant type `std::string` inclus via la librairie `<string>`. Vous apprendrez la concaténation simple, et le typage automatique induit par le mot clé `auto` depuis C++11, qui permet au compilateur de deviner le type de la variable.",
+        "objectives": [
+          "Maitriser le type string",
+          "Concaténer et comparer des variables string",
+          "Utiliser auto"
+        ],
+        "exercises": [
+          {
+            "title": "Concaténation robuste",
+            "description": "Déclarez 'prenom' = 'Alice' et 'nom' = 'Smith'. Concaténez-les dans une variable 'complet' avec un espace entre les deux.",
+            "difficulty": "Moyen",
+            "solution": "std::string prenom = \"Alice\";\\nstd::string nom = \"Smith\";\\nstd::string complet = prenom + \" \" + nom;",
+            "hints": [
+              "L'opérateur + marche directement pour concaténer deux objets std::string."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les strings dans C++",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/3nwpVR1nMmc"
+          }
+        ]
+      }
+    ],
+    "_id": "course_10",
+    "id": "course_10"
+  },
+  {
+    "title": "C++ - Niveau Intermédiaire",
+    "description": "Plongez dans l'orienté objet, la bibliothèque standard (STL) et les pointeurs intelligents.",
+    "category": "Programmation",
+    "level": "Intermédiaire",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1598228723793-52759bba239c?w=800&q=80",
+    "rating": 4.8,
+    "students": 12000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "cpp",
+      "OOP",
+      "classes",
+      "STL",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Programmation Orientée Objet Basique",
+        "description": "Regrouper données et comportement.",
+        "order": 1,
+        "duration": "6 heures",
+        "content": "C++ classe les membres comme `private` (accessible uniquement de l'intérieur de l'objet) ou `public` (accessible de partout). Nous allons créer des classes, utiliser le constructeur pour initialiser les objets, et les destructeurs (tildé `~Constructeur`), pour libérer les éventuelles ressources. C'est le principe central de l'encapsulation de données en C++.",
+        "objectives": [
+          "Différencier private et public",
+          "Construire des classes avec méthodes",
+          "Écrire les fichiers header (.h / .hpp) pour les classes"
+        ],
+        "exercises": [
+          {
+            "title": "Guerrier C++",
+            "description": "Créez une classe Personnage avec un attribut privé 'pv' (entier) valant 100. Faites un getter (fonction getPv) public.",
+            "difficulty": "Moyen",
+            "solution": "class Personnage {\\nprivate:\\n    int pv = 100;\\npublic:\\n    int getPv() { return pv; }\\n};",
+            "hints": [
+              "Il faut mettre un point-virgule indispensable après l'accolade fermante de la classe."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les bases de la POO C++",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/wN0x9eZLix4"
+          }
+        ]
+      },
+      {
+        "title": "Introduction à la STL (Vecteurs et Itérateurs)",
+        "description": "Adieu anciens tableaux !",
+        "order": 2,
+        "duration": "8 heures",
+        "content": "La STL (Standard Template Library) est l'armurerie du développeur C++. `std::vector` (inclus via `<vector>`) remplace allègrement les pointeurs/allocations dynamiques et tableaux statiques du C. Le vecteur gère sa mémoire automatiquement. Nous utiliserons également les algos très pratiques comme `std::sort` pour les trier, via la notion d'itérateurs (begin et end).",
+        "objectives": [
+          "Maitriser std::vector",
+          "Boucler sur un vecteur de façon moderne (for each)",
+          "Utiliser push_back et size"
+        ],
+        "exercises": [
+          {
+            "title": "Insertion de vector",
+            "description": "Déclarez un std::vector d'entiers, et ajoutez-y dynamiquement les chiffres 10 puis 20.",
+            "difficulty": "Facile",
+            "solution": "#include <vector>\\nstd::vector<int> v;\\nv.push_back(10);\\nv.push_back(20);",
+            "hints": [
+              "N'oubliez pas les chevrons <int> pour indiquer le type, et utilisez push_back()."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "La STL C++",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/PocJ5jP-3JM"
+          }
+        ]
+      }
+    ],
+    "_id": "course_11",
+    "id": "course_11"
+  },
+  {
+    "title": "C++ - Niveau Expert (Avancé)",
+    "description": "Haut niveau d'ingénierie : héritage complexe, polymorphisme, templates, RAII et pointeurs intelligents (smart pointers).",
+    "category": "Programmation",
+    "level": "Avancé",
+    "duration": "25 heures",
+    "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+    "rating": 4.9,
+    "students": 7600,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "cpp",
+      "C++11",
+      "smart pointers",
+      "polymorphisme",
+      "templates",
+      "avancé"
+    ],
+    "chapters": [
+      {
+        "title": "Templates et Programmation Générique",
+        "description": "Le code générique en toute puissance.",
+        "order": 1,
+        "duration": "8 heures",
+        "content": "Les templates (mot clé `template <typename T>`) permettent de créer des fonctions ou des classes génériques (qui marchent avec n'importe quel data-type défini à la volée tant qu'elle en gère les opérations). C'est ainsi qu'a été conçue la STL (Standard Template Library) qui propulse tout C++ moderne.",
+        "objectives": [
+          "Écrire une fonction template simple",
+          "Maitriser la syntaxe des chevrons",
+          "Repenser la conception polymorphe des fonctions"
+        ],
+        "exercises": [
+          {
+            "title": "Permutateur générique",
+            "description": "Écrivez le prototype template d'une fonction permuter qui prend deux arguments de même type et échange leurs positions.",
+            "difficulty": "Difficile",
+            "solution": "template <typename T>\\nvoid permuter(T& a, T& b) {\\n    T temp = a;\\n    a = b;\\n    b = temp;\\n}",
+            "hints": [
+              "Vous devez utiliser le passage par référence (&) pour muter des valeurs originelles."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "C++ Templates",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/I-hZkUa9mIs"
+          }
+        ]
+      },
+      {
+        "title": "RAII et Smart Pointers",
+        "description": "Sécurisation de la mémoire et fuites (Mémoire Sécurisée C++11+)",
+        "order": 2,
+        "duration": "10 heures",
+        "content": "L'idiome RAII (Resource Acquisition Is Initialization) stipule que la durée de vie d'une ressource est liée à son objet de portée (scope). On n'utilise quasiment plus `new` et `delete` (les malloc et free de C++) manuellement ; on utilise plutôt `<memory>` pour accéder aux Smart Pointers : `std::unique_ptr` (possession exclusive de ressource en mémoire garantissant zéro leakage) et `std::shared_ptr` (comptage de référence).",
+        "objectives": [
+          "Définir ce qu'est un use-case et design pattern RAII",
+          "Proscrire globalement les \"naked delete\" manuelles au profit des std::make_unique",
+          "Appliquer de la gestion mémoire en prod"
+        ],
+        "exercises": [
+          {
+            "title": "Mise pointer robuste",
+            "description": "Créer un unique ptr nommé p vers un entier de valeur 100 via la syntax native depuis C++14",
+            "difficulty": "Moyen",
+            "solution": "#include <memory>\\nauto p = std::make_unique<int>(100);",
+            "hints": [
+              "std::make_unique() retourne par convention la sécurisation encapsulante de pointeur."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Au revoir New, Bonjour Smart Pointers",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/UOBJuOPoRGU"
+          }
+        ]
+      }
+    ],
+    "_id": "course_12",
+    "id": "course_12"
+  },
+  {
+    "title": "HTML - Niveau Débutant",
+    "description": "Apprenez le socle du web. Maîtrisez la structure sémantique, les balises de base et commencez à créer vos propres pages.",
+    "category": "Web",
+    "level": "Débutant",
+    "duration": "10 heures",
+    "image": "https://images.unsplash.com/photo-1616469829581-73993eb86b02?w=800&q=80",
+    "rating": 4.8,
+    "students": 35000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "HTML",
+      "web",
+      "débutant",
+      "balises",
+      "frontend"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction : Squelette d'une page",
+        "description": "Définition et rôles des métadonnées ainsi que le Doctype.",
+        "order": 1,
+        "duration": "2 heures",
+        "content": "Le HTML (HyperText Markup Language) n'est pas un langage de programmation, mais de description ou de balisage. C'est l'ossature d'une page. Toute page nécessite la structure `<DOCTYPE html>` suivie des racines `<html>`, de l'en-tête `<head>` (contenant l'encodage charset utf-8, le titre de l'onglet) et du corps `<body>` où ira le contenu visible pour le client navigateur.",
+        "objectives": [
+          "Comprendre le rôle du HTML dans l'architecture Web",
+          "Savoir mettre en page le Boilerplate (squelette structuro)",
+          "Créer l'encodage fondamental (meta utf-8)"
+        ],
+        "exercises": [
+          {
+            "title": "Le premier squelette",
+            "description": "Créez une page avec un titre 'Mon Site' dans l'onglet, et le texte 'Bonjour' dans le document final visible.",
+            "difficulty": "Facile",
+            "solution": "<!DOCTYPE html>\\n<html>\\n<head>\\n  <meta charset=\\\"UTF-8\\\">\\n  <title>Mon Site</title>\\n</head>\\n<body>\\n  Bonjour\\n</body>\\n</html>",
+            "hints": [
+              "Tout élément apparent navigateur réside dans le corps (body)."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "C'est quoi le HTML ?",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/bWPMSSsVdPk"
+          }
+        ]
+      },
+      {
+        "title": "Balises de Texte (Titres, Paragraphes)",
+        "description": "Comment formater du contenu écrit brut.",
+        "order": 2,
+        "duration": "3 heures",
+        "content": "Nous utilisons des niveaux hiérarchiques allant de `<h1>` (titre principal) jusqu'à `<h6>` (titre très secondaire). La majorité du contenu texte s'inscrit au sein de paragraphes `<p>`. Des balises en ligne (inlines) permettront les mots mis en emphase : `<strong>` pour souligner l'importance ou le poids sémantiques (met souvent en gras natif) ou `<em>` pour accentuation (italiques normés).",
+        "objectives": [
+          "Mettre en valeur le SEO avec la bonne gradation des <h>",
+          "Utiliser les balises descriptives brutes pour les paragraphes.",
+          "Différencier bloc et inline basique"
+        ],
+        "exercises": [
+          {
+            "title": "Titres hiérarchiques",
+            "description": "Ajoutez un titre principal contenant 'Titre principal' suivi d'un sous-titre h2 'Section A'.",
+            "difficulty": "Facile",
+            "solution": "<h1>Titre principal</h1>\\n<h2>Section A</h2>",
+            "hints": [
+              "Jamais plusieurs h1 logiques en contexte simple."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Comprendre et structurer textuellement son site.",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/BsDoLVMnmZs"
+          }
+        ]
+      },
+      {
+        "title": "Liens et Images",
+        "description": "Rendez votre site interactif et multimédia.",
+        "order": 3,
+        "duration": "3 heures",
+        "content": "Le composant le plus capital du WEB d'hypertexte est le LIEN (Ancre). `<a href=\"URL\">Texte</a>`. Pour ajouter le support iconographique, son balise apparentée par nature est sans corps de fermeture. `<img>` utilise nativement un SRC (source url ressource) avec systématiquement un texte alternatif (l'attribut `alt`) si l'image crash à une requete loupée pour des rasions évidentes d'accessibilité UX.",
+        "objectives": [
+          "Relier son site à un autre document via du HREF relative et absolue",
+          "Embed une image sur son architecture textuelle via <img /> avec respect du W3C",
+          "Gérer l'attribut ALT pour l'optimisation ou lecteurs aveugles"
+        ],
+        "exercises": [
+          {
+            "title": "Image incliquée (lien)",
+            "description": "Crée un lien vers 'https://google.com'.",
+            "difficulty": "Facile",
+            "solution": "<a href=\"https://google.com\">Aller sur Google</a>",
+            "hints": [
+              "Utiliser l'attribut formel href (hyper reference) dans et autour du maillage externe."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Images et Multimedia",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/kMuMcGWWE"
+          }
+        ]
+      }
+    ],
+    "_id": "course_13",
+    "id": "course_13"
+  },
+  {
+    "title": "HTML - Niveau Intermédiaire",
+    "description": "Structurer des documents complexes. Les bases avancées du langage HTML : Tableaux, listes et sémantique HTML5 formelle.",
+    "category": "Web",
+    "level": "Intermédiaire",
+    "duration": "12 heures",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+    "rating": 4.8,
+    "students": 22000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "HTML5",
+      "sémantique",
+      "tableaux",
+      "listes",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Sémantique de Zone HTML5",
+        "description": "Découpez correctement avec section, article, header, footer...",
+        "order": 1,
+        "duration": "4 heures",
+        "content": "Avant HTML5, on utilisait massivement `<div id=\"header\">`. Désormais, la nouvelle norme sémantique privilégie des balises propres qui explicitent aux moteurs de recherche des zones fondamentales : `<header>`, `<nav>` pour la navigation, `<main>` (un seul par page pour le contenu focus), `<section>`, `<article>`, et l'inévitable `<footer>`.",
+        "objectives": [
+          "Mettre en valeur son code avec sémantique propre",
+          "Nettoyer ou refactorer la structure d'accumulation Div-itis.",
+          "Construire la zone navigation"
+        ],
+        "exercises": [
+          {
+            "title": "Main Header",
+            "description": "Creer une zone globale principale (main) dans lequel on aura une balise unique d'entete de haut de section interne.",
+            "difficulty": "Moyen",
+            "solution": "<main>\\n  <header>\\n    <h1>Exclusivité article</h1>\\n  </header>\\n</main>",
+            "hints": [
+              "Un header est un groupe d'introductif. Un main définit la centralité en document index."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Pourquoi le HTML Sémantique",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/kMuMcGWWE"
+          }
+        ]
+      },
+      {
+        "title": "Listes Unordered vs Ordered",
+        "description": "Agencement textuel normé et enumération.",
+        "order": 2,
+        "duration": "2 heures",
+        "content": "Des items s'affichent sous l'indentation structurelle avec balise Liste: `<ol>` (ordered list pour une base chiffrée 1 2 3) et `<ul>` (unordered list gérée par un point et puce bullet). À l'intérieur, CHAQUE puce requière indéniablement le tag enfant liste article `<li>`. Ce maillage est quasi standardisé sur base internet d'encodage menu navbar.",
+        "objectives": [
+          "Initier la méthode ul/li",
+          "Comprendre des emboîtements listiques",
+          "Faire la distinction de l'ordinal et bullet-list."
+        ],
+        "exercises": [
+          {
+            "title": "Menu Simple",
+            "description": "Créez une liste à pouce bullet avec 2 elements : Accueil et Contact.",
+            "difficulty": "Facile",
+            "solution": "<ul>\\n  <li>Accueil</li>\\n  <li>Contact</li>\\n</ul>",
+            "hints": [
+              "UL est le wrapper, LI son iteratif enfant."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Mettre les balises liste à contribution.",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/p1X1wN5"
+          }
+        ]
+      }
+    ],
+    "_id": "course_14",
+    "id": "course_14"
+  },
+  {
+    "title": "HTML - Niveau Expert (Avancé)",
+    "description": "Les formulaires avancés, attributs ARIA (accessibilité) et Canvas interactif de meta-manipulation.",
+    "category": "Web",
+    "level": "Avancé",
+    "duration": "18 heures",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+    "rating": 4.9,
+    "students": 15400,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "HTML",
+      "formulaires",
+      "ARIA",
+      "accessibilité",
+      "avancé"
+    ],
+    "chapters": [
+      {
+        "title": "Les Formulaires et API de Validation Ntive",
+        "description": "Input, Types specifiques et envoi via Form",
+        "order": 1,
+        "duration": "8 heures",
+        "content": "On recupère l'information en front Web depuis `<form>`. En y rajoutant un `action` (l'url d'appel pointant vers un fichier PHP backend typique) et une méthode GET/POST. Les champs sont gérés fondamentalement par balises d'entré (`<input />`) typées (type email, date, range ou native color picker). Le bouton global est `<button type=\"submit\">`. Chaque Input DOIT etre lié avec la composante Label pour son descriptif clair par un système id/for.",
+        "objectives": [
+          "Maitriser Label et For en UI standardisée.",
+          "Validation côté front par attribut 'required'",
+          "Manipulation des forms submission formelle."
+        ],
+        "exercises": [
+          {
+            "title": "Formulaire complet (Name and Password)",
+            "description": "Créez form pointant url POST locale avec email, mot de passe requis et button envoyé.",
+            "difficulty": "Moyen",
+            "solution": "<form method=\"POST\" action=\"/login\">\\n  <label for=\"mail\">E-mail:</label>\\n  <input type=\"email\" id=\"mail\" required>\\n  <label for=\"mdp\">Mot de passe:</label>\\n  <input type=\"password\" id=\"mdp\" required>\\n  <button type=\"submit\">Valider</button>\\n</form>",
+            "hints": [
+              "Assurez vous d'implémenter un Input unique par label."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Structure maitrisé d'Input Html DOM",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/fNcJuPIZ"
+          }
+        ]
+      }
+    ],
+    "_id": "course_15",
+    "id": "course_15"
+  },
+  {
+    "title": "CSS - Niveau Débutant",
+    "description": "Devenez un artiste du web. Apprenez à cibler vos éléments HTML pour appliquer des couleurs, des polices et modifier le design.",
+    "category": "Web",
+    "level": "Débutant",
+    "duration": "12 heures",
+    "image": "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
+    "rating": 4.8,
+    "students": 31000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "CSS",
+      "styles",
+      "design",
+      "débutant",
+      "frontend"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et Sélecteurs de base",
+        "description": "Comment relier votre fichier CSS et cibler vos balises HTML.",
+        "order": 1,
+        "duration": "3 heures",
+        "content": "CSS (Cascading Style Sheets) gère l'apparence. Pour le lier, on inclut `<link rel=\"stylesheet\" href=\"style.css\">` dans le `<head>` HTML. La syntaxe est simple : un sélecteur suivi d'un bloc de déclarations entre accolades. Vous apprendrez le sélecteur d'élément (ex: `p`), le sélecteur de classe (ex: `.ma-classe`) et le sélecteur d'identifiant (`#mon-id`). La classe est réutilisable, l'ID est unique.",
+        "objectives": [
+          "Lier un fichier local CSS dans une page web",
+          "Utiliser le sélecteur de classe (point)",
+          "Mettre en place le sélecteur ID (hashtag)"
+        ],
+        "exercises": [
+          {
+            "title": "Votre première classe CSS",
+            "description": "Ciblez une classe nommée 'btn-rouge' pour mettre le texte en couleur 'red' et l'arrière-plan (background-color) en coloris 'black'.",
+            "difficulty": "Facile",
+            "solution": ".btn-rouge {\\n    color: red;\\n    background-color: black;\\n}",
+            "hints": [
+              "N'oubliez pas le point devant le nom de la classe."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les bases absolues du CSS3",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/1Rs2ND1ryYc"
+          }
+        ]
+      },
+      {
+        "title": "Propriétés Textuelles et Typographie",
+        "description": "Polices, tailles, espaces de lignes et couleurs.",
+        "order": 2,
+        "duration": "4 heures",
+        "content": "Personnaliser le texte est souvent la première chose observée par les clients. Les propriétés essentielles incluent `font-family` (la police d'écriture, comme Arial ou les polices Google externes), `font-size` (la taille), `font-weight` (le gras) et `text-align` (gauche, centré, droit). Les couleurs peuvent être définies par nom de mot clé abstrait, RGB, ou les valeurs Hexadécimales (ex: #FF0000 est rouge pur).",
+        "objectives": [
+          "Mettre un texte en majuscule",
+          "Changer le format numérique Hex des colors de font.",
+          "Aérer les écritures."
+        ],
+        "exercises": [
+          {
+            "title": "Texte Centré et Enorme",
+            "description": "Cible tous h1. Centre le texte, mets un font-size à 50px.",
+            "difficulty": "Facile",
+            "solution": "h1 {\\n    text-align: center;\\n    font-size: 50px;\\n}",
+            "hints": [
+              "Le tag text-align accèpte une value en anglais simple 'center'"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Gestion colorimetrique standardisée via CSS",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/IEsZ-T"
+          }
+        ]
+      },
+      {
+        "title": "Modèle de boite (Box Model)",
+        "description": "Margin, Padding et Borders : un concept crucial à maitriser",
+        "order": 3,
+        "duration": "5 heures",
+        "content": "En HTML, tout est une boite. Le CSS gère les distances de cette boite via 3 niveaux: Le `padding` (l'espace intérieur entre le texte et la bordure), la `border` (la bordure visible), le `margin` (l'espace extérieur qui repousse les autres éléments). Une règle absolue du webmoderne impose souvent `box-sizing: border-box` appliqué globalement sur `*` pour simplifier les calculs de largeurs finales d’écran.",
+        "objectives": [
+          "Maitriser la distinction d'écart de padding/margin interne externe.",
+          "Mettre une fine ou grasse bordure solid.",
+          "Mettre à 0 toutes les marges primaires des balises."
+        ],
+        "exercises": [
+          {
+            "title": "Bouton distant et gros",
+            "description": "Ciblez un btn-gros d'une classe. Espace intérieur de 10px partout, Espace de marge extérieure repoussante à 20px.",
+            "difficulty": "Moyen",
+            "solution": ".btn-gros {\\n    padding: 10px;\\n    margin: 20px;\\n}",
+            "hints": [
+              "Tu peux attribuer aux 4 cotés si la propriété ne précise pas de position exacte `-top`, `-left`."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Le Modèle des boites",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/2-n"
+          }
+        ]
+      }
+    ],
+    "_id": "course_16",
+    "id": "course_16"
+  },
+  {
+    "title": "CSS - Niveau Intermédiaire",
+    "description": "La mise en page comme un pro. Apprenez Flexbox, CSS Grid et les positionnements manuels qui rendent un site interactif.",
+    "category": "Web",
+    "level": "Intermédiaire",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+    "rating": 4.9,
+    "students": 18000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "CSS",
+      "Flexbox",
+      "Grid",
+      "position",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Flexbox: L'alignement magique",
+        "description": "L'outil roi qui a tué les anciens flottes (float).",
+        "order": 1,
+        "duration": "8 heures",
+        "content": "En créant sur le composant parent `display: flex;`, tout ses enfants se mettent automatiquement dans une direction par défaut en ligne (Row). Les commandes `justify-content` régissent l'axe principal (par ex pour centrer, ou bien dispatch `space-between`). Tandis que `align-items` joue avec l'axe perpendiculaire. Presque 80% des interfaces modernes se font sous Flexbox.",
+        "objectives": [
+          "Mettre sur display Flex",
+          "Centrer intégralement bloc vertical et horizontal",
+          "Changer Flex-direction en Column."
+        ],
+        "exercises": [
+          {
+            "title": "Mettre tous les div ligne sur la boite main",
+            "description": "Créer regle sur la balise .conteneur pour aligner les enfants sur toute la largeur sans dépassement avec espacement reparti.",
+            "difficulty": "Difficile",
+            "solution": ".conteneur {\\n  display: flex;\\n  justify-content: space-between;\\n}",
+            "hints": [
+              "Assigned espace between au justify value."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Le guide définitif ou rapide de CSS Flexbox",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/u044iM9xsWU"
+          }
+        ]
+      },
+      {
+        "title": "Positionnements (Absolute, Relative, Fixed)",
+        "description": "Sortir des éléments du flux classique du navigateur.",
+        "order": 2,
+        "duration": "6 heures",
+        "content": "Les flux naturels suivent le DOM en CSS (display blocks ou inline). Mais si vous voulez punaiser une navbar qui restouille tout temps haut ecran pendant scroll, il faut du `position: fixed`. Si vous voulez qu'une pastille reste en bas à droite d'une carte image c'est de l'`absolute` calculée en fonction du conteneur parent qui possède une `position: relative`. Vous placerez les coords absolues top, bottom, left et right.",
+        "objectives": [
+          "Figer navbar fixed",
+          "Manipuler une position absolue sur parent repère",
+          "Maitriser le z-index superposition layout."
+        ],
+        "exercises": [
+          {
+            "title": "Bulle coin haut droit absolue",
+            "description": "Classe de nommée `.badge` sortie de son flux normal pour s'accrocher au top: 0 et right: 0 d'une conteneur limitrophe relative.",
+            "difficulty": "Moyen",
+            "solution": ".badge {\\n   position: absolute;\\n  top: 0;\\n  right: 0;\\n}",
+            "hints": [
+              "En position Absolute la bloc quitte l'intégrité de collision de son ancienne disposition."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Tout maitriser : Pos Relative, Absolue..",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/jx5jmI0_u_M"
+          }
+        ]
+      },
+      {
+        "title": "CSS Grid (Les Grilles)",
+        "description": "Tableaux en ligne et colonnes bidimensionnels formels.",
+        "order": 3,
+        "duration": "6 heures",
+        "content": "Idéal pour créer toute l’ossature globale d’application Desktop d'un coup (comme Dashboard). Avec le très expressif `display: grid`, et la fonction génératrice `grid-template-columns: repeat(3, 1fr)` signifiant \"Génère 3 colonnes flexibles, qui prennent toutes individuellement une Fraction (fr)\" du module d'espace disponible limitrophe de la largeur conteneur. Flex = 1D (ligne ou col). Grid = 2D (ligne et tableau complet).",
+        "objectives": [
+          "Minitier un layout table globale rapide.",
+          "Comprendre la grille auto responsives."
+        ],
+        "exercises": [
+          {
+            "title": "Grille simple des images galeries",
+            "description": "Crée conteneur div avec classe .galerie disposant de 2 colonnes parfaitement égales, 50% / 50%.",
+            "difficulty": "Moyen",
+            "solution": ".galerie {\\n  display: grid;\\n  grid-template-columns: 1fr 1fr;\\n}",
+            "hints": [
+              "1fr symbolise 1 'Fraction' disponible ecran, donc 1fr 1fr fait deux colonnes proportionnelles"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "CSS Grid en vitesse express",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/7kVeCqQCxlk"
+          }
+        ]
+      }
+    ],
+    "_id": "course_17",
+    "id": "course_17"
+  },
+  {
+    "title": "CSS - Niveau Expert (Avancé)",
+    "description": "Responsive web design, animations complexes CSS, Media Queries et variables natives (Custom Properties).",
+    "category": "Web",
+    "level": "Avancé",
+    "duration": "18 heures",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+    "rating": 4.9,
+    "students": 11000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "CSS",
+      "responsive",
+      "animations",
+      "variables",
+      "avancé"
+    ],
+    "chapters": [
+      {
+        "title": "Responsive (Adaptable Phone/Desktop) : Media Queries",
+        "description": "Construire un site pour mobile en priorité ou faire des breakpoints standards.",
+        "order": 1,
+        "duration": "6 heures",
+        "content": "Le composant le plus redoutable pour modeliser le layout en fonction l'appareil mobile iPhone etc. La regle `@media (max-width: 768px) { ... }` exécute un bloc de variables CSS QUE SI le redimensionnement actuel en largeur de Viewport ecran tombe drastique sous les 768 pixels. Vous maitriserez le `Mobile First` approche.",
+        "objectives": [
+          "Comprendre breakpoint.",
+          "Changer la ligne direction d'un FlexBox pour s'applatir en mobile Column."
+        ],
+        "exercises": [
+          {
+            "title": "Mobile first ou Media Query basique",
+            "description": "En deça de la vue max 500px ecran, tu asseois un background bleuté sur une classe .bg global.",
+            "difficulty": "Facile",
+            "solution": "@media (max-width: 500px) {\\n  .bg {\\n    background-color: blue;\\n  }\\n}",
+            "hints": [
+              "Assure de definir le bloc interne du selecteur dans le bloc parent Media query"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Comment réaliser n'importe quel site responsive",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/yU7jY3NI1"
+          }
+        ]
+      },
+      {
+        "title": "Animations Pures natives et Transitions",
+        "description": "Rendez votre composante interactive au survol UX et Microanimations.",
+        "order": 2,
+        "duration": "8 heures",
+        "content": "Sans javascript, on met de la vie de fluiditude gracieuse lors du parcours. Un `transition` défini sur base conteneur prend une cible (exemple 'background-color') un temps de retard chronométrique (exemple 0.5s) et lissent l'animation lors de state déclenchement hover (le curseur souris touche composant). L'Animation complete se joue avec le très lourd mot clé @keyframes qui spécifie explicitement des états pourcentage intermédiaires entre point de debut %0 au terminus 100%.",
+        "objectives": [
+          "Insérer l'accélérateur UX fluides grace aux transition all 0.3s ease",
+          "Implementer la propriété Transform et css @keyframes logic."
+        ],
+        "exercises": [
+          {
+            "title": "Translation d'image ou rotation boutton sur Hover",
+            "description": "Cible composante classe '.image-scale': par defaut, place un attribut de transition 0.5s sur tout etat. Rajouter une state au :hover, de manière à lui donner du Transform: scale 2D fois 1.5 sur sa taille.",
+            "difficulty": "Moyen",
+            "solution": ".image-scale {\\n  transition: all 0.5s ease;\\n}\\n.image-scale:hover {\\n   transform: scale(1.5);\\n}",
+            "hints": [
+              "Rappelle le psedo selecteur `:hover` associé classe parente originelle."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Avoir des transitions microanimations CSS lisses",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/ASa-B-G"
+          }
+        ]
+      },
+      {
+        "title": "Variables CSS Natives (Propriétés personnalisées)",
+        "description": "Design-tokens globaux. Mode Nuit sans soucis.",
+        "order": 3,
+        "duration": "4 heures",
+        "content": "Oubliez la redondance d'un '#ff4050' pour de la couleur principal dans 30 endroits du CSS. `var(--primary_color)` récupère une configuration placée logiquement au root scope de votre style : `:root { --primary_color : #ff4050; } `. Très utile qu'on veut brancher pour ReactJS derrière pour forcer l'entiereté du mode Dark avec JS en redéfinissant root.",
+        "objectives": [
+          "Mettre en place et affecter une custom property avec double dash '--'",
+          "Maitriser fonction d'integration `var()`.",
+          "Savoir créer les palettes couleurs globals Design Systeme."
+        ],
+        "exercises": [
+          {
+            "title": "Initier Theme Couleur",
+            "description": "Sur selecteur global racine pseudo class :root tu définis --main-bg à 'white'. Ensuite dans la classe bloc tu invoqueras son backgroud-color attibue tirée depuis cette variable en var(-main--bg)",
+            "difficulty": "Moyen",
+            "solution": ":root {\\n  --main-bg: white;\\n}\\n.bloc {\\n   background-color: var(--main-bg);\\n}",
+            "hints": [
+              "N'oublie les doubles tirets qui annoncent la nature de ce token local"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Maitre absolue de variables natives sur architecture système",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/A"
+          }
+        ]
+      }
+    ],
+    "_id": "course_18",
+    "id": "course_18"
+  },
+  {
+    "title": "Bash Linux - Niveau Débutant",
+    "description": "Apprenez à utiliser votre ordinateur sans souris. Maîtrisez le terminal, la navigation dans les fichiers et les commandes de base de Linux.",
+    "category": "DevOps",
+    "level": "Débutant",
+    "duration": "10 heures",
+    "image": "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
+    "rating": 4.8,
+    "students": 12400,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "Bash",
+      "Linux",
+      "Terminal",
+      "débutant",
+      "système"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et Navigation (cd, ls, pwd)",
+        "description": "Se repérer dans le labyrinthe des dossiers.",
+        "order": 1,
+        "duration": "3 heures",
+        "content": "Bienvenue dans le shell Bash, le cœur de Linux. Fini l'interface graphique. La commande `pwd` (print working directory) vous donne votre dossier actuel absolu. `ls` (list) liste les fichiers présents. Et `cd` (change directory) vous permet de voyager, comme si vous cliquiez sur des dossiers. Un point spécial `.` désigne le dossier courant et deux points `..` désigne le parent.",
+        "objectives": [
+          "Savoir où on est avec pwd",
+          "Démasquer les fichiers cachés avec ls -a",
+          "Remonter l'arborescence (cd ..)"
+        ],
+        "exercises": [
+          {
+            "title": "Naviguer de deux crans",
+            "description": "Quelle commande vous permet de remonter de 2 dossiers en arrière dans l'arborescence ?",
+            "difficulty": "Facile",
+            "solution": "cd ../..",
+            "hints": [
+              "Chaque niveau apparenté est séparé par un slash (/) en linux unix."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Vos premiers pas dans le Terminal",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/zBOkXw4"
+          },
+          {
+            "title": "Terminal Interactif Linux",
+            "type": "code",
+            "url": "sandbox://bash/nav"
+          }
+        ]
+      },
+      {
+        "title": "Créer, Copier et Supprimer (touch, mkdir, cp, rm)",
+        "description": "Manipuler la matière : vos fichiers.",
+        "order": 2,
+        "duration": "4 heures",
+        "content": "Pour créer un fichier vide, on utilise `touch fichier.txt`. Pour un dossier, c'est `mkdir dossier`. Copier un élément se fait par `cp source destination` (avec `-r` pour un dossier complet). Déplacer ou renommer avec `mv vieux_nom nouveau_nom`. La destruction se fait avec `rm fichier`. ATTENTION: Sous linux, pas de corbeille, un `rm` est définitif ! Le drame suprême est `rm -rf /`.",
+        "objectives": [
+          "Faire des dossiers mkdir",
+          "Copier un dossier itérativement flag -r",
+          "Supprimer ou Move (mv)"
+        ],
+        "exercises": [
+          {
+            "title": "Renommer un fichier",
+            "description": "Renommez le fichier 'rapport.txt' en 'final.txt'.",
+            "difficulty": "Facile",
+            "solution": "mv rapport.txt final.txt",
+            "hints": [
+              "MV veut dire Move mais il fait office de fonction Rename par translation au mème emplacement."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Manipulation des Fichiers system (CLI)",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/g2J0Nbg"
+          }
+        ]
+      },
+      {
+        "title": "Lecture de fichiers (cat, less, echo)",
+        "description": "Voir dedans sans tout casser.",
+        "order": 3,
+        "duration": "3 hours",
+        "content": "`cat` lit et recrache d'un trait tout le contenu d'un fichier dans le terminal. Trop long ? On utilise `less` (ou son ancêtre `more`) pour paginer avec la touche Espace. Et la commande `echo` ? Elle n'est rien d'autre que du printf de bash, idéale pour injecter des valeurs rapides dans un fichier avec l'opérateur de redirection chevron `>`. Exemple: `echo \"salut\" > test.txt`.",
+        "objectives": [
+          "Comprendre l'I/O (Input Output)",
+          "Voir un court fichier (cat)",
+          "Maitriser les chevrons de redirection ( > vs >> )"
+        ],
+        "exercises": [
+          {
+            "title": "Ajout fin fichier",
+            "description": "Ajoutez la pharse 'Ceci est la fin' au fichier existant log.txt. Ne l'ecrasez pas.",
+            "difficulty": "Moyen",
+            "solution": "echo \"Ceci est la fin\" >> log.txt",
+            "hints": [
+              "Le double chevron >> permet l'append mode. Le > écrase l'integrite du fichier."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Lecture Rapide Bash",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/zB8"
+          }
+        ]
+      }
+    ],
+    "_id": "course_19",
+    "id": "course_19"
+  },
+  {
+    "title": "Bash Linux - Niveau Intermédiaire",
+    "description": "Les Permissions, la recherche en terminal, GREP et les chaînages de commandes (Pipes).",
+    "category": "DevOps",
+    "level": "Intermédiaire",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+    "rating": 4.7,
+    "students": 8500,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "Bash",
+      "Pipes",
+      "Grep",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Recherche Puissante : Find et Grep",
+        "description": "Trouver le bon fichier. Scanner le bon texte dans milles fichiers.",
+        "order": 1,
+        "duration": "6 heures",
+        "content": "`find` est prodigieux pour localiser un fichier. Ex: `find / -name \"truc.conf\"` cherche depuis la racine toute l'arborescence. Ensuite, le roi absolu : `grep`. Cet outil extrait ou filtre les lignes contenant une expression régulière ou motif sur des gigas de data en quelques millisecondes. Utile pour parser `grep \"ERROR\" logfile.log`.",
+        "objectives": [
+          "Mettre en valeur le Regex dans grep",
+          "Find itératif -name -type d",
+          "Associer ls à grep"
+        ],
+        "exercises": [
+          {
+            "title": "Lister que du JS",
+            "description": "Trouvez tout fichier qui se termine par l'extention javascript .js dans le dossier /src",
+            "difficulty": "Difficile",
+            "solution": "find /src -name \"*.js\"",
+            "hints": [
+              "L'utilisation de la metacaractere asterisque (*) en wildcard Linux"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Masterclass sur GREP et FIND",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/38N"
+          }
+        ]
+      },
+      {
+        "title": "Les Pipes (Tubes : | )",
+        "description": "Brancher la sortie de l'un sur l'entrée de l'autre",
+        "order": 2,
+        "duration": "5 heures",
+        "content": "La philosophie UNIX est : 'Faire une seule chose, et bien la faire'. Le caractère `|` (dit : Pipe) permets de passer la sortie console du premier programme au second. Vouloir lister vos dossier filtré ? `ls -la | grep \".txt\"` . Ce paradigme va révolutionner la conception de vos futurs codes d'architecture infra systeme.",
+        "objectives": [
+          "Passer commande de Cat à Sort (tri)",
+          "Utiliser pipe sur wc -l (word count line)"
+        ],
+        "exercises": [
+          {
+            "title": "Combien d'Erreurs globales ?",
+            "description": "Chainer un filtre \"FAIL\" sur file system.log et compter juste le nombre exact de lignes totales de ce dump.",
+            "difficulty": "Moyen",
+            "solution": "cat system.log | grep \"FAIL\" | wc -l",
+            "hints": [
+              "La commande wc (word count) a un arg line : -l pour compter ce qui viens d'amont."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Pipes en Shell: Magique",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/bN"
+          }
+        ]
+      },
+      {
+        "title": "Droits, Permissions (chown, chmod) & Processus",
+        "description": "Qui a le droit d'ouvrir la porte de chez vous.",
+        "order": 3,
+        "duration": "4 heures",
+        "content": "Linux base de la securité par le User / Group / Others. Le systeme lit sous 3 piliers RWX (Read = 4, Write = 2, Execute = 1). Donc donner autorisation totale au proprietaire (4+2+1=7) c'est `chmod 700 monFichier`. Nous verrons `sudo` permettant le 'superuser do' qui donne les pouvoirs radicaux root temporaires. Ainsi que ps et htop/top pour tuer des programmes d'arrière plan `kill -9 PID`",
+        "objectives": [
+          "Changer proprietaire ou groupe avec chown",
+          "Traduire en numerique octal les permissions (755, 777)"
+        ],
+        "exercises": [
+          {
+            "title": "Le Droit Divin a Executer",
+            "description": "Donner un droit d'execution global (+x) sur le fichier script.sh pour qu'il devienne executable terminal.",
+            "difficulty": "Facile",
+            "solution": "chmod +x script.sh",
+            "hints": [
+              "L'operateur '+' greffe un attribut sans modifier purement le calcul RWX d'avant."
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_20",
+    "id": "course_20"
+  },
+  {
+    "title": "Bash Linux - Niveau Expert (Avancé)",
+    "description": "Le monde Scripting Bash automatisé, Daemons, Taches cron et Réseautage avancé en Sysadmin CLI",
+    "category": "DevOps",
+    "level": "Avancé",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+    "rating": 4.8,
+    "students": 6200,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "Bash",
+      "scripting",
+      "sysadmin",
+      "cron",
+      "avancé"
+    ],
+    "chapters": [
+      {
+        "title": "Scripting Bash : If, Boucles, AWK, SED",
+        "description": "Ne faire plus rien pour toujours.",
+        "order": 1,
+        "duration": "10 heures",
+        "content": "Vous mettez le shebang `#!/bin/bash` et devenez magiciens. Nous coderons formellement dans `.sh`. Le Bash incorpore de vraies structures for, if, while et prend des arguments positionnel system (`$1`, `$2`.. etc). Ajout de la maitrise SED (Search & Replace sur flux en chaine stream editor) pour editez dynamanique. `sed 's/Vieu/Nouveau/g' fichier`. Et AWK le processeur du traitement columnar.",
+        "objectives": [
+          "Creer Bash File avec arg",
+          "Modifier dynamiquement un JSON/Texte sed regex"
+        ],
+        "exercises": [
+          {
+            "title": "Script condition d'arret args",
+            "description": "Code l'interieur du if testant strictement qu'on a bien recu la valeur 2 comme premier argument de shell script bash ($1 == 2) sinon exit",
+            "difficulty": "Moyen",
+            "solution": "if [ \"$1\" -eq 2 ]; then\\n  echo \"Super\"\\nelse\\n  exit 1\\nfi",
+            "hints": [
+              "En bash les comparaisons numeriques c'est -eq (equals). Fini toujours les if par 'fi'."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les shell scripts.sh",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/2_GfT"
+          }
+        ]
+      },
+      {
+        "title": "Taches Planifiées avec CRON",
+        "description": "Monde des robots à 3h du matin",
+        "order": 2,
+        "duration": "10 heures",
+        "content": "Si je veux relancer le serveur tout les mardi à 2h34am ? Le cronjob gère ca pour l'administrateur Système via sa table Cron `crontab -e`. C'est l'essence du backend DevOps asynchrone pour les backups régulières automates, qui s'axe autour des ses 5 astériques: Min, Heure, Jour du mois, Mois, Jour de Semaine.",
+        "objectives": [
+          "Mettre au point syntaxes crotab",
+          "Envoyer output cron job dans file > null "
+        ],
+        "exercises": [
+          {
+            "title": "Backup tous les Minuits de Jeudi.",
+            "description": "Faire syntaxe cron (format * * * * * ) pour lancer /script/backup.sh a Minuit (00h00) le jeudi (4ieme jours de de de la sem).",
+            "difficulty": "Difficile",
+            "solution": "0 0 * * 4 /script/backup.sh",
+            "hints": [
+              "Le dimanche peut valloir 0 ou 7. Lundi: 1 ... Jeudi: 4."
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_21",
+    "id": "course_21"
+  },
+  {
+    "title": "JavaScript - Niveau Débutant",
+    "description": "Apprenez le seul langage exécutable nativement par le navigateur. Maîtrisez la syntaxe ES6 moderne et les bases de la programmation orientée web.",
+    "category": "Web",
+    "level": "Débutant",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1579468458835-cd73b7b7dfd5?w=800&q=80",
+    "rating": 4.8,
+    "students": 45000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "javascript",
+      "web",
+      "débutant",
+      "ES6"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et Interaction Naviguateur",
+        "description": "Ouvrir votre console F12 et dire Hello !",
+        "order": 1,
+        "duration": "3 heures",
+        "content": "Javascript (JS) a été créé en 10 jours en 1995. Tout de suite il a donné lieu a des sites dynamiques. JS se place avec la balise `<script src=\"test.js\"></script>` dans un fichier HTML. Le flux classique de console est `console.log('Test')`, la notification visuelle front se fait via `alert('Boom !')` et les var entrante avec le popup `prompt('Age ?')`.",
+        "objectives": [
+          "Comprendre Console inspect Element (Dev Tools)",
+          "Afficher et lire variables du front"
+        ],
+        "exercises": [
+          {
+            "title": "Hello dans terminal de navigateur",
+            "description": "Execute l'instruction classique dans JS pour debug le mot simple : Coucou.",
+            "difficulty": "Facile",
+            "solution": "console.log('Coucou');",
+            "hints": [
+              "La methode log reside dans l'object console global."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Le Langage Javascript",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/W6NZfCO5SIk"
+          }
+        ]
+      },
+      {
+        "title": "Let, Const, Var, et Types Dynamique.",
+        "description": "Variables ES6 en Javascript moderne",
+        "order": 2,
+        "duration": "5 heures",
+        "content": "On déteste l'ancien standard `var`. L'ES6 introduce `let` (modifiables) et `const` (constantes immuables bloqué). Les types gérés : String, Number (flotants inclus), Boolean et Null et Undefined. Il est capital de faire triple égalité `===` pour que JS ne fasse pas de type coercion dangereuses en implicat (où 5 == '5' est true... mais faux strict 5 === '5')",
+        "objectives": [
+          "Déclarer Scope de blocs via const et let",
+          "Imposer le triple egal stricts (===) sur le double."
+        ],
+        "exercises": [
+          {
+            "title": "La constant inchangeable",
+            "description": "Déclarer une constante pour PI valeur 3.14.",
+            "difficulty": "Facile",
+            "solution": "const PI = 3.14;",
+            "hints": [
+              "Les primitives numbers ne nécessite pas les quote de texte !"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Fonctions Fléchées (Arrow Function) / Object Basique",
+        "description": "La syntaxe la plus utilisée en FrontReact futur.",
+        "order": 3,
+        "duration": "7 heures",
+        "content": "On définit des fonctions : `function old(x){...}`. Mais on code aujourd'hui quasi que de l'Arrow fonction : `const new = (x) => { return x*2; }`. Cela limite les galères avec la binding du pointeur global `this`. Les Obj literals JS : `const obj = { user: 'Paul', score: 30 }`. En javascript c'est ce format Objet qui donnera lieu au concept de fichier JSON server.",
+        "objectives": [
+          "Ecrire propre format Fat arrow. =>",
+          "Iterer Objet notation.",
+          "Manipuler des Array natives"
+        ],
+        "exercises": [
+          {
+            "title": "Flèche Carré",
+            "description": "Créez fonction fleché const carre qui retourne x*x. sans return keyword implicite.",
+            "difficulty": "Moyen",
+            "solution": "const carre = (x) => x * x;",
+            "hints": [
+              "Si t'a pas mis l'accolade ouvrante de body de fonction, c'est auto-return"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Arrow fonction et le grand This",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/5mFZ"
+          }
+        ]
+      }
+    ],
+    "_id": "course_22",
+    "id": "course_22"
+  },
+  {
+    "title": "JavaScript - Niveau Intermédiaire",
+    "description": "Le DOM. Apprenez à manipuler les balises HTML en direct pour créer des applications web interactives (To-Do lists réactives).",
+    "category": "Web",
+    "level": "Intermédiaire",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1579468458835-cd73b7b7dfd5?w=800&q=80",
+    "rating": 4.8,
+    "students": 31000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "javascript",
+      "DOM",
+      "events",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Le DOM Manipulation Globale",
+        "description": "Chirurgie en plein ventre : rajouter de trucs en direct sur la page client.",
+        "order": 1,
+        "duration": "8 heures",
+        "content": "Document Object Model. On navigue sur l'arbre de balise. L'outil suprème JS est : `document.querySelector('#id ou .classe ou tagname')`. Vous y avez un accès qui vous permets de mettre à jour son HTML inclus `element.innerHTML = 'Nouveau texte'` ou ses couleurs via composante node `element.style.color = 'red'` et le masquer `element.classList.add('hidden')`.",
+        "objectives": [
+          "Rechercher par querrySelector et getAll",
+          "Modifier une prop inligne avec innerTEXT et innerHTML"
+        ],
+        "exercises": [
+          {
+            "title": "Changer Texte",
+            "description": "Un H1 possède lid #majeur. Mets son textContent sur 'Succés'.",
+            "difficulty": "Facile",
+            "solution": "document.querySelector('#majeur').textContent = 'Succés';",
+            "hints": [
+              "N'oublie le '#', qui représente une ID."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "DOM la manipulation complete",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/DOMJS1q"
+          }
+        ]
+      },
+      {
+        "title": "Gestion des Evénement Listeners (Listen Event)",
+        "description": "Rendre ca cliquable, vivants et animés au scroll !",
+        "order": 2,
+        "duration": "12 heures",
+        "content": "Quand je clique un bouton JS doit le capter: `btn.addEventListener('click', fonctionCallback)`. JS gère des événements innombrable sur du Browser (clavier 'keydown', la souris 'mouseenter' sur composant, la fenetre resize). JS va meme emmetre avec l'objet Event (`e`) plein de meta-details pour capturer la value exacte de frappe dans le cadre dun keydown 'e.target.value'.",
+        "objectives": [
+          "Cabler events multiples",
+          "Créer elements createElement pour To-Do appendChild"
+        ],
+        "exercises": [
+          {
+            "title": "Cable d'un boutton alerte",
+            "description": "Cible objet 'button' via selec et donne lui function anonyme via EventListener click de l'alerte 'Click!'",
+            "difficulty": "Moyen",
+            "solution": "document.querySelector('button').addEventListener('click', () => {\\n    alert('Click!');\\n});",
+            "hints": [
+              "A l'interieur de addEventListener on insère Arrow function"
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_23",
+    "id": "course_23"
+  },
+  {
+    "title": "JavaScript - Niveau Expert (Avancé)",
+    "description": "Le Moteur pur. Traitement asynchrone (Promises, Async/Await), Programmation Orienté Web Service d'API, Module Node/Backend.",
+    "category": "Web",
+    "level": "Avancé",
+    "duration": "25 heures",
+    "image": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80",
+    "rating": 4.8,
+    "students": 12000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "javascript",
+      "ASYNCHRONE",
+      "fetch",
+      "nodeJS",
+      "avancé"
+    ],
+    "chapters": [
+      {
+        "title": "Asynchrone Event : Des Callbacks à Async/Await",
+        "description": "L'attente n'est jamais bloquante avec JavaScript Web Worker.",
+        "order": 1,
+        "duration": "10 heures",
+        "content": "Javascript ne fait qu'une trame(Thread unqiue). Donc s'il télécharge image de 10Mo votre site freezr : sauf via concept d'Async. Les Promesses(Promise(resolve/reject)). Depuis ES7 La solution revolutionnaire est un couple `async function init()` et un `await process()` à l'interieur permettant a Javascript de traiter un délai asychrone comme des lignes synchrone de lecture clean.",
+        "objectives": [
+          "Ecrire un objet New Promise()",
+          "Remplacer .then() .catch() du fetch par try-catch Await format."
+        ],
+        "exercises": [
+          {
+            "title": "Pause de seconde async",
+            "description": "Creer fonction asyncrono fleche timerPause attendant 1000 milisecond. Puis qui console log \"Fin\".",
+            "difficulty": "Moyen",
+            "solution": "const timerPause = async () => {\\n  await new Promise(r => setTimeout(r, 1000));\\n  console.log('Fin');\\n}",
+            "hints": [
+              "setTimeout prend sa reponse r sans faire de variable supplementaire in-line"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Async, eventloop",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/8aGh"
+          }
+        ]
+      },
+      {
+        "title": "Requêtes Serveurs HTTP (Fetch API)",
+        "description": "Les communications serveur AJAX et requetes vers data.",
+        "order": 2,
+        "duration": "15 heures",
+        "content": "On consomme les APIs Rest FullBackend en javascript avec the native `fetch('url')`. Elle tire par defaut la methode GET du serveur et récupére res que l'on transforme json() via `.then(res => res.json())`. Nous verrons comment y coller du Request POST custom bearer tokens config et header CORS de securité.",
+        "objectives": [
+          "Invoquer fetch asyncrone url REST",
+          "Poster sur Database mongo par API body payload method Json Stringify"
+        ],
+        "exercises": [
+          {
+            "title": "Fetch Api basique await",
+            "description": "Fetch API get sur '/users'. Mets son return json sur variable data, async mode pure",
+            "difficulty": "Difficile",
+            "solution": "const response = await fetch('/users');\\nconst data = await response.json();\\nconsole.log(data);",
+            "hints": [
+              "Le fetch lui meme requière AWAIT. Puis la transformation en type obj (response.json()) de l'entiereté stream la requiert aussi !"
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_24",
+    "id": "course_24"
+  },
+  {
+    "title": "PHP - Niveau Débutant",
+    "description": "Apprenez le langage qui fait tourner 80% du Web. Comprenez comment générer du HTML dynamiquement côté serveur.",
+    "category": "Programmation",
+    "level": "Débutant",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1599507593499-a3f7d1d94211?w=800&q=80",
+    "rating": 4.7,
+    "students": 18000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "PHP",
+      "backend",
+      "web",
+      "débutant"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction à PHP et Environnement Serveur",
+        "description": "Comment le web fonctionne : Client vs Serveur.",
+        "order": 1,
+        "duration": "3 heures",
+        "content": "Contrairement à HTML/CSS et JS (qui s'exécutent sur le navigateur du client), PHP s'exécute sur le **serveur**. Le serveur traite le code PHP et renvoie au client du HTML pur. Vous apprendrez à utiliser les balises `<?php ... ?>`, à déclarer des variables avec le dollar `$variable`, et à utiliser `echo` pour envoyer du texte au navigateur.",
+        "objectives": [
+          "Comprendre le rôle d'un serveur web (Apache/Nginx)",
+          "Intégrer du PHP dans du HTML",
+          "Utiliser echo et les concaténations avec le point (.)"
+        ],
+        "exercises": [
+          {
+            "title": "Hello Serveur",
+            "description": "Affichez 'Bonjour PHP' en concaténant les chaînes 'Bonjour' et 'PHP'.",
+            "difficulty": "Facile",
+            "solution": "<?php\\necho 'Bonjour' . ' ' . 'PHP';\\n?>",
+            "hints": [
+              "Le point de concaténation . relie deux chaînes."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Le PHP, c'est quoi exactement ?",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/9Bv_A0M2M1"
+          }
+        ]
+      },
+      {
+        "title": "Variables, Conditions et Boucles",
+        "description": "La logique de base en PHP.",
+        "order": 2,
+        "duration": "5 heures",
+        "content": "En PHP, les variables ne sont pas typées strictement. `$age = 25;` est un entier, `$nom = \"Jean\";` est une chaîne. Les conditions `if/else` et les boucles `for` ou `while` ont la même syntaxe qu'en C. Une boucle très pratique en PHP pour les listes est le `foreach`.",
+        "objectives": [
+          "Maitriser les variables types standards",
+          "Utiliser une boucle foreach sur un Array"
+        ],
+        "exercises": [
+          {
+            "title": "Boucle sur un tableau",
+            "description": "Soit $couleurs = ['rouge', 'bleu']. Bouclez avec foreach pour afficher chaque couleur.",
+            "difficulty": "Facile",
+            "solution": "foreach($couleurs as $c) {\\n  echo $c;\\n}",
+            "hints": [
+              "Syntaxe magique : foreach($tableau as $element)"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Gestion des Formulaires (GET et POST)",
+        "description": "Récupérez ce que l'utilisateur tape sur votre site.",
+        "order": 3,
+        "duration": "7 heures",
+        "content": "Quand un utilisateur clique sur 'Envoyer' dans un `<form>`, PHP peut attraper ces données via les superglobales `$_GET` (données passées dans l'URL) ou `$_POST` (données passées silencieusement). C'est la base de tout système de login. Vous apprendrez aussi à valider et nettoyer ces données avec `htmlspecialchars()` pour éviter les failles XSS.",
+        "objectives": [
+          "Faire la différence entre GET et POST",
+          "Récupérer la donnée POST",
+          "Sécuriser l'affichage contre la faille XSS"
+        ],
+        "exercises": [
+          {
+            "title": "Saluer un utilisateur POST",
+            "description": "L'utilisateur a envoyé son pseudo via champ POST 'pseudo'. Affichez 'Salut [pseudo]'. Protégez l'affichage.",
+            "difficulty": "Moyen",
+            "solution": "if (isset($_POST['pseudo'])) {\\n  echo 'Salut ' . htmlspecialchars($_POST['pseudo']);\\n}",
+            "hints": [
+              "Utilisez isset() pour vérifier que la donnée existe avant de l'afficher."
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_25",
+    "id": "course_25"
+  },
+  {
+    "title": "PHP - Niveau Intermédiaire",
+    "description": "Connectez-vous à la base de données. Créez des sessions réelles d'utilisateurs avec PDO MySQL.",
+    "category": "Programmation",
+    "level": "Intermédiaire",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1599507593499-a3f7d1d94211?w=800&q=80",
+    "rating": 4.8,
+    "students": 14000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "PHP",
+      "PDO",
+      "sessions",
+      "MySQL",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Connexion PDO et Requêtes Préparées",
+        "description": "Connectez PHP à MySQL en toute sécurité.",
+        "order": 1,
+        "duration": "8 heures",
+        "content": "On n'utilise plus les vieilles fonctions `mysql_query` (dépréciées). Aujourd'hui nous utilisons l'objet PDO. Il permet de se connecter à n'importe quelle BDD. Et surtout, PDO offre les 'Requêtes Préparées' (`prepare()` et `execute()`), l'arme absolue pour neutraliser les terribles failles d'Injections SQL.",
+        "objectives": [
+          "Créer une instance PDO connectée",
+          "Faire un SELECT sécurisé",
+          "Traiter la faille requête non sécurisée (Injection SQL)"
+        ],
+        "exercises": [
+          {
+            "title": "La requête prepare PDO",
+            "description": "Sur l'objet PDO $bdd, préparez une requête qui prend les membres dont le nom est égal au marqueur '?'.",
+            "difficulty": "Difficile",
+            "solution": "$req = $bdd->prepare('SELECT * FROM membre WHERE nom = ?');\\n$req->execute([$nom_recherche]);",
+            "hints": [
+              "Le execute() prend un tableau (array) des valeurs qui correspondent aux '?'."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "PHP PDO et Sécurité DB requetes",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/e1w0"
+          }
+        ]
+      },
+      {
+        "title": "Sessions et Cookies",
+        "description": "Se souvenir d'un utilisateur d'une page à l'autre.",
+        "order": 2,
+        "duration": "8 heures",
+        "content": "Sans session, le serveur est amnésique. Chaque requête HTTP est vierge. La fonction `session_start()` doit être la toute première chose appelée dans votre script. Elle génère un cookie `PHPSESSID` chez le client et ouvre accès à la superglobale `$_SESSION[]`. C'est grâce à ça qu'on sait si un utilisateur est 'connecté' en allant de l'Accueil au Profil.",
+        "objectives": [
+          "Démarrer une session",
+          "Stocker le pseudo du user dans la tableau SESSION",
+          "Détruire la session (Deconnexion) avec session_destroy()"
+        ],
+        "exercises": [
+          {
+            "title": "Mise en session",
+            "description": "Stockez la valeur 'admin' dans la clef 'role' de la session.",
+            "difficulty": "Facile",
+            "solution": "session_start();\\n$_SESSION['role'] = 'admin';",
+            "hints": [
+              "N'oublie jamais de démarrer le session_start avant l'affectation."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Architecture MVC - Introduction",
+        "description": "Ne mélangez plus jamais PHP crado avec HTML.",
+        "order": 3,
+        "duration": "4 heures",
+        "content": "Si vous mettez vos requêtes SQL en plein milieu de votre affichage CSS/HTML, c'est le chaos. Pensez MVC (Modèle-Vue-Contôleur). Le Modèle s'occupe des requêtes BDD. Le Contrôleur reçoit les clics, lance les calculs du Modèle, et envoie les résultats à la Vue (qui est 100% HTML avec juste quelques echo PHP).",
+        "objectives": [
+          "Séparer logique et affichage.",
+          "Comprendre le routage via index.php basique."
+        ]
+      }
+    ],
+    "_id": "course_26",
+    "id": "course_26"
+  },
+  {
+    "title": "PHP - Niveau Expert (Avancé)",
+    "description": "Orientation Objet pure en PHP, MVC Structuré Complet et création d'API Rest en Symfony / Laravel mindset.",
+    "category": "Programmation",
+    "level": "Avancé",
+    "duration": "25 heures",
+    "image": "https://images.unsplash.com/photo-1599507593499-a3f7d1d94211?w=800&q=80",
+    "rating": 4.8,
+    "students": 9000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "PHP",
+      "OOP",
+      "MVC",
+      "Composer",
+      "avancé"
+    ],
+    "chapters": [
+      {
+        "title": "POO en PHP",
+        "description": "Classe, Objet et Visibilité",
+        "order": 1,
+        "duration": "10 heures",
+        "content": "Le PHP moderne est massivement Orienté Objet. Mot clé `class`, instanciation avec `$instance = new Classe();`. Accès aux attributs avec la flêche `$this->attribut`. Gestion des namespace et autoloading via standard PSR-4 avec Composer (le gestionnaire de paquet PHP). C'est la porte d'entrée inévitable pour les grand Frameworks comme Laravel ou Symfony.",
+        "objectives": [
+          "Créer une classe PHP.",
+          "Comprendre la fonction constructeur __construct();",
+          "Utiliser les Getters et Setters normés."
+        ]
+      },
+      {
+        "title": "Composer et Autoloading PSR-4",
+        "description": "Gérer vos packages comme Node NPM",
+        "order": 2,
+        "duration": "8 heures",
+        "content": "Auparavant on devait faire des require_once partout. Grace à `composer.json` et au standard PSR-4, il suffit de configurer et faire un simple `require 'vendor/autoload.php'`. Tous les Object Models avec le bon Namespace s'importeront de façon auto-magique quand on les instancie.",
+        "objectives": [
+          "Installer composer",
+          "Config autoload namespace"
+        ]
+      },
+      {
+        "title": "Creation d'API REST PHP Native",
+        "description": "Répondez aux requetes des applications Javascript Frontend",
+        "order": 3,
+        "duration": "7 heures",
+        "content": "Un PHP moderne de 2024 ne renvoie parfois pas de HTML du tout : Il est juste là pour causer avec React ! On apprendra à configurer les Headers `header('Content-Type: application/json')`, choper le Body Raw au format JSON file_get_contents('php://input'), et recracher le `json_encode($data)`. Bienvenue dans le monde Headless/API PHP.",
+        "objectives": [
+          "Return un response header JSON",
+          "Intercepter les Cors Headers API"
+        ]
+      }
+    ],
+    "_id": "course_27",
+    "id": "course_27"
+  },
+  {
+    "title": "MongoDB - Niveau Débutant",
+    "description": "Découvrez le monde NoSQL. Apprenez à manipuler une base de données orientée documents avec une souplesse totale face aux contraintes du SQL classique.",
+    "category": "Data",
+    "level": "Débutant",
+    "duration": "10 heures",
+    "image": "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
+    "rating": 4.8,
+    "students": 12500,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "MongoDB",
+      "NoSQL",
+      "Data",
+      "JSON",
+      "débutant"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction BDD Relationnel vs NoSQL",
+        "description": "Oubliez les tables et jointures compliquées.",
+        "order": 1,
+        "duration": "2 heures",
+        "content": "En SQL pur, on conçoit des tables rigides (Lignes / Colonnes). En MongoDB (NoSQL), la Data est stockée sous forme de **Documents** BSON (format binaire dérivé du JSON Javascript). Il n'y a pas de schéma strict. Un document peut avoir l'attribut 'age', et le document juste après peut ne pas l'avoir sans faire disjoncter tout le serveur.",
+        "objectives": [
+          "Différencier Document, Collection et Base de Donnée",
+          "Comprendre structure JSON de la data"
+        ],
+        "exercises": [
+          {
+            "title": "Traduire Vocabulaire",
+            "description": "Sur MongoDB, comment s'appelle l'équivalent d'une Ligne MySQL, et d'une Table MySQL ?",
+            "difficulty": "Facile",
+            "solution": "Une Ligne = un Document.\\nUne Table = une Collection.",
+            "hints": [
+              "On range les Docs dans des Collections."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Qu'est ce que Mongo DB NoSQL",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/E-1xI85Z"
+          }
+        ]
+      },
+      {
+        "title": "CRUD de base dans le Shell Mongo",
+        "description": "Create, Read, Update, Delete au format Query Document.",
+        "order": 2,
+        "duration": "5 heures",
+        "content": "Via le Mongo Shell (ou mongosh), vous interagissez avec le moteur DB. On sélectionne sa base avec `use mabdd`. On insert un élément : `db.users.insertOne({ nom: 'Marc' })`. On le cherche avec condition : `db.users.find({ nom: 'Marc' })`. La modification se fait avec les tags `$set` d'update : `db.users.updateOne({nom:'Marc'}, {$set : { age : 30 }})`.",
+        "objectives": [
+          "Faire un insertOne ()",
+          "Rechercher la db .find()",
+          "Comprendre $set sur Update"
+        ],
+        "exercises": [
+          {
+            "title": "Requete Query Delete",
+            "description": "Supriminez tout document utilisateur où l'attribut 'role' est 'banni'. (collection : users)",
+            "difficulty": "Moyen",
+            "solution": "db.users.deleteMany({ role: 'banni' })",
+            "hints": [
+              "Utilise deleteMany plutôt que deleteOne si tu vises de multiple rows matches."
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_28",
+    "id": "course_28"
+  },
+  {
+    "title": "MongoDB - Niveau Intermédiaire",
+    "description": "Maitrisez les opérateurs avancés (Greater than, In), l'indexation basique, et branchez Mongoose via NodeJS.",
+    "category": "Data",
+    "level": "Intermédiaire",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
+    "rating": 4.8,
+    "students": 8500,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "MongoDB",
+      "Opérateurs",
+      "NoSQL",
+      "Mongoose",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Opérateurs Fonctionnels Avancés",
+        "description": "Filtres complexe (Plus grand que, Tableaux inclus, Condition ET / OU)",
+        "order": 1,
+        "duration": "5 heures",
+        "content": "Au lieu d'un `>` ou `<=`, Mongo utilise des opérateurs préfixés d'un paramètre $: `$gt` (greater than), `$lt` (less than), `$in` (chercher parmis tableau de choix). Exemple: `.find({ age: { $gt: 18 } })` cherche les majeurs. Vous découvrirez les opérateurs logique pour la fusion de critères `$or` et `$and`.",
+        "objectives": [
+          "Mettre en valeur le $gt / $lt",
+          "Manipuler une recherche In list de config string list"
+        ],
+        "exercises": [
+          {
+            "title": "Query Mineurs Francophones",
+            "description": "Faites Query sur collection 'users' qui ont un 'age' strict inférieur $lt à 18, et la string 'langue' egale à 'fr'.",
+            "difficulty": "Moyen",
+            "solution": "db.users.find({ age: { $lt: 18 }, langue: 'fr' })",
+            "hints": [
+              "Passer deux arg dans le root objet effectue implicitement un AND."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Mongoose + JS NodeJS (Bases de Schématisation)",
+        "description": "On encadre Mongo pour éviter que le chaos Data ne prenne place.",
+        "order": 2,
+        "duration": "10 heures",
+        "content": "NoSQL n'a pas de Schema: vous pouvez inserer en user 'couleur', 'age'.. c'est dangeureux côté backend NodeJS. L'ORM ODM `Mongoose` sert à remettre du cadre en creant coté code JS un `new Schema()`. Ainsi Mongoose bloquera l'insertion vers Mongo des structures non conformes ou erronées en types.",
+        "objectives": [
+          "Mettre en place et connecter nodeJS mongoose",
+          "Créer un Schema user propre (type Object Mongoose)",
+          "Savoir lancer sa première config."
+        ],
+        "exercises": [
+          {
+            "title": "Mongoose Model Create ()",
+            "description": "A partir d'un model User chargé, crée instance ayant pour nom 'Alex' (Methode de Mongoose).",
+            "difficulty": "Moyen",
+            "solution": "const u = new User({ nom: 'Alex' });\\nawait u.save();",
+            "hints": [
+              "save() async doit toujours valider la query"
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_29",
+    "id": "course_29"
+  },
+  {
+    "title": "MongoDB - Niveau Expert (Avancé)",
+    "description": "Aggregation FrameWork pipeline, géospatial index et Réplication Clusters Hautes Dispo.",
+    "category": "Data",
+    "level": "Avancé",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800&q=80",
+    "rating": 4.9,
+    "students": 4000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "MongoDB",
+      "Aggregation",
+      "Indexes",
+      "avancé",
+      "Data"
+    ],
+    "chapters": [
+      {
+        "title": "Le Framework d'Aggrégation Pipeline",
+        "description": "Des super Analytics sur de la grosse mass Data. Le JOIN revisité.",
+        "order": 1,
+        "duration": "10 heures",
+        "content": "Le `aggregate([ ... ])` est l'arme ultime de MongoDB permettant des GROUP BY incroyables et des cascades de traitement ($match -> $group -> $sort). On met des étapes de pipelines où la sortie de l'une rentre dans la suivante. Par ailleurs, Mongo n'a pas de jointure classique SQL, mais possède le `$lookup` qui simule à 100% une jointure LEFT OUTER SQL.",
+        "objectives": [
+          "Maitriser le Root concept Pipeline Array",
+          "Utiliser $match filtre pre process puis la mise en grappe en group by",
+          "Joindre avec lookUp l'author object_id sur la table Posts."
+        ],
+        "exercises": [
+          {
+            "title": "Pipeline Somme Age",
+            "description": "Sur une aggregate sur table users, faire un $match pour 'actif': true. Puis $group l'ensemble (en id NULL) pour somme(sum) globale avec operateur $sum",
+            "difficulty": "Difficile",
+            "solution": "db.users.aggregate([ { $match: { actif: true } }, { $group: { _id: null, total: { $sum: \\\"$age\\\" } } } ])",
+            "hints": [
+              "Le champ age doit etre referencé avec prefix symbol $ dans la string de calc aggregation"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Maitriser Mongo Aggregation Data",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/Kk6Er0c"
+          }
+        ]
+      },
+      {
+        "title": "Indexation, GeoSpatial et Performance Sharding",
+        "description": "Atteindre de la performance Data sur des dizaines de millions Queries/Sec.",
+        "order": 2,
+        "duration": "10 heures",
+        "content": "Sans Index, mongo Database fait un COLLSCAN lourd de la database line par ligne. On implémente du `createIndex({nom : 1})` Index Arbre BTree. On peut gérer grace à de l'Index spatial (2dsphere) pour le radar de coordonnés GPS de maps de location de client. En Prod Cluster : le Sharding découpe une collection sur divers partitions serveurs de dispo globale DB pour assurer vitesse scale horiz.",
+        "objectives": [
+          "Monitorer ExecutionStats via cmd .explain() ",
+          "Creer INDEX sur attribut clé unique",
+          "Gérer une Map Query 2dSphere $near"
+        ]
+      }
+    ],
+    "_id": "course_30",
+    "id": "course_30"
+  },
+  {
+    "title": "MySQL - Niveau Débutant",
+    "description": "Apprenez le langage universel des bases de données relationnelles. Créez des tables, insérez des données et interrogez-les efficacement.",
+    "category": "Data",
+    "level": "Débutant",
+    "duration": "12 heures",
+    "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    "rating": 4.8,
+    "students": 15400,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "MySQL",
+      "SQL",
+      "Data",
+      "relationnel",
+      "débutant"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et Modèle Relationnel",
+        "description": "Comprendre les Tables, Lignes et Colonnes.",
+        "order": 1,
+        "duration": "3 heures",
+        "content": "MySQL est un SGBDR (Système de Gestion de Bases de Données Relationnelles). Les données sont stockées dans des Tables, organisées en Lignes (Enregistrements) et Colonnes (Attributs). Chaque ligne est identifiée par une Clé Primaire unique (Primary Key), souvent un ID auto-incrémenté. C'est l'ordre absolu par rapport au NoSQL.",
+        "objectives": [
+          "Comprendre le type de Data relationnel",
+          "Vocabulaire Table, Ligne, Clé Primaire",
+          "Types de colonnes : VARCHAR, INT, DATE"
+        ],
+        "exercises": [
+          {
+            "title": "Type de Colonne",
+            "description": "Quel type de donnée utiliseriez-vous pour stocker un Prénom qui fait maximum 50 caractères ?",
+            "difficulty": "Facile",
+            "solution": "VARCHAR(50)",
+            "hints": [
+              "Le texte variable court est toujours de Varchar en SQL."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "C'est quoi MySQL",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/zbMHLJ0"
+          }
+        ]
+      },
+      {
+        "title": "Le CRUD SQL (Créer, Lire, Mettre à jour, Supprimer)",
+        "description": "Les requêtes SELECT, INSERT, UPDATE, DELETE.",
+        "order": 2,
+        "duration": "5 heures",
+        "content": "Tout tourne autour de 4 verbes. `INSERT INTO table (col1) VALUES ('Hello')` pour créer. `SELECT * FROM table WHERE condition` pour lire l'entiereté. `UPDATE table SET col='New' WHERE id=1` pour modifier, indispensable de toujours mettre un WHERE sous peine de modifier toute la table ! Pareil pour `DELETE FROM table WHERE id=1`.",
+        "objectives": [
+          "Ecrire un SELECT avec condition WHERE",
+          "Mettre a jour data grace à UPDATE SET"
+        ],
+        "exercises": [
+          {
+            "title": "Modifier une ressource existante",
+            "description": "Ecrivez la query pour changer l'email en 'new@mail.com' de l'utilisateur dont l'id vaut 56. La table est 'users'.",
+            "difficulty": "Moyen",
+            "solution": "UPDATE users SET email = 'new@mail.com' WHERE id = 56;",
+            "hints": [
+              "Toujours un WHERE sur un update pour cibler sa row."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Tri, Limite et Fonctions Aggrégatives",
+        "description": "Classer les résultats : ORDER BY, LIMIT, COUNT et AVG.",
+        "order": 3,
+        "duration": "4 heures",
+        "content": "Pour éviter de retourner un million de lignes, on limite avec `LIMIT 10`. On trie avec `ORDER BY nom DESC` (descendant). On peut aussi compter le nombre total avec `SELECT COUNT(*) FROM table` ou trouver la moyenne d'une colonne avec `AVG(prix)`. Ces requêtes retournent alors une seule valeur mathématique consolidée.",
+        "objectives": [
+          "Trier via un paramètre avec ORDER BY",
+          "Recuperer une moyenne via le SQL Aggrégator AVG",
+          "Compter de lignes COUNT"
+        ],
+        "exercises": [
+          {
+            "title": "Le top 5",
+            "description": "Selectionnez toutes les colonnes des joueurs, triés par leur 'score' du plus grand au plus petit, gardez que le top 5.",
+            "difficulty": "Moyen",
+            "solution": "SELECT * FROM joueurs ORDER BY score DESC LIMIT 5;",
+            "hints": [
+              "Order Descendant puis on limite après."
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_31",
+    "id": "course_31"
+  },
+  {
+    "title": "MySQL - Niveau Intermédiaire",
+    "description": "La puissance du relationnel : Les Jointures et Schématisation complexe.",
+    "category": "Data",
+    "level": "Intermédiaire",
+    "duration": "18 heures",
+    "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    "rating": 4.8,
+    "students": 11000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "MySQL",
+      "Jointures",
+      "FOREIGN KEY",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Les Clés Étrangères (Foreign Keys)",
+        "description": "Lier les tables entre elles solidement.",
+        "order": 1,
+        "duration": "6 heures",
+        "content": "Si un Utilisateur écrit plusieurs Articles, la table `articles` a une colonne `user_id` qui référence la Primary Key de `users`. C'est une Clé Étrangère! Elle garantit l'intégrité référentielle : impossible de supprimer un user si ses articles le référencent (sauf avec un `ON DELETE CASCADE` qui détruit tout en cascade).",
+        "objectives": [
+          "Creer une relation 1-N One To Many",
+          "Appliquer contrainte Foreign Key MySQL",
+          "Comprendre le delete On Cascade mode"
+        ],
+        "exercises": [
+          {
+            "title": "Syntaxe de fk constraint",
+            "description": "Mettre foreign key de `user_id` referencant `id` de `users`",
+            "difficulty": "Difficile",
+            "solution": "FOREIGN KEY (user_id) REFERENCES users(id)",
+            "hints": [
+              "Mot clef References."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "C'est quoi ces Foreign Keys ?",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/zH"
+          }
+        ]
+      },
+      {
+        "title": "Les Jointures SQL (INNER, LEFT, RIGHT JOIN)",
+        "description": "Reconstruisez les données éclatées à la volée.",
+        "order": 2,
+        "duration": "12 heures",
+        "content": "La jointure recolle la donnée à la lecture : `SELECT articles.titre, users.nom FROM articles INNER JOIN users ON articles.user_id = users.id`. Un INNER JOIN ne ramène que les lignes ayant une correspondance des 2 côtés. Un LEFT JOIN ramène toutes les lignes de la table de gauche, même sans correspondance à droite (retournant NULL pour ces champs).",
+        "objectives": [
+          "Unir deux tables relationnele avec une jointure INNER",
+          "Maitriser diff de Left join sur inclusion nulle",
+          "L'aliasing AS de table pour reduire syntaxe ( a et u )"
+        ],
+        "exercises": [
+          {
+            "title": "Jointure Utilisateur/Commande",
+            "description": "Affichez 'client.nom' et 'commande.total' via Jointure Interne INNER JOIN de la table Client et Commande liés via `client_id`",
+            "difficulty": "Difficile",
+            "solution": "SELECT client.nom, commande.total FROM client INNER JOIN commande ON client.id = commande.client_id;",
+            "hints": [
+              "La condition ON permet de declarer la zone commune entre les deux tables"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les JoinTures MySQL expliquées facile",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/H2N4wz"
+          }
+        ]
+      }
+    ],
+    "_id": "course_32",
+    "id": "course_32"
+  },
+  {
+    "title": "MySQL - Niveau Expert (Avancé)",
+    "description": "Indexation, Transactions ACID, Déclencheurs (Triggers) et Optimisations Poussées.",
+    "category": "Data",
+    "level": "Avancé",
+    "duration": "25 heures",
+    "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    "rating": 4.9,
+    "students": 6500,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "MySQL",
+      "Transactions",
+      "Triggers",
+      "avancé",
+      "ACID",
+      "Index"
+    ],
+    "chapters": [
+      {
+        "title": "Transactions ACID",
+        "description": "Tout passe, ou tout casse. Interdiction de la data partielle.",
+        "order": 1,
+        "duration": "10 heures",
+        "content": "Imaginez un virement bancaire: on debite A, on credite B. Si le serveur crashe au milieu de ce proccess, l'argent s'évapore et l'opération de compta echoue. MySQL innnoDB propose le control mode Transactionnel : `START TRANSACTION`, on execute les 2 Updates... si tout va bien, `COMMIT` (sauve). Si le script PHP détecte exception : `ROLLBACK` (on annule outrages). L'Etat de la banque Database est donc toujours correct.",
+        "objectives": [
+          "Initier bloc Start tansaction",
+          "Deployer try catch avec le throw sur execution error Rollback",
+          "Comprendre et Maitriser les Lock For Update du C de ACID"
+        ],
+        "exercises": [
+          {
+            "title": "Annulation manuelle",
+            "description": "Lancer le bloc transactionnel, Faites le Update et manuellement annuler la manipulation (rollback).",
+            "difficulty": "Moyen",
+            "solution": "START TRANSACTION;\\nUPDATE comptes SET balance = 0;\\nROLLBACK;",
+            "hints": [
+              "Rien ne sera sauvegardé en base apres un Rollback des modiffs."
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Les Triggers (Déclencheurs)",
+        "description": "Execution DB fantome automatisée",
+        "order": 2,
+        "duration": "8 heures",
+        "content": "Un tag `CREATE TRIGGER` ordonne au moteur DB de reagir automatiquement BEFORE ou AFTER toute methode INSERT / UPDATE sur table dédiée. Idéal pour garder un historique 'logs' de chaque suppression sans le gerer côté back-end NodeJS PHP, assurant fiabilité 100%.",
+        "objectives": [
+          "Mettre en place et comprendre Before Insert Trigger"
+        ]
+      },
+      {
+        "title": "Plan d'exécutions et Optimisation",
+        "description": "L'arme `EXPLAIN` et l'Indexation.",
+        "order": 3,
+        "duration": "7 heures",
+        "content": "Pourquoi cette requête SQL met 7 secondes ? Préfixez votre SELECT par `EXPLAIN`. MySQL vous dévoilera tout son plan moteur en interne. Il parcourt peut-être 5 millions de lignes inutilement ? Rajoutez des Index (B-Tree) sur la colonne via `CREATE INDEX nom ON table(col)`. Le temps d'exécution chutera souvent à 0.01s. Attention, chaque index ralentit grandement l'ecriture (Insert) par contrecoup.",
+        "objectives": [
+          "Comprendre un Explain table analyze",
+          "Chisir entre temps d'ecriture vs lecture SQL de masse Index"
+        ]
+      }
+    ],
+    "_id": "course_33",
+    "id": "course_33"
+  },
+  {
+    "title": "ReactJS - Niveau Débutant",
+    "description": "Apprenez la bibliothèque front-end N°1 mondial créée par Facebook. Créez des interfaces utilisateurs dynamiques avec des composants.",
+    "category": "Web",
+    "level": "Débutant",
+    "duration": "15 heures",
+    "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee5?w=800&q=80",
+    "rating": 4.8,
+    "students": 55000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "ReactJS",
+      "frontend",
+      "JSX",
+      "composants",
+      "débutant"
+    ],
+    "chapters": [
+      {
+        "title": "Introduction et JSX",
+        "description": "Le mariage du HTML en plein milieu du JavaScript.",
+        "order": 1,
+        "duration": "4 heures",
+        "content": "Fini un fichier partagé distinct JS DOM et HTML. ReactJS a fusioné ça via sa création syntaxique le 'JSX'. Une fonction Javascript qui retourne formellement une balise `return <div>Hello</div>`. Pour incorporer du JS dynamique dedans, on encadre des accolades `return <h1>Hello {name}</h1>`. Attention `class` devient `className` en JSX !",
+        "objectives": [
+          "Comprendre Babel et la compilation JSX",
+          "Maitriser variable en accolade",
+          "Passer la classe CSS via nom className"
+        ],
+        "exercises": [
+          {
+            "title": "Interpolation variable basic",
+            "description": "Creer fonction React Profil. Avec variable let age = 22. Retourne balise div contentant : 'Age: 22' integré de facon JS JSX dynamique.",
+            "difficulty": "Facile",
+            "solution": "function Profil() {\\n  let age = 22;\\n  return <div>Age: {age}</div>;\\n}",
+            "hints": [
+              "N'oublie les accolades autour du age ! {age}"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "C'est quoi un composant REACT ?",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/dGcsH1"
+          }
+        ]
+      },
+      {
+        "title": "La notion de Composants et Props",
+        "description": "Des Legos réutilisables à l'infini et communication",
+        "order": 2,
+        "duration": "5 heures",
+        "content": "En React, un composant est juste une Fonction qui commence par Majuscule (ex : `function Button()`). On l'utilise ailleurs en écrivant `<Button />`. On peut lui passer en arg d'attribut enfant personnalisé les `props` (properties) : `<Button titre=\"Acheter\" />`. A l'intérieur ton code recuperera argument props.titre dynamiqumentement. C'est le flux Uni-directionnel standard React UI parent à l'Enfant component.",
+        "objectives": [
+          "Creer Composant modulaire externe",
+          "Passer valeur String dynamique en props composante Enfant",
+          "Utiliser Destructuration `{titre}` native param javascript."
+        ],
+        "exercises": [
+          {
+            "title": "Bouton Personnalite",
+            "description": "Creez function MyButton(props) et retourne bouton avec label affichant son props.txt en JSX interpole",
+            "difficulty": "Faible",
+            "solution": "function MyButton({txt}) {\\n  return <button>{txt}</button>;\\n}",
+            "hints": [
+              "N'hesite pas a destrucurer parametre direct en {txt}"
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Composants React et Props passing",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/8rW"
+          }
+        ]
+      },
+      {
+        "title": "Le Hook useState",
+        "description": "Faire vivre l'Interface sans reload naviguation",
+        "order": 3,
+        "duration": "6 heures",
+        "content": "L'innovation React: Le State. Déclaration magique: `const [count, setCount] = useState(0)`. JS natif a besoin de DOM Manip pour MAJ le front, React Non: des lors que vous appelez methode majuscule `setCount(4)`, React en detectant ceci de lui-meme re-affiche instannement l'arbre Visuel DOM Component impacté dans Navigateur avec zero temps mort (Virtual DOM concept Re-render).",
+        "objectives": [
+          "Maitriser Import de react hooks import {useState} from 'react'",
+          "Declencher Set function au un onClick Event Listener format camelCase"
+        ],
+        "exercises": [
+          {
+            "title": "Hook de Compte Increment simple",
+            "description": "Importé. Initiez la const destructurée du compteur et de sa fonction setter, sa valeur défaut est 0.",
+            "difficulty": "Moyen",
+            "solution": "const [compteur, setCompteur] = useState(0);",
+            "hints": [
+              "Utilisez Array Destructuring classique hooks"
+            ]
+          }
+        ]
+      }
+    ],
+    "_id": "course_34",
+    "id": "course_34"
+  },
+  {
+    "title": "ReactJS - Niveau Intermédiaire",
+    "description": "Partez plus loin : Cycle de vie composant (useEffect), Listes dynamiques, Formulaire controlés.",
+    "category": "Web",
+    "level": "Intermédiaire",
+    "duration": "20 heures",
+    "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee5?w=800&q=80",
+    "rating": 4.8,
+    "students": 22000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "ReactJS",
+      "useEffect",
+      "Hooks",
+      "intermédiaire"
+    ],
+    "chapters": [
+      {
+        "title": "Le Hook useEffect",
+        "description": "Le Cycle de vie. (Chargement Page complet / Dechargement UnMount).",
+        "order": 1,
+        "duration": "8 heures",
+        "content": "Quand executer code ? Juste Après l'affichage d'un visuel du composant (Fetch API DB) ? `useEffect( () => { init() }, [] )`. La puissance se cache dans son tableau de Dépendance en fin. Vide `[]` il sexécute 1 x. Chargé `[valeur]`, il se declenche dynamiquement avec un side-event des que cette State Valeur specifique a mute à n'importe quel moment.",
+        "objectives": [
+          "Chargement de data fetch externe dans un effet.",
+          "Manipuler le Cleanup return () de l'use Effect unmount timer Interval list."
+        ],
+        "exercises": [
+          {
+            "title": "L'effet Unique",
+            "description": "Ajouter le UseEffect basique de log 'Mounted' pour qu'il ne se lance stricement qu'une seule et l'unique unique fois à la création visuel DOM (Tableau de dépendance vide)",
+            "difficulty": "Difficile",
+            "solution": "useEffect(() => {\\n  console.log('Mounted');\\n}, []);",
+            "hints": [
+              "L'arr dépendance Vide c'est ce qui gère sa limitation stricte 1 seule loop mount"
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Rendu de Listes Map() et Attribut .Key",
+        "description": "Générer du code en boucle dans le Rendu.",
+        "order": 2,
+        "duration": "6 heures",
+        "content": "Dans du JSX on ne peut pas mettre de bloc boucle 'for'. Il faut iterer obligatoirement via la methode `.map()` Javascript de tableau qui va renvoyer Array. React exige qu'un composant multiple de Liste ai imperativement l'identifiant React attrib : `key={data.id}`. Faute de quoi la console petera de Warning sur la desync Virtual dom React Rendering re-use element list.",
+        "objectives": [
+          "Mettre rendu via Map() iterateur",
+          "Utilisation stringte key ID Unique sur parent Node list."
+        ]
+      },
+      {
+        "title": "Les Formulaire Controlés",
+        "description": "Lie l'input string de form native au flux React de UseState Data variable String",
+        "order": 3,
+        "duration": "6 heures",
+        "content": "On assigne la valeur input non par DOM mais native avec attribut JSX valu et Event : `value={monTexte} onChange={(e) => setMonTexte(e.target.value)}`. L'etat state React dicte la verité. Interceptez l'envoi submit button `<form onSubmit...>` à l'aide `e.preventDefault()`. On a un controle complet Data avant tout envoi API serveurs Node PHP backend .",
+        "objectives": [
+          "Interdire rechargement page form submission natif",
+          "Synch le e.target.value"
+        ]
+      }
+    ],
+    "_id": "course_35",
+    "id": "course_35"
+  },
+  {
+    "title": "ReactJS - Niveau Expert (Avancé)",
+    "description": "Le Frontend Enginering : Context API as global Store, React Router V6, Framework Next.js Intro.",
+    "category": "Web",
+    "level": "Avancé",
+    "duration": "30 heures",
+    "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee5?w=800&q=80",
+    "rating": 4.9,
+    "students": 11000,
+    "language": "french",
+    "isFree": true,
+    "tags": [
+      "React",
+      "Redux",
+      "Context",
+      "NextJS",
+      "avancé",
+      "router"
+    ],
+    "chapters": [
+      {
+        "title": "Context API globale",
+        "description": "Casser le cauchemardeux passage Prop-Drilling.",
+        "order": 1,
+        "duration": "10 heures",
+        "content": "A force de passer les props d'enfant a enfant jusqu'au niveau 10.. on devient dingue. La ContextAPI ou Redux permettent de creer un Hub global d'information. Importez du hook magique `const {userRole} = useContext(UserContext)`. Ainsi un composant visuel lointain Footer.js peut etre au courant instantanement qu'il faille mettre bouton dark_mode globale theme state ou déconnection auth token sans aucun Props Parents link. Merveilleux de propreté Architecture projet.",
+        "objectives": [
+          "Initie Context.Provider value ",
+          "Call du Hook consume UseContext"
+        ]
+      },
+      {
+        "title": "React Router DOM",
+        "description": "Gerer les Adresses URL pour sa Single Page Application (SPA)",
+        "order": 2,
+        "duration": "10 heures",
+        "content": "Un click et l'URL change complet (/profil), mais curieusement, la page navigateur ne s'est jammais rechargé ! C'est rendu des SPA. ReactRouterDOM met à dispo sa balise global `<BrowserRouter>` et des ` <Route path='/test' element={<Test />}>` . Pour changer on utilise balise native `<Link to=\"/test\">` . Et Hop l'illusion est absolu. Ultra Fluidité User Frontend sans Backend Request PHP view HTML. ",
+        "objectives": [
+          "Saisir concept et deployer un SPA browser Routing sys",
+          "Gérer de l'URL parameter /user/:id avec hook extraction"
+        ]
+      }
+    ],
+    "_id": "course_36",
+    "id": "course_36"
+  }
+]

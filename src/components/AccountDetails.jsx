@@ -417,11 +417,15 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <input
                 type="email"
                 value={editForm.email}
-                disabled={true}
-                className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white outline-none opacity-60 cursor-not-allowed transition-all"
+                disabled={!isEditing}
+                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                className={`w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white outline-none transition-all ${!isEditing ? 'opacity-60 cursor-not-allowed' : 'focus:border-blue-500'}`}
                 placeholder="Votre email"
               />
             </div>
+            {isEditing && editForm.email !== user?.email && (
+              <p className="text-[10px] text-blue-500 mt-1">* Une vérification sera envoyée à cette nouvelle adresse.</p>
+            )}
           </div>
 
           <div>
@@ -914,6 +918,58 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                   >
                     Annuler
                   </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal de vérification d'email */}
+      <AnimatePresence>
+        {showEmailModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-md bg-white dark:bg-gray-900 border border-slate-200 dark:border-gray-800 rounded-[2rem] p-8 shadow-2xl relative overflow-hidden"
+            >
+              <div className="relative z-10 text-center space-y-6">
+                <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Mail className="text-blue-500" size={32} />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white">Vérification de l'email</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Un code à 6 chiffres a été envoyé à <br />
+                    <strong className="text-slate-800 dark:text-white">{newEmail}</strong>
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    maxLength="6"
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                    placeholder="000000"
+                    className="w-full text-center text-3xl tracking-[1em] font-black bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-gray-800 rounded-2xl py-4 focus:border-blue-500 outline-none text-slate-900 dark:text-white"
+                  />
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setShowEmailModal(false)}
+                      className="flex-1 py-4 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-slate-600 dark:text-gray-300 font-bold rounded-xl transition-all"
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      onClick={handleConfirmEmailChange}
+                      disabled={otpCode.length !== 6 || isLoading}
+                      className="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all disabled:opacity-50"
+                    >
+                      Confirmer
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>

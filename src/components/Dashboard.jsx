@@ -1,13 +1,40 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Trophy, Flame, Target, ArrowRight, Play, Star, Zap } from 'lucide-react';
+import { Sparkles, Trophy, Flame, Target, ArrowRight, Play, Star, Zap, Lock } from 'lucide-react';
 import MysteriousGeometricLogo from '../MysteriousGeometricLogo';
 
-const Dashboard = ({ user, courses, favorites, onSelectCourse, toggleFavorite, progressions, lastSelectedCourse }) => {
+const Dashboard = ({ user, courses, favorites, onSelectCourse, toggleFavorite, progressions, lastSelectedCourse, setToast }) => {
 
     // Calcul du niveau global
     const totalProgress = Object.values(progressions || {}).reduce((acc, curr) => acc + curr.progress, 0);
     const userLevel = Math.floor(totalProgress / 100) + 1;
+
+    // Helper to check if a course is unlocked
+    const isCourseUnlocked = (item) => {
+        if (!item) return true;
+        // Tous les débutants sont débloqués par défaut
+        if (item.level === 'Débutant') return true;
+
+        // Si l'utilisateur l'a débloqué individuellement (via test de placement futur)
+        if (user?.unlockedCourses?.includes(item.id)) return true;
+
+        // Déduction logique : Intermédiaire requiert le Débutant, Avancé requiert l'Intermédiaire
+        let targetLevelToCheck = '';
+        if (item.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
+        if (item.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
+
+        for (const cat of courses) {
+            if (cat.items.some(i => i.id === item.id)) {
+                // Trouver le cours pré-requis dans la même catégorie
+                const reqCourse = cat.items.find(i => i.level === targetLevelToCheck);
+                if (reqCourse) {
+                    const reqProgress = progressions?.[reqCourse.id]?.progress || 0;
+                    return reqProgress >= 100;
+                }
+            }
+        }
+        return false;
+    };
 
     return (
         <div className="max-w-7xl mx-auto p-6 pt-12 space-y-12">
@@ -241,51 +268,68 @@ const Dashboard = ({ user, courses, favorites, onSelectCourse, toggleFavorite, p
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {cat.items.map((item) => (
-                                    <motion.div
-                                        key={item.id}
-                                        whileHover={{ y: -10, scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={() => onSelectCourse(item)}
-                                        className={`relative p-6 rounded-3xl bg-gray-800/40 backdrop-blur-sm border border-white/5 hover:bg-gray-800/60 transition-all cursor-pointer overflow-hidden group`}
-                                    >
-                                        <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-${item.color.split('-')[1]}-500/20 to-transparent rounded-bl-full -mr-8 -mt-8`} />
-
-                                        <div className="relative z-10">
-                                            <div className="flex justify-between items-start mb-6">
-                                                <div className={`p-4 rounded-2xl bg-gray-900/50 ${item.color} shadow-lg`}>
-                                                    {item.icon}
-                                                </div>
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); toggleFavorite(item.id); }}
-                                                    className={`p-2 rounded-full hover:bg-white/10 transition-colors ${favorites.includes(item.id) ? 'text-pink-500' : 'text-gray-600'}`}
-                                                >
-                                                    <Heart size={20} fill={favorites.includes(item.id) ? "currentColor" : "none"} />
-                                                </button>
-                                            </div>
-
-                                            <h4 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">{item.name}</h4>
-                                            <p className="text-sm text-gray-400 line-clamp-2 mb-6 h-10">{item.desc}</p>
-
-                                            <div className="flex items-center justify-between text-xs font-medium text-gray-500">
-                                                <span className="bg-gray-900/50 px-3 py-1 rounded-full border border-white/5">{item.level}</span>
-                                                <span>{item.students} étudiants</span>
-                                            </div>
-
-                                            {progressions?.[item.id] && progressions[item.id].progress > 0 && (
-                                                <div className="mt-6">
-                                                    <div className="flex justify-between text-xs mb-1">
-                                                        <span className="text-blue-400">Progression</span>
-                                                        <span className="text-white">{progressions?.[item.id]?.progress}%</span>
-                                                    </div>
-                                                    <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
-                                                        <div className="h-full bg-blue-500 rounded-full" style={{ width: `${progressions?.[item.id]?.progress || 0}%` }} />
-                                                    </div>
+                                {cat.items.map((item) => {
+                                    const unlocked = isCourseUnlocked(item);
+                                    return (
+                                        <motion.div
+                                            key={item.id}
+                                            whileHover={unlocked ? { y: -10, scale: 1.02 } : { scale: 1 }}
+                                            whileTap={unlocked ? { scale: 0.98 } : { scale: 1 }}
+                                            onClick={() => {
+                                                if (unlocked) {
+                                                    onSelectCourse(item);
+                                                } else {
+                                                    if (setToast) setToast({ message: 'Vous devez terminer le niveau précédent pour débloquer ce cours !', type: 'warning' });
+                                                    else alert('Vous devez terminer le niveau précédent pour débloquer ce cours !');
+                                                }
+                                            }}
+                                            className={`relative p-6 rounded-3xl bg-gray-800/40 backdrop-blur-sm border border-white/5 transition-all group overflow-hidden ${unlocked ? 'cursor-pointer hover:bg-gray-800/60' : 'cursor-not-allowed grayscale'}`}
+                                        >
+                                            {!unlocked && (
+                                                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm rounded-3xl">
+                                                    <Lock size={40} className="text-gray-400 mb-2 drop-shadow-lg" />
+                                                    <span className="text-sm font-bold text-gray-300 drop-shadow-md px-4 text-center">Niveau {item.level} Verrouillé</span>
                                                 </div>
                                             )}
-                                        </div>
-                                    </motion.div>
-                                ))}
+
+                                            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-${item.color.split('-')[1]}-500/20 to-transparent rounded-bl-full -mr-8 -mt-8 ${!unlocked ? 'opacity-20' : ''}`} />
+
+                                            <div className="relative z-10">
+                                                <div className="flex justify-between items-start mb-6">
+                                                    <div className={`p-4 rounded-2xl bg-gray-900/50 ${item.color} shadow-lg`}>
+                                                        {item.icon}
+                                                    </div>
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); toggleFavorite(item.id); }}
+                                                        className={`p-2 rounded-full hover:bg-white/10 transition-colors ${favorites.includes(item.id) ? 'text-pink-500' : 'text-gray-600'}`}
+                                                    >
+                                                        <Heart size={20} fill={favorites.includes(item.id) ? "currentColor" : "none"} />
+                                                    </button>
+                                                </div>
+
+                                                <h4 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">{item.name}</h4>
+                                                <p className="text-sm text-gray-400 line-clamp-2 mb-6 h-10">{item.desc}</p>
+
+                                                <div className="flex items-center justify-between text-xs font-medium text-gray-500">
+                                                    <span className="bg-gray-900/50 px-3 py-1 rounded-full border border-white/5">{item.level}</span>
+                                                    <span>{item.students} étudiants</span>
+                                                </div>
+
+                                                {progressions?.[item.id] && progressions[item.id].progress > 0 && (
+                                                    <div className="mt-6">
+                                                        <div className="flex justify-between text-xs mb-1">
+                                                            <span className="text-blue-400">Progression</span>
+                                                            <span className="text-white">{progressions?.[item.id]?.progress}%</span>
+                                                        </div>
+                                                        <div className="h-1.5 bg-gray-700 rounded-full overflow-hidden">
+                                                            <div className="h-full bg-blue-500 rounded-full" style={{ width: `${progressions?.[item.id]?.progress || 0}%` }} />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </motion.div>
+                                    )
+                                })}
                             </div>
                         </section>
                     ))

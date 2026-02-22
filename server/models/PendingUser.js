@@ -8,6 +8,8 @@ const pendingUserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     verificationCode: { type: String, required: true },
     role: { type: String, default: 'user' },
+    goal: { type: String, default: null },
+    startingLevel: { type: String, default: null },
     createdAt: { type: Date, default: Date.now, expires: 1800 } // Auto-delete after 30 mins (1800 seconds)
 });
 

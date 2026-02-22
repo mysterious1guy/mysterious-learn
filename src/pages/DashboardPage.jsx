@@ -2,13 +2,59 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { coursesData } from '../courses/data.jsx';
-import { ChevronRight, Star, Clock, Users } from 'lucide-react';
+import { ChevronRight, Star, Clock, Users, Lock } from 'lucide-react';
 import { useEffect } from 'react';
+import PlacementTestModal from '../components/PlacementTestModal';
 
-const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL, searchQuery = '' }) => {
+const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions, API_URL, setToast, searchQuery = '' }) => {
     const navigate = useNavigate();
     const [courseStats, setCourseStats] = useState({});
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [selectedLockedCourse, setSelectedLockedCourse] = useState(null);
+    const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+
+    const isCourseUnlocked = (item) => {
+        if (!item || item.level === 'Débutant') return true;
+        if (user?.unlockedCourses?.includes(item.id)) return true;
+
+        let targetLevelToCheck = '';
+        if (item.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
+        if (item.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
+
+        for (const cat of coursesData) {
+            if (cat.items.some(i => i.id === item.id)) {
+                const reqCourse = cat.items.find(i => i.level === targetLevelToCheck);
+                if (reqCourse) {
+                    const reqProgress = progressions?.[reqCourse.id]?.progress || 0;
+                    return reqProgress >= 100;
+                }
+            }
+        }
+        return false;
+    };
+
+    const handleUnlockTargetCourse = async (courseToUnlock) => {
+        try {
+            const res = await fetch(`${API_URL}/auth/profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user.token}`
+                },
+                body: JSON.stringify({
+                    unlockedCourses: [...(user.unlockedCourses || []), courseToUnlock.id]
+                })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (setUser) setUser(data);
+                if (setToast) setToast({ message: `Le cours ${courseToUnlock.name} a été débloqué !`, type: 'success' });
+            }
+        } catch (err) {
+            console.error('Erreur déblocage:', err);
+            if (setToast) setToast({ message: 'Erreur lors du déblocage.', type: 'error' });
+        }
+    };
 
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -112,6 +158,13 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
 
     return (
         <div className="min-h-screen transition-colors duration-500 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 dark:from-gray-900 dark:via-[#0a0f1e] dark:to-black pb-20">
+            <PlacementTestModal
+                isOpen={isTestModalOpen}
+                onClose={() => setIsTestModalOpen(false)}
+                course={selectedLockedCourse}
+                onUnlock={handleUnlockTargetCourse}
+            />
+
             {/* Header */}
             <div className="pt-8 pb-12 px-6 lg:px-12 relative overflow-hidden">
                 {/* Background Blobs */}
@@ -201,93 +254,116 @@ const DashboardPage = ({ user, favorites, toggleFavorite, progressions, API_URL,
 
                         <div className="overflow-x-auto pb-8 custom-horizontal-scrollbar pr-6 scroll-smooth">
                             <div className={`flex gap-6 w-full ${category.items.length === 1 ? '' : 'w-max'}`}>
-                                {category.items.map((course) => (
-                                    <motion.div
-                                        key={course.id}
-                                        whileHover={{ scale: 1.01, y: -5 }}
-                                        onClick={() => navigate(`/course/${course.id}`)}
-                                        className={`${category.items.length === 1 ? 'w-full max-w-5xl' : 'w-[300px] md:w-[400px]'} flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer group`}
-                                    >
-                                        {/* Image du cours */}
-                                        <div className={`${category.items.length === 1 ? 'h-80' : 'h-48'} relative overflow-hidden`}>
-                                            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
-                                            <img
-                                                src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.id}`}
-                                                alt={course.name}
-                                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100"
-                                                onError={(e) => {
-                                                    e.target.src = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'; // Fallback image
-                                                }}
-                                            />
-                                            <div className="absolute top-3 right-3 z-20">
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        toggleFavorite(course.id);
+                                {category.items.map((course) => {
+                                    const unlocked = isCourseUnlocked(course);
+                                    return (
+                                        <motion.div
+                                            key={course.id}
+                                            whileHover={unlocked ? { scale: 1.01, y: -5 } : { scale: 1 }}
+                                            onClick={() => {
+                                                if (unlocked) {
+                                                    navigate(`/course/${course.id}`);
+                                                }
+                                            }}
+                                            className={`${category.items.length === 1 ? 'w-full max-w-5xl' : 'w-[300px] md:w-[400px]'} flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl transition-all group relative ${unlocked ? 'hover:shadow-blue-500/10 cursor-pointer' : 'cursor-default grayscale'}`}
+                                        >
+                                            {!unlocked && (
+                                                <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
+                                                    <Lock size={40} className="text-gray-400 mb-3 drop-shadow-lg" />
+                                                    <span className="text-sm font-bold text-gray-300 drop-shadow-md px-4 text-center mb-4">Niveau {course.level} Verrouillé</span>
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setSelectedLockedCourse(course);
+                                                            setIsTestModalOpen(true);
+                                                        }}
+                                                        className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5"
+                                                    >
+                                                        Passer le test
+                                                    </button>
+                                                </div>
+                                            )}
+                                            {/* Image du cours */}
+                                            <div className={`${category.items.length === 1 ? 'h-80' : 'h-48'} relative overflow-hidden`}>
+                                                <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
+                                                <img
+                                                    src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.id}`}
+                                                    alt={course.name}
+                                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100"
+                                                    onError={(e) => {
+                                                        e.target.src = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'; // Fallback image
                                                     }}
-                                                    className="p-2 bg-black/40 backdrop-blur-md rounded-full hover:bg-black/60 transition-colors"
-                                                >
-                                                    <Star
-                                                        size={16}
-                                                        className={favorites.includes(course.id) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
-                                                    />
-                                                </button>
-                                            </div>
-                                            <div className="absolute top-3 left-3 z-20 flex gap-2">
-                                                {course.tags?.slice(0, 2).map((tag, i) => (
-                                                    <span key={i} className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full backdrop-blur-md ${category.items.length === 1 ? 'text-xs px-3 py-1' : ''}`}>
-                                                        {tag}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
-
-                                        {/* Contenu */}
-                                        <div className={`p-6 md:p-8 ${category.items.length === 1 ? 'md:flex md:flex-col md:justify-center' : ''}`}>
-                                            <h3 className={`${category.items.length === 1 ? 'text-3xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
-                                                {course.name}
-                                            </h3>
-                                            <p className={`${category.items.length === 1 ? 'text-base' : 'text-xs'} text-slate-600 dark:text-gray-400 font-medium mb-6 line-clamp-2 min-h-[40px] leading-relaxed`}>
-                                                {course.desc}
-                                            </p>
-
-                                            {/* Métadonnées - Admin Only */}
-                                            {user?.email === 'mouhamedfall@esp.sn' && (
-                                                <div className="flex items-center justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Users size={12} className="text-purple-500/50" />
-                                                        <span>{courseStats[course.id] || 0}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1.5">
-                                                        <Star size={12} className="text-yellow-500 fill-yellow-500/20" />
-                                                        <span>{course.rating || '4.8'}</span>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* Barre de progression ou bouton */}
-                                            {progressions[course.id] ? (
-                                                <div className="space-y-2 pt-2">
-                                                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-blue-400">
-                                                        <span>Progression</span>
-                                                        <span>{progressions[course.id].progress}%</span>
-                                                    </div>
-                                                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
-                                                        <div
-                                                            className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
-                                                            style={{ width: `${progressions[course.id].progress}%` }}
+                                                />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            toggleFavorite(course.id);
+                                                        }}
+                                                        className="p-2 bg-black/40 backdrop-blur-md rounded-full hover:bg-black/60 transition-colors"
+                                                    >
+                                                        <Star
+                                                            size={16}
+                                                            className={favorites.includes(course.id) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
                                                         />
-                                                    </div>
+                                                    </button>
                                                 </div>
-                                            ) : (
-                                                <button className="w-full py-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 hover:shadow-[0_10px_20px_rgba(37,99,235,0.2)] transition-all duration-300 flex items-center justify-center gap-2">
-                                                    Commencer
-                                                    <ChevronRight size={14} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </motion.div>
-                                ))}
+                                                <div className="absolute top-3 left-3 z-20 flex gap-2">
+                                                    {course.tags?.slice(0, 2).map((tag, i) => (
+                                                        <span key={i} className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full backdrop-blur-md ${category.items.length === 1 ? 'text-xs px-3 py-1' : ''}`}>
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Contenu */}
+                                            <div className={`p-6 md:p-8 ${category.items.length === 1 ? 'md:flex md:flex-col md:justify-center' : ''}`}>
+                                                <h3 className={`${category.items.length === 1 ? 'text-3xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
+                                                    {course.name}
+                                                </h3>
+                                                <p className={`${category.items.length === 1 ? 'text-base' : 'text-xs'} text-slate-600 dark:text-gray-400 font-medium mb-6 line-clamp-2 min-h-[40px] leading-relaxed`}>
+                                                    {course.desc}
+                                                </p>
+
+                                                {/* Métadonnées - Admin Only */}
+                                                {user?.email === 'mouhamedfall@esp.sn' && (
+                                                    <div className="flex items-center justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <Users size={12} className="text-purple-500/50" />
+                                                            <span>{courseStats[course.id] || 0}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <Star size={12} className="text-yellow-500 fill-yellow-500/20" />
+                                                            <span>{course.rating || '4.8'}</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Barre de progression ou bouton */}
+                                                {progressions[course.id] ? (
+                                                    <div className="space-y-2 pt-2">
+                                                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-blue-400">
+                                                            <span>Progression</span>
+                                                            <span>{progressions[course.id].progress}%</span>
+                                                        </div>
+                                                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
+                                                            <div
+                                                                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+                                                                style={{ width: `${progressions[course.id].progress}%` }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <button className="w-full py-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 hover:shadow-[0_10px_20px_rgba(37,99,235,0.2)] transition-all duration-300 flex items-center justify-center gap-2">
+                                                        Commencer
+                                                        <ChevronRight size={14} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </motion.div>
+                                    )
+                                })}
                             </div>
                         </div>
                     </motion.div>

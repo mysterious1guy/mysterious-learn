@@ -108,6 +108,14 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    unlockedCourses: {
+      type: [String],
+      default: [],
+    },
+    onboardingProfile: {
+      goal: { type: String, default: null },
+      startingLevel: { type: String, enum: ['Débutant', 'Amateur', 'Expérimenté'], default: null },
+    },
     // Email Change Verification
     pendingEmail: {
       type: String,

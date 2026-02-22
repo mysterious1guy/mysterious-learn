@@ -54,6 +54,11 @@ const InteractiveModule = ({ moduleData, onComplete }) => {
             if (selectedOption === moduleData.answerIndex) {
                 setCompleted(true);
                 setTimeout(() => onComplete(), 1500); // give time to read explanation
+            } else {
+                // Notifier l'IA d'une erreur
+                window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+                    detail: { text: "Hmm... Es-tu sûr de cette réponse ? Relis bien nos exemples précédents !" }
+                }));
             }
         };
 
@@ -150,9 +155,16 @@ const InteractiveModule = ({ moduleData, onComplete }) => {
                 } else {
                     setShowError(true);
                     setTestsPassed(false);
+                    // Notifier l'IA d'une erreur de code
+                    window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+                        detail: { text: "Ton code ne compile pas comme prévu. Vérifie ta syntaxe et les conditions !" }
+                    }));
                 }
             } catch (e) {
                 setShowError(true);
+                window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+                    detail: { text: "Une erreur critique s'est glissée dans ton code. Inspecte attentivement tes lignes." }
+                }));
             }
         };
 

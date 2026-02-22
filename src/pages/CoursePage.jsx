@@ -1,12 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Clock, Users, Star, BookOpen, CheckCircle, PlayCircle } from 'lucide-react';
-import AlgoCourse from '../courses/algo/AlgoCourse';
-import CCourse from '../courses/c/CCourse';
-import BashCourse from '../courses/bash/BashCourse';
+import GenericCourse from '../components/GenericCourse';
 import ComingSoon from '../components/ComingSoon';
+import { coursesData } from '../courses/data.jsx';
 
-const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
+const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }) => {
     const { courseId } = useParams();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
@@ -30,50 +29,37 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
     const normalizedCourseId = courseId?.toLowerCase().trim();
 
     useEffect(() => {
-        if (normalizedCourseId === 'algo') {
-            setCourse({
-                title: "Introduction à l'Algorithmique",
-                description: "Apprenez les bases fondamentales de l'algorithmique avec des exemples concrets et des exercices pratiques.",
-                category: "Théorie",
-                level: "Débutant",
-                students: 0,
-                rating: 0,
-                image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80",
-                chapters: [
-                    { title: "Introduction aux Algorithmes", description: "Découvrez ce qu'est un algorithme et pourquoi c'est fondamental", duration: "45min", objectives: ["Comprendre l'algorithmique"], exercises: [] },
-                    { title: "Variables et Types", description: "Apprenez à stocker et manipuler des données", duration: "60min", objectives: ["Variables et types de base"], exercises: [] }
-                ]
-            });
-            setLoading(false);
-        } else if (normalizedCourseId === 'c') {
-            setCourse({
-                title: "Langage C pour Débutants",
-                description: "Maîtrisez les fondamentaux du langage C, base de nombreux autres langages de programmation.",
-                category: "Programmation",
-                level: "Débutant",
-                students: 0,
-                rating: 0,
-                image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&q=80",
-                chapters: [
-                    { title: "Premiers Pas en C", description: "Installation et premier programme Hello World.", duration: "30min", objectives: ["Hello World en C"], exercises: [] }
-                ]
-            });
-            setLoading(false);
-        } else if (normalizedCourseId === 'bash') {
-            setCourse({
-                title: "Bash & Linux : Le Terminal",
-                description: "Maîtrisez la ligne de commande et devenez le maître de votre système Linux.",
-                category: "Système",
-                level: "Débutant",
-                students: 0,
-                rating: 0,
-                image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
-                chapters: [
-                    { title: "Bases du Terminal", description: "Ouvrir et utiliser son premier shell.", objectives: ["Usage du CLI"], exercises: [] }
-                ]
-            });
-            setLoading(false);
-        } else if (normalizedCourseId) {
+        if (!course || !user || !progressions) return;
+
+        if (!course || !user || !progressions) return;
+
+        let targetLevelToCheck = '';
+        if (course.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
+        if (course.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
+
+        if (!targetLevelToCheck || course.level === 'Débutant' || user?.unlockedCourses?.includes(course.id)) return;
+
+        let unlocked = false;
+        for (const cat of coursesData) {
+            if (cat.items.some(i => i.id === course.id)) {
+                const reqCourse = cat.items.find(i => i.level === targetLevelToCheck);
+                if (reqCourse) {
+                    const reqProgress = progressions?.[reqCourse.id]?.progress || 0;
+                    if (reqProgress >= 100) unlocked = true;
+                } else {
+                    unlocked = true;
+                }
+            }
+        }
+
+        if (!unlocked) {
+            if (setToast) setToast({ message: "Vous devez terminer le niveau précédent pour accéder à ce cours.", type: 'warning' });
+            navigate('/dashboard', { replace: true });
+        }
+    }, [course, user, progressions, navigate, setToast, normalizedCourseId]);
+
+    useEffect(() => {
+        if (normalizedCourseId) {
             fetchCourse();
         } else {
             setLoading(false);
@@ -113,27 +99,19 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
         );
     }
 
-    if (!course && normalizedCourseId !== 'algo' && normalizedCourseId !== 'c' && normalizedCourseId !== 'bash') {
+    if (!course) {
         return (
             <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
                 <ComingSoon
-                    title="Cours en préparation"
-                    message="Oups ! Ce cours n'a pas encore été ouvert par nos professeurs. Un peu de patience, il arrive bientôt !"
+                    title="Cours introuvable"
+                    message="Oups ! Ce cours n'existe pas ou a été retiré."
                 />
             </div>
         );
     }
 
     if (showCustomTimeline) {
-        if (normalizedCourseId === 'algo') {
-            return <AlgoCourse onClose={() => setShowCustomTimeline(false)} user={user} API_URL={API_URL} fetchProgressions={fetchProgressions} />;
-        }
-        if (normalizedCourseId === 'c') {
-            return <CCourse onClose={() => setShowCustomTimeline(false)} user={user} API_URL={API_URL} fetchProgressions={fetchProgressions} />;
-        }
-        if (normalizedCourseId === 'bash') {
-            return <BashCourse onClose={() => setShowCustomTimeline(false)} user={user} API_URL={API_URL} fetchProgressions={fetchProgressions} />;
-        }
+        return <GenericCourse course={course} onClose={() => setShowCustomTimeline(false)} user={user} completedLessons={[]} onLessonComplete={() => { }} />;
     }
 
     return (
@@ -197,17 +175,15 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions }) => {
                                 </div>
                             )}
 
-                            {(normalizedCourseId === 'algo' || normalizedCourseId === 'c' || normalizedCourseId === 'bash') && (
-                                <div className="mt-8">
-                                    <button
-                                        onClick={() => setShowCustomTimeline(true)}
-                                        className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all flex items-center justify-center gap-3 w-full md:w-auto transform hover:-translate-y-1"
-                                    >
-                                        <PlayCircle size={24} />
-                                        DÉMARRER LA CARTE DU COURS
-                                    </button>
-                                </div>
-                            )}
+                            <div className="mt-8">
+                                <button
+                                    onClick={() => setShowCustomTimeline(true)}
+                                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all flex items-center justify-center gap-3 w-full md:w-auto transform hover:-translate-y-1"
+                                >
+                                    <PlayCircle size={24} />
+                                    DÉMARRER LA CARTE DU COURS
+                                </button>
+                            </div>
                         </div>
 
                         <div className="flex items-center justify-center overflow-hidden rounded-2xl shadow-xl">

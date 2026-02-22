@@ -53,8 +53,7 @@ const sendEmailChangeCode = async (email, name, code) => {
 // @route   POST /api/auth/register
 const register = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
-    console.log(`📝 Debut inscription pour: ${email}`);
+    const { firstName, lastName, email, password, goal, startingLevel } = req.body;
     const name = `${firstName} ${lastName}`;
 
     // 1. Vérifier si l'utilisateur existe déjà officiellement
@@ -79,16 +78,15 @@ const register = async (req, res) => {
         password: hashedPassword,
         verificationCode,
         role: isSuperAdmin ? 'admin' : 'user',
+        goal,
+        startingLevel,
         createdAt: new Date() // Reset TTL
       },
       { upsert: true, new: true }
     );
 
-    console.log(`📡 Envoi email de verification a: ${email}...`);
     // 4. Envoi de l'email
-    sendVerificationEmail(email, name, verificationCode).then(() => {
-      console.log(`✅ Email de verification envoye avec succes a ${email}`);
-    }).catch(mailErr => {
+    sendVerificationEmail(email, name, verificationCode).catch(mailErr => {
       console.error(`❌ Échec envoi mail verification a ${email}:`, mailErr);
     });
 
@@ -107,7 +105,6 @@ const register = async (req, res) => {
 const verifyEmail = async (req, res) => {
   try {
     const { email, code } = req.body;
-    console.log(`🔑 Tentative activation compte pour: ${email} avec code: ${code}`);
 
     // 1. Chercher dans les inscriptions en attente
     const pendingUser = await PendingUser.findOne({ email });
@@ -133,6 +130,10 @@ const verifyEmail = async (req, res) => {
       email: pendingUser.email,
       password: pendingUser.password,
       role: pendingUser.role,
+      onboardingProfile: {
+        goal: pendingUser.goal,
+        startingLevel: pendingUser.startingLevel
+      },
       isEmailVerified: true,
       hasCompletedOnboarding: false,
       joinedAt: new Date()
@@ -181,7 +182,6 @@ const resendVerification = async (req, res) => {
     pendingUser.createdAt = new Date(); // Reset TTL
     await pendingUser.save();
 
-    console.log(`🔐 CODE RENVOYE POUR ${email} : ${newCode}`);
     await sendVerificationEmail(pendingUser.email, pendingUser.name, newCode);
 
     res.json({ message: 'Nouveau code envoyé !' });
@@ -237,6 +237,8 @@ const login = async (req, res) => {
       joinedAt: user.joinedAt,
       isEmailVerified: user.isEmailVerified,
       hasCompletedOnboarding: user.hasCompletedOnboarding,
+      onboardingProfile: user.onboardingProfile,
+      unlockedCourses: user.unlockedCourses,
       preferences: user.preferences,
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],
@@ -289,7 +291,6 @@ const googleAuth = async (req, res) => {
     let existingUser = await User.findOne({ $or: [{ googleId }, { email }] });
 
     if (existingUser) {
-      console.log('Utilisateur existant trouvé:', existingUser.email);
       if (!existingUser.googleId) {
         existingUser.googleId = googleId;
       }
@@ -301,7 +302,6 @@ const googleAuth = async (req, res) => {
       }
       await existingUser.save();
     } else {
-      console.log('Nouvel utilisateur Google:', email);
       existingUser = await User.create({
         name: name || email.split('@')[0],
         firstName: name ? name.split(' ')[0] : email.split('@')[0],
@@ -326,6 +326,8 @@ const googleAuth = async (req, res) => {
       joinedAt: existingUser.joinedAt,
       isEmailVerified: true,
       hasCompletedOnboarding: existingUser.hasCompletedOnboarding,
+      onboardingProfile: existingUser.onboardingProfile,
+      unlockedCourses: existingUser.unlockedCourses,
       preferences: existingUser.preferences,
       lastSelectedCourse: existingUser.lastSelectedCourse,
       favorites: existingUser.favorites || [],
@@ -350,19 +352,13 @@ const googleCallback = async (req, res) => {
   const { code } = req.query;
 
   try {
-    console.log('🔥 Google callback reçu avec code:', code ? 'CODE_REÇU' : 'CODE_MANQUANT');
-    console.log('🔥 CLIENT_URL:', process.env.CLIENT_URL);
-    console.log('🔥 Redirect URI configuré:', `${process.env.CLIENT_URL}/api/auth/google/callback`);
-
     const client = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
       `${process.env.CLIENT_URL}/api/auth/google/callback`
     );
 
-    console.log('🔥 OAuth2Client configuré, tentative getToken...');
     const { tokens } = await client.getToken(code);
-    console.log('🔥 Tokens reçus de Google:', tokens.access_token ? 'ACCESS_TOKEN_OK' : 'ACCESS_TOKEN_MISSING');
 
     const ticket = await client.verifyIdToken({
       idToken: tokens.id_token,
@@ -381,7 +377,6 @@ const googleCallback = async (req, res) => {
     let user = await User.findOne({ $or: [{ googleId }, { email }] });
 
     if (user) {
-      console.log('Utilisateur existant:', email);
       if (!user.googleId || !user.isEmailVerified) {
         user.googleId = googleId || user.googleId;
         user.isEmailVerified = true;
@@ -394,7 +389,6 @@ const googleCallback = async (req, res) => {
         await user.save();
       }
     } else {
-      console.log('Nouvel utilisateur:', email);
       const isSuperAdmin = email === 'mouhamedfall@esp.sn';
 
       user = await User.create({
@@ -418,7 +412,6 @@ const googleCallback = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    console.log('Token généré, redirection vers dashboard...');
     const clientUrl = process.env.NODE_ENV === 'production'
       ? 'https://mysterious-classroom-free-courses.onrender.com'
       : process.env.CLIENT_URL || 'http://localhost:5173';
@@ -463,7 +456,9 @@ const updateProfile = async (req, res) => {
       lastName,
       preferences,
       hasCompletedOnboarding,
-      programmingLevel
+      programmingLevel,
+      onboardingProfile,
+      unlockedCourses
     } = req.body;
 
     const user = await User.findById(req.user._id);
@@ -488,6 +483,8 @@ const updateProfile = async (req, res) => {
     }
     if (hasCompletedOnboarding !== undefined) user.hasCompletedOnboarding = hasCompletedOnboarding;
     if (programmingLevel !== undefined) user.programmingLevel = programmingLevel;
+    if (onboardingProfile !== undefined) user.onboardingProfile = onboardingProfile;
+    if (unlockedCourses !== undefined) user.unlockedCourses = unlockedCourses;
 
     await user.save();
 
@@ -503,6 +500,8 @@ const updateProfile = async (req, res) => {
       isEmailVerified: user.isEmailVerified,
       hasCompletedOnboarding: user.hasCompletedOnboarding,
       programmingLevel: user.programmingLevel,
+      onboardingProfile: user.onboardingProfile,
+      unlockedCourses: user.unlockedCourses,
       preferences: user.preferences,
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],
