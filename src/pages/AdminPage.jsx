@@ -339,6 +339,35 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     }
   };
 
+  const handleUpdateLevel = async (userId, newLevel) => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${userId}/level`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ programmingLevel: newLevel })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        // Mettre à jour les stats locales du modal
+        setSelectedUserStats({
+          ...selectedUserStats,
+          user: { ...selectedUserStats.user, programmingLevel: newLevel }
+        });
+        // Mettre à jour la liste des utilisateurs globale (pour cohérence si affiché ailleurs)
+        setUsers(users.map(u => u._id === userId ? { ...u, programmingLevel: newLevel } : u));
+        setToast({ message: 'Niveau mis à jour !', type: 'success' });
+      } else {
+        const data = await res.json();
+        setToast({ message: data.message || "Erreur de mise à jour", type: 'error' });
+      }
+    } catch (err) {
+      setToast({ message: 'Erreur réseau', type: 'error' });
+    }
+  };
+
   const filteredUsers = users.filter(u =>
     u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     `${u.firstName} ${u.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
@@ -1339,12 +1368,17 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
                     <div className="col-span-2 bg-blue-600/5 dark:bg-blue-600/10 p-6 rounded-3xl border border-blue-500/10 dark:border-blue-500/20 flex items-center justify-between">
                       <div>
-                        <p className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 mb-1">Expertise Déclarée</p>
-                        <p className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">
-                          {selectedUserStats.user?.programmingLevel
-                            ? { beginner: 'Débutant', intermediate: 'Intermédiaire', advanced: 'Avancé', expert: 'Expert' }[selectedUserStats.user.programmingLevel] || selectedUserStats.user.programmingLevel
-                            : "Non défini"}
-                        </p>
+                        <p className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 mb-1">Expertise (Modifier)</p>
+                        <select
+                          value={selectedUserStats.user?.programmingLevel || 'beginner'}
+                          onChange={(e) => handleUpdateLevel(selectedUserStats.user?._id, e.target.value)}
+                          className="bg-transparent text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter outline-none focus:text-blue-500 cursor-pointer border-none p-0"
+                        >
+                          <option value="beginner">Débutant</option>
+                          <option value="intermediate">Intermédiaire</option>
+                          <option value="advanced">Avancé</option>
+                          <option value="expert">Expert</option>
+                        </select>
                       </div>
                       <div className="text-right">
                         <p className="text-[10px] font-black uppercase text-slate-400 dark:text-white/40 mb-1">Dernière activité</p>

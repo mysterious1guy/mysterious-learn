@@ -243,6 +243,36 @@ const toggleUserBan = async (req, res) => {
   }
 };
 
+// @desc    Mettre à jour le niveau d'un utilisateur (admin)
+// @route   PUT /api/admin/users/:id/level
+const updateUserLevel = async (req, res) => {
+  try {
+    const { programmingLevel } = req.body;
+
+    if (!['beginner', 'intermediate', 'advanced', 'expert'].includes(programmingLevel)) {
+      return res.status(400).json({ message: 'Niveau d\'expertise invalide' });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { programmingLevel },
+      { new: true }
+    ).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+
+    res.json({
+      message: 'Niveau mis à jour avec succès',
+      user
+    });
+  } catch (error) {
+    console.error('Erreur mise à jour niveau:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   deleteUser,
@@ -251,6 +281,7 @@ module.exports = {
   getAdminStats,
   updateUserRole,
   toggleUserBan,
+  updateUserLevel,
   getAllNotifications,
   deleteNotification
 };

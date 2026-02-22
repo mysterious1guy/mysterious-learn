@@ -8,6 +8,7 @@ const {
   getAdminStats,
   updateUserRole,
   toggleUserBan,
+  updateUserLevel,
   getAllNotifications,
   deleteNotification
 } = require('../controllers/adminController');
@@ -21,6 +22,7 @@ router.get('/users', ownerAdmin, getAllUsers);
 router.delete('/users/:id', ownerAdmin, deleteUser);
 router.put('/users/:id/role', ownerAdmin, updateUserRole);
 router.put('/users/:id/ban', ownerAdmin, toggleUserBan);
+router.put('/users/:id/level', ownerAdmin, updateUserLevel);
 
 // Routes communications (Owner Only for sending/deleting)
 router.post('/send-email', ownerAdmin, sendEmailToUsers);
