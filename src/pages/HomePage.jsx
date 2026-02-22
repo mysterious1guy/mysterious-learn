@@ -15,50 +15,109 @@ const HomePage = ({ API_URL }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [config, setConfig] = useState(null);
 
-    // Dynamic Background Component
-    const InteractiveBackground = () => (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-            {/* Grid Mesh */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+    // Advanced Canvas Background Component
+    const InteractiveBackground = () => {
+        const canvasRef = useEffect(() => {
+            const canvas = document.getElementById('bg-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let animationFrameId;
+            let particles = [];
+            let w, h;
 
-            {/* Reacting Orbs */}
-            {[...Array(5)].map((_, i) => (
-                <motion.div
-                    key={i}
-                    animate={{
-                        x: [0, 100, 0],
-                        y: [0, 50, 0],
-                        scale: [1, 1.2, 1],
-                    }}
-                    transition={{
-                        duration: 10 + i * 2,
-                        repeat: Infinity,
-                        ease: "linear"
-                    }}
-                    style={{
-                        position: 'absolute',
-                        top: `${20 * (i + 1)}%`,
-                        left: `${15 * (i + 1)}%`,
-                        width: '300px',
-                        height: '300px',
-                        background: i % 2 === 0 ? 'rgba(59, 130, 246, 0.03)' : 'rgba(168, 85, 247, 0.03)',
-                        borderRadius: '50%',
-                        filter: 'blur(100px)',
-                    }}
-                />
-            ))}
-        </div>
-    );
+            const resize = () => {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            };
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.radius = Math.random() * 1.5 + 0.5;
+                }
+
+                update(mouseX, mouseY) {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0 || this.x > w) this.vx *= -1;
+                    if (this.y < 0 || this.y > h) this.vy *= -1;
+
+                    // Mouse interaction
+                    const dx = (mouseX || 0) * 10 - (this.x - w / 2) / 10;
+                    const dy = (mouseY || 0) * 10 - (this.y - h / 2) / 10;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        this.x += dx * 0.01;
+                        this.y += dy * 0.01;
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(59, 130, 246, 0.4)';
+                    ctx.fill();
+                }
+            }
+
+            const init = () => {
+                resize();
+                particles = Array.from({ length: 80 }, () => new Particle());
+            };
+
+            const animate = () => {
+                ctx.clearRect(0, 0, w, h);
+
+                // Draw connections
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(59, 130, 246, 0.05)';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 120) {
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                        }
+                    }
+                }
+                ctx.stroke();
+
+                particles.forEach(p => {
+                    p.update(mousePosition.x, mousePosition.y);
+                    p.draw();
+                });
+                animationFrameId = requestAnimationFrame(animate);
+            };
+
+            window.addEventListener('resize', resize);
+            init();
+            animate();
+
+            return () => {
+                window.removeEventListener('resize', resize);
+                cancelAnimationFrame(animationFrameId);
+            };
+        }, [mousePosition]);
+
+        return <canvas id="bg-canvas" className="absolute inset-0 pointer-events-none -z-10 opacity-60" />;
+    };
 
     useEffect(() => {
         const handleMouseMove = (e) => {
             const { clientX, clientY } = e;
-            const x = (clientX / window.innerWidth - 0.5) * 20;
-            const y = (clientY / window.innerHeight - 0.5) * 20;
+            const x = (clientX / window.innerWidth - 0.5) * 2;
+            const y = (clientY / window.innerHeight - 0.5) * 2;
             setMousePosition({ x, y });
         };
         window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeMouseMoveListener?.() || window.removeEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
     useEffect(() => {
