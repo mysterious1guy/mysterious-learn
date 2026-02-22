@@ -8,9 +8,11 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { formatTimeAgo } from '../utils/dateUtils';
+import { useCookies } from '../hooks/useCookies';
 
 const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites, onToggleFavorite, API_URL, setToast }) => {
   const { theme, setTheme } = useTheme();
+  const { removeUserCookie, removeCookie } = useCookies();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -96,9 +98,11 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         console.log('✅ AccountDetails: Compte supprimé avec succès');
         setToast({ message: 'Compte supprimé avec succès', type: 'success' });
 
-        // Nettoyage local
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        // Nettoyage local total
+        localStorage.clear();
+        removeUserCookie();
+        removeCookie('mysterious_progress');
+        removeCookie('two_factor_verified'); // Au cas où
 
         // Redirection vers la page d'accueil
         window.location.href = '/';
