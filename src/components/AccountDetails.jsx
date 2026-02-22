@@ -413,17 +413,10 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <input
                 type="email"
                 value={editForm.email}
-                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                disabled={!isEditing}
-                className={`w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white outline-none focus:border-blue-500 transition-all ${!isEditing ? 'opacity-60 cursor-not-allowed' : ''}`}
+                disabled={true}
+                className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white outline-none opacity-60 cursor-not-allowed transition-all"
                 placeholder="Votre email"
               />
-              {isEditing && (
-                <div className="flex items-center text-[10px] uppercase font-black text-yellow-600 dark:text-yellow-500 bg-yellow-500/10 px-3 rounded-xl border border-yellow-500/20 whitespace-nowrap">
-                  <Shield size={12} className="mr-1" />
-                  Vérification Requise
-                </div>
-              )}
             </div>
           </div>
 
