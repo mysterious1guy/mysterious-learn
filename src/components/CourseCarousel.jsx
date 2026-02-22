@@ -114,28 +114,8 @@ const CourseCarousel = ({ courses }) => {
                                     {currentCourse.description}
                                 </motion.p>
 
-                                <div className="grid grid-cols-3 gap-4 mb-10">
-                                    <div className="flex flex-col">
-                                        <div className="flex items-center gap-1.5 text-blue-400 mb-1">
-                                            <Clock size={16} />
-                                            <span className="text-xs font-bold uppercase">Durée</span>
-                                        </div>
-                                        <span className="text-white font-semibold">{currentCourse.duration}</span>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <div className="flex items-center gap-1.5 text-blue-400 mb-1">
-                                            <Users size={16} />
-                                            <span className="text-xs font-bold uppercase">Étudiants</span>
-                                        </div>
-                                        <span className="text-white font-semibold">{currentCourse.students.toLocaleString()}</span>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <div className="flex items-center gap-1.5 text-yellow-400 mb-1">
-                                            <Star size={16} />
-                                            <span className="text-xs font-bold uppercase">Avis</span>
-                                        </div>
-                                        <span className="text-white font-semibold">{currentCourse.rating}/5</span>
-                                    </div>
+                                <div className="mt-auto">
+                                    {/* Métadonnées masquées selon demande utilisateur */}
                                 </div>
 
                                 <motion.button
