@@ -6,7 +6,7 @@ import {
   BarChart3, UserPlus, UserMinus, Camera, Upload, AlertTriangle, TrendingUp,
   Activity, LayoutDashboard, Database, Shield, LogOut, Search, Filter,
   CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone, Save,
-  Sparkles, Bot
+  Sparkles, Bot, Globe, User
 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { formatTimeAgo } from '../utils/dateUtils';
