@@ -658,11 +658,11 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 console.error(err);
               }
             }}
-            className="flex items-center justify-between p-5 bg-gray-800/50 rounded-2xl border border-gray-700/50 cursor-pointer hover:border-blue-500/30 transition-colors"
+            className="flex items-center justify-between p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50 cursor-pointer hover:border-blue-500/30 transition-colors"
           >
             <div className="space-y-1">
-              <p className="text-sm font-bold text-white">Notifications par email</p>
-              <p className="text-xs text-gray-400">Recevoir des emails de notification importants.</p>
+              <p className="text-sm font-bold text-slate-800 dark:text-white">Notifications par email</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">Recevoir des emails de notification importants.</p>
             </div>
             <div className={`w-12 h-6 rounded-full relative transition-all ${(user?.preferences?.notifications ?? true) ? 'bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'bg-gray-700'}`}>
               <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${(user?.preferences?.notifications ?? true) ? 'right-1' : 'left-1'}`} />
@@ -690,21 +690,21 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 console.error(err);
               }
             }}
-            className="flex items-center justify-between p-5 bg-gray-800/50 rounded-2xl border border-gray-700/50 cursor-pointer hover:border-blue-500/30 transition-colors"
+            className="flex items-center justify-between p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50 cursor-pointer hover:border-blue-500/30 transition-colors"
           >
             <div className="space-y-1">
-              <p className="text-sm font-bold text-white">Effets Sonores (CyberPet)</p>
-              <p className="text-xs text-gray-400">Activer ou désactiver les bruitages au survol.</p>
+              <p className="text-sm font-bold text-slate-800 dark:text-white">Effets Sonores (CyberPet)</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">Activer ou désactiver les bruitages au survol.</p>
             </div>
             <div className={`w-12 h-6 rounded-full relative transition-all ${(user?.preferences?.soundEnabled ?? true) ? 'bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'bg-gray-700'}`}>
               <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${(user?.preferences?.soundEnabled ?? true) ? 'right-1' : 'left-1'}`} />
             </div>
           </div>
 
-          <div className="p-5 bg-gray-800/50 rounded-2xl border border-gray-700/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <p className="text-sm font-bold text-white">Langue de l'interface</p>
-              <p className="text-xs text-gray-400">Choisir la langue d'affichage du site.</p>
+              <p className="text-sm font-bold text-slate-800 dark:text-white">Langue de l'interface</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">Choisir la langue d'affichage du site.</p>
             </div>
             <select
               value={user?.preferences?.language || 'fr'}
@@ -736,10 +736,10 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
             </select>
           </div>
 
-          <div className="p-5 bg-gray-800/50 rounded-2xl border border-gray-700/50">
+          <div className="p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50">
             <div className="space-y-1 mb-4">
-              <p className="text-sm font-bold text-white">Thème Dynamique</p>
-              <p className="text-xs text-gray-400">Gérer l'apparence visuelle pour plus de confort.</p>
+              <p className="text-sm font-bold text-slate-800 dark:text-white">Thème Dynamique</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">Gérer l'apparence visuelle pour plus de confort.</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <button
@@ -753,7 +753,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                     });
                   } catch (err) { console.error(err); }
                 }}
-                className={`py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-widest ${theme === 'light' ? 'bg-gray-700 text-white border border-blue-500/50 shadow-inner' : 'bg-gray-900/50 text-gray-400 border border-gray-800 hover:bg-gray-800'}`}
+                className={`py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-widest ${theme === 'light' ? 'bg-white dark:bg-gray-700 text-slate-900 dark:text-white border-2 border-blue-500 shadow-md' : 'bg-slate-200 dark:bg-gray-900/50 text-slate-600 dark:text-gray-400 border border-slate-300 dark:border-gray-800 hover:bg-slate-300 dark:hover:bg-gray-800'}`}
               >
                 Clair ☀️
               </button>
@@ -768,7 +768,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                     });
                   } catch (err) { console.error(err); }
                 }}
-                className={`py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-widest ${theme === 'dark' ? 'bg-gray-700 text-white border border-blue-500/50 shadow-inner' : 'bg-gray-900/50 text-gray-400 border border-gray-800 hover:bg-gray-800'}`}
+                className={`py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-widest ${theme === 'dark' ? 'bg-white dark:bg-gray-700 text-slate-900 dark:text-white border-2 border-blue-500 shadow-md' : 'bg-slate-200 dark:bg-gray-900/50 text-slate-600 dark:text-gray-400 border border-slate-300 dark:border-gray-800 hover:bg-slate-300 dark:hover:bg-gray-800'}`}
               >
                 Sombre 🌙
               </button>
