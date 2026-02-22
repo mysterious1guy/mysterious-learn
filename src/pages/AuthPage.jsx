@@ -179,21 +179,19 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-slate-950 overflow-hidden relative">
-            {/* Background patterns */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(59,130,246,0.05),transparent_70%)]" />
+        <div className="min-h-screen flex items-center justify-center p-4 bg-transparent overflow-hidden relative">
 
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="w-full max-w-md relative z-10"
             >
-                <div className="bg-slate-900/80 backdrop-blur-2xl border border-slate-800/50 p-8 rounded-[2.5rem] shadow-2xl">
+                <div className="bg-white/90 backdrop-blur-2xl border border-blue-500/20 p-8 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(59,130,246,0.15)]">
                     <div className="flex justify-center mb-6">
                         <CyberPet isPasswordFocused={isPasswordFocused} onSecret={petSecret} user={user} />
                     </div>
 
-                    <h2 className="text-3xl brand-font text-white text-center mb-8 tracking-tight">
+                    <h2 className="text-3xl brand-font text-slate-800 text-center mb-8 tracking-tight">
                         {authMode === 'verification' ? 'Vérification' : (authMode === 'signin' ? 'Connexion' : 'Inscription')}
                     </h2>
 
@@ -207,8 +205,8 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                     exit={{ opacity: 0, x: -20 }}
                                     className="space-y-6"
                                 >
-                                    <p className="text-slate-400 text-center text-sm">
-                                        Code envoyé à <span className="text-blue-400">{formData.email}</span>
+                                    <p className="text-slate-500 text-center text-sm font-medium">
+                                        Code envoyé à <span className="text-blue-600 font-bold">{formData.email}</span>
                                     </p>
                                     <input
                                         type="text"
@@ -216,13 +214,13 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                         placeholder="000000"
                                         value={verificationKey}
                                         onChange={(e) => setVerificationKey(e.target.value.replace(/\D/g, ''))}
-                                        className="w-full py-4 bg-slate-800/50 border border-slate-700 rounded-2xl text-center text-3xl font-bold tracking-[0.3em] text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                                        className="w-full py-4 bg-slate-50 border border-slate-200 rounded-2xl text-center text-3xl font-bold tracking-[0.3em] text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                                         required
                                     />
                                     <button
                                         type="submit"
                                         disabled={isLoading || verificationKey.length !== 6}
-                                        className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/25"
+                                        className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/25"
                                     >
                                         {isLoading ? 'Vérification...' : 'Activer mon compte'}
                                     </button>
@@ -246,7 +244,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                 placeholder="Prénom"
                                                 value={formData.firstName}
                                                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                                className="w-full px-5 py-3.5 bg-slate-800/50 border border-slate-700 rounded-2xl text-white outline-none focus:ring-2 focus:ring-blue-500/50"
+                                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-colors"
                                                 required
                                             />
                                             <input
@@ -254,26 +252,26 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                 placeholder="Nom"
                                                 value={formData.lastName}
                                                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                                className="w-full px-5 py-3.5 bg-slate-800/50 border border-slate-700 rounded-2xl text-white outline-none focus:ring-2 focus:ring-blue-500/50"
+                                                className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-colors"
                                                 required
                                             />
                                         </div>
                                     )}
 
                                     <div className="relative">
-                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                         <input
                                             type="email"
                                             placeholder="Email"
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full pl-12 pr-5 py-3.5 bg-slate-800/50 border border-slate-700 rounded-2xl text-white outline-none focus:ring-2 focus:ring-blue-500/50"
+                                            className="w-full pl-12 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-colors"
                                             required
                                         />
                                     </div>
 
                                     <div className="relative">
-                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                         <input
                                             type={showPassword ? 'text' : 'password'}
                                             placeholder="Mot de passe"
@@ -281,17 +279,17 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                             onFocus={() => setIsPasswordFocused(true)}
                                             onBlur={() => setIsPasswordFocused(false)}
-                                            className="w-full pl-12 pr-12 py-3.5 bg-slate-800/50 border border-slate-700 rounded-2xl text-white outline-none focus:ring-2 focus:ring-blue-500/50"
+                                            className="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-colors"
                                             required
                                         />
-                                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
+                                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                         </button>
                                     </div>
 
                                     {authMode === 'signup' && (
                                         <div className="relative">
-                                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                             <input
                                                 type={showPassword ? 'text' : 'password'}
                                                 placeholder="Confirmer le mot de passe"
@@ -299,10 +297,10 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                                 onFocus={() => setIsPasswordFocused(true)}
                                                 onBlur={() => setIsPasswordFocused(false)}
-                                                className="w-full pl-12 pr-12 py-3.5 bg-slate-800/50 border border-slate-700 rounded-2xl text-white outline-none focus:ring-2 focus:ring-blue-500/50"
+                                                className="w-full pl-12 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-colors"
                                                 required
                                             />
-                                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white">
+                                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                             </button>
                                         </div>
@@ -311,12 +309,12 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                     {authMode === 'signup' && (
                                         <div className="flex flex-col gap-2">
                                             <label className="flex items-center gap-3 cursor-pointer group">
-                                                <input type="checkbox" checked={agreedToPolicy} onChange={(e) => setAgreedToPolicy(e.target.checked)} className="rounded border-slate-700 bg-slate-800 text-blue-500" />
-                                                <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Politique de confidentialité</span>
+                                                <input type="checkbox" checked={agreedToPolicy} onChange={(e) => setAgreedToPolicy(e.target.checked)} className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500" />
+                                                <span className="text-xs text-slate-500 group-hover:text-slate-700 transition-colors">Politique de confidentialité</span>
                                             </label>
                                             <label className="flex items-center gap-3 cursor-pointer group">
-                                                <input type="checkbox" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} className="rounded border-slate-700 bg-slate-800 text-blue-500" />
-                                                <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Conditions d'utilisation</span>
+                                                <input type="checkbox" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500" />
+                                                <span className="text-xs text-slate-500 group-hover:text-slate-700 transition-colors">Conditions d'utilisation</span>
                                             </label>
                                         </div>
                                     )}
@@ -345,23 +343,23 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                     {authMode !== 'verification' && (
                         <div className="mt-8 space-y-6">
                             <div className="relative">
-                                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-800"></div></div>
-                                <div className="relative flex justify-center text-xs uppercase"><span className="bg-slate-900 px-3 text-slate-500">ou avec</span></div>
+                                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+                                <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400 font-bold tracking-wider">ou avec</span></div>
                             </div>
 
                             <button
                                 onClick={handleGoogleLogin}
-                                className="w-full py-3.5 bg-white hover:bg-slate-50 text-slate-900 font-bold rounded-2xl transition-all flex items-center justify-center gap-3"
+                                className="w-full py-3.5 bg-slate-50 border border-slate-200 hover:bg-slate-100 hover:border-slate-300 text-slate-700 font-bold rounded-2xl transition-all flex items-center justify-center gap-3 shadow-sm"
                             >
                                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
                                 Google
                             </button>
 
-                            <p className="text-center text-sm text-slate-500">
+                            <p className="text-center text-sm text-slate-500 font-medium">
                                 {authMode === 'signin' ? "Pas de compte ?" : "Déjà un compte ?"}
                                 <button
                                     onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
-                                    className="ml-2 text-blue-400 font-bold hover:underline"
+                                    className="ml-2 text-blue-600 font-bold hover:underline"
                                 >
                                     {authMode === 'signin' ? "S'inscrire" : "Se connecter"}
                                 </button>
