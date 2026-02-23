@@ -7,7 +7,7 @@ const connectDB = async () => {
     const mongoURI = process.env.MONGO_URI;
 
     if (!mongoURI) {
-      throw new Error('MONGO_URI non défini dans les variables d\\'environnement');
+      throw new Error("MONGO_URI non défini dans les variables d'environnement");
     }
 
     const options = {
@@ -60,7 +60,7 @@ async function seedCourses(closeConnection = true) {
       );
 
       console.log('📄 Données sauvegardées dans /data/courses.json');
-      console.log('⚠️ L\\'application utilisera ce fichier en fallback si MongoDB n\\'est pas disponible');
+      console.log("⚠️ L'application utilisera ce fichier en fallback si MongoDB n'est pas disponible");
     }
 
     if (closeConnection) {
