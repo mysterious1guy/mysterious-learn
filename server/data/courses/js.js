@@ -2,7 +2,7 @@ const jsCourses = [
     {
         title: "JavaScript - Niveau Débutant",
         description: "Le Mouvement et la Logique. Apprenez le seul langage exécutable nativement par tous les navigateurs web. Maîtrisez la syntaxe moderne ES6+ et les fondements algorithmiques.",
-        category: "Frontend",
+        category: "Web",
         level: "Débutant",
         duration: "20 heures",
         image: "https://images.unsplash.com/photo-1579468458835-cd73b7b7dfd5?w=800&q=80",
@@ -35,7 +35,7 @@ const jsCourses = [
                 resources: [
                     {
                         title: "Let, Const et Hoisting (MDN)",
-                        type: "link",
+                        type: "article",
                         url: "https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/let"
                     }
                 ]
@@ -111,7 +111,7 @@ const jsCourses = [
     {
         title: "JavaScript - Niveau Intermédiaire",
         description: "L'ingénieur du Document. Parcourez l'arbre DOM, capturez des événements, manipulez des Objets complexes et maîtrisez les méthodes de Tableaux de Haut Niveau (Map, Filter, Reduce).",
-        category: "Frontend",
+        category: "Web",
         level: "Intermédiaire",
         duration: "25 heures",
         image: "https://images.unsplash.com/photo-1579468458835-cd73b7b7dfd5?w=800&q=80",
@@ -214,7 +214,7 @@ const jsCourses = [
     {
         title: "JavaScript - Niveau Expert (Avancé)",
         description: "L'Ingénierie Systémique asynchrone absolue. Maîtrisez la Single-Thread Event Loop, les requêtes HTTP (Fetch, JWT Authorization), la POO via Classes et le drame matériel Closures.",
-        category: "Frontend",
+        category: "Web",
         level: "Avancé",
         duration: "30 heures",
         image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80",

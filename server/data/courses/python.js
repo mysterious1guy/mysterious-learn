@@ -2,7 +2,7 @@ const pythonCourses = [
     {
         title: "Python - Niveau Débutant : La Syntaxe Épurée",
         description: "Apprenez le langage le plus populaire au monde. Découvrez pourquoi sa syntaxe basée sur l'indentation force l'écriture d'un code propre, et maîtrisez les structures de données intégrées.",
-        category: "Backend",
+        category: "Programmation",
         level: "Débutant",
         duration: "30 heures",
         image: "https://images.unsplash.com/photo-1526379095098-d400fd0bfce8?w=800&q=80",
@@ -96,7 +96,7 @@ const pythonCourses = [
     {
         title: "Python - Niveau Intermédiaire : OOP & Fonctions Avancées",
         description: "Devenez Ingénieur Logiciel. Modélisez votre code via l'Orienté Objet, les magies des décorateurs et les fonctions de traitement de première classe.",
-        category: "Backend",
+        category: "Programmation",
         level: "Intermédiaire",
         duration: "40 heures",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
@@ -171,7 +171,7 @@ const pythonCourses = [
                     {
                         title: "Le Loggueur Universel Décoratif",
                         description: "Expliquez ligne par ligne le flot d'exécution formel si une fonction `hello()` est décorée avec le `@log_db`.",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Au lancement du serveur, l'interprète Python lit `@log_db`. Il prend littéralement l'objet mémoire de la fonction `hello`, et le jette (passé en argument) dans la fonction mère `log_db`. La mère fabrique alors une sous-fonction `wrapper()` qui va 1) se connecter à la DB, 2) invoquer `hello()` réelle, 3) clore la DB, et finalement la mère RENVOIE the reference of `wrapper`. Depuis lors, pour le reste de sa vie, quand on appelle `hello()`, c'est actually `wrapper()` qui tourne secrètement. Décoration accomplie !",
                         hints: ["Il y a un remplacement par substitution de la véritable entité pointée !"]
                     }
@@ -183,7 +183,7 @@ const pythonCourses = [
     {
         title: "Python - Niveau Expert Mondiale : Concurrence, GIL et Génération",
         description: "Contournez les limitations historiques du langage. Conquérez la Data-Science avec une efficacité mémoire totale et déchirez le GIL en Processus Indépendants.",
-        category: "Backend",
+        category: "Programmation",
         level: "Avancé",
         duration: "60 heures",
         image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
@@ -240,7 +240,7 @@ const pythonCourses = [
                     {
                         title: "L'Arnaque du Threading CPython",
                         description: "Pourquoi l'utilisation du module `threading` Python est pourtant PARFAITE pour crawler 500 pages Webs Google en même temps, mais TERRIBLE pour trouver des Nombres Premiers Cryptographiques géants ?",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Le crawl de Google est un cas dit 'I/O Bound' ou 'limité aux Entrées-Sorties'. Quand le Thread interroge Google, il passe 99% de sa vie de milliseconde à \"Attendre le réseau\". À cet instant physique, le Lock CPython du GIL se déverouille gracieusement, laissant tous les autres cœurs et threads faire la même chose. En revanche, le calcul de la cryptographie Mathématique (CPU Bound) demande de l'effort processeur pur sans s'arrêter. Les Threads vont alors se battre férocement pour conquérir le Mutex Lock CPython unique, gaspillant un milliard de cycles d'horloge Kernel en changements de contextes (L'enfer).",
                         hints: ["Qui a besoin d'utiliser activement la matière grise du processeur brut ?"]
                     }
@@ -258,7 +258,7 @@ const pythonCourses = [
                     {
                         title: "Multiprocessing Overhead",
                         description: "Pourquoi lancer un `Pool.map` de l'API `multiprocessing` ne doit JAMAIS être testé sur un array de petite taille contenant quelques centaines d'entiers mathématiques ?",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Créer un Process Kernel UNIX (Forking, Clonage Heap/Stack mémoire virtuels, Duplication File Descriptors Python, communication IPC et Pipes d'échanges (Pickling/Unpickling serializers) coûte des millions d'opérations systèmes et plusieurs dizaines de mégaoctets réels de RAM à instancier. La charge monstrueuse de la simple Création de processus étouffera et crashera toute optimisation algorithmique pour des données faibles. C'est l'Overhead Archétectural de l'Ingénierie OS système lourde de Pickling vs Computation.",
                         hints: ["Ouvririez-vous 10 usines Cimentières gigantesques pour briser seulement 5 cailloux ramassés au sol ?"]
                     }

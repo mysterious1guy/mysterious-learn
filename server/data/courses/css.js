@@ -2,7 +2,7 @@ const cssCourses = [
     {
         title: "CSS - Niveau Débutant",
         description: "Peignez et sculptez le Web. Comprenez la cascade, l'héritage, et le modèle de boîte fondamental pour donner vie à vos structures HTML.",
-        category: "Frontend",
+        category: "Web",
         level: "Débutant",
         duration: "18 heures",
         image: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
@@ -35,7 +35,7 @@ const cssCourses = [
                 resources: [
                     {
                         title: "La Spécificité CSS (MDN)",
-                        type: "link",
+                        type: "article",
                         url: "https://developer.mozilla.org/fr/docs/Web/CSS/Specificity"
                     }
                 ]
@@ -111,7 +111,7 @@ const cssCourses = [
     {
         title: "CSS - Niveau Intermédiaire",
         description: "Orchestrez l'architecture et la structuration géométrique. Maîtrisez Flexbox, les positionnements hors-flux et l'architecture CSS OOCSS/BEM.",
-        category: "Frontend",
+        category: "Web",
         level: "Intermédiaire",
         duration: "24 heures",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
@@ -214,7 +214,7 @@ const cssCourses = [
     {
         title: "CSS - Niveau Expert (Avancé)",
         description: "Devenez un Ingénieur de Rendu CSS. Maîtrisez la grille mathématique CSS Grid, l'interactivité dynamique via Keyframes 3D, Custom Properties pour les thèmes OS, et les requêtes réactives modernes.",
-        category: "Frontend",
+        category: "Web",
         level: "Avancé",
         duration: "30 heures",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",

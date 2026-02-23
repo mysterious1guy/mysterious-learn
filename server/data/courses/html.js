@@ -2,7 +2,7 @@ const htmlCourses = [
     {
         title: "HTML - Niveau Débutant",
         description: "L'ossature fondamentale du Web. Maîtrisez la syntaxe, la sémantique de base et l'imbrication des balises pour construire des documents robustes.",
-        category: "Frontend",
+        category: "Web",
         level: "Débutant",
         duration: "15 heures",
         image: "https://images.unsplash.com/photo-1616469829581-73993eb86b02?w=800&q=80",
@@ -35,7 +35,7 @@ const htmlCourses = [
                 resources: [
                     {
                         title: "Anatomie d'un document HTML (MDN)",
-                        type: "link",
+                        type: "article",
                         url: "https://developer.mozilla.org/fr/docs/Learn/HTML/Introduction_to_HTML/Document_and_website_structure"
                     }
                 ]
@@ -111,7 +111,7 @@ const htmlCourses = [
     {
         title: "HTML - Niveau Intermédiaire",
         description: "L'ingénierie de la page Web. Sémantique HTML5, structures tabulaires, isolation et formulaires transactionnels natifs.",
-        category: "Frontend",
+        category: "Web",
         level: "Intermédiaire",
         duration: "20 heures",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
@@ -214,7 +214,7 @@ const htmlCourses = [
     {
         title: "HTML - Niveau Expert (Avancé)",
         description: "L'ingénierie Frontend Absolue. Optimisation SEO, A11Y ARIA Poussée, Validation complexe et APIs HTML5 natives.",
-        category: "Frontend",
+        category: "Web",
         level: "Avancé",
         duration: "25 heures",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",

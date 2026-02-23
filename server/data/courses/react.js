@@ -47,7 +47,7 @@ const reactCourses = [
                     {
                         title: "Bouton Personnalite",
                         description: "Creez function MyButton(props) et retourne bouton avec label affichant son props.txt en JSX interpole",
-                        difficulty: "Faible",
+                        difficulty: "Facile",
                         solution: "function MyButton({txt}) {\\n  return <button>{txt}</button>;\\n}",
                         hints: ["N'hesite pas a destrucurer parametre direct en {txt}"]
                     }

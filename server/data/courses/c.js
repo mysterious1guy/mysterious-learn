@@ -2,7 +2,7 @@ const cCourses = [
     {
         title: "C - Niveau Débutant : Les Fondations Système",
         description: "Plongez dans le langage le plus fondamental de l'informatique moderne. Comprenez la compilation, les types natifs, et la rudesse de la gestion de mémoire sans filet de sécurité.",
-        category: "Backend",
+        category: "Programmation",
         level: "Débutant",
         duration: "35 heures",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
@@ -75,7 +75,7 @@ const cCourses = [
                     {
                         title: "Le Déni de Scanf",
                         description: "Pourquoi `scanf(\"%s\", mot)` est-il un danger critique de sécurité dans un programme d'entreprise ?",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Si `mot` est défini comme `char mot[10];`, un hacker peut taper 500 caractères. `scanf` n'impose aucune limite de base et écrasera aveuglément la mémoire au-delà du tableau, détruisant l'intégrité de la pile d'exécution (Smashing the stack for fun and profit). Il FAUT écrire : `scanf(\"%9s\", mot);`.",
                         hints: ["Que se passe-t-il si l'utilisateur saisit un roman pour un nom_limite à 10 lettres ?"]
                     }
@@ -112,7 +112,7 @@ const cCourses = [
     {
         title: "C - Niveau Intermédiaire : L'Enfer des Pointeurs",
         description: "L'essence même du C. Manipulez la mémoire vive de l'ordinateur à la volée. Apprenez l'allocation dynamique et le cauchemar des fuites de mémoire (Memory Leaks).",
-        category: "Backend",
+        category: "Programmation",
         level: "Intermédiaire",
         duration: "50 heures",
         image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
@@ -151,7 +151,7 @@ const cCourses = [
                     {
                         title: "Équivalence stricte",
                         description: "Dans le langage C, la syntaxe autorise formellement à écrire `3[T]` au lieu de `T[3]`. Prouvez pourquoi cela fonctionne en utilisant la définition mathématique interne.",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Le compilateur traduit intrinsèquement `X[Y]` par `*(X + Y)`. L'addition étant commutative, `*(T + 3)` est strictement égal à `*(3 + T)`. Par rétro-traduction magique, `*(3 + T)` donne `3[T]`. C'est l'une des bizarreries fondatrices du langage.",
                         hints: ["Revenez à la définition d'un offset depuis une adresse de base via la formule d'addition du déréférencement."]
                     }
@@ -206,7 +206,7 @@ const cCourses = [
     {
         title: "C - Niveau Expert Mondiale : Programmation POSIX, Threads et Noyau",
         description: "Codez un OS, écrivez pour le réseau, forgez votre propre Multithreading de bas niveau. Un niveau réservé aux Ingénieurs de Systèmes Distribués Embaqués (IoT, Aérospatial).",
-        category: "Backend",
+        category: "Programmation",
         level: "Avancé",
         duration: "70 heures",
         image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
@@ -245,7 +245,7 @@ const cCourses = [
                     {
                         title: "L'Arbre du Fork",
                         description: "Combien de processus totaux existeront après l'exécution de cette boucle pure : `for(int i = 0; i < 3; i++) { fork(); }` ?",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Il y aura 8 processus au total (1 parent original + 7 descendants de diverses branches = 2^3 processus). Le 1er fork créer un clone. Au cycle 2, les DEUX processes exécutent indépendamment le fork et créent deux enfants. Puis 4 font de même et génèrent 4 nouveaux, soit 8. C'est une fractale exponentielle de l'exécution.",
                         hints: ["Pensez comme l'Hydre de Lerne. Chaque tête (process) coupe des branches qui coupent des branches récursivement."]
                     }
@@ -263,7 +263,7 @@ const cCourses = [
                     {
                         title: "Deadlock Architecturé",
                         description: "Décrire verbalement le scénario du Dîner des Philosophes de Edsger Dijkstra et l'effet dévastateur du Locking sur des cœurs inter-dépendants.",
-                        difficulty: "Acharne",
+                        difficulty: "Difficile",
                         solution: "5 Threads (les philosophes). Et 5 ressources critiques partagés (fourchettes simples - Mutex). Thread 1 utilise son Mutex_1 et attend un temps infini le Mutex_2. Or Thread 2 utilise le Mutex_2 et attend sa voisine. Chaque Cœur CPU attend pour l'éternité une ressource bloquée pour être libérée (La situation d'étreinte mortelle ou interblocage, tuant inévitablement l'Operating System car la condition de brisure est impossible sans Terminate/KILL -9 ).",
                         hints: ["Le modèle de l'économie circulaire fermée et dépendante."]
                     }
@@ -281,7 +281,7 @@ const cCourses = [
                     {
                         title: "Big Endian vs Little Endian du Réseau",
                         description: "Pourquoi les développeurs Socket doivent-ils utiliser `htons(port_number)` ou `htonl` (Host TO Network Short) avant de lier le port avec the `sockaddr_in` struct ?",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Les protocoles Réseau IP exigent officiellement un alignement \"Big-Endian\" (l'octet le plus significatif en premier). Or, les puces d'ordinateur (surtout INTEL/x86) travaillent nativement en architecture locale inversée \"Little-Endian\". Cette fonction est un algorithme hyper rapide de C qui va transposer les octets dans le sens mathématique exigé par la World Wide Web Federation (IETF).",
                         hints: ["C'est l'histoire de la direction qu'on lit si on se lit de gauche à droite ou de droite à gauche."]
                     }

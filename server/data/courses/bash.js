@@ -2,7 +2,7 @@ const bashCourses = [
     {
         title: "Bash Linux - Niveau Débutant : La Ligne de Commande",
         description: "Maîtrisez l'interface originelle de l'informatique. Abandonnez la souris, comprenez l'arborescence UNIX et devenez plus rapide que la lumière pour manipuler votre machine.",
-        category: "Système",
+        category: "DevOps",
         level: "Débutant",
         duration: "25 heures",
         image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
@@ -93,7 +93,7 @@ const bashCourses = [
                     {
                         title: "Sourd Mute les Erreurs",
                         description: "Une commande `find / -name \"secret\"` va afficher des centaines de lignes 'Permission refused'. Comment envoyer *uniquement* ces erreurs à la poubelle (`/dev/null`) pour ne voir que les résultats valides ?",
-                        difficulty: "Très Difficile",
+                        difficulty: "Difficile",
                         solution: "`find / -name \"secret\" 2> /dev/null`. L'opérateur `2>` ordonne de rediriger spécifiquement le flux d'erreur standard (Stderr, ID 2) vers le fichier device virtuel `/dev/null`.",
                         hints: ["Connaissez-vous l'ID du flux d'erreur par rapport à l'Output normal ?"]
                     }
@@ -105,7 +105,7 @@ const bashCourses = [
     {
         title: "Bash Linux - Niveau Intermédiaire : L'Automatisation Shell",
         description: "Arrêtez de retaper les mêmes commandes. Devenez Développeur Shell. Écrivez des scripts autonomes, des boucles conditionnelles et des variables d'environnement planétaires.",
-        category: "Système",
+        category: "DevOps",
         level: "Intermédiaire",
         duration: "45 heures",
         image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
@@ -194,7 +194,7 @@ const bashCourses = [
                     {
                         title: "Tueur Fantôme (Kill -9)",
                         description: "Pourquoi utilise-t-on la commande fatale `kill -9` (`SIGKILL`) seulement en dernier recours par rapport au `kill` normal (`SIGTERM`) ?",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Le `kill` classique (Signal 15) demande poliment au processus de procéder lui-même à sa destruction, lui laissant le temps de sauvegarder, de fermer les bases de données et les fichiers. Il peut refuser. Le `kill -9` (Signal 9) ordonne au Kernel d'exécuter à mort le processus instantanément sans l'avertir. Si ce processus écrivait dans une BDD MongoDB, le fichier sera totalement corrompu.",
                         hints: ["Politesse contre Exécution Sommaire Brute de l'OS."]
                     }
@@ -206,7 +206,7 @@ const bashCourses = [
     {
         title: "Bash Linux - Niveau Expert Mondiale : Sed, Awk, et DevOps Ninja",
         description: "Transformez-vous en Architecte Cloud. Parsez des Giga-octets d'archives en nano-secondes via les expressions régulières. L'ingénierie absolue d'Amazon AWS.",
-        category: "Système",
+        category: "DevOps",
         level: "Avancé",
         duration: "65 heures",
         image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
@@ -281,7 +281,7 @@ const bashCourses = [
                     {
                         title: "Le Casse-tête de la Limite Argument (Argument list too long)",
                         description: "Pourquoi faire un idiot `rm *` plante-t-il sur un dossier avec 300 000 fichiers (Argument list too long), et comment `ls | xargs rm` résout-il la crise mondialement ?",
-                        difficulty: "Monumental",
+                        difficulty: "Difficile",
                         solution: "Le noyau Linux fixe une taille maximale imposée sur le buffer de la ligne de commande (souvent 128 Ko pour la taille de TOUS les strings arguments cumulés du shell). Si le globbing * envoie 300 000 noms à `rm`, la limite Kernel écrase l'action. L'alternative : le pipeline stream. La commande `ls` jette tranquillement les noms un par un dans le tube Pipe. Le binaire malin `xargs` les réceptionne et va appeler répétitivement le binaire `rm` avec des blocs sûrs (ex: `rm fichier1 à fichier500`, puis `rm fichier501 à f1000`). Xargs tronçonne pour survivre aux limites brutes système.",
                         hints: ["Les tampons mémoire C et la fragmentation des arguments de execve() Kernel..."]
                     }

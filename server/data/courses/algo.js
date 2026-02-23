@@ -147,7 +147,7 @@ const algoCourses = [
                     {
                         title: "Inversion d'un Tableau en Place (In-Place Reversal)",
                         description: "Inversez tous les éléments d'un tableau T de taille N sans déclarer de nouveau tableau (mémoire O(1)).",
-                        difficulty: "Très Difficile",
+                        difficulty: "Difficile",
                         solution: "gauche = 0\ndroite = N - 1\nTANT QUE gauche < droite FAIRE\n  Temp = T[gauche]\n  T[gauche] = T[droite]\n  T[droite] = Temp\n  gauche = gauche + 1\n  droite = droite - 1\nFIN TANT QUE",
                         hints: ["Utilisez le concept de 'Two Pointers' (deux curseurs) se dirigeant l'un vers l'autre."]
                     },
@@ -241,7 +241,7 @@ const algoCourses = [
                     {
                         title: "Alerte de Complexité Spatiale",
                         description: "Quelle est la particularité mortelle du Merge Sort concernant sa complexité spatiale par rapport au Quick Sort ?",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Le Merge Sort nécessite O(N) mémoire supplémentaire (création de sous-tableaux temporaires lors de la fusion). Le Quick Sort, si implémenté In-Place, opère en O(log N) mémoire (strictement limité à la profondeur de la Call Stack récursive). En environnement embarqué très limité, le Merge Sort peut générer un Memory Exhaustion, justifiant le tri In-Place.",
                         hints: ["Pensez à l'impact des créations de nouveaux tableaux à chaque division du divide and conquer."]
                     }
@@ -259,7 +259,7 @@ const algoCourses = [
                     {
                         title: "Vraie Implémentation de la Dichotomie (Sans Overflow)",
                         description: "Écrivez le code d'une recherche dichotomique qui évite complètement le bug historique du Stack Overflow qui existait même dans l'API Java originelle.",
-                        difficulty: "Implacable",
+                        difficulty: "Difficile",
                         solution: "debut = 0, fin = N - 1\nTANT QUE debut <= fin FAIRE\n  // Au lieu de (debut + fin) / 2 qui peut dépasser la limite INTEGER_MAX si tableau gigantesque\n  milieu = debut + (fin - debut) / 2\n  SI T[milieu] == CIBLE ALORS RETOURNER milieu\n  SI T[milieu] < CIBLE ALORS debut = milieu + 1\n  SINON fin = milieu - 1\nFIN TANT QUE\nRETOURNER -1",
                         hints: ["Rappelez-vous que 'debut + fin' peut produire un nombre plus grand que les 32 bits de la machine si le tableau est massif. Pensez autrement..."]
                     }
@@ -277,7 +277,7 @@ const algoCourses = [
                     {
                         title: "Concept du Tri Fusion (Merge)",
                         description: "Comment fusionner deux tableaux A et B DÉJÀ triés en un seul tableau C trié, en temps linéaire O(N) ?",
-                        difficulty: "Très Difficile",
+                        difficulty: "Difficile",
                         solution: "i = 0, j = 0, k = 0\nTANT QUE i < Taille(A) ET j < Taille(B) FAIRE\n  SI A[i] <= B[j] ALORS\n    C[k] = A[i]; i++\n  SINON\n    C[k] = B[j]; j++\n  k++\nFIN TANT QUE\nAjouter le reste de A (si i < Taille(A)) dans C\nAjouter le reste de B (si j < Taille(B)) dans C",
                         hints: ["Imaginez devoir zipper deux piles de cartes ordonnées. Regardez la première de chaque, prenez la plus petite."]
                     }
@@ -302,7 +302,7 @@ const algoCourses = [
                     {
                         title: "Algorithme de l'Arbre Binaire de Recherche",
                         description: "Décrivez la règle d'insertion mathématique pour un nœud dans un BST (Binary Search Tree).",
-                        difficulty: "Expert",
+                        difficulty: "Difficile",
                         solution: "Pour tout nœud Parent :\n- Toutes les valeurs du sous-arbre gauche doivent être strictement INFÉRIEURES à celle du Parent.\n- Toutes les valeurs du sous-arbre droit doivent être strictement SUPÉRIEURES à celle du Parent.",
                         hints: ["Tout doit être triable et recherchable naturellement de chaque côté de la balance."]
                     }
@@ -320,7 +320,7 @@ const algoCourses = [
                     {
                         title: "L'Explosion de Fibonacci",
                         description: "Pourquoi faire un calcul récursif pur F(50) = F(49) + F(48) bloque-t-il l'ordinateur, et comment la mémoïsation sauve-t-elle le désastre ?",
-                        difficulty: "Monumental",
+                        difficulty: "Difficile",
                         solution: "Le calcul pur est en O(2^N). F(48) ou F(30) est recalculé des millions et des millions de fois inutilement comme des racines redondantes. La Mémoïsation (Dynamic Programming) force la fonction à sauvegarder F(X) dans un tableau T la première fois qu'il le calcule. La fois suivante, au lieu d'ouvrir un arbre entier, il le lit dans le tableau en O(1), abaissant la complexité totale à O(N).",
                         hints: ["Réfléchissez au nombre de fois où Fib(5) sera appelé lors du calcul récursif de Fib(8). C'est vertigineux."]
                     }
