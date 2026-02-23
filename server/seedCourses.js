@@ -18,6 +18,11 @@ const connectDB = async () => {
       maxIdleTimeMS: 30000,
     };
 
+    if (mongoose.connection.readyState === 1) {
+      console.log('✅ Mongoose déjà connecté');
+      return true;
+    }
+
     await mongoose.connect(mongoURI, options);
     console.log('✅ Connexion à MongoDB réussie');
     return true;
@@ -69,7 +74,9 @@ async function seedCourses(closeConnection = true) {
     }
   } catch (error) {
     console.error('❌ Erreur lors du seeding:', error.message);
-    process.exit(1);
+    if (closeConnection) {
+      process.exit(1);
+    }
   }
 }
 
