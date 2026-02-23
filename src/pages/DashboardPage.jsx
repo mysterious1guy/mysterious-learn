@@ -158,7 +158,8 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
     const subjectsMap = {};
 
     courses.forEach(course => {
-        const subjectName = course.title.split(' - ')[0]; // Ex: "Algorithmique", "Python", "C"
+        if (!course || !course.title) return; // Defensive: skip malformed courses
+        const subjectName = course.title.split(' - ')[0] || course.title;
         if (!subjectsMap[subjectName]) {
             subjectsMap[subjectName] = {
                 id: subjectName.toLowerCase().replace(/\s+/g, '-'),
@@ -196,9 +197,9 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
             .slice(0, 3)
             .map(([id]) => id);
 
-        const inProgressCourses = inProgressCoursesIds.map(id => {
-            return courses.find(c => (c._id === id || c.id === id));
-        }).filter(Boolean);
+        const inProgressCourses = inProgressCoursesIds
+            .map(id => courses.find(c => (c._id === id || c.id === id)))
+            .filter(Boolean); // Defensive: filter out undefined results
 
         if (inProgressCourses.length > 0) {
             userCategories.push({
