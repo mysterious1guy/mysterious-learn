@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight, Star, Clock, Users, Lock, BookOpen } from 'lucide-react';
+import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
 
 const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions, API_URL, setToast, searchQuery = '' }) => {
@@ -387,8 +387,8 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                 transition={{ repeat: Infinity, duration: 2 }}
                                 className="absolute top-0 right-0 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 font-black italic text-xl"
                             >
-                                <ArrowRight className="text-blue-500 rotate-[-135deg] mb-2 mx-auto" size={32} />
-                                <div className="text-center text-sm">Tout se passe ici !</div>
+                                <ArrowRight className="text-blue-500 rotate-[-90deg] mb-2 mx-auto" size={32} />
+                                <div className="text-center text-sm">Tout se passe là-haut !</div>
                             </motion.div>
                         </div>
                     </motion.div>
