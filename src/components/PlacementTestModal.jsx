@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trophy, AlertCircle, ArrowRight } from 'lucide-react';
 
@@ -7,6 +7,16 @@ const PlacementTestModal = ({ isOpen, onClose, course, onUnlock }) => {
     const [isUnlocking, setIsUnlocking] = useState(false);
     const [testQuestions, setTestQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+    // Reset state every time the modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setStep('intro');
+            setCurrentQuestionIndex(0);
+            setTestQuestions([]);
+            setIsUnlocking(false);
+        }
+    }, [isOpen]);
 
     if (!isOpen || !course) return null;
 
@@ -61,13 +71,12 @@ const PlacementTestModal = ({ isOpen, onClose, course, onUnlock }) => {
 
     return (
         <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={(e) => { e.stopPropagation(); onClose(); }}
+            {/* Backdrop - closes modal when clicked */}
+            <div
                 className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+                onClick={onClose}
             >
+                {/* Modal card - stops clicks from bubbling to backdrop */}
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -81,7 +90,7 @@ const PlacementTestModal = ({ isOpen, onClose, course, onUnlock }) => {
                             <Trophy className="text-amber-500" size={24} />
                             Test de Niveau
                         </h2>
-                        <button onClick={(e) => { e.stopPropagation(); onClose(); }} className="text-slate-400 hover:text-white transition-colors">
+                        <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
                             <X size={24} />
                         </button>
                     </div>
@@ -173,7 +182,7 @@ const PlacementTestModal = ({ isOpen, onClose, course, onUnlock }) => {
                         )}
                     </div>
                 </motion.div>
-            </motion.div>
+            </div>
         </AnimatePresence>
     );
 };
