@@ -344,6 +344,57 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                 </motion.div>
             </div>
 
+            {/* Section Aide/Onboarding pour les nouveaux */}
+            {(!user?.xp || user.xp < 10) && (
+                <div className="max-w-7xl mx-auto px-6 mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-blue-600/10 border border-blue-500/20 rounded-[2rem] p-6 md:p-10 relative overflow-hidden flex flex-col md:flex-row items-center gap-8"
+                    >
+                        <div className="flex-1 space-y-4 relative z-10">
+                            <div className="inline-block px-4 py-1.5 bg-blue-500 text-white text-xs font-black rounded-full uppercase tracking-widest mb-2">
+                                Guide du Novice
+                            </div>
+                            <h2 className="text-3xl font-black text-slate-800 dark:text-white">Salut, {user?.firstName} ! Nouveau ici ?</h2>
+                            <p className="text-slate-600 dark:text-gray-400 font-medium leading-relaxed">
+                                Mysterious Classroom est une académie de haut niveau. Voici comment commencer ta quête :
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-blue-500 text-white rounded-full p-2 shrink-0">1</div>
+                                    <p className="text-sm font-bold text-slate-700 dark:text-gray-300">Commence par les cours <span className="text-blue-500 underline decoration-2">Débutants</span> pour poser les bases.</p>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-purple-500 text-white rounded-full p-2 shrink-0">2</div>
+                                    <p className="text-sm font-bold text-slate-700 dark:text-gray-300">Passe les tests de niveau si tu as déjà des connaissances.</p>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-yellow-500 text-white rounded-full p-2 shrink-0">3</div>
+                                    <p className="text-sm font-bold text-slate-700 dark:text-gray-300">Gagne de l'XP pour monter dans le <span className="text-yellow-500 underline decoration-2 cursor-pointer" onClick={() => navigate('/leaderboard')}>Classement</span>.</p>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <div className="bg-indigo-500 text-white rounded-full p-2 shrink-0">4</div>
+                                    <p className="text-sm font-bold text-slate-700 dark:text-gray-300">Réalise les <span className="text-indigo-500 underline decoration-2 cursor-pointer" onClick={() => navigate('/projects')}>Projets Finaux</span> pour prouver ton expertise.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Arrows pointing to Nav Items if needed, but here we use a small floating graphic */}
+                        <div className="hidden lg:block relative w-48 h-48">
+                            <motion.div
+                                animate={{ y: [0, -10, 0] }}
+                                transition={{ repeat: Infinity, duration: 2 }}
+                                className="absolute top-0 right-0 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 font-black italic text-xl"
+                            >
+                                <ArrowRight className="text-blue-500 rotate-[-135deg] mb-2 mx-auto" size={32} />
+                                <div className="text-center text-sm">Tout se passe ici !</div>
+                            </motion.div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+
             {/* Categories avec défilement horizontal */}
             <div className="space-y-12">
                 {finalCategories.map((category, index) => (

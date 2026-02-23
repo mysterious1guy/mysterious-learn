@@ -28,23 +28,26 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
           </Link>
         </div>
 
-        <div className="flex-1 flex justify-center items-center gap-6 hidden md:flex">
+        <div className="flex-1 flex justify-center items-center gap-2 sm:gap-6 hidden md:flex">
           <Link
             to="/dashboard"
-            className={`text-sm font-bold transition-colors ${location.pathname === '/dashboard' ? 'text-blue-500' : 'text-slate-600 dark:text-gray-400 hover:text-blue-400'}`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/dashboard' ? 'bg-blue-500/10 text-blue-500 ring-1 ring-blue-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
           >
+            <BarChart3 size={18} />
             {t('dashboard')}
           </Link>
           <Link
             to="/projects"
-            className={`text-sm font-bold transition-colors ${location.pathname === '/projects' ? 'text-indigo-500' : 'text-slate-600 dark:text-gray-400 hover:text-indigo-400'}`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/projects' ? 'bg-indigo-500/10 text-indigo-500 ring-1 ring-indigo-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
           >
+            <Briefcase size={18} />
             {t('projects')}
           </Link>
           <Link
             to="/leaderboard"
-            className={`text-sm font-bold transition-colors ${location.pathname === '/leaderboard' ? 'text-amber-500' : 'text-slate-600 dark:text-gray-400 hover:text-amber-400'}`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/leaderboard' ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-amber-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
           >
+            <Trophy size={18} />
             {t('leaderboard')}
           </Link>
         </div>

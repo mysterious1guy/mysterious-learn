@@ -66,7 +66,7 @@ const Leaderboard = () => {
                 </div>
             ) : (
                 <div className="space-y-4">
-                    {leaders.map((user, index) => (
+                    {Array.isArray(leaders) && leaders.map((user, index) => (
                         <motion.div
                             key={user._id}
                             initial={{ opacity: 0, x: -20 }}
@@ -74,9 +74,9 @@ const Leaderboard = () => {
                             transition={{ delay: index * 0.1 }}
                             whileHover={{ scale: 1.02 }}
                             className={`flex items-center p-4 md:p-6 rounded-2xl border transition-all ${index === 0 ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/5 border-yellow-500/30 shadow-[0_0_30px_rgba(234,179,8,0.1)]' :
-                                    index === 1 ? 'bg-gradient-to-r from-gray-400/20 to-gray-500/5 border-gray-400/30' :
-                                        index === 2 ? 'bg-gradient-to-r from-amber-700/20 to-amber-800/5 border-amber-700/30' :
-                                            'bg-[#111] border-white/5 hover:bg-gray-800/50'
+                                index === 1 ? 'bg-gradient-to-r from-gray-400/20 to-gray-500/5 border-gray-400/30' :
+                                    index === 2 ? 'bg-gradient-to-r from-amber-700/20 to-amber-800/5 border-amber-700/30' :
+                                        'bg-[#111] border-white/5 hover:bg-gray-800/50'
                                 }`}
                         >
                             <div className="flex items-center justify-center w-12 mr-4">

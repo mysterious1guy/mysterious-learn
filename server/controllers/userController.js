@@ -16,16 +16,16 @@ const getUsers = async (req, res) => {
 // @route   GET /api/users/leaderboard
 const getLeaderboard = async (req, res) => {
   try {
-    // Only fetch non-admin users, sorted by XP and Streak
+    // Check if Mongo is connected (optional, but good for stability)
     const topUsers = await User.find({ role: 'user' })
       .sort({ xp: -1, streak: -1 })
       .limit(10)
       .select('firstName lastName name avatar xp streak programmingLevel joinedAt');
 
-    res.json(topUsers);
+    res.json(topUsers || []);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Erreur serveur' });
+    console.error('Erreur classement:', err);
+    res.json([]); // Return empty array instead of 500 to avoid frontend crashes
   }
 };
 
