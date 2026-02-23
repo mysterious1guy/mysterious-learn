@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, BarChart3, Crown } from 'lucide-react';
+import { Menu, BarChart3, Crown, Briefcase, Trophy } from 'lucide-react';
 import MysteriousGeometricLogo from '../MysteriousGeometricLogo';
 import SearchBar from './SearchBar';
 import NotificationBell from './NotificationBell';
@@ -28,8 +28,25 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
           </Link>
         </div>
 
-        <div className="flex-1 max-w-md mx-4 hidden md:block">
-          {/* SearchBar removed as requested */}
+        <div className="flex-1 flex justify-center items-center gap-6 hidden md:flex">
+          <Link
+            to="/dashboard"
+            className={`text-sm font-bold transition-colors ${location.pathname === '/dashboard' ? 'text-blue-500' : 'text-slate-600 dark:text-gray-400 hover:text-blue-400'}`}
+          >
+            {t('dashboard')}
+          </Link>
+          <Link
+            to="/projects"
+            className={`text-sm font-bold transition-colors ${location.pathname === '/projects' ? 'text-indigo-500' : 'text-slate-600 dark:text-gray-400 hover:text-indigo-400'}`}
+          >
+            {t('projects')}
+          </Link>
+          <Link
+            to="/leaderboard"
+            className={`text-sm font-bold transition-colors ${location.pathname === '/leaderboard' ? 'text-amber-500' : 'text-slate-600 dark:text-gray-400 hover:text-amber-400'}`}
+          >
+            {t('leaderboard')}
+          </Link>
         </div>
 
         <div className="flex items-center gap-1 sm:gap-4 ml-auto">

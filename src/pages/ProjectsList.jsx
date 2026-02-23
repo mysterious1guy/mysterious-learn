@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, Code, Award, CheckCircle, ArrowRight, Lock, Loader2, Plus, Calendar } from 'lucide-react';
+import { Briefcase, Code, Award, CheckCircle, ArrowRight, Lock, Loader2, Plus, Calendar, X } from 'lucide-react';
 import axios from 'axios';
-import Header from '../components/Header';
 import AIAssistant from '../components/AIAssistant';
 
-const ProjectsList = ({ user, courses, setUser, setToast }) => {
+const ProjectsList = ({ user, setUser, setToast }) => {
     const [projects, setProjects] = useState([]);
+    const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [activeProject, setActiveProject] = useState(null);
@@ -20,11 +20,13 @@ const ProjectsList = ({ user, courses, setUser, setToast }) => {
 
                 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-                const { data } = await axios.get(`${API_URL}/api/projects`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const [projectsRes, coursesRes] = await Promise.all([
+                    axios.get(`${API_URL}/api/projects`, { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get(`${API_URL}/api/courses`, { headers: { Authorization: `Bearer ${token}` } })
+                ]);
 
-                setProjects(data);
+                setProjects(projectsRes.data);
+                setCourses(coursesRes.data);
             } catch (err) {
                 console.error(err);
                 setError('Impossible de charger les projets pour le moment.');
@@ -99,7 +101,6 @@ const ProjectsList = ({ user, courses, setUser, setToast }) => {
 
     return (
         <div className="flex-1 min-w-0 bg-white dark:bg-[#0B1120] relative flex flex-col">
-            <Header user={user} />
 
             <div className="flex-1 overflow-y-auto p-4 lg:p-12 mt-16 lg:mt-0 pb-32">
                 <div className="max-w-6xl mx-auto space-y-12">
@@ -176,8 +177,8 @@ const ProjectsList = ({ user, courses, setUser, setToast }) => {
                                             whileHover={hasAccess ? { y: -5 } : {}}
                                             onClick={() => hasAccess ? setActiveProject(project) : null}
                                             className={`relative overflow-hidden rounded-3xl border transition-all ${hasAccess
-                                                    ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 shadow-sm hover:shadow-xl cursor-pointer'
-                                                    : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 opacity-75 cursor-not-allowed'
+                                                ? 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 shadow-sm hover:shadow-xl cursor-pointer'
+                                                : 'bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-slate-800 opacity-75 cursor-not-allowed'
                                                 }`}
                                         >
                                             <div className="p-6 lg:p-8 flex flex-col h-full">

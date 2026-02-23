@@ -41,11 +41,16 @@ async function seedCourses(closeConnection = true) {
 
     if (isConnected) {
       // Connexion réussie - utiliser MongoDB
-      await Course.deleteMany({});
       console.log('🗑️ Collection courses vidée');
 
-      await Course.insertMany(coursesData);
-      console.log(`✅ ${coursesData.length} cours insérés avec succès dans MongoDB`);
+      // S'assurer que chaque cours a son identifiant métier 'id'
+      const coursesToInsert = coursesData.map(c => ({
+        ...c,
+        id: c.id || c._id // Assurer la présence du champ 'id' métier
+      }));
+
+      await Course.insertMany(coursesToInsert);
+      console.log(`✅ ${coursesToInsert.length} cours insérés avec succès dans MongoDB`);
     } else {
       // Échec connexion - créer fichier JSON de démonstration
       console.log('📁 Création des données de démonstration en JSON...');

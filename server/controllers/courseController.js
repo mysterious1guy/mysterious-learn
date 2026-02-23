@@ -18,56 +18,43 @@ const isMongoDBAvailable = async () => {
 };
 
 const getAllCourses = async (req, res) => {
-  const mongoAvailable = await isMongoDBAvailable();
-
-  if (!mongoAvailable) {
-    console.log('⚠️ MongoDB indisponible - utilisation du fallback JSON');
-    return getAllCoursesFallback(req, res);
-  }
-
   try {
+    // FORCE STATIC DATA as primary source
+    const coursesData = require('../data/courses/index');
+
+    let filteredCourses = [...coursesData];
     const { category, level, search } = req.query;
 
-    let query = {};
-    if (category) query.category = category;
-    if (level) query.level = level;
+    if (category) {
+      filteredCourses = filteredCourses.filter(c => c.category === category);
+    }
+    if (level) {
+      filteredCourses = filteredCourses.filter(c => c.level === level);
+    }
     if (search) {
-      query.$text = { $search: search };
+      const s = search.toLowerCase();
+      filteredCourses = filteredCourses.filter(c =>
+        c.title.toLowerCase().includes(s) ||
+        c.description.toLowerCase().includes(s) ||
+        (c.tags && c.tags.some(t => t.toLowerCase().includes(s)))
+      );
     }
 
-    const courses = await Course.find(query)
-      .populate('prerequisites', 'title')
-      .sort({ createdAt: -1 });
-
-    res.json(courses);
+    res.json(filteredCourses);
   } catch (err) {
-    console.error('Erreur MongoDB:', err);
-    // Fallback en cas d'erreur
-    return getAllCoursesFallback(req, res);
+    console.error('Erreur chargement cours statiques:', err);
+    res.status(500).json({ message: 'Erreur lors du chargement des cours' });
   }
 };
 
 // @desc    Obtenir un cours par son ID
 // @route   GET /api/courses/:id
 const getCourseById = async (req, res) => {
-  const mongoAvailable = await isMongoDBAvailable();
-
-  if (!mongoAvailable) {
-    console.log('⚠️ MongoDB indisponible - utilisation du fallback JSON');
-    return getCourseByIdFallback(req, res);
-  }
-
   try {
     const { id } = req.params;
-    let course;
+    const coursesData = require('../data/courses/index');
 
-    // Check if it's a valid ObjectId (for standard MongoDB generated ids)
-    if (id && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id)) {
-      course = await Course.findById(id).populate('prerequisites', 'title description');
-    } else {
-      // Fallback for custom string IDs like 'c' or 'algo'
-      course = await Course.findOne({ $or: [{ id: id }] }).populate('prerequisites', 'title description');
-    }
+    const course = coursesData.find(c => c.id === id || (c._id && c._id.toString() === id));
 
     if (!course) {
       return res.status(404).json({ message: 'Cours non trouvé' });
@@ -75,29 +62,21 @@ const getCourseById = async (req, res) => {
 
     res.json(course);
   } catch (err) {
-    console.error('Erreur MongoDB:', err);
-    // Fallback en cas d'erreur
-    return getCourseByIdFallback(req, res);
+    console.error('Erreur chargement cours statique par ID:', err);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 
 // @desc    Obtenir les catégories disponibles
 // @route   GET /api/courses/categories
 const getCategories = async (req, res) => {
-  const mongoAvailable = await isMongoDBAvailable();
-
-  if (!mongoAvailable) {
-    console.log('⚠️ MongoDB indisponible - utilisation du fallback JSON');
-    return getCategoriesFallback(req, res);
-  }
-
   try {
-    const categories = await Course.distinct('category');
+    const coursesData = require('../data/courses/index');
+    const categories = [...new Set(coursesData.map(c => c.category))];
     res.json(categories);
   } catch (err) {
-    console.error('Erreur MongoDB:', err);
-    // Fallback en cas d'erreur
-    return getCategoriesFallback(req, res);
+    console.error('Erreur chargement categories statiques:', err);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 };
 

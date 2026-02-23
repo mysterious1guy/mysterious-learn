@@ -154,33 +154,37 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
         return () => clearTimeout(timer);
     }, [API_URL, progressions, user]);
 
-    // Regrouper les cours dynamiques par niveau
-    const categoriesMap = {
-        'Débutant': { id: 'deb', category: 'Niveau Débutant', items: [] },
-        'Intermédiaire': { id: 'int', category: 'Niveau Intermédiaire', items: [] },
-        'Avancé': { id: 'adv', category: 'Niveau Avancé', items: [] }
-    };
+    // Regrouper les cours par Technologie (Sujet)
+    const subjectsMap = {};
 
     courses.forEach(course => {
-        const matchingLevel = course.level || 'Débutant';
-        if (categoriesMap[matchingLevel]) {
-            categoriesMap[matchingLevel].items.push(course);
-        } else {
-            if (!categoriesMap['Autres']) categoriesMap['Autres'] = { id: 'other', category: 'Spécialisations', items: [] };
-            categoriesMap['Autres'].items.push(course);
+        const subjectName = course.title.split(' - ')[0]; // Ex: "Algorithmique", "Python", "C"
+        if (!subjectsMap[subjectName]) {
+            subjectsMap[subjectName] = {
+                id: subjectName.toLowerCase().replace(/\s+/g, '-'),
+                category: subjectName,
+                items: []
+            };
         }
+        subjectsMap[subjectName].items.push(course);
     });
 
-    const groupedCourses = Object.values(categoriesMap).filter(cat => cat.items.length > 0);
+    // Trier les items à l'intérieur de chaque sujet par niveau (Débutant -> Intermédiaire -> Avancé)
+    const levelOrder = { 'Débutant': 1, 'Intermédiaire': 2, 'Avancé': 3 };
+    Object.values(subjectsMap).forEach(subject => {
+        subject.items.sort((a, b) => (levelOrder[a.level] || 99) - (levelOrder[b.level] || 99));
+    });
 
-    const filteredCourses = groupedCourses.map(category => ({
-        ...category,
-        items: category.items.filter(course =>
+    const groupedCourses = Object.values(subjectsMap);
+
+    const filteredCourses = groupedCourses.map(subject => ({
+        ...subject,
+        items: subject.items.filter(course =>
             (course.title && course.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
             (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
             (course.tags && course.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
         )
-    })).filter(category => category.items.length > 0);
+    })).filter(cat => cat.items.length > 0);
 
     const userCategories = [];
 
@@ -400,13 +404,14 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            toggleFavorite(course.id);
+                                                            const cid = course.id || course._id;
+                                                            toggleFavorite(cid);
                                                         }}
                                                         className="p-2 bg-black/40 backdrop-blur-md rounded-full hover:bg-black/60 transition-colors"
                                                     >
                                                         <Star
                                                             size={16}
-                                                            className={favorites.includes(course.id) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
+                                                            className={favorites.includes(course.id || course._id) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
                                                         />
                                                     </button>
                                                 </div>

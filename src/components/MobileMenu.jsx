@@ -1,9 +1,10 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Home, User, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { X, Home, User, LogOut, Briefcase, Trophy } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const MobileMenu = ({ isOpen, onClose, user, onLogout }) => {
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     const handleLogout = () => {
         onLogout();
@@ -59,6 +60,20 @@ const MobileMenu = ({ isOpen, onClose, user, onLogout }) => {
                                 className="text-white hover:text-blue-400 flex items-center gap-2"
                             >
                                 <User size={18} /> Mon compte
+                            </Link>
+                            <Link
+                                to="/projects"
+                                onClick={onClose}
+                                className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 font-bold flex items-center gap-2"
+                            >
+                                <Briefcase size={18} className="text-indigo-400" /> {t('projects')}
+                            </Link>
+                            <Link
+                                to="/leaderboard"
+                                onClick={onClose}
+                                className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400 font-bold flex items-center gap-2"
+                            >
+                                <Trophy size={18} className="text-amber-400" /> {t('leaderboard')}
                             </Link>
                             <button
                                 onClick={handleLogout}

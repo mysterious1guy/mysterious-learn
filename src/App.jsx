@@ -21,6 +21,8 @@ import ChapterPage from './pages/ChapterPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminPage from './pages/AdminPage';
 import TwoFactorSetupPage from './pages/TwoFactorSetupPage';
+import Leaderboard from './pages/Leaderboard';
+import ProjectsList from './pages/ProjectsList';
 
 // Hooks et composants
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -243,6 +245,30 @@ function App() {
                           API_URL={API_URL}
                           setToast={setToast}
                         />
+                      ) : (
+                        <Navigate to="/dashboard" replace />
+                      )
+                    ) : (
+                      <Navigate to="/auth" replace />
+                    )
+                  } />
+
+                  <Route path="/leaderboard" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <Leaderboard user={user} API_URL={API_URL} setToast={setToast} />
+                      ) : (
+                        <Navigate to="/dashboard" replace />
+                      )
+                    ) : (
+                      <Navigate to="/auth" replace />
+                    )
+                  } />
+
+                  <Route path="/projects" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <ProjectsList user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
                       ) : (
                         <Navigate to="/dashboard" replace />
                       )

@@ -11,6 +11,8 @@ export const translations = {
         admin: "Admin",
         monitor: "Moniteur",
         logout: "Déconnexion",
+        projects: "Projets",
+        leaderboard: "Classement",
         onboarding: {
             title: "Personnalise ton espace",
             theme: "Thème",
@@ -33,6 +35,8 @@ export const translations = {
         admin: "Admin",
         monitor: "Monitor",
         logout: "Logout",
+        projects: "Projects",
+        leaderboard: "Leaderboard",
         onboarding: {
             title: "Personalize your space",
             theme: "Theme",
