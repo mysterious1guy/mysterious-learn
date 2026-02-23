@@ -1,6 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { X, Home, User, LogOut, Briefcase, Trophy } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 const MobileMenu = ({ isOpen, onClose, user, onLogout }) => {
     const navigate = useNavigate();
