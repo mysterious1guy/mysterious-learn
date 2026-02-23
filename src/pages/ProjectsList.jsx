@@ -4,7 +4,7 @@ import { Briefcase, Code, Award, CheckCircle, ArrowRight, Lock, Loader2, Plus, C
 import axios from 'axios';
 import AIAssistant from '../components/AIAssistant';
 
-const ProjectsList = ({ user, setUser, setToast }) => {
+const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
     const [projects, setProjects] = useState([]);
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,11 +18,9 @@ const ProjectsList = ({ user, setUser, setToast }) => {
                 const token = localStorage.getItem('token');
                 if (!token) throw new Error('Non authentifié');
 
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
                 const [projectsRes, coursesRes] = await Promise.all([
-                    axios.get(`${API_URL}/api/projects`, { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get(`${API_URL}/api/courses`, { headers: { Authorization: `Bearer ${token}` } })
+                    axios.get(`${API_URL}/projects`, { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get(`${API_URL}/courses`, { headers: { Authorization: `Bearer ${token}` } })
                 ]);
 
                 setProjects(projectsRes.data);
@@ -65,9 +63,7 @@ const ProjectsList = ({ user, setUser, setToast }) => {
         try {
             setSubmitting(true);
             const token = localStorage.getItem('token');
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-            const { data } = await axios.post(`${API_URL}/api/projects/${projectId}/submit`, {}, {
+            const { data } = await axios.post(`${API_URL}/projects/${projectId}/submit`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 

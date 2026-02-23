@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Trophy, Medal, Star, Flame, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
-const Leaderboard = () => {
+const Leaderboard = ({ user, API_URL, setToast }) => {
     const [leaders, setLeaders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -14,10 +14,7 @@ const Leaderboard = () => {
                 const token = localStorage.getItem('token');
                 if (!token) throw new Error('Non authentifié');
 
-                // Assuming your backend URL configuration
-                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-                const { data } = await axios.get(`${API_URL}/api/users/leaderboard`, {
+                const { data } = await axios.get(`${API_URL}/users/leaderboard`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
