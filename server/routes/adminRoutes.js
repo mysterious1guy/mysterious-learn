@@ -10,7 +10,8 @@ const {
   toggleUserBan,
   updateUserLevel,
   getAllNotifications,
-  deleteNotification
+  deleteNotification,
+  seedCourses
 } = require('../controllers/adminController');
 
 const router = express.Router();
@@ -32,5 +33,8 @@ router.delete('/notifications/:id', ownerAdmin, deleteNotification);
 // Accessible by standard Admin
 router.get('/notifications', admin, getAllNotifications);
 router.get('/stats', admin, getAdminStats);
+
+// Routes spéciales
+router.post('/seed-courses', ownerAdmin, seedCourses);
 
 module.exports = router;

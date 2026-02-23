@@ -99,6 +99,34 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     }
   };
 
+  const handleSeedCourses = async () => {
+    setConfirmModal({
+      isOpen: true,
+      title: "⚠️ DANGER : Synchronisation des Cours (Production)",
+      message: "Cette action va SUPPRIMER tous les cours existants dans la base de données et publier les 36 cours officiels et finaux (incluant vos ajouts massifs en C, Bash, Python et Algo). Voulez-vous vraiment lancer la synchronisation de l'API avec vos fichiers actuels ?",
+      onConfirm: async () => {
+        try {
+          const res = await fetch(`${API_URL}/admin/seed-courses`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${user.token}` }
+          });
+          const data = await res.json();
+          if (res.ok) {
+            setToast({ message: data.message || "Mise à jour réussie !", type: 'success' });
+            setConfirmModal({ ...confirmModal, isOpen: false });
+            fetchData(); // Rafraîchir les cours
+          } else {
+            setToast({ message: data.message || "Échec de la synchronisation", type: 'error' });
+            setConfirmModal({ ...confirmModal, isOpen: false });
+          }
+        } catch (err) {
+          setToast({ message: "Erreur réseau lors du déploiement", type: 'error' });
+          setConfirmModal({ ...confirmModal, isOpen: false });
+        }
+      }
+    });
+  };
+
   const handleSendEmail = async (e) => {
     e.preventDefault();
     try {
@@ -805,6 +833,15 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
               <motion.div key="courses" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
                 <div className="flex justify-between items-center mb-8">
                   <h2 className="text-3xl font-black text-white">Gestion des Cours</h2>
+                  {(user?.email === 'mouhamedfall@esp.sn' || user?.adminTier === 'owner') && (
+                    <button
+                      onClick={handleSeedCourses}
+                      className="px-6 py-3 bg-red-600/10 hover:bg-red-600 text-red-500 hover:text-white font-black rounded-xl border border-red-500/30 hover:border-red-600 transition-all flex items-center gap-2 shadow-lg hover:shadow-red-600/30"
+                      title="PUBLIER LES COURS OFFICIELS SUR LA BASE DE DONNÉES DE PRODUCTION"
+                    >
+                      <Database size={18} /> SYNCHRONISER LA BDD (Déploiement)
+                    </button>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

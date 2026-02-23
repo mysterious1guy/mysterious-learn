@@ -45,7 +45,6 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                 body: JSON.stringify({
                     password: formData.password,
                     hasCompletedOnboarding: true,
-                    programmingLevel: formData.startingLevel,
                     onboardingProfile: {
                         goal: formData.goal,
                         startingLevel: formData.startingLevel

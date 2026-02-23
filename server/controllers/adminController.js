@@ -1,6 +1,7 @@
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 const Course = require('../models/Course');
+const coursesData = require('../data/courses/index');
 const { sendEmail } = require('../utils/emailService');
 const { getMarketingEmail } = require('../utils/emailTemplates');
 
@@ -273,6 +274,25 @@ const updateUserLevel = async (req, res) => {
   }
 };
 
+// @desc    Peupler brutalement la BDD avec les 36 cours officiels et détruire l'ancien contenu
+// @route   POST /api/admin/seed-courses
+const seedCourses = async (req, res) => {
+  try {
+    // Restreindre formellement à l'admin originel
+    if (req.user.email !== 'mouhamedfall@esp.sn' && req.user.adminTier !== 'owner') {
+      return res.status(403).json({ message: 'Non autorisé' });
+    }
+
+    await Course.deleteMany({});
+    await Course.insertMany(coursesData);
+
+    res.json({ message: `Base de données synchronisée : ${coursesData.length} modules d'expertise mondiaux insérés.` });
+  } catch (error) {
+    console.error('Erreur Seeding:', error);
+    res.status(500).json({ message: 'Erreur lors du seeding de la BDD' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   deleteUser,
@@ -283,5 +303,6 @@ module.exports = {
   toggleUserBan,
   updateUserLevel,
   getAllNotifications,
-  deleteNotification
+  deleteNotification,
+  seedCourses
 };

@@ -57,21 +57,8 @@ const HomePage = ({ API_URL }) => {
         fetchConfig();
     }, [API_URL]);
 
-    // Extracting courses to showcase and calculating total exact count
-    let totalCoursesCount = 0;
-    const featuredCourses = [];
-    if (coursesData && coursesData.length > 0) {
-        coursesData.forEach(category => {
-            totalCoursesCount += category.items.length;
-            category.items.forEach(item => {
-                featuredCourses.push({
-                    ...item,
-                    categoryLabel: category.category,
-                    students: courseStats[item.id] || 0
-                });
-            });
-        });
-    }
+    // Le site contient désormais 36 cours officiels et 12 langages
+    const totalCoursesCount = 36;
 
     return (
         <div className="min-h-screen bg-transparent font-sans selection:bg-blue-500/30">
