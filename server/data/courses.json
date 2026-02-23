@@ -200,7 +200,7 @@
         "description": "Modularisez votre code pour le rendre réutilisable.",
         "order": 2,
         "duration": "5 heures",
-        "content": "Dès qu'un algorithme devient long, il faut le diviser en sous-programmes appelés fonctions ou procédures. Une fonction prend des entrées (paramètres), effectue un calcul, et retourne une sortie (valeur de retour). Cela permet de ne pas se répéter (principe DRY : Don't Repeat Yourself) et de rendre le code beaucoup plus lisible.",
+        "content": "Dès qu'un algorithme devient long, il faut le diviser en sous-programmes appelés fonctions ou procédures. Une procédure effectue une action (ex: afficher un menu) sans renvoyer de résultat. Une fonction prend des entrées (paramètres), effectue un calcul, et retourne une sortie (valeur de retour globale). Cela permet de ne pas se répéter (principe DRY : Don't Repeat Yourself), de rendre le code beaucoup plus lisible, et de faciliter le débogage en isolant la logique.",
         "objectives": [
           "Créer une fonction avec paramètres",
           "Comprendre la portée (scope) des variables",
@@ -309,9 +309,39 @@
         ]
       },
       {
+        "title": "Les Matrices et Tableaux Multidimensionnels",
+        "description": "Apprenez à manipuler des grilles de données (Lignes et Colonnes).",
+        "order": 2,
+        "duration": "7 heures",
+        "content": "Une matrice est un tableau à deux dimensions (ou plus). Pensez-y comme à une grille de morpion ou un tableur Excel avec des lignes et des colonnes. Pour accéder à un élément, vous avez besoin de deux indices : Ligne i, et Colonne j (noté M[i][j]). Les matrices sont fondamentales pour les jeux vidéos, le traitement d'images, et l'intelligence artificielle. Nous apprendrons à parcourir une matrice avec deux boucles imbriquées et à effectuer des opérations matricielles (addition, transposition).",
+        "objectives": [
+          "Déclarer une matrice",
+          "Parcourir une matrice avec deux boucles POUR",
+          "Comprendre les indices i et j"
+        ],
+        "exercises": [
+          {
+            "title": "Somme d'une matrice",
+            "description": "Écrivez un algorithme qui calcule la somme de tous les éléments d'une matrice M de taille L lignes et C colonnes.",
+            "difficulty": "Moyen",
+            "solution": "Somme = 0\nPOUR i ALLANT DE 0 A L-1 FAIRE\n  POUR j ALLANT DE 0 A C-1 FAIRE\n    Somme = Somme + M[i][j]\n  FIN POUR\nFIN POUR\nAFFICHER Somme",
+            "hints": [
+              "Il vous faut une boucle POUR pour les lignes, et à l'intérieur, une autre boucle POUR pour les colonnes."
+            ]
+          }
+        ],
+        "resources": [
+          {
+            "title": "Les Tableaux à 2 Dimensions",
+            "type": "video",
+            "url": "https://www.youtube.com/embed/5mFpPbcXgB0"
+          }
+        ]
+      },
+      {
         "title": "La Récursivité",
         "description": "Quand une fonction s'appelle elle-même.",
-        "order": 2,
+        "order": 3,
         "duration": "8 heures",
         "content": "La récursivité est une méthode de programmation où une fonction fait appel à elle-même pour résoudre une plus petite instance du même problème. Il est crucial d'avoir une 'condition d'arrêt' (cas de base) pour éviter une boucle de pile infinie (Stack Overflow). Nous verrons des classiques comme le calcul de factorielle ou la suite de Fibonacci.",
         "objectives": [
@@ -341,7 +371,7 @@
       {
         "title": "Tris Avancés et Recherche Dichotomique",
         "description": "Les algorithmes les plus rapides du monde.",
-        "order": 3,
+        "order": 4,
         "duration": "12 heures",
         "content": "Nous abordons ici les algorithmes en O(n log n) comme le Tri Rapide (Quick Sort) et le Tri Fusion (Merge Sort). Ils utilisent l'approche 'Diviser pour Régner' (Divide and Conquer). Nous verrons également comment chercher efficacement un élément dans un tableau trié grâce à la recherche dichotomique (Binary Search), qui élimine la moitié des possibilités à chaque étape (O(log n)).",
         "objectives": [

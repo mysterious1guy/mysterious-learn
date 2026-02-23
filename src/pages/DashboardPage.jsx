@@ -11,20 +11,29 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [selectedLockedCourse, setSelectedLockedCourse] = useState(null);
     const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+    const [recentlyUnlocked, setRecentlyUnlocked] = useState(null);
 
     const isCourseUnlocked = (item) => {
-        if (!item || item.level === 'Débutant') return true;
+        if (!item) return true;
+
+        // 1. By default, Débutant is always unlocked
+        if (item.level === 'Débutant') return true;
+
+        // 2. Unlocked via user.programmingLevel
+        const userLevel = user?.programmingLevel || 'Débutant';
+        if (userLevel === 'Expérimenté') return true; // everything unlocked
+        if (userLevel === 'Amateur' && item.level === 'Intermédiaire') return true;
+
+        // 3. Unlocked by explicitly passing a placement test (saved in DB)
         const itemId = item._id || item.id;
         if (user?.unlockedCourses?.includes(itemId)) return true;
 
+        // 4. Unlocked via physical progression (previous level of SAME subject == 100%)
         let targetLevelToCheck = '';
         if (item.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
         if (item.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
 
-        // Extract the base subject name (e.g. "Algorithmique" from "Algorithmique - Niveau Intermédiaire")
         const subjectName = item.title.split(' - ')[0];
-
-        // Find the prerequisite course in the SAME subject
         const reqCourse = courses.find(c => c.level === targetLevelToCheck && c.title.split(' - ')[0] === subjectName);
 
         if (reqCourse) {
@@ -83,6 +92,33 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
             }
         };
         fetchCourses();
+
+        // Check for newly unlocked courses
+        if (courses && courses.length > 0 && progressions) {
+            const notifiedUnlocks = JSON.parse(localStorage.getItem(`notified_unlocks_${user?.email}`) || '[]');
+
+            for (const reqCourse of courses) {
+                const reqId = reqCourse._id || reqCourse.id;
+                if (progressions[reqId]?.progress >= 100) {
+                    let nextLevel = '';
+                    if (reqCourse.level === 'Débutant') nextLevel = 'Intermédiaire';
+                    if (reqCourse.level === 'Intermédiaire') nextLevel = 'Avancé';
+
+                    if (nextLevel) {
+                        const subjectName = reqCourse.title.split(' - ')[0];
+                        const nextCourse = courses.find(c => c.level === nextLevel && c.title.split(' - ')[0] === subjectName);
+                        if (nextCourse) {
+                            const nextId = nextCourse._id || nextCourse.id;
+                            if (!notifiedUnlocks.includes(nextId)) {
+                                setRecentlyUnlocked(nextCourse);
+                                localStorage.setItem(`notified_unlocks_${user?.email}`, JSON.stringify([...notifiedUnlocks, nextId]));
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         const fetchStats = async () => {
             try {
@@ -191,6 +227,42 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                 course={selectedLockedCourse}
                 onUnlock={handleUnlockTargetCourse}
             />
+
+            {/* Modal Félicitations Déblocage */}
+            {recentlyUnlocked && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setRecentlyUnlocked(null)}></div>
+                    <motion.div
+                        initial={{ scale: 0.9, opacity: 0, y: 50 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-3xl p-8 text-center shadow-2xl z-10"
+                    >
+                        <div className="mx-auto w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/30">
+                            <BookOpen size={48} className="text-white drop-shadow-md" />
+                        </div>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tighter">Félicitations !</h2>
+                        <p className="text-slate-600 dark:text-gray-300 mb-8 font-medium">
+                            En terminant le niveau précédent, vous avez officiellement débloqué votre nouvelle cible d'apprentissage : <br />
+                            <strong className="text-blue-500 dark:text-blue-400 mt-3 block text-xl bg-blue-500/10 p-4 rounded-xl border border-blue-500/20">{recentlyUnlocked.title}</strong>
+                        </p>
+                        <button
+                            onClick={() => {
+                                setRecentlyUnlocked(null);
+                                navigate(`/course/${recentlyUnlocked._id || recentlyUnlocked.id}`);
+                            }}
+                            className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-500/25 transform hover:-translate-y-1"
+                        >
+                            Démarrer le cours
+                        </button>
+                        <button
+                            onClick={() => setRecentlyUnlocked(null)}
+                            className="w-full mt-3 py-3 text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white font-bold text-sm uppercase transition-colors"
+                        >
+                            Fermer
+                        </button>
+                    </motion.div>
+                </div>
+            )}
 
             {/* Header */}
             <div className="pt-8 pb-12 px-6 lg:px-12 relative overflow-hidden">
