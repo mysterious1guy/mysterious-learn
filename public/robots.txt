@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mysterious-classroom-free-courses.onrender.com/sitemap.xml
