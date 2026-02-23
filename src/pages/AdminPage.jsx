@@ -169,6 +169,34 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     }
   };
 
+  const handleUnlockCourseForUser = async (userId, courseId) => {
+    try {
+      const res = await fetch(`${API_URL}/admin/users/${userId}/unlock-course`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ courseId })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setToast({ message: 'Cours débloqué avec succès !', type: 'success' });
+        if (selectedUserStats && selectedUserStats.user._id === userId) {
+          setSelectedUserStats({
+            ...selectedUserStats,
+            user: { ...selectedUserStats.user, unlockedCourses: data.unlockedCourses }
+          });
+        }
+      } else {
+        const data = await res.json();
+        setToast({ message: data.message || "Erreur lors du déblocage", type: 'error' });
+      }
+    } catch (err) {
+      setToast({ message: 'Erreur réseau', type: 'error' });
+    }
+  };
+
   const handleDeleteNotification = async (id) => {
     setConfirmModal({
       isOpen: true,
@@ -221,8 +249,9 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
       onConfirm: async () => {
         try {
           const target = users.find(u => u._id === id);
-          if (target?.role === 'admin') {
-            setToast({ message: 'Impossible de supprimer un admin', type: 'error' });
+          const isSuperAdmin = user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn';
+          if (target?.role === 'admin' && !isSuperAdmin) {
+            setToast({ message: 'Opération interdite aux modérateurs.', type: 'error' });
             setConfirmModal({ ...confirmModal, isOpen: false });
             return;
           }
@@ -607,12 +636,12 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                               <select
                                 value={u.role}
                                 onChange={(e) => handleUpdateRole(u._id, e.target.value)}
-                                disabled={u._id === user.id || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner'}
+                                disabled={(u._id === user.id && !(user.adminTier === 'owner' || user.email === 'mouhamedfall@esp.sn')) || (!['owner'].includes(user.adminTier) && user.email !== 'mouhamedfall@esp.sn' && (u.role === 'admin' || u.email === 'mouhamedfall@esp.sn'))}
                                 className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all cursor-pointer outline-none appearance-none text-center min-w-[100px]
                                   ${u.role === 'admin'
                                     ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.1)]'
                                     : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
-                                  } ${u._id === user.id || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                  } ${(!['owner'].includes(user?.adminTier) && user?.email !== 'mouhamedfall@esp.sn' && u.role === 'admin') ? 'opacity-50 cursor-not-allowed' : ''}`}
                               >
                                 <option value="user">USER</option>
                                 <option value="admin">ADMIN</option>
@@ -646,9 +675,9 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                           <td className="px-8 py-6 text-right">
                             <button
                               onClick={() => handleDeleteUser(u._id)}
-                              disabled={u.role === 'admin' || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner'}
+                              disabled={!(user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn') && (u.role === 'admin' || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner')}
                               className={`p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl transition-all shadow-sm dark:shadow-none 
-                                ${u.role === 'admin' || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner' ? 'opacity-20 cursor-not-allowed' : 'text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-red-500/30 dark:hover:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/5'}`}
+                                ${!(user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn') && (u.role === 'admin' || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner') ? 'opacity-20 cursor-not-allowed' : 'text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-red-500/30 dark:hover:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/5'}`}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -1406,6 +1435,29 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                         <p className="text-sm font-black text-slate-600 dark:text-white">{formatTimeAgo(selectedUserStats.lastLogin)}</p>
                       </div>
                     </div>
+
+                    {(user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn') && (
+                      <div className="col-span-2 bg-purple-600/5 dark:bg-purple-600/10 p-6 rounded-3xl border border-purple-500/10 dark:border-purple-500/20">
+                        <p className="text-[10px] font-black uppercase text-purple-600 dark:text-purple-400 mb-3">Déblocage Force Brute (SuperAdmin)</p>
+                        <div className="flex gap-4">
+                          <select
+                            className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 outline-none focus:border-purple-500"
+                            onChange={async (e) => {
+                              if (e.target.value) {
+                                await handleUnlockCourseForUser(selectedUserStats.user?._id, e.target.value);
+                                e.target.value = "";
+                              }
+                            }}
+                            defaultValue=""
+                          >
+                            <option value="" disabled>Sélectionner un cours à débloquer...</option>
+                            {courses.filter(c => !selectedUserStats.user?.unlockedCourses?.includes(c._id || c.id)).map(c => (
+                              <option key={c._id || c.id} value={c._id || c.id}>{c.title} ({c.level})</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="py-20 text-center text-slate-400 italic">
@@ -1425,8 +1477,9 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
               </div>
             </motion.div>
           </div>
-        )}
-      </AnimatePresence>
+        )
+        }
+      </AnimatePresence >
     </div >
   );
 };

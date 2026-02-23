@@ -74,7 +74,7 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
         <Outlet />
       </main>
 
-      <Footer />
+      {currentView !== 'course' && <Footer />}
 
       {/* Moniteur d'utilisation */}
       <UsageMonitor

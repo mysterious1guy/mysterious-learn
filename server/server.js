@@ -15,8 +15,9 @@ const seedCourses = require('./seedCourses');
 connectDB().then(async () => {
   try {
     const count = await Course.countDocuments();
-    if (count === 0) {
-      console.log('⚙️ Base de données vide détectée. Lancement de l\'auto-seeding...');
+    if (count !== 36) {
+      console.log(`⚙️ Base de données désynchronisée (${count} cours trouvés, 36 obligatoires). Lancement de l'auto-seeding...`);
+      await Course.deleteMany({}); // Purger l'existant
       await seedCourses(false);
     }
   } catch (e) {

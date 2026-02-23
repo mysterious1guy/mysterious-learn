@@ -16,6 +16,9 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
     const isCourseUnlocked = (item) => {
         if (!item) return true;
 
+        // 0. Admins have access to everything
+        if (user?.role === 'admin') return true;
+
         // 1. By default, Débutant is always unlocked
         if (item.level === 'Débutant') return true;
 
