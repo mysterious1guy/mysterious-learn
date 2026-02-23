@@ -381,16 +381,26 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                         </div>
 
                         {/* Arrows pointing to Nav Items if needed, but here we use a small floating graphic */}
-                        <div className="hidden lg:block relative w-48 h-48">
-                            <motion.div
-                                animate={{ y: [0, -10, 0] }}
-                                transition={{ repeat: Infinity, duration: 2 }}
-                                className="absolute top-0 right-0 bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 font-black italic text-xl"
-                            >
-                                <ArrowRight className="text-blue-500 rotate-[-90deg] mb-2 mx-auto" size={32} />
-                                <div className="text-center text-sm">Tout se passe là-haut !</div>
-                            </motion.div>
-                        </div>
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="hidden lg:flex flex-col items-center gap-4 bg-white/10 backdrop-blur-md border border-white/10 p-6 rounded-[2.5rem] shadow-2xl relative group"
+                        >
+                            <div className="absolute -top-3 -left-3 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-black shadow-lg shadow-blue-500/40 z-10 animate-bounce">
+                                <ArrowLeft size={24} />
+                            </div>
+                            <div className="text-center space-y-2">
+                                <p className="text-sm font-black text-blue-400 uppercase tracking-widest">Guide</p>
+                                <p className="text-lg font-bold text-white leading-tight">
+                                    Utilise la <span className="text-blue-400">barre latérale</span> pour changer de langage <span className="text-purple-400">ici même</span>.
+                                </p>
+                            </div>
+                            <div className="flex gap-2">
+                                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                                <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse delay-75"></div>
+                                <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse delay-150"></div>
+                            </div>
+                        </motion.div>
                     </motion.div>
                 </div>
             )}

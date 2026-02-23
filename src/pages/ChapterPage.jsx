@@ -31,6 +31,9 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
     useEffect(() => {
         if (!course || !user || !progressions) return;
 
+        // 🚀 God-mode for Admins
+        if (user?.role === 'admin') return;
+
         // Tous les débutants sont débloqués par défaut
         if (course.level === 'Débutant') return;
 

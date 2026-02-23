@@ -26,8 +26,9 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                 setProjects(projectsRes.data);
                 setCourses(coursesRes.data);
             } catch (err) {
-                console.error(err);
-                setError('Impossible de charger les projets pour le moment.');
+                console.error('❌ ProjectsList Error:', err);
+                const msg = err.response?.data?.message || err.message || 'Erreur inconnue';
+                setError(`Impossible de charger les projets : ${msg} (URL: ${API_URL}/projects)`);
             } finally {
                 setLoading(false);
             }

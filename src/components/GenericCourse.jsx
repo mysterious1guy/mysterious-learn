@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
     ArrowLeft, ChevronRight, BookOpen,
-    CheckCircle, Circle, Play, Check, CheckSquare, Target, Lightbulb, Code
+    CheckCircle, Circle, Play, Check, CheckSquare, Target, Lightbulb, Code,
+    Zap, Shield, Database, AlertTriangle, Cpu, Link, Terminal as TerminalIcon
 } from 'lucide-react';
 import CourseTerminal from '../courses/CourseTerminal';
 
@@ -11,6 +12,30 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
     const lessons = course?.chapters || course?.lessons || [];
     const [activeLesson, setActiveLesson] = useState(lessons.length > 0 ? lessons[0] : null);
     const [showSolutionFor, setShowSolutionFor] = useState(null);
+    const [lessonStartTime, setLessonStartTime] = useState(Date.now());
+    const [isGuardActive, setIsGuardActive] = useState(true);
+    const [timeLeft, setTimeLeft] = useState(60);
+
+    React.useEffect(() => {
+        // Reset timer when lesson changes
+        setLessonStartTime(Date.now());
+        setIsGuardActive(true);
+        setTimeLeft(60);
+
+        const timer = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - lessonStartTime) / 1000);
+            const remaining = 60 - elapsed;
+            if (remaining <= 0) {
+                setIsGuardActive(false);
+                setTimeLeft(0);
+                clearInterval(timer);
+            } else {
+                setTimeLeft(remaining);
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [activeLesson]);
 
     const handleFinishLesson = () => {
         if (activeLesson) {
@@ -21,6 +46,73 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
     const isLessonCompleted = (id) => completedLessons && completedLessons.includes(id);
     const isAdmin = user?.role === 'admin';
 
+    const renderSmartContent = (content) => {
+        if (!content) return null;
+
+        // Détection de mots clés pour icônes
+        const getIcon = (title) => {
+            const t = title.toLowerCase();
+            if (t.includes('préprocesseur') || t.includes('compilateur')) return <Zap className="text-yellow-400" size={20} />;
+            if (t.includes('mémoire') || t.includes('ram')) return <Database className="text-blue-400" size={20} />;
+            if (t.includes('sécurité') || t.includes('faille')) return <Shield className="text-green-400" size={20} />;
+            if (t.includes('erreur') || t.includes('bug')) return <AlertTriangle className="text-red-400" size={20} />;
+            if (t.includes('assembleur') || t.includes('cpu')) return <Cpu className="text-purple-400" size={20} />;
+            if (t.includes('link') || t.includes('lien')) return <Link className="text-indigo-400" size={20} />;
+            return <TerminalIcon className="text-slate-400" size={20} />;
+        };
+
+        // Pattern plus souple pour détecter les listes même au milieu du texte
+        const listMarkerPattern = /(\d+[.)]|\u2022|\*)/;
+        const parts = content.split(listMarkerPattern);
+
+        if (parts.length > 2) {
+            const intro = parts[0];
+            const items = [];
+            for (let i = 1; i < parts.length; i += 2) {
+                items.push({ marker: parts[i], text: (parts[i + 1] || "").trim() });
+            }
+
+            return (
+                <div className="space-y-6">
+                    {intro && <p className="text-lg text-slate-300 leading-relaxed mb-6 italic border-l-2 border-blue-500/30 pl-4">{intro}</p>}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {items.map((item, idx) => {
+                            const [title, ...descParts] = item.text.split(':');
+                            const description = descParts.join(':').trim();
+
+                            return (
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className="bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-5 hover:bg-slate-800 transition-all group shadow-xl relative overflow-hidden"
+                                >
+                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        {getIcon(title)}
+                                    </div>
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter border border-blue-500/20">
+                                            {item.marker}
+                                        </div>
+                                        <h4 className="font-black text-white group-hover:text-blue-400 transition-colors leading-tight">
+                                            {title}
+                                        </h4>
+                                    </div>
+                                    <p className="text-sm text-slate-400 leading-relaxed font-medium">
+                                        {description || ""}
+                                    </p>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        }
+
+        return <div className="whitespace-pre-line leading-relaxed text-slate-200 text-lg bg-slate-800/30 p-6 rounded-2xl border border-slate-800">{content}</div>;
+    };
+
     if (!course || lessons.length === 0) return (
         <div className="flex flex-col items-center justify-center p-12 text-white">
             <h2 className="text-xl">Ce cours ne contient pas encore de chapitres.</h2>
@@ -29,9 +121,9 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
     );
 
     return (
-        <div className="flex h-screen bg-gray-900 text-white overflow-hidden">
-            {/* Sidebar de navigation */}
-            <div className="w-80 bg-gray-950 border-r border-gray-800 flex flex-col">
+        <div className="flex flex-col md:flex-row h-screen bg-gray-900 text-white overflow-hidden">
+            {/* Sidebar de navigation - Masquée sur petit mobile ou rétractable ? Pour l'instant on garde scroll horizontal sur mobile ou sidebar fixe */}
+            <div className="w-full md:w-80 bg-gray-950 border-b md:border-b-0 md:border-r border-gray-800 flex flex-col shrink-0">
                 <div className="p-4 border-b border-gray-800 flex items-center gap-3">
                     <button
                         onClick={onClose}
@@ -42,35 +134,33 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                     <h1 className="font-bold truncate">{course.title || course.name}</h1>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    <div className="mb-2">
+                <div className="flex-1 overflow-y-auto md:overflow-y-auto p-2 md:p-4 space-y-4 md:space-y-4 flex flex-row md:flex-col gap-2 md:gap-1 scrollbar-hide">
+                    <div className="hidden md:block mb-2">
                         <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Programme</h3>
-                        <div className="space-y-1">
-                            {lessons.map((lesson, idx) => {
-                                const lessonId = lesson._id || lesson.id || lesson.title;
-                                return (
-                                    <button
-                                        key={lessonId || idx}
-                                        onClick={() => {
-                                            setActiveLesson(lesson);
-                                            setShowSolutionFor(null);
-                                        }}
-                                        className={`w-full text-left p-3 rounded-lg flex items-center gap-3 transition ${activeLesson?.title === lesson.title ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50' : 'hover:bg-gray-900 text-white/80'}`}
-                                    >
-                                        {isLessonCompleted(lessonId) ? (
-                                            <CheckCircle size={16} className="text-green-500" />
-                                        ) : (
-                                            <div className="w-4 h-4 rounded-full border border-gray-600 flex items-center justify-center">
-                                                {idx + 1}
-                                            </div>
-                                        )}
-                                        <span className="text-sm font-medium w-full truncate">{lesson.title}</span>
-                                        <span className="text-xs ml-auto opacity-50 whitespace-nowrap">{lesson.duration}</span>
-                                    </button>
-                                )
-                            })}
-                        </div>
                     </div>
+                    {lessons.map((lesson, idx) => {
+                        const lessonId = lesson._id || lesson.id || lesson.title;
+                        const isActive = activeLesson?.title === lesson.title;
+                        return (
+                            <button
+                                key={lessonId || idx}
+                                onClick={() => {
+                                    setActiveLesson(lesson);
+                                    setShowSolutionFor(null);
+                                }}
+                                className={`shrink-0 md:w-full text-left p-2 md:p-3 rounded-xl flex items-center gap-3 transition min-w-[120px] md:min-w-0 ${isActive ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50 ring-1 ring-blue-500/20 shadow-lg shadow-blue-500/10' : 'hover:bg-gray-900 text-white/60 hover:text-white border border-transparent'}`}
+                            >
+                                {isLessonCompleted(lessonId) ? (
+                                    <CheckCircle size={16} className="text-green-500 shrink-0" />
+                                ) : (
+                                    <div className={`w-5 h-5 rounded-full border text-[10px] flex items-center justify-center shrink-0 ${isActive ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-700 bg-gray-900 text-gray-400'}`}>
+                                        {idx + 1}
+                                    </div>
+                                )}
+                                <span className="text-xs md:text-sm font-bold truncate">{lesson.title}</span>
+                            </button>
+                        )
+                    })}
                 </div>
             </div>
 
@@ -134,9 +224,9 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                                     </div>
                                 )}
 
-                                {/* Contenu principal TEXT / HTML */}
-                                <div className="text-slate-200 text-lg leading-relaxed space-y-4 mb-10 whitespace-pre-line bg-gray-800/30 p-8 rounded-3xl border border-gray-800">
-                                    {activeLesson.content}
+                                {/* Contenu principal TEXT / HTML transformé en cartes si nécessaire */}
+                                <div className="mb-10">
+                                    {renderSmartContent(activeLesson.content)}
                                 </div>
 
                                 {/* Terminaux ou Sandbox injectés si présents en ressources code */}
@@ -241,24 +331,43 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                                     </button>
                                 </div>
 
-                                <button
-                                    onClick={handleFinishLesson}
-                                    disabled={!isAdmin && isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title)}
-                                    className={`px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition w-full sm:w-auto ${(isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) && !isAdmin)
-                                        ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white cursor-default'
-                                        : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg hover:shadow-blue-500/25'
-                                        }`}
-                                >
-                                    {(isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) && !isAdmin) ? (
-                                        <>
-                                            <Check size={20} /> Terminée
-                                        </>
-                                    ) : (
-                                        <>
-                                            {isAdmin && isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) ? 'Revalider' : 'Valider la leçon'} <ChevronRight size={20} />
-                                        </>
-                                    )}
-                                </button>
+                                {/* 🎯 "Valider la leçon" uniquement si c'est la DERNIÈRE leçon du cours */}
+                                {lessons.indexOf(activeLesson) === lessons.length - 1 && (
+                                    <div className="relative group/validation">
+                                        <button
+                                            onClick={handleFinishLesson}
+                                            disabled={isGuardActive || (!isAdmin && isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title))}
+                                            className={`px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition w-full sm:w-auto ${isGuardActive ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed' : (isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) && !isAdmin)
+                                                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white cursor-default'
+                                                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg hover:shadow-blue-500/25'
+                                                }`}
+                                        >
+                                            {(isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) && !isAdmin) ? (
+                                                <>
+                                                    <Check size={20} /> Terminée
+                                                </>
+                                            ) : (
+                                                <>
+                                                    {isGuardActive ? (
+                                                        <>
+                                                            <Clock size={18} className="animate-spin-slow" /> {timeLeft}s restantes
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            {isAdmin && isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) ? 'Revalider' : 'Valider la leçon'} <ChevronRight size={20} />
+                                                        </>
+                                                    )}
+                                                </>
+                                            )}
+                                        </button>
+
+                                        {isGuardActive && (
+                                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-white text-[10px] rounded-lg opacity-0 group-hover/validation:opacity-100 transition-opacity whitespace-nowrap border border-slate-700 shadow-xl pointer-events-none">
+                                                Prends le temps de lire ! Encore {timeLeft}s
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </motion.div>
                     ) : (

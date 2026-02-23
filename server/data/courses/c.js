@@ -11,29 +11,30 @@ const cCourses = [
         students: 8500,
         language: "c",
         isFree: true,
-        tags: ["c", "backend", "system", "débutant", "compilation"],
+        tags: ["c", "backend", "fondations", "débutant", "programmation"],
+        motivationVideo: "nKIu9yen5nc", // Code.org: What Most Schools Don't Teach
         chapters: [
             {
                 title: "Chapitre 1 : Philosophie du C et Chaine de Compilation",
-                description: "Le C n'est pas un langage, c'est un assembleur portable. Comprendre la traduction du code à l'exécutable.",
+                description: "Le premier pas dans l'univers de la programmation sérieuse.",
                 order: 1,
                 duration: "6 heures",
-                content: "Créé par Dennis Ritchie en 1972 pour réécrire UNIX, le C est l'épine dorsale du monde. Avant d'écrire 'Hello World', vous devez comprendre la Chaine de Compilation (GCC/Clang) : 1) Le Préprocesseur (#include, #define) qui copie-colle du texte, 2) Le Compilateur qui transforme le C en Assembleur, 3) L'Assembleur qui crée le code objet (binaire pur), 4) L'Éditeur de Liens (Linker) qui relie votre objet aux bibliothèques système (libc). En C, il n'y a pas de magie, pas de Garbage Collector. Si vous allouez de la mémoire, vous en êtes l'unique responsable.",
-                objectives: ["Comprendre les 4 étapes de compilation", "Distinguer le Header (.h) de l'implémentation (.c)", "Écrire, compiler et exécuter un programme robuste"],
+                content: "Bienvenue dans le monde du C ! Créé en 1972, ce langage est le père de presque tous les langages modernes (Python, JavaScript, Java). Apprendre le C, c'est comme apprendre la mécanique d'une voiture : une fois que vous savez comment le moteur fonctionne, vous pouvez conduire n'importe quel véhicule. \n\nDans ce chapitre, nous allons simplement apprendre à préparer notre environnement de travail, à écrire votre tout premier programme, et à comprendre comment l'ordinateur transforme votre texte en une application qui fonctionne. Pas de panique, nous irons étape par étape !",
+                objectives: ["Installer les outils nécessaires", "Écrire et lancer votre premier 'Hello World'", "Comprendre la structure d'un programme simple"],
                 exercises: [
                     {
-                        title: "Analyse du Préprocesseur",
-                        description: "Écrivez un programme avec une macro `#define MAX 100`. Comment utiliseriez-vous GCC pour voir uniquement le résultat de l'étape du préprocesseur (avant compilation) ?",
-                        difficulty: "Moyen",
-                        solution: "Il faut exécuter `gcc -E programme.c`. Cette commande s'arrête après le préprocesseur. Le code affiché montrera que toutes les occurrences de MAX ont été littéralement remplacées par 100.",
-                        hints: ["Cherchez le flag gcc utilisé spécifiquement pour le 'preprocessing' (--help)."]
+                        title: "Votre Premier Affichage",
+                        description: "Quelle est la fonction standard en C pour afficher du texte à l'écran (comme 'Hello World') ?",
+                        difficulty: "Facile",
+                        solution: "C'est la fonction `printf`. Exemple : `printf(\"Hello World\\n\");`. Elle est définie dans la bibliothèque `<stdio.h>`.",
+                        hints: ["Le 'f' de printf signifie 'formatted'."]
                     },
                     {
-                        title: "Le Linker et les Bibliothèques",
-                        description: "Pourquoi un programme utilisant `math.h` (ex: fonction `sqrt`) nécessite-t-il souvent de rajouter `-lm` à la compilation (ex: `gcc prog.c -lm`) ?",
-                        difficulty: "Difficile",
-                        solution: "Faire `#include <math.h>` ne fait que copier la *déclaration* (la signature) de la fonction pour rassurer le compilateur. Mais le vrai code binaire de `sqrt` est compilé dans une bibliothèque séparée (`libm`). Le `-lm` ordonne au Linker (Éditeur de Liens) de lier virtuellement `libm` à votre exécutable final.",
-                        hints: ["Différenciez la compilation (vérification syntaxique) de l'édition de liens (agrégation des binaires)."]
+                        title: "La Magie du Point d'Entrée",
+                        description: "Toute exécution d'un programme C commence par une fonction spéciale. Quel est son nom exact ?",
+                        difficulty: "Facile",
+                        solution: "Il s'agit de la fonction `main`. Sans elle, le compilateur ne sait pas par où commencer l'exécution.",
+                        hints: ["C'est un mot anglais qui signifie 'principal'."]
                     }
                 ],
                 resources: [
@@ -114,6 +115,8 @@ const cCourses = [
         id: "c-niveau-interm-diaire-l",
         title: "C - Niveau Intermédiaire : L'Enfer des Pointeurs",
         description: "L'essence même du C. Manipulez la mémoire vive de l'ordinateur à la volée. Apprenez l'allocation dynamique et le cauchemar des fuites de mémoire (Memory Leaks).",
+        longDesc: "Vous avez survécu aux bases. Maintenant, il est temps de voir comment le C manipule réellement les adresses physiques de votre ordinateur. \n\n* Programme de Maîtrise :\n1. Pointeurs & Adresses : Manipulez les cases mémoires directement.\n2. Allocation Dynamique : Maloc et Free, devenez le maître souverain de la RAM.\n3. Structures de Données : Créez vos propres types complexes comme des Pros.\n4. Arithmétique Bas Niveau : Comprenez pourquoi un tableau n'est qu'un pointeur déguisé.",
+        motivationVideo: "5W709SNAaoU", // Computerphile: Pointers
         category: "Programmation",
         level: "Intermédiaire",
         duration: "50 heures",
@@ -209,6 +212,8 @@ const cCourses = [
         id: "c-niveau-expert-mondiale-programmation-posix-threads-et-noyau",
         title: "C - Niveau Expert Mondiale : Programmation POSIX, Threads et Noyau",
         description: "Codez un OS, écrivez pour le réseau, forgez votre propre Multithreading de bas niveau. Un niveau réservé aux Ingénieurs de Systèmes Distribués Embaqués (IoT, Aérospatial).",
+        longDesc: "Le Nirvana de l'informatique. Ici, on ne parle plus de 'code', on parle de 'système'. Vous allez apprendre à faire dialoguer votre code avec le Noyau (Kernel) Linux directement. \n\n* Expertise Requise :\n1. Appels Systèmes (POSIX) : Oubliez la lib standard, parlez à l'OS en direct.\n2. Fork & Processus : Multipliez les instances de votre programme.\n3. Multithreading (Pthreads) : Faites tourner 1000 tâches en parallèle sans bug.\n4. Sockets Réseau : Codez votre propre serveur web à partir de rien.",
+        motivationVideo: "8_9T-3_H2S8", // Linus Torvalds on C vs C++
         category: "Programmation",
         level: "Avancé",
         duration: "70 heures",

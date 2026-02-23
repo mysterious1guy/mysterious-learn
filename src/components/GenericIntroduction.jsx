@@ -1,9 +1,76 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, BookOpen, Users, Clock, Award, Play } from 'lucide-react';
+import {
+    ArrowLeft, BookOpen, Users, Clock, Award, Play,
+    Zap, Shield, Database, AlertTriangle, Cpu, Link, Terminal as TerminalIcon
+} from 'lucide-react';
 
 const GenericIntroduction = ({ course, onStart, onBack }) => {
     if (!course) return null;
+
+    const renderSmartContent = (content) => {
+        if (!content) return null;
+
+        const getIcon = (title) => {
+            const t = title.toLowerCase();
+            if (t.includes('préprocesseur') || t.includes('compilateur')) return <Zap className="text-yellow-400" size={24} />;
+            if (t.includes('mémoire') || t.includes('ram')) return <Database className="text-blue-400" size={24} />;
+            if (t.includes('sécurité') || t.includes('faille')) return <Shield className="text-green-400" size={24} />;
+            if (t.includes('erreur') || t.includes('bug')) return <AlertTriangle className="text-red-400" size={24} />;
+            if (t.includes('assembleur') || t.includes('cpu')) return <Cpu className="text-purple-400" size={24} />;
+            if (t.includes('link') || t.includes('lien')) return <Link className="text-indigo-400" size={24} />;
+            return <TerminalIcon className="text-slate-400" size={24} />;
+        };
+
+        const listMarkerPattern = /(\d+[.)]|\u2022|\*)/;
+        const parts = content.split(listMarkerPattern);
+
+        if (parts.length > 2) {
+            const intro = parts[0];
+            const items = [];
+            for (let i = 1; i < parts.length; i += 2) {
+                items.push({ marker: parts[i], text: (parts[i + 1] || "").trim() });
+            }
+
+            return (
+                <div className="space-y-8">
+                    {intro && <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed italic">{intro}</p>}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 max-w-5xl mx-auto px-4">
+                        {items.map((item, idx) => {
+                            const [title, ...descParts] = item.text.split(':');
+                            const description = descParts.join(':').trim();
+
+                            return (
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className="bg-gray-800/40 backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 hover:bg-gray-800/60 transition-all text-left group relative overflow-hidden shadow-2xl"
+                                >
+                                    <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition-opacity">
+                                        {getIcon(title)}
+                                    </div>
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 font-black border border-blue-500/20 shadow-inner">
+                                            {item.marker}
+                                        </div>
+                                        <h4 className="font-black text-white text-xl group-hover:text-blue-400 transition-colors">{title}</h4>
+                                    </div>
+                                    <p className="text-gray-400 leading-relaxed font-medium">
+                                        {description || title}
+                                    </p>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </div>
+            );
+        }
+
+        return <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">{content}</p>;
+    };
 
     return (
         <div className={`min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white ${course.themeColor || 'from-blue-900 via-blue-800 to-blue-900'}`}>
@@ -43,15 +110,42 @@ const GenericIntroduction = ({ course, onStart, onBack }) => {
                     >
                         {course.name}
                     </motion.h1>
-                    <motion.p
+                    <motion.div
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="text-xl text-gray-300 max-w-2xl mx-auto"
+                        className="w-full"
                     >
-                        {course.longDesc}
-                    </motion.p>
+                        {renderSmartContent(course.longDesc || course.description)}
+                    </motion.div>
                 </div>
+
+                {/* Motivation Video Section */}
+                {course.motivationVideo && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="max-w-4xl mx-auto px-6 -mt-8 mb-20 group"
+                    >
+                        <div className="relative rounded-[2.5rem] overflow-hidden bg-gray-950 border border-white/5 shadow-2xl ring-1 ring-white/10 group-hover:ring-blue-500/30 transition-all duration-500">
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent z-10 pointer-events-none opacity-40"></div>
+                            <div className="aspect-video relative z-0">
+                                <iframe
+                                    className="w-full h-full"
+                                    src={`https://www.youtube.com/embed/${course.motivationVideo}?rel=0&modestbranding=1&controls=1`}
+                                    title="Motivational Video"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                        </div>
+                        <div className="text-center mt-6">
+                            <p className="text-xs font-black text-blue-400 uppercase tracking-[0.3em] font-mono">Pourquoi commencer aujourd'hui ?</p>
+                        </div>
+                    </motion.div>
+                )}
             </div>
 
             {/* Statistiques rapides */}

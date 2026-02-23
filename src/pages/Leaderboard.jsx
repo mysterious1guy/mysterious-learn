@@ -20,8 +20,9 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
 
                 setLeaders(data);
             } catch (err) {
-                console.error(err);
-                setError('Impossible de charger le classement pour le moment.');
+                console.error('❌ Leaderboard Error:', err);
+                const msg = err.response?.data?.message || err.message || 'Erreur inconnue';
+                setError(`Impossible de charger le classement : ${msg} (URL: ${API_URL}/users/leaderboard)`);
             } finally {
                 setLoading(false);
             }

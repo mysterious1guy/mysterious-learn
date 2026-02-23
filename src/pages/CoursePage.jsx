@@ -31,7 +31,8 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
     useEffect(() => {
         if (!course || !user || !progressions) return;
 
-        if (!course || !user || !progressions) return;
+        // 🚀 God-mode for Admins
+        if (user?.role === 'admin') return;
 
         let targetLevelToCheck = '';
         if (course.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
@@ -111,7 +112,51 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
     }
 
     if (showCustomTimeline) {
-        return <GenericCourse course={course} onClose={() => setShowCustomTimeline(false)} user={user} completedLessons={[]} onLessonComplete={() => { }} />;
+        const handleLessonComplete = async (courseId, lessonId) => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    setToast({ message: 'Session expirée. Reconnecte-toi.', type: 'error' });
+                    return;
+                }
+
+                const response = await fetch(`${API_URL}/users/progress`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        courseId,
+                        lessonId,
+                        status: 'completed'
+                    })
+                });
+
+                if (response.ok) {
+                    setToast({ message: 'Leçon validée ! Bravo 🚀', type: 'success' });
+                    fetchProgressions(); // Refresh UI
+                } else {
+                    const data = await response.json();
+                    setToast({ message: data.message || 'Erreur lors de la validation', type: 'error' });
+                }
+            } catch (error) {
+                console.error('Error validating lesson:', error);
+                setToast({ message: 'Erreur réseau', type: 'error' });
+            }
+        };
+
+        const completedForThisCourse = progressions?.[course.id]?.completedChapters || [];
+
+        return (
+            <GenericCourse
+                course={course}
+                onClose={() => setShowCustomTimeline(false)}
+                user={user}
+                completedLessons={completedForThisCourse}
+                onLessonComplete={handleLessonComplete}
+            />
+        );
     }
 
     return (
