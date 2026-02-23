@@ -1,5 +1,6 @@
 const mysqlCourses = [
     {
+        id: "mysql-niveau-d-butant-ma-triser-le-sql-fondamental",
         title: "MySQL - Niveau Débutant : Maîtriser le SQL Fondamental",
         description: "Apprenez le langage universel des données. De la création de tables aux requêtes de sélection complexes, forgez les bases de votre carrière de développeur backend.",
         category: "Data",
@@ -82,11 +83,12 @@ const mysqlCourses = [
                         hints: ["Chaque colonne sélectionnée qui n'est pas agrégée doit figurer dans le GROUP BY."]
                     }
                 ],
-                resources: [{ title: "SQL Aggregate Functions", type: "video", url: "https://www.youtube.com/embed/zbMHLJ0" }]
+                resources: []
             }
         ]
     },
     {
+        id: "mysql-niveau-interm-diaire-jointures-relations",
         title: "MySQL - Niveau Intermédiaire : Jointures & Relations",
         description: "Exploitez la puissance du relationnel. Apprenez à lier les tables entre elles, à garantir l'intégrité des données et à construire des schémas de données complexes.",
         category: "Data",
@@ -174,6 +176,7 @@ const mysqlCourses = [
         ]
     },
     {
+        id: "mysql-niveau-expert-mondiale-performance-administration",
         title: "MySQL - Niveau Expert Mondiale : Performance & Administration",
         description: "Devenez un Database Engineer (DBA). Maîtrisez les Transactions ACID, les Triggers, l'indexation B-Tree et l'optimisation de requêtes à haut trafic.",
         category: "Data",
@@ -220,7 +223,7 @@ const mysqlCourses = [
                         hints: ["Cherchez la colonne 'key' dans le résultat de l'EXPLAIN."]
                     }
                 ],
-                resources: [{ title: "MySQL Indexing: The Definitive Guide", type: "video", url: "https://www.youtube.com/embed/H2N4wz" }]
+                resources: []
             },
             {
                 title: "Chapitre 3 : Triggers (Déclencheurs) et Automatisation",

@@ -10,8 +10,9 @@ const PlacementTestModal = ({ isOpen, onClose, course, onUnlock }) => {
 
     if (!isOpen || !course) return null;
 
-    const getQuestionsForCourse = (courseName) => {
-        const isAvance = courseName.includes('Avancé');
+    const getQuestionsForCourse = (courseObj) => {
+        const courseNameStr = courseObj?.title || courseObj?.name || '';
+        const isAvance = courseNameStr.includes('Avancé');
 
         const genericInter = [
             { question: "Quelle est la complexité temporelle moyenne d'un algorithme de tri rapide (QuickSort) ?", options: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"], answer: 1 },
@@ -30,7 +31,7 @@ const PlacementTestModal = ({ isOpen, onClose, course, onUnlock }) => {
 
     const handleStart = (e) => {
         e.stopPropagation();
-        const questions = getQuestionsForCourse(course.name);
+        const questions = getQuestionsForCourse(course);
         setTestQuestions(questions);
         setCurrentQuestionIndex(0);
         setStep('testing');
@@ -94,7 +95,7 @@ const PlacementTestModal = ({ isOpen, onClose, course, onUnlock }) => {
                                 </div>
                                 <h3 className="text-2xl font-black text-white mb-2">Modalité d'Évaluation Rigoureuse</h3>
                                 <p className="text-slate-400 text-sm mb-8">
-                                    Prouve tes connaissances pour le cours <strong className="text-white">{course.name}</strong>. Une seule erreur aux questions techniques et l'accès te sera refusé.
+                                    Prouve tes connaissances pour le cours <strong className="text-white">{course?.title || course?.name}</strong>. Une seule erreur aux questions techniques et l'accès te sera refusé.
                                 </p>
                                 <button
                                     onClick={handleStart}

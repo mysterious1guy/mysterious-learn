@@ -1,5 +1,6 @@
 const bashCourses = [
     {
+        id: "bash-linux-niveau-d-butant-la-ligne-de-commande",
         title: "Bash Linux - Niveau Débutant : La Ligne de Commande",
         description: "Maîtrisez l'interface originelle de l'informatique. Abandonnez la souris, comprenez l'arborescence UNIX et devenez plus rapide que la lumière pour manipuler votre machine.",
         category: "DevOps",
@@ -62,7 +63,7 @@ const bashCourses = [
                         hints: ["Consultez le manuel `man mkdir`."]
                     }
                 ],
-                resources: [{ title: "Survival Linux Commands", type: "video", url: "https://www.youtube.com/embed/s3yQFJ-x6S0" }]
+                resources: []
             },
             {
                 title: "Chapitre 3 : Les Permissions UNIX et Utilisateurs (Chmod/Chown)",
@@ -103,6 +104,7 @@ const bashCourses = [
         ]
     },
     {
+        id: "bash-linux-niveau-interm-diaire-l",
         title: "Bash Linux - Niveau Intermédiaire : L'Automatisation Shell",
         description: "Arrêtez de retaper les mêmes commandes. Devenez Développeur Shell. Écrivez des scripts autonomes, des boucles conditionnelles et des variables d'environnement planétaires.",
         category: "DevOps",
@@ -204,6 +206,7 @@ const bashCourses = [
         ]
     },
     {
+        id: "bash-linux-niveau-expert-mondiale-sed-awk-et-devops-ninja",
         title: "Bash Linux - Niveau Expert Mondiale : Sed, Awk, et DevOps Ninja",
         description: "Transformez-vous en Architecte Cloud. Parsez des Giga-octets d'archives en nano-secondes via les expressions régulières. L'ingénierie absolue d'Amazon AWS.",
         category: "DevOps",
@@ -268,7 +271,7 @@ const bashCourses = [
                         hints: ["Field Separator Option et Print Variable 3."]
                     }
                 ],
-                resources: [{ title: "AWK Programming Tutorial", type: "video", url: "https://www.youtube.com/embed/9YOZmI-zWok" }]
+                resources: []
             },
             {
                 title: "Chapitre 4 : Scripting DevOps Avancé - Xargs, Curl, Jq",

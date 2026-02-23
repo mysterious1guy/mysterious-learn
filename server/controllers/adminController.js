@@ -300,6 +300,28 @@ const unlockCourseForUser = async (req, res) => {
   }
 };
 
+// @desc    Bloquer un cours pour un utilisateur spécifique
+// @route   POST /api/admin/users/:id/lock-course
+const lockCourseForUser = async (req, res) => {
+  try {
+    const { courseId } = req.body;
+    if (!courseId) return res.status(400).json({ message: 'Course ID requis' });
+
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'Utilisateur non trouvé' });
+
+    if (user.unlockedCourses && user.unlockedCourses.includes(courseId)) {
+      user.unlockedCourses = user.unlockedCourses.filter(id => id !== courseId);
+      await user.save();
+    }
+
+    res.json({ message: 'Cours bloqué avec succès', unlockedCourses: user.unlockedCourses });
+  } catch (error) {
+    console.error('Erreur blocage admin:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
 // @desc    Peupler brutalement la BDD avec les 36 cours officiels et détruire l'ancien contenu
 // @route   POST /api/admin/seed-courses
 const seedCourses = async (req, res) => {
@@ -329,6 +351,7 @@ module.exports = {
   toggleUserBan,
   updateUserLevel,
   unlockCourseForUser,
+  lockCourseForUser,
   getAllNotifications,
   deleteNotification,
   seedCourses

@@ -1,5 +1,6 @@
 const pythonCourses = [
     {
+        id: "python-niveau-d-butant-la-syntaxe-pur-e",
         title: "Python - Niveau Débutant : La Syntaxe Épurée",
         description: "Apprenez le langage le plus populaire au monde. Découvrez pourquoi sa syntaxe basée sur l'indentation force l'écriture d'un code propre, et maîtrisez les structures de données intégrées.",
         category: "Programmation",
@@ -94,6 +95,7 @@ const pythonCourses = [
         ]
     },
     {
+        id: "python-niveau-interm-diaire-oop-fonctions-avanc-es",
         title: "Python - Niveau Intermédiaire : OOP & Fonctions Avancées",
         description: "Devenez Ingénieur Logiciel. Modélisez votre code via l'Orienté Objet, les magies des décorateurs et les fonctions de traitement de première classe.",
         category: "Programmation",
@@ -140,7 +142,7 @@ const pythonCourses = [
                         hints: ["S'il y a des milliers de chiens, comment la fonction aboyer sait-elle QUEL nom aboyer ?"]
                     }
                 ],
-                resources: [{ title: "Explication de OOP self et Héritage", type: "video", url: "https://www.youtube.com/embed/ZDa-Z5JzLYM" }]
+                resources: []
             },
             {
                 title: "Chapitre 3 : Les Méthodes Dunder (Magic Methods)",
@@ -181,6 +183,7 @@ const pythonCourses = [
         ]
     },
     {
+        id: "python-niveau-expert-mondiale-concurrence-gil-et-g-n-ration",
         title: "Python - Niveau Expert Mondiale : Concurrence, GIL et Génération",
         description: "Contournez les limitations historiques du langage. Conquérez la Data-Science avec une efficacité mémoire totale et déchirez le GIL en Processus Indépendants.",
         category: "Programmation",
@@ -209,7 +212,7 @@ const pythonCourses = [
                         hints: ["La boucle while est bloquée par l'expulsion de la variable. Elle s'endort."]
                     }
                 ],
-                resources: [{ title: "Yield Concept via CallStack Paused Frames", type: "video", url: "https://www.youtube.com/embed/bD05uBecCGQ" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Contexte Sécure (With) et Gestionnaires d'État natifs (ContextManagers)",
@@ -245,7 +248,7 @@ const pythonCourses = [
                         hints: ["Qui a besoin d'utiliser activement la matière grise du processeur brut ?"]
                     }
                 ],
-                resources: [{ title: "Conférence PyCon : Understanding the GIL (par David Beazley)", type: "video", url: "https://www.youtube.com/embed/ObtSNY3A3sY" }]
+                resources: []
             },
             {
                 title: "Chapitre 4 : Asynchronisme Absolu — AsyncIO et Multiprocessing",

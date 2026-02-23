@@ -233,7 +233,19 @@ const login = async (req, res) => {
       });
     }
 
-    // Mettre à jour lastLogin
+    // Logic Streak
+    const today = new Date().setHours(0, 0, 0, 0);
+    const last = user.lastLogin ? new Date(user.lastLogin).setHours(0, 0, 0, 0) : 0;
+    const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 1) {
+      user.streak = (user.streak || 0) + 1;
+    } else if (diffDays > 1) {
+      user.streak = 1; // Reset streak
+    } else if (!user.streak) {
+      user.streak = 1; // In case it was 0 or undefined for old users
+    }
+
     user.lastLogin = Date.now();
     await user.save();
 
@@ -253,6 +265,9 @@ const login = async (req, res) => {
       preferences: user.preferences,
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],
+      xp: user.xp || 0,
+      streak: user.streak || 0,
+      completedQuests: user.completedQuests || [],
       token: generateToken(user._id),
     });
   } catch (err) {
@@ -311,6 +326,19 @@ const googleAuth = async (req, res) => {
       if (picture && !existingUser.avatar) {
         existingUser.avatar = picture;
       }
+
+      const today = new Date().setHours(0, 0, 0, 0);
+      const last = existingUser.lastLogin ? new Date(existingUser.lastLogin).setHours(0, 0, 0, 0) : 0;
+      const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        existingUser.streak = (existingUser.streak || 0) + 1;
+      } else if (diffDays > 1) {
+        existingUser.streak = 1;
+      } else if (!existingUser.streak) {
+        existingUser.streak = 1;
+      }
+      existingUser.lastLogin = Date.now();
       await existingUser.save();
     } else {
       existingUser = await User.create({
@@ -342,6 +370,9 @@ const googleAuth = async (req, res) => {
       preferences: existingUser.preferences,
       lastSelectedCourse: existingUser.lastSelectedCourse,
       favorites: existingUser.favorites || [],
+      xp: existingUser.xp || 0,
+      streak: existingUser.streak || 0,
+      completedQuests: existingUser.completedQuests || [],
       token: generateToken(existingUser._id),
     });
   } catch (err) {
@@ -397,6 +428,19 @@ const googleCallback = async (req, res) => {
         if (email === 'mouhamedfall@esp.sn') {
           user.role = 'admin';
         }
+
+        const today = new Date().setHours(0, 0, 0, 0);
+        const last = user.lastLogin ? new Date(user.lastLogin).setHours(0, 0, 0, 0) : 0;
+        const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+          user.streak = (user.streak || 0) + 1;
+        } else if (diffDays > 1) {
+          user.streak = 1;
+        } else if (!user.streak) {
+          user.streak = 1;
+        }
+        user.lastLogin = Date.now();
         await user.save();
       }
     } else {
@@ -533,6 +577,9 @@ const updateProfile = async (req, res) => {
       preferences: user.preferences,
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],
+      xp: user.xp || 0,
+      streak: user.streak || 0,
+      completedQuests: user.completedQuests || [],
       token: generateToken(user._id),
     });
   } catch (err) {

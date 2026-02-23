@@ -1,5 +1,6 @@
 const phpCourses = [
     {
+        id: "php-niveau-d-butant-la-dynamique-du-web",
         title: "PHP - Niveau Débutant : La Dynamique du Web",
         description: "Découvrez le langage qui propulse 80% d'internet. Apprenez à transformer des pages HTML statiques en applications web vivantes et interactives.",
         category: "Programmation",
@@ -87,6 +88,7 @@ const phpCourses = [
         ]
     },
     {
+        id: "php-niveau-interm-diaire-base-de-donn-es-sessions",
         title: "PHP - Niveau Intermédiaire : Base de Données & Sessions",
         description: "Passez au backend professionnel. Connectez-vous à MySQL avec PDO, gérez l'authentification des utilisateurs et structurez votre code en MVC.",
         category: "Programmation",
@@ -115,7 +117,7 @@ const phpCourses = [
                         hints: ["Le marqueur '?' ou les paramètres nommés (:id) sont obligatoires pour la sécurité."]
                     }
                 ],
-                resources: [{ title: "PHP PDO Tutorial", type: "video", url: "https://www.youtube.com/embed/mwaYpL" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Sessions, Cookies et Authentification",
@@ -174,6 +176,7 @@ const phpCourses = [
         ]
     },
     {
+        id: "php-niveau-expert-mondiale-programmation-orient-e-objet-frameworks",
         title: "PHP - Niveau Expert Mondiale : Programmation Orientée Objet & Frameworks",
         description: "Maîtrisez le PHP moderne de 2024. Plongez dans la POO avancée, les Namespaces, Composer, et les standards PSR utilisés par les ingénieurs Facebook et Slack.",
         category: "Programmation",
@@ -202,7 +205,7 @@ const phpCourses = [
                         hints: ["L'interface force les développeurs à suivre une structure commune."]
                     }
                 ],
-                resources: [{ title: "PHP OOP Full Course", type: "video", url: "https://www.youtube.com/embed/Z" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Namespaces, Autoloading et Composer",

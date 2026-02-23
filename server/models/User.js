@@ -134,6 +134,25 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    // Gamification
+    xp: {
+      type: Number,
+      default: 0,
+    },
+    streak: {
+      type: Number,
+      default: 0,
+    },
+    completedQuests: [{
+      projectId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project'
+      },
+      completedAt: {
+        type: Date,
+        default: Date.now
+      }
+    }],
     // Personalization
     programmingLevel: {
       type: String,

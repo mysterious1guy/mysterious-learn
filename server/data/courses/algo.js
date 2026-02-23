@@ -1,5 +1,6 @@
 const algoCourses = [
     {
+        id: "algorithmique-niveau-d-butant",
         title: "Algorithmique - Niveau Débutant",
         description: "Plongez dans les bases absolues de l'algorithmique. Maîtrisez la séquentialité, la mémoire, les décisions et les itérations. Ce cours fondateur est conçu avec la plus grande rigueur académique pour forger votre esprit analytique.",
         category: "Théorie",
@@ -36,7 +37,6 @@ const algoCourses = [
                     }
                 ],
                 resources: [
-                    { title: "Pensée Computationnelle (MIT)", type: "video", url: "https://www.youtube.com/embed/6iZiqQZBQNY" },
                     { title: "Histoire de l'Algorithmique par Al-Khwarizmi", type: "article", url: "https://fr.wikipedia.org/wiki/Al-Khw%C3%A2rizm%C3%AE" }
                 ]
             },
@@ -63,9 +63,7 @@ const algoCourses = [
                         hints: ["Pensez à la différence entre concaténation et addition mathématique."]
                     }
                 ],
-                resources: [
-                    { title: "Architecture Mémoire von Neumann", type: "video", url: "https://www.youtube.com/embed/ZiaJ0tBwEw0" }
-                ]
+                resources: []
             },
             {
                 title: "Chapitre 3 : Structures de Contrôle et Algèbre de Boole",
@@ -90,9 +88,7 @@ const algoCourses = [
                         hints: ["Une année divisible par 4 est bissextile, SAUF si elle l'est par 100, AUQUEL CAS elle doit aussi l'être par 400."]
                     }
                 ],
-                resources: [
-                    { title: "Algèbre Mathématique et Logique Booléenne", type: "video", url: "https://www.youtube.com/embed/0B2k5E4bZJ4" }
-                ]
+                resources: []
             },
             {
                 title: "Chapitre 4 : La Puissance de l'Itération (Boucles)",
@@ -117,13 +113,12 @@ const algoCourses = [
                         hints: ["Il n'est pas nécessaire de tester jusqu'à X. S'arrêter à la racine carrée de X (diviseur * diviseur <= X) est la preuve mathématique d'optimisation."]
                     }
                 ],
-                resources: [
-                    { title: "Invariants et Terminaison des Boucles", type: "video", url: "https://www.youtube.com/embed/9Bv_A0M2M1Y" }
-                ]
+                resources: []
             }
         ]
     },
     {
+        id: "algorithmique-niveau-interm-diaire",
         title: "Algorithmique - Niveau Intermédiaire",
         description: "Élevez votre niveau. L'heure n'est plus à la syntaxe, mais à la structuration avancée des données et à la modularisation via les Fonctions. Ce module est le rempart pour devenir un vrai développeur complet.",
         category: "Théorie",
@@ -159,7 +154,7 @@ const algoCourses = [
                         hints: ["Si j'efface la case 3, je dois y mettre le contenu de la case 4, et ainsi de suite."]
                     }
                 ],
-                resources: [{ title: "Mémoire Contiguë : Comment ça marche ?", type: "video", url: "https://www.youtube.com/embed/5mFpPbcXgB0" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Sous-programmes, Fonctions et Procédures (DRY)",
@@ -177,7 +172,7 @@ const algoCourses = [
                         hints: ["Copier un tableau de 1 Gigaoctet à chaque appel ralentirait le PC."]
                     }
                 ],
-                resources: [{ title: "Fonctions, Scopes et Call Stack", type: "video", url: "https://www.youtube.com/embed/8vOaO9I8WJU" }]
+                resources: []
             },
             {
                 title: "Chapitre 3 : Les Algorithmes de Tri Quadratiques (O(n²))",
@@ -195,7 +190,7 @@ const algoCourses = [
                         hints: ["On sauvegarde l'élément actuel (cle). On décale vers la droite tous les éléments plus grands que 'cle', puis on l'insère dans le vide créé."]
                     }
                 ],
-                resources: [{ title: "Visualisation des Tris Quadratiques", type: "video", url: "https://www.youtube.com/embed/kgBjXUE_Nwc" }]
+                resources: []
             },
             {
                 title: "Chapitre 4 : Manipulation de Chaînes de Caractères (Strings)",
@@ -218,6 +213,7 @@ const algoCourses = [
         ]
     },
     {
+        id: "algorithmique-niveau-expert-mondiale-avanc",
         title: "Algorithmique - Niveau Expert Mondiale (Avancé)",
         description: "Bienvenue dans l'antichambre des géants de la Tech (FAANG). Ce module terminal enseigne les fondations qui distinguent les codeurs ordinaires des ingénieurs Senior. O, Arbres, Graphes, Backtracking et Programmation Dynamique.",
         category: "Théorie",
@@ -246,7 +242,7 @@ const algoCourses = [
                         hints: ["Pensez à l'impact des créations de nouveaux tableaux à chaque division du divide and conquer."]
                     }
                 ],
-                resources: [{ title: "Conférence Mathématique : Big O", type: "video", url: "https://www.youtube.com/embed/v4cd1O4zkGw" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Divide and Conquer & La Recherche Dichotomique",
@@ -264,7 +260,7 @@ const algoCourses = [
                         hints: ["Rappelez-vous que 'debut + fin' peut produire un nombre plus grand que les 32 bits de la machine si le tableau est massif. Pensez autrement..."]
                     }
                 ],
-                resources: [{ title: "L'art de la Binary Search", type: "video", url: "https://www.youtube.com/embed/P3YcAW7jM" }]
+                resources: []
             },
             {
                 title: "Chapitre 3 : Récursion, Call Stack et Tris Avancés (Quick Sort & Merge Sort)",
@@ -282,7 +278,7 @@ const algoCourses = [
                         hints: ["Imaginez devoir zipper deux piles de cartes ordonnées. Regardez la première de chaque, prenez la plus petite."]
                     }
                 ],
-                resources: [{ title: "L'Invention du Quicksort", type: "video", url: "https://www.youtube.com/embed/Hoixgm4-P4M" }]
+                resources: []
             },
             {
                 title: "Chapitre 4 : Data Structures Ultimates — Pointeurs, Listes, Arbres et Graphes",
@@ -307,7 +303,7 @@ const algoCourses = [
                         hints: ["Tout doit être triable et recherchable naturellement de chaque côté de la balance."]
                     }
                 ],
-                resources: [{ title: "Réseaux : De Dijkstra à Google Maps", type: "video", url: "https://www.youtube.com/embed/GazC3A4OQTE" }]
+                resources: []
             },
             {
                 title: "Chapitre 5 : Programmation Dynamique (Dynamic Programming) et Backtracking",
@@ -325,7 +321,7 @@ const algoCourses = [
                         hints: ["Réfléchissez au nombre de fois où Fib(5) sera appelé lors du calcul récursif de Fib(8). C'est vertigineux."]
                     }
                 ],
-                resources: [{ title: "Introduction Bellman & Dynamic Programming", type: "video", url: "https://www.youtube.com/embed/vYquumk4nWw" }]
+                resources: []
             }
         ]
     }

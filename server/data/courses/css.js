@@ -1,5 +1,6 @@
 const cssCourses = [
     {
+        id: "css-niveau-d-butant",
         title: "CSS - Niveau Débutant",
         description: "Peignez et sculptez le Web. Comprenez la cascade, l'héritage, et le modèle de boîte fondamental pour donner vie à vos structures HTML.",
         category: "Web",
@@ -109,6 +110,7 @@ const cssCourses = [
         ]
     },
     {
+        id: "css-niveau-interm-diaire",
         title: "CSS - Niveau Intermédiaire",
         description: "Orchestrez l'architecture et la structuration géométrique. Maîtrisez Flexbox, les positionnements hors-flux et l'architecture CSS OOCSS/BEM.",
         category: "Web",
@@ -212,6 +214,7 @@ const cssCourses = [
         ]
     },
     {
+        id: "css-niveau-expert-avanc",
         title: "CSS - Niveau Expert (Avancé)",
         description: "Devenez un Ingénieur de Rendu CSS. Maîtrisez la grille mathématique CSS Grid, l'interactivité dynamique via Keyframes 3D, Custom Properties pour les thèmes OS, et les requêtes réactives modernes.",
         category: "Web",

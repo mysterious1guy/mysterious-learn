@@ -5,13 +5,20 @@ import MysteriousGeometricLogo from '../MysteriousGeometricLogo';
 
 const Dashboard = ({ user, courses, favorites, onSelectCourse, toggleFavorite, progressions, lastSelectedCourse, setToast }) => {
 
-    // Calcul du niveau global
-    const totalProgress = Object.values(progressions || {}).reduce((acc, curr) => acc + curr.progress, 0);
-    const userLevel = Math.floor(totalProgress / 100) + 1;
+    // Gamification RPG
+    const fallbackXp = Object.values(progressions || {}).reduce((acc, curr) => acc + curr.progress, 0) * 5; // 100% = 500XP
+    const userXp = user?.xp || fallbackXp;
+    const userLevel = Math.floor(userXp / 500) + 1; // 500 XP per level
+    const currentLevelXp = userXp % 500;
+    const nextLevelXp = 500;
+    const xpPercentage = Math.round((currentLevelXp / nextLevelXp) * 100);
+    const userStreak = user?.streak || 0;
 
     // Helper to check if a course is unlocked
     const isCourseUnlocked = (item) => {
         if (!item) return true;
+        // L'Admin a toujours accès à tout
+        if (user?.role === 'admin') return true;
         // Tous les débutants sont débloqués par défaut
         if (item.level === 'Débutant') return true;
 
@@ -121,19 +128,19 @@ const Dashboard = ({ user, courses, favorites, onSelectCourse, toggleFavorite, p
                             </div>
 
                             <div className="space-y-1 mb-6 md:mb-8">
-                                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black">Série actuelle</p>
-                                <p className="text-3xl md:text-4xl font-black text-white italic tracking-tighter">1 JOUR</p>
+                                <p className="text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black">Série active</p>
+                                <p className="text-3xl md:text-4xl font-black text-white italic tracking-tighter">{userStreak} JOUR{userStreak > 1 ? 'S' : ''}</p>
                             </div>
 
                             <div className="w-full space-y-4">
                                 <div className="flex justify-between items-end">
-                                    <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Objectif</span>
-                                    <span className="text-orange-400 font-black text-base md:text-lg">100%</span>
+                                    <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Niveau {userLevel}</span>
+                                    <span className="text-orange-400 font-black text-xs md:text-sm">{currentLevelXp} / {nextLevelXp} XP</span>
                                 </div>
                                 <div className="h-2.5 bg-gray-800 rounded-full overflow-hidden p-0.5 border border-white/5">
                                     <motion.div
                                         initial={{ width: 0 }}
-                                        animate={{ width: '100%' }}
+                                        animate={{ width: `${xpPercentage}%` }}
                                         transition={{ duration: 1, delay: 0.5 }}
                                         className="h-full bg-gradient-to-r from-orange-500 via-red-500 to-orange-500 rounded-full"
                                     />

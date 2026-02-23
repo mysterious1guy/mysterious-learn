@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, AlertCircle, Play, ChevronRight, Terminal } from 'lucide-react';
 import TerminalWindow from './TerminalWindow';
+import CodeEditor from './CodeEditor';
 
 const InteractiveModule = ({ moduleData, onComplete }) => {
     const [completed, setCompleted] = useState(false);
@@ -140,32 +141,12 @@ const InteractiveModule = ({ moduleData, onComplete }) => {
 
     // --- RENDU CODE ---
     if (moduleData.type === 'code') {
-        const [code, setCode] = useState(moduleData.initialCode);
         const [testsPassed, setTestsPassed] = useState(false);
-        const [showError, setShowError] = useState(false);
 
-        const handleRunCode = () => {
-            try {
-                const regex = new RegExp(moduleData.testRegex);
-                if (regex.test(code)) {
-                    setTestsPassed(true);
-                    setShowError(false);
-                    setCompleted(true);
-                    setTimeout(() => onComplete(), 1500);
-                } else {
-                    setShowError(true);
-                    setTestsPassed(false);
-                    // Notifier l'IA d'une erreur de code
-                    window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                        detail: { text: "Ton code ne compile pas comme prévu. Vérifie ta syntaxe et les conditions !" }
-                    }));
-                }
-            } catch (e) {
-                setShowError(true);
-                window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                    detail: { text: "Une erreur critique s'est glissée dans ton code. Inspecte attentivement tes lignes." }
-                }));
-            }
+        const handleRunSuccess = (codeSource, output) => {
+            setTestsPassed(true);
+            setCompleted(true);
+            setTimeout(() => onComplete(), 2000);
         };
 
         return (
@@ -175,41 +156,17 @@ const InteractiveModule = ({ moduleData, onComplete }) => {
                         <span className="w-8 h-8 rounded bg-blue-500/20 text-blue-400 flex items-center justify-center font-mono text-sm">&lt;&gt;</span>
                         {moduleData.title}
                     </h3>
-                    <p className="text-slate-300">{moduleData.description}</p>
+                    <p className="text-slate-300 leading-relaxed">{moduleData.description}</p>
                 </div>
 
-                <TerminalWindow title={`${moduleData.language || 'javascript'} - Practice Mode`} showCursor={false}>
-                    <textarea
-                        value={code}
-                        onChange={(e) => setCode(e.target.value)}
-                        className="w-full h-48 bg-transparent text-blue-400 font-mono p-2 focus:outline-none resize-none"
-                        spellCheck="false"
-                    />
-                </TerminalWindow>
-
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={handleRunCode}
-                        disabled={testsPassed}
-                        className="px-6 py-3 bg-green-600 disabled:bg-slate-800 hover:bg-green-500 text-white font-medium rounded-xl transition flex items-center gap-2"
-                    >
-                        <Play className="w-4 h-4" /> Exécuter le code
-                    </button>
-                </div>
-
-                {testsPassed && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center gap-3">
-                        <CheckCircle className="w-5 h-5 text-green-400 shrink-0" />
-                        <span className="text-green-400">Tests réussis ! Excellent travail.</span>
-                    </motion.div>
-                )}
-
-                {showError && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-center gap-3">
-                        <AlertCircle className="w-5 h-5 text-red-400 shrink-0" />
-                        <span className="text-red-400">Le code ne correspond pas au résultat attendu. Essaie encore !</span>
-                    </motion.div>
-                )}
+                {/* Integration of the new CodeEditor with Piston API */}
+                <CodeEditor
+                    initialCode={moduleData.initialCode}
+                    language={moduleData.language || 'javascript'}
+                    expectedRegex={moduleData.testRegex}
+                    onRunSuccess={handleRunSuccess}
+                    disabled={testsPassed}
+                />
             </div>
         );
     }

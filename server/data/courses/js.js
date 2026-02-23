@@ -1,5 +1,6 @@
 const jsCourses = [
     {
+        id: "javascript-niveau-d-butant",
         title: "JavaScript - Niveau Débutant",
         description: "Le Mouvement et la Logique. Apprenez le seul langage exécutable nativement par tous les navigateurs web. Maîtrisez la syntaxe moderne ES6+ et les fondements algorithmiques.",
         category: "Web",
@@ -109,6 +110,7 @@ const jsCourses = [
         ]
     },
     {
+        id: "javascript-niveau-interm-diaire",
         title: "JavaScript - Niveau Intermédiaire",
         description: "L'ingénieur du Document. Parcourez l'arbre DOM, capturez des événements, manipulez des Objets complexes et maîtrisez les méthodes de Tableaux de Haut Niveau (Map, Filter, Reduce).",
         category: "Web",
@@ -212,6 +214,7 @@ const jsCourses = [
         ]
     },
     {
+        id: "javascript-niveau-expert-avanc",
         title: "JavaScript - Niveau Expert (Avancé)",
         description: "L'Ingénierie Systémique asynchrone absolue. Maîtrisez la Single-Thread Event Loop, les requêtes HTTP (Fetch, JWT Authorization), la POO via Classes et le drame matériel Closures.",
         category: "Web",

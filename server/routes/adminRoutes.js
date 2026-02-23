@@ -10,6 +10,7 @@ const {
   toggleUserBan,
   updateUserLevel,
   unlockCourseForUser,
+  lockCourseForUser,
   getAllNotifications,
   deleteNotification,
   seedCourses
@@ -26,6 +27,7 @@ router.put('/users/:id/role', ownerAdmin, updateUserRole);
 router.put('/users/:id/ban', ownerAdmin, toggleUserBan);
 router.put('/users/:id/level', ownerAdmin, updateUserLevel);
 router.put('/users/:id/unlock-course', ownerAdmin, unlockCourseForUser);
+router.put('/users/:id/lock-course', ownerAdmin, lockCourseForUser);
 
 // Routes communications (Owner Only for sending/deleting)
 router.post('/send-email', ownerAdmin, sendEmailToUsers);

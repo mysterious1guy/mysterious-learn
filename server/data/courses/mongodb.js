@@ -1,5 +1,6 @@
 const mongodbCourses = [
     {
+        id: "mongodb-niveau-d-butant-la-r-volution-nosql",
         title: "MongoDB - Niveau Débutant : La Révolution NoSQL",
         description: "Découvrez le monde NoSQL. Apprenez à manipuler une base de données orientée documents avec une souplesse totale face aux contraintes du SQL classique.",
         category: "Data",
@@ -28,7 +29,7 @@ const mongodbCourses = [
                         hints: ["Les documents sont regroupés dans des collections."]
                     }
                 ],
-                resources: [{ title: "What is MongoDB?", type: "video", url: "https://www.youtube.com/embed/E-1xI85Z" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Opérations CRUD de base (Insert & Find)",
@@ -87,6 +88,7 @@ const mongodbCourses = [
         ]
     },
     {
+        id: "mongodb-niveau-interm-diaire-mongoose-mod-lisation",
         title: "MongoDB - Niveau Intermédiaire : Mongoose & Modélisation",
         description: "Mettez de l'ordre dans le NoSQL. Apprenez à utiliser Mongoose pour structurer vos applications Node.js et à optimiser vos recherches via les index.",
         category: "Data",
@@ -174,6 +176,7 @@ const mongodbCourses = [
         ]
     },
     {
+        id: "mongodb-niveau-expert-mondiale-aggregation-architectures",
         title: "MongoDB - Niveau Expert Mondiale : Aggregation & Architectures",
         description: "Maîtrisez le pipeline d'agrégation, le traitement massif de données et la haute disponibilité. Devenez un expert du Big Data et des clusters distribués.",
         category: "Data",
@@ -202,7 +205,7 @@ const mongodbCourses = [
                         hints: ["Utilisez le préfixe $ pour référencer un nom de champ dans une étape d'agrégation."]
                     }
                 ],
-                resources: [{ title: "MongoDB Aggregation by Example", type: "video", url: "https://www.youtube.com/embed/Kk6Er0c" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Indexation Avancée (Multikey, Text, TTL)",

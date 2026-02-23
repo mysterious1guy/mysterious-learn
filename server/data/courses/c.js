@@ -1,5 +1,6 @@
 const cCourses = [
     {
+        id: "c-niveau-d-butant-les-fondations-syst-me",
         title: "C - Niveau Débutant : Les Fondations Système",
         description: "Plongez dans le langage le plus fondamental de l'informatique moderne. Comprenez la compilation, les types natifs, et la rudesse de la gestion de mémoire sans filet de sécurité.",
         category: "Programmation",
@@ -62,7 +63,7 @@ const cCourses = [
                         hints: ["En C, le type de sortie dépend avant tout du type des membres de l'opération, pas du type de destination de l'affectation."]
                     }
                 ],
-                resources: [{ title: "Limites des Tyes en C", type: "video", url: "https://www.youtube.com/embed/5mFpPbcXgB0" }]
+                resources: []
             },
             {
                 title: "Chapitre 3 : Structuration, Boucles et Sécurité des Saisies",
@@ -110,6 +111,7 @@ const cCourses = [
         ]
     },
     {
+        id: "c-niveau-interm-diaire-l",
         title: "C - Niveau Intermédiaire : L'Enfer des Pointeurs",
         description: "L'essence même du C. Manipulez la mémoire vive de l'ordinateur à la volée. Apprenez l'allocation dynamique et le cauchemar des fuites de mémoire (Memory Leaks).",
         category: "Programmation",
@@ -138,7 +140,7 @@ const cCourses = [
                         hints: ["On vous donne les clés de deux maisons (les adresses pointer). Utilisez `*` pour entrer dedans et interchanger les meubles."]
                     }
                 ],
-                resources: [{ title: "Comprendre les Pointers (Harvard CS50)", type: "video", url: "https://www.youtube.com/embed/XISnO2YhnsY" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Arithmétique des Pointeurs et Tableaux Réels",
@@ -181,7 +183,7 @@ const cCourses = [
                         hints: ["Que se passe-t-il quand la nouvelle valeur écrase les données du prochain acheteur de cet espace RAM ?"]
                     }
                 ],
-                resources: [{ title: "Memory Leak expliqué via Valgrind", type: "video", url: "https://www.youtube.com/embed/b-2oI2P24bQ" }]
+                resources: []
             },
             {
                 title: "Chapitre 4 : Structuration Complexes et Pointeurs de Fonctions",
@@ -204,6 +206,7 @@ const cCourses = [
         ]
     },
     {
+        id: "c-niveau-expert-mondiale-programmation-posix-threads-et-noyau",
         title: "C - Niveau Expert Mondiale : Programmation POSIX, Threads et Noyau",
         description: "Codez un OS, écrivez pour le réseau, forgez votre propre Multithreading de bas niveau. Un niveau réservé aux Ingénieurs de Systèmes Distribués Embaqués (IoT, Aérospatial).",
         category: "Programmation",
@@ -250,7 +253,7 @@ const cCourses = [
                         hints: ["Pensez comme l'Hydre de Lerne. Chaque tête (process) coupe des branches qui coupent des branches récursivement."]
                     }
                 ],
-                resources: [{ title: "Le Modèle des Process IPC UNIX", type: "video", url: "https://www.youtube.com/embed/xVSPv-9NJJE" }]
+                resources: []
             },
             {
                 title: "Chapitre 3 : Multithreading, Concurrence Critique et Mutexes (Pthreads)",
@@ -268,7 +271,7 @@ const cCourses = [
                         hints: ["Le modèle de l'économie circulaire fermée et dépendante."]
                     }
                 ],
-                resources: [{ title: "Dîner des Philosophes de Dijkstra (Concurrence Pthread)", type: "video", url: "https://www.youtube.com/embed/Z0o4Sih3s1g" }]
+                resources: []
             },
             {
                 title: "Chapitre 4 : Implémentation Avancée Sockets C (Réseau Bas Niveau)",

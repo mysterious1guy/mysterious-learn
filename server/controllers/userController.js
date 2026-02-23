@@ -12,6 +12,23 @@ const getUsers = async (req, res) => {
   }
 };
 
+// @desc    Obtenir le classement des utilisateurs (Top 10)
+// @route   GET /api/users/leaderboard
+const getLeaderboard = async (req, res) => {
+  try {
+    // Only fetch non-admin users, sorted by XP and Streak
+    const topUsers = await User.find({ role: 'user' })
+      .sort({ xp: -1, streak: -1 })
+      .limit(10)
+      .select('firstName lastName name avatar xp streak programmingLevel joinedAt');
+
+    res.json(topUsers);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
 const { sendEmail } = require('../utils/emailService');
 
 // @desc    Supprimer son propre compte
@@ -65,4 +82,4 @@ const updateProgrammingLevel = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, deleteUserProfile, updateProgrammingLevel };
+module.exports = { getUsers, deleteUserProfile, updateProgrammingLevel, getLeaderboard };

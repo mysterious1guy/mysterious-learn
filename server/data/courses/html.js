@@ -1,5 +1,6 @@
 const htmlCourses = [
     {
+        id: "html-niveau-d-butant",
         title: "HTML - Niveau Débutant",
         description: "L'ossature fondamentale du Web. Maîtrisez la syntaxe, la sémantique de base et l'imbrication des balises pour construire des documents robustes.",
         category: "Web",
@@ -109,6 +110,7 @@ const htmlCourses = [
         ]
     },
     {
+        id: "html-niveau-interm-diaire",
         title: "HTML - Niveau Intermédiaire",
         description: "L'ingénierie de la page Web. Sémantique HTML5, structures tabulaires, isolation et formulaires transactionnels natifs.",
         category: "Web",
@@ -212,6 +214,7 @@ const htmlCourses = [
         ]
     },
     {
+        id: "html-niveau-expert-avanc",
         title: "HTML - Niveau Expert (Avancé)",
         description: "L'ingénierie Frontend Absolue. Optimisation SEO, A11Y ARIA Poussée, Validation complexe et APIs HTML5 natives.",
         category: "Web",

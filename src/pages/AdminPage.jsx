@@ -1439,7 +1439,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     {(user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn') && (
                       <div className="col-span-2 bg-purple-600/5 dark:bg-purple-600/10 p-6 rounded-3xl border border-purple-500/10 dark:border-purple-500/20">
                         <p className="text-[10px] font-black uppercase text-purple-600 dark:text-purple-400 mb-3">Déblocage Force Brute (SuperAdmin)</p>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col gap-4">
                           <select
                             className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 outline-none focus:border-purple-500"
                             onChange={async (e) => {
@@ -1452,6 +1452,22 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                           >
                             <option value="" disabled>Sélectionner un cours à débloquer...</option>
                             {courses.filter(c => !selectedUserStats.user?.unlockedCourses?.includes(c._id || c.id)).map(c => (
+                              <option key={c._id || c.id} value={c._id || c.id}>{c.title} ({c.level})</option>
+                            ))}
+                          </select>
+
+                          <select
+                            className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 dark:text-slate-300 outline-none focus:border-red-500"
+                            onChange={async (e) => {
+                              if (e.target.value) {
+                                await handleLockCourseForUser(selectedUserStats.user?._id, e.target.value);
+                                e.target.value = "";
+                              }
+                            }}
+                            defaultValue=""
+                          >
+                            <option value="" disabled>Sélectionner un cours à re-bloquer...</option>
+                            {courses.filter(c => selectedUserStats.user?.unlockedCourses?.includes(c._id || c.id)).map(c => (
                               <option key={c._id || c.id} value={c._id || c.id}>{c.title} ({c.level})</option>
                             ))}
                           </select>

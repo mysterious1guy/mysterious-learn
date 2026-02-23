@@ -1,5 +1,6 @@
 const reactCourses = [
     {
+        id: "reactjs-niveau-d-butant-les-bases-de-l",
         title: "ReactJS - Niveau Débutant : Les Bases de l'UI Moderne",
         description: "Apprenez la bibliothèque front-end N°1 mondiale. Maîtrisez le JSX, les composants et le flux de données unidirectionnel pour créer des interfaces ultra-rapides.",
         category: "Web",
@@ -87,6 +88,7 @@ const reactCourses = [
         ]
     },
     {
+        id: "reactjs-niveau-interm-diaire-cycle-de-vie-hooks",
         title: "ReactJS - Niveau Intermédiaire : Cycle de Vie & Hooks",
         description: "Allez au-delà de l'affichage passif. Maîtrisez les effets secondaires, les formulaires complexes et la communication avec les APIs externes.",
         category: "Web",
@@ -174,6 +176,7 @@ const reactCourses = [
         ]
     },
     {
+        id: "reactjs-niveau-expert-mondiale-performance-architecture-scalable",
         title: "ReactJS - Niveau Expert Mondiale : Performance & Architecture Scalable",
         description: "Devenez un architecte frontend. Maîtrisez le partage d'état global (Context/Redux), l'optimisation des rendus, les hooks personnalisés et les architectures d'entreprise.",
         category: "Web",

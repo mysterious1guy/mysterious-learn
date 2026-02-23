@@ -1,5 +1,6 @@
 const Course = require('../models/Course');
 const Progress = require('../models/Progress');
+const User = require('../models/User');
 const {
   getAllCoursesFallback,
   getCourseByIdFallback,
@@ -142,8 +143,21 @@ const updateProgress = async (req, res) => {
     }
 
     // Si la leçon n'est pas déjà dans la liste, on l'ajoute
+    let isNewCompletion = false;
     if (!progress.completedLessons.includes(lessonId)) {
       progress.completedLessons.push(lessonId);
+      isNewCompletion = true;
+    }
+
+    // Donner de l'XP à l'utilisateur si c'est une nouvelle complétion (ex: 50 XP par leçon)
+    let currentXp = 0;
+    if (isNewCompletion) {
+      const user = await User.findById(req.user._id);
+      if (user) {
+        user.xp = (user.xp || 0) + 50;
+        await user.save();
+        currentXp = user.xp;
+      }
     }
 
     // Calcul du pourcentage (on suppose que le nombre total de leçons est connu côté front, mais on peut aussi le stocker dans le document)
@@ -156,7 +170,11 @@ const updateProgress = async (req, res) => {
     progress.lastAccessed = Date.now();
     await progress.save();
 
-    res.json(progress);
+    res.json({
+      ...progress.toObject(),
+      xpGained: isNewCompletion ? 50 : 0,
+      totalXp: currentXp
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Erreur serveur' });

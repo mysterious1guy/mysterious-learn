@@ -1,5 +1,6 @@
 const cppCourses = [
     {
+        id: "c-niveau-d-butant-les-fondations-de-fer",
         title: "C++ - Niveau Débutant : Les Fondations de Fer",
         description: "Maîtrisez le langage des systèmes hautes performances. Comprenez la mémoire, la compilation native et la syntaxe C++ moderne (C++11 à C++20).",
         category: "Programmation",
@@ -28,7 +29,7 @@ const cppCourses = [
                         hints: ["Utilisez std::hex pour modifier le comportement du flux cout."]
                     }
                 ],
-                resources: [{ title: "The Build Process in C++", type: "video", url: "https://www.youtube.com/embed/PvYV7D-D_L8" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Types Primitifs, Références et le Typage 'auto'",
@@ -82,11 +83,12 @@ const cppCourses = [
                         hints: ["Passer par référence constante évite une copie lourde tout en garantissant que le vecteur ne sera pas modifié."]
                     }
                 ],
-                resources: [{ title: "Introduction to std::vector", type: "video", url: "https://www.youtube.com/embed/PocJ5jP-3JM" }]
+                resources: []
             }
         ]
     },
     {
+        id: "c-niveau-interm-diaire-l",
         title: "C++ - Niveau Intermédiaire : L'Architecture Orientée Objet",
         description: "Transformez votre code en composants robustes. Maîtrisez les classes, l'encapsulation, la STL et les premiers concepts de gestion mémoire.",
         category: "Programmation",
@@ -115,7 +117,7 @@ const cppCourses = [
                         hints: ["Une méthode qui ne modifie rien doit être marquée const."]
                     }
                 ],
-                resources: [{ title: "Classes and Static Members", type: "video", url: "https://www.youtube.com/embed/wN0x9eZLix4" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : La Bibliothèque Standard (STL) : Algorithmes et Itérateurs",
@@ -151,7 +153,7 @@ const cppCourses = [
                         hints: ["Le '= 0' rend la fonction virtuelle pure et la classe abstraite."]
                     }
                 ],
-                resources: [{ title: "Inheritance and Polymorphism in C++", type: "video", url: "https://www.youtube.com/embed/fSStm_47VBM" }]
+                resources: []
             },
             {
                 title: "Chapitre 4 : Gestion d'Exceptions et Robustesse",
@@ -174,6 +176,7 @@ const cppCourses = [
         ]
     },
     {
+        id: "c-niveau-expert-mondiale-l",
         title: "C++ - Niveau Expert Mondiale : L'Ingénierie de Haute Précision",
         description: "Devenez un architecte système. Maîtrisez la gestion mémoire moderne, les templates, la programmation système et les optimisations bas niveau.",
         category: "Programmation",
@@ -202,7 +205,7 @@ const cppCourses = [
                         hints: ["Le destructeur est appelé lors de la remontée de pile (Stack Unwinding) d'une exception."]
                     }
                 ],
-                resources: [{ title: "Modern C++ Smart Pointers", type: "video", url: "https://www.youtube.com/embed/UOBJuOPoRGU" }]
+                resources: []
             },
             {
                 title: "Chapitre 2 : Move Semantics et Rvalue References",
@@ -238,7 +241,7 @@ const cppCourses = [
                         hints: ["Utilisez le header <type_traits> pour les tests de type."]
                     }
                 ],
-                resources: [{ title: "C++20 Concepts and Metaprogramming", type: "video", url: "https://www.youtube.com/embed/I-hZkUa9mIs" }]
+                resources: []
             },
             {
                 title: "Chapitre 4 : Multithreading, Concurrence et Lock-Free",
