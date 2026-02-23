@@ -3,10 +3,6 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Clock, Users, Star, BookOpen, Sparkles, Zap, Code2, Heart, Mail, ExternalLink, Github, Twitter, Linkedin } from 'lucide-react';
 import AnimatedLogo from '../components/AnimatedLogo';
-import CourseCarousel from '../components/CourseCarousel';
-
-// Use local data for showcasing on landing
-import { coursesData } from '../courses/data';
 
 const HomePage = ({ API_URL }) => {
     const navigate = useNavigate();
@@ -190,17 +186,74 @@ const HomePage = ({ API_URL }) => {
                 </div>
             </section>
 
-            {/* Course Carousel Section */}
-            <div className="py-20 bg-slate-900/40 relative">
+            {/* Educational Philosophy Section */}
+            <div className="py-20 bg-slate-900/40 relative border-t border-slate-800">
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="flex flex-col items-center mb-12">
-                        <div className="flex items-center gap-3 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-bold tracking-widest uppercase mb-4">
-                            <Sparkles size={16} /> Aperçu du Catalogue
+                    <div className="flex flex-col items-center mb-16 text-center">
+                        <div className="flex items-center gap-3 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full text-purple-400 text-sm font-bold tracking-widest uppercase mb-4">
+                            <BookOpen size={16} /> Notre Pédagogie
                         </div>
-                        <h2 className="text-4xl md:text-5xl font-black text-white text-center">Explorez nos Univers</h2>
+                        <h2 className="text-4xl md:text-5xl font-black text-white max-w-3xl leading-tight">
+                            L'Excellence par la Maîtrise des Fondamentaux
+                        </h2>
+                        <p className="mt-6 text-xl text-slate-400 max-w-2xl font-medium">
+                            Nous fuyons la surabondance. Mysterious Classroom se concentre fièrement sur 12 piliers technologiques essentiels, forgés à travers 3 niveaux d'expertise stricts.
+                        </p>
                     </div>
 
-                    <CourseCarousel courses={featuredCourses.slice(0, 6)} />
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                        {/* Level 1 */}
+                        <div className="bg-slate-950/80 border border-slate-800 rounded-[2rem] p-8 hover:border-blue-500/50 transition-all group shadow-2xl">
+                            <div className="w-16 h-16 bg-blue-500/10 text-blue-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                                <span className="text-3xl">🐣</span>
+                            </div>
+                            <h3 className="text-2xl font-black text-white mb-3">Niveau Débutant</h3>
+                            <p className="text-slate-400 leading-relaxed font-medium">
+                                Les fondations pures. Apprenez la logique algorithmique, la syntaxe de base et les concepts clés sans aucune abstraction. 100% pratique.
+                            </p>
+                        </div>
+                        {/* Level 2 */}
+                        <div className="bg-slate-950/80 border border-slate-800 rounded-[2rem] p-8 hover:border-purple-500/50 transition-all group shadow-2xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full" />
+                            <div className="w-16 h-16 bg-purple-500/10 text-purple-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                                <span className="text-3xl">🚀</span>
+                            </div>
+                            <h3 className="text-2xl font-black text-white mb-3">Intermédiaire</h3>
+                            <p className="text-slate-400 leading-relaxed font-medium">
+                                L'architecture et la rigueur. Structure de données avancée, programmation orientée objet, gestion mémoire et création de projets complets.
+                            </p>
+                        </div>
+                        {/* Level 3 */}
+                        <div className="bg-slate-950/80 border border-slate-800 rounded-[2rem] p-8 hover:border-orange-500/50 transition-all group shadow-2xl">
+                            <div className="w-16 h-16 bg-orange-500/10 text-orange-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                                <span className="text-3xl">💻</span>
+                            </div>
+                            <h3 className="text-2xl font-black text-white mb-3">Expertise Avancée</h3>
+                            <p className="text-slate-400 leading-relaxed font-medium">
+                                Conçu pour l'ingénierie. Algorithmes complexes, sécurité, performance système et architectures backend/frontend professionnelles.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="bg-slate-900 border border-slate-800 rounded-[3rem] p-10 md:p-16 text-center shadow-2xl overflow-hidden relative">
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-blue-500/5 blur-[100px] pointer-events-none" />
+                        <h3 className="text-3xl font-black text-white mb-8 relative z-10">Les 12 Piliers de l'Apprentissage</h3>
+                        <div className="flex flex-wrap justify-center gap-4 relative z-10">
+                            {['Algorithmique', 'Langage C', 'C++', 'Python', 'Bash Scripts', 'HTML5', 'CSS3', 'JavaScript', 'PHP', 'MySQL', 'MongoDB', 'ReactJS'].map(tech => (
+                                <span key={tech} className="px-6 py-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-300 font-bold hover:text-white hover:border-slate-500 transition-colors shadow-lg shadow-black/20">
+                                    {tech}
+                                </span>
+                            ))}
+                        </div>
+                        <div className="mt-12">
+                            <button
+                                onClick={() => navigate('/auth')}
+                                className="px-8 py-4 bg-white text-slate-900 hover:bg-slate-200 font-black rounded-xl transition-colors shadow-xl"
+                            >
+                                Commencer l'Aventure
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

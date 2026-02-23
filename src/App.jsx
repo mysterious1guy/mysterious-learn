@@ -13,6 +13,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import AuthPage from './pages/AuthPage';
 import CallbackPage from './pages/CallbackPage';
+import OnboardingPage from './pages/OnboardingPage';
 import DashboardPage from './pages/DashboardPage';
 import AccountPage from './pages/AccountPage';
 import CoursePage from './pages/CoursePage';
@@ -196,6 +197,10 @@ function App() {
                       setToast={setToast}
                       fetchProgressions={fetchProgressions}
                     />
+                  } />
+                  {/* Route Onboarding Google */}
+                  <Route path="/onboarding" element={
+                    user ? (user.hasCompletedOnboarding ? <Navigate to="/dashboard" replace /> : <OnboardingPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />) : <Navigate to="/auth" replace />
                   } />
                   {/* Route Admin Login */}
                   <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />

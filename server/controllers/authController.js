@@ -136,7 +136,7 @@ const verifyEmail = async (req, res) => {
         startingLevel: pendingUser.startingLevel
       },
       isEmailVerified: true,
-      hasCompletedOnboarding: false,
+      hasCompletedOnboarding: true, // Standard signup already did the Wizard
       joinedAt: new Date()
     });
 
@@ -479,7 +479,8 @@ const updateProfile = async (req, res) => {
       hasCompletedOnboarding,
       programmingLevel,
       onboardingProfile,
-      unlockedCourses
+      unlockedCourses,
+      password // Allow setting a password during onboarding for Google users
     } = req.body;
 
     const user = await User.findById(req.user._id);
@@ -506,6 +507,12 @@ const updateProfile = async (req, res) => {
     if (programmingLevel !== undefined) user.programmingLevel = programmingLevel;
     if (onboardingProfile !== undefined) user.onboardingProfile = onboardingProfile;
     if (unlockedCourses !== undefined) user.unlockedCourses = unlockedCourses;
+
+    // Set new password (e.g., from Google Onboarding)
+    if (password) {
+      const salt = await bcrypt.genSalt(12);
+      user.password = await bcrypt.hash(password, salt);
+    }
 
     await user.save();
 
