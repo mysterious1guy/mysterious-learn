@@ -145,7 +145,7 @@ const userSchema = new mongoose.Schema(
     },
     completedQuests: [{
       projectId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.Mixed,
         ref: 'Project'
       },
       completedAt: {
@@ -158,6 +158,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ['beginner', 'intermediate', 'advanced', 'expert'],
       default: null,
+    },
+    // NEW: UI/UX Persistence
+    seenGuides: {
+      type: [String],
+      default: [],
+    },
+    uiPreferences: {
+      showMurmurs: { type: Boolean, default: true },
+      onboardingStep: { type: Number, default: 0 },
+      lastAnnouncementSeen: { type: String, default: null },
+      interventionLevel: { type: String, enum: ['low', 'normal', 'high'], default: 'normal' }
     },
   },
   {

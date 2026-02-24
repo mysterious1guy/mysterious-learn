@@ -7,6 +7,7 @@ import {
     Star, Users, Lock, ArrowRight
 } from 'lucide-react';
 import CourseTerminal from '../courses/CourseTerminal';
+import VideoPlayer from './VideoPlayer';
 
 const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonComplete }) => {
     // Dans la nouvelle DB, les leçons s'appellent "chapters"
@@ -211,22 +212,20 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                                 {activeLesson.resources && activeLesson.resources.length > 0 && (
                                     <div className="space-y-6 mb-8">
                                         {activeLesson.resources.filter(r => r.type === 'video').map((video, idx) => (
-                                            <div key={idx} className="rounded-2xl overflow-hidden shadow-2xl border border-gray-800 bg-black aspect-video relative">
-                                                <iframe
-                                                    src={video.url}
-                                                    className="w-full h-full absolute inset-0"
-                                                    frameBorder="0"
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    allowFullScreen
-                                                    title={video.title}
-                                                ></iframe>
-                                            </div>
+                                            <VideoPlayer
+                                                key={idx}
+                                                videoId={video.url.split('/').pop()}
+                                                title={video.title || activeLesson.title}
+                                                courseId={course._id || course.id}
+                                                chapterId={activeLesson._id || activeLesson.id}
+                                                API_URL={API_URL}
+                                            />
                                         ))}
                                     </div>
                                 )}
 
                                 {/* Contenu principal TEXT / HTML transformé en cartes si nécessaire */}
-                                <div className="mb-10">
+                                <div id="lesson-content" className="mb-10">
                                     {renderSmartContent(activeLesson.content)}
                                 </div>
 

@@ -4,47 +4,75 @@ import { Bot, Sparkles } from 'lucide-react';
 
 const AnimatedAIAvatar = ({ isTyping }) => {
     return (
-        <div className="relative w-full h-full rounded-full flex items-center justify-center overflow-hidden bg-slate-900 border border-slate-700 shadow-sm border-b-slate-600">
-            {/* Ambient Background Glow when typing */}
+        <div className="relative w-full h-full rounded-full flex items-center justify-center overflow-hidden bg-slate-900 border border-slate-700/50 shadow-2xl">
+            {/* Multi-layered Ambient Background Glow */}
             <AnimatePresence>
-                {isTyping && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", repeatType: "reverse" }}
-                        className="absolute inset-0 bg-blue-500/20 blur-md z-0"
-                    />
+                {(isTyping) && (
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1.1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut", repeatType: "reverse" }}
+                            className="absolute inset-0 bg-blue-500/30 blur-xl z-0"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ repeat: Infinity, duration: 1, ease: "easeInOut", repeatType: "reverse" }}
+                            className="absolute inset-2 bg-blue-400/20 blur-md z-0"
+                        />
+                    </>
                 )}
             </AnimatePresence>
 
-            {/* Minimalist Icon */}
+            {/* Breathing / Alive Animation */}
             <motion.div
                 animate={{
-                    scale: isTyping ? [1, 1.1, 1] : 1,
+                    scale: isTyping ? [1, 1.05, 1] : [1, 1.02, 1],
+                    y: isTyping ? 0 : [0, -1, 0]
                 }}
                 transition={{
-                    scale: { repeat: isTyping ? Infinity : 0, duration: 1.5 }
+                    repeat: Infinity,
+                    duration: isTyping ? 1.5 : 3,
+                    ease: "easeInOut"
                 }}
-                className="relative z-10 text-slate-300 group-hover:text-white transition-colors flex items-center justify-center p-1"
+                className="relative z-10 text-slate-300 flex items-center justify-center p-1"
             >
-                <Bot size={22} strokeWidth={2} className={isTyping ? "text-blue-400" : "text-slate-300"} />
+                <div className="relative">
+                    <Bot
+                        size={24}
+                        strokeWidth={1.5}
+                        className={`transition-colors duration-500 ${isTyping ? "text-blue-400 shadow-[0_0_15px_rgba(96,165,250,0.5)]" : "text-slate-400"}`}
+                    />
+
+                    {/* Floating Sparkles around the bot */}
+                    <AnimatePresence>
+                        {isTyping && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute -top-1 -right-1"
+                            >
+                                <motion.div
+                                    animate={{
+                                        rotate: [0, 360],
+                                        scale: [1, 1.2, 1]
+                                    }}
+                                    transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                                >
+                                    <Sparkles size={8} className="text-blue-300 fill-blue-300/30" />
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
             </motion.div>
 
-            {/* Typing indicator sparkle */}
-            <AnimatePresence>
-                {isTyping && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0, rotate: -45 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        exit={{ opacity: 0, scale: 0, rotate: 45 }}
-                        transition={{ repeat: Infinity, duration: 2 }}
-                        className="absolute top-[2px] right-[2px] text-blue-300 z-20 drop-shadow-[0_0_5px_rgba(96,165,250,0.8)]"
-                    >
-                        <Sparkles size={8} className="fill-blue-300" />
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {/* Subtle Inner Glow */}
+            <div className={`absolute inset-0 rounded-full transition-opacity duration-1000 ${isTyping ? 'opacity-40' : 'opacity-10'} bg-gradient-to-t from-blue-500/20 to-transparent pointer-events-none`} />
         </div>
     );
 };

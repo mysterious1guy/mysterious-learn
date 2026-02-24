@@ -524,6 +524,8 @@ const updateProfile = async (req, res) => {
       programmingLevel,
       onboardingProfile,
       unlockedCourses,
+      seenGuides,
+      uiPreferences,
       password // Allow setting a password during onboarding for Google users
     } = req.body;
 
@@ -552,6 +554,16 @@ const updateProfile = async (req, res) => {
     if (onboardingProfile !== undefined) user.onboardingProfile = onboardingProfile;
     if (unlockedCourses !== undefined) user.unlockedCourses = unlockedCourses;
 
+    // Persistance des guides et préférences UI
+    if (seenGuides !== undefined) user.seenGuides = seenGuides;
+    if (uiPreferences !== undefined) {
+      if (!user.uiPreferences) user.uiPreferences = {};
+      if (uiPreferences.showMurmurs !== undefined) user.uiPreferences.showMurmurs = uiPreferences.showMurmurs;
+      if (uiPreferences.onboardingStep !== undefined) user.uiPreferences.onboardingStep = uiPreferences.onboardingStep;
+      if (uiPreferences.lastAnnouncementSeen !== undefined) user.uiPreferences.lastAnnouncementSeen = uiPreferences.lastAnnouncementSeen;
+      if (uiPreferences.interventionLevel !== undefined) user.uiPreferences.interventionLevel = uiPreferences.interventionLevel;
+    }
+
     // Set new password (e.g., from Google Onboarding)
     if (password) {
       const salt = await bcrypt.genSalt(12);
@@ -574,6 +586,8 @@ const updateProfile = async (req, res) => {
       programmingLevel: user.programmingLevel,
       onboardingProfile: user.onboardingProfile,
       unlockedCourses: user.unlockedCourses,
+      seenGuides: user.seenGuides,
+      uiPreferences: user.uiPreferences,
       preferences: user.preferences,
       lastSelectedCourse: user.lastSelectedCourse,
       favorites: user.favorites || [],

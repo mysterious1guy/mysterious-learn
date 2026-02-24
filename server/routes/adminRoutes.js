@@ -41,4 +41,7 @@ router.get('/stats', admin, getAdminStats);
 // Routes spéciales
 router.post('/seed-courses', ownerAdmin, seedCourses);
 
+// @route   POST /api/admin/report-video-error
+router.post('/report-video-error', protect, reportVideoError);
+
 module.exports = router;

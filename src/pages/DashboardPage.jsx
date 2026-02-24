@@ -4,49 +4,63 @@ import { motion } from 'framer-motion';
 import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
 
-const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions, API_URL, setToast, searchQuery = '' }) => {
+const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, progressions = {}, API_URL }) => {
     const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
     const [courses, setCourses] = useState([]);
-    const [courseStats, setCourseStats] = useState({});
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [loading, setLoading] = useState(true);
     const [selectedLockedCourse, setSelectedLockedCourse] = useState(null);
     const [isTestModalOpen, setIsTestModalOpen] = useState(false);
     const [recentlyUnlocked, setRecentlyUnlocked] = useState(null);
+    const [courseStats, setCourseStats] = useState({});
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [showTour, setShowTour] = useState(!user?.seenGuides?.includes('main_onboarding'));
 
-    const isCourseUnlocked = (item) => {
-        if (!item) return true;
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            setMousePosition({
+                x: (e.clientX / window.innerWidth - 0.5) * 20,
+                y: (e.clientY / window.innerHeight - 0.5) * 20
+            });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
-        // 0. Admins have access to everything
-        if (user?.role === 'admin') return true;
-
-        // 1. By default, Débutant is always unlocked
-        if (item.level === 'Débutant') return true;
-
-        // 2. Unlocked via user.programmingLevel
-        const userLevel = user?.programmingLevel || 'Débutant';
-        if (userLevel === 'Expérimenté') return true; // everything unlocked
-        if (userLevel === 'Amateur' && item.level === 'Intermédiaire') return true;
-
-        // 3. Unlocked by explicitly passing a placement test (saved in DB)
-        const itemId = item._id || item.id;
-        if (user?.unlockedCourses?.includes(itemId)) return true;
-
-        // 4. Unlocked via physical progression (previous level of SAME subject == 100%)
-        let targetLevelToCheck = '';
-        if (item.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
-        if (item.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
-
-        const subjectName = item.title.split(' - ')[0];
-        const reqCourse = courses.find(c => c.level === targetLevelToCheck && c.title.split(' - ')[0] === subjectName);
-
-        if (reqCourse) {
-            const reqId = reqCourse._id || reqCourse.id;
-            const reqProgress = progressions?.[reqId]?.progress || 0;
-            return reqProgress >= 100;
+    const fetchCourses = async () => {
+        try {
+            const response = await fetch(`${API_URL}/courses`);
+            if (response.ok) {
+                const data = await response.json();
+                setCourses(data);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
-
-        return false;
     };
+
+    const fetchStats = async () => {
+        try {
+            const res = await fetch(`${API_URL}/admin/stats/courses`, {
+                headers: { 'Authorization': `Bearer ${user.token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                const stats = {};
+                data.forEach(s => stats[s._id] = s.count);
+                setCourseStats(stats);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        fetchCourses();
+        if (user?.role === 'admin') fetchStats();
+    }, [API_URL, user]);
 
     const handleUnlockTargetCourse = async (courseToUnlock) => {
         try {
@@ -62,97 +76,62 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
             });
             if (res.ok) {
                 const data = await res.json();
-                if (setUser) setUser(data);
-                if (setToast) setToast({ message: `Le cours ${courseToUnlock.name} a été débloqué !`, type: 'success' });
+                if (onUpdateUser) onUpdateUser(data);
+                setRecentlyUnlocked(courseToUnlock);
+                fetchCourses();
             }
         } catch (err) {
             console.error('Erreur déblocage:', err);
-            if (setToast) setToast({ message: 'Erreur lors du déblocage.', type: 'error' });
         }
     };
 
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            const { clientX, clientY } = e;
-            const x = (clientX / window.innerWidth - 0.5) * 15;
-            const y = (clientY / window.innerHeight - 0.5) * 15;
-            setMousePosition({ x, y });
-        };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
+    const isCourseUnlocked = (item) => {
+        if (!item) return true;
+        if (user?.role === 'admin') return true;
+        if (item.level === 'Débutant') return true;
+        const userLevel = user?.programmingLevel || 'Débutant';
+        if (userLevel === 'Expérimenté') return true;
+        if (userLevel === 'Amateur' && item.level === 'Intermédiaire') return true;
+        const itemId = item._id || item.id;
+        if (user?.unlockedCourses?.includes(itemId)) return true;
 
-    useEffect(() => {
-        const fetchCourses = async () => {
+        let targetLevelToCheck = '';
+        if (item.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
+        if (item.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
+        const subjectName = item.title.split(' - ')[0];
+        const reqCourse = courses.find(c => c.level === targetLevelToCheck && c.title.split(' - ')[0] === subjectName);
+        if (reqCourse) {
+            const reqId = reqCourse._id || reqCourse.id;
+            const reqProgress = progressions?.[reqId]?.progress || 0;
+            return reqProgress >= 100;
+        }
+        return false;
+    };
+
+    const handleOnboardingFinish = async () => {
+        setShowTour(false);
+        if (!user?.seenGuides?.includes('main_onboarding')) {
+            const updatedSeenGuides = [...(user.seenGuides || []), 'main_onboarding'];
             try {
-                const res = await fetch(`${API_URL}/courses`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setCourses(data);
+                const response = await fetch(`${API_URL}/auth/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${user.token}`
+                    },
+                    body: JSON.stringify({ seenGuides: updatedSeenGuides })
+                });
+                if (response.ok) {
+                    onUpdateUser({ seenGuides: updatedSeenGuides });
+                    window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
+                        detail: { text: "Félicitations pour avoir complété ton initiation. L'aventure commence vraiment maintenant." }
+                    }));
                 }
             } catch (err) {
-                console.error('Erreur fetch cours:', err);
-            }
-        };
-        fetchCourses();
-
-        // Check for newly unlocked courses
-        if (courses && courses.length > 0 && progressions) {
-            const notifiedUnlocks = JSON.parse(localStorage.getItem(`notified_unlocks_${user?.email}`) || '[]');
-
-            for (const reqCourse of courses) {
-                const reqId = reqCourse._id || reqCourse.id;
-                if (progressions[reqId]?.progress >= 100) {
-                    let nextLevel = '';
-                    if (reqCourse.level === 'Débutant') nextLevel = 'Intermédiaire';
-                    if (reqCourse.level === 'Intermédiaire') nextLevel = 'Avancé';
-
-                    if (nextLevel) {
-                        const subjectName = reqCourse.title.split(' - ')[0];
-                        const nextCourse = courses.find(c => c.level === nextLevel && c.title.split(' - ')[0] === subjectName);
-                        if (nextCourse) {
-                            const nextId = nextCourse._id || nextCourse.id;
-                            if (!notifiedUnlocks.includes(nextId)) {
-                                setRecentlyUnlocked(nextCourse);
-                                localStorage.setItem(`notified_unlocks_${user?.email}`, JSON.stringify([...notifiedUnlocks, nextId]));
-                                break;
-                            }
-                        }
-                    }
-                }
+                console.error("Erreur persistence onboarding:", err);
             }
         }
-
-        const fetchStats = async () => {
-            try {
-                const res = await fetch(`${API_URL}/courses/stats`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setCourseStats(data);
-                }
-            } catch (err) {
-                console.error('Erreur fetch stats cours:', err);
-            }
-        };
-        fetchStats();
-
-        const timer = setTimeout(() => {
-            const completedCount = Object.values(progressions).filter(p => p.progress === 100).length;
-            let text = `Bon retour, ${user?.firstName}. Prêt à continuer ton apprentissage intensif ?`;
-
-            if (completedCount > 0) {
-                text = `Bravo pour tes ${completedCount} leçons terminées ! L'expertise approche.`;
-            } else if (Object.keys(progressions).length > 0) {
-                text = "Tu as commencé ton parcours. Reste concentré pour maîtriser ces fondations.";
-            }
-
-            window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                detail: { text }
-            }));
-        }, 2500);
-
-        return () => clearTimeout(timer);
-    }, [API_URL, progressions, user]);
+    };
 
     // Regrouper les cours par Technologie (Sujet)
     const subjectsMap = {};
@@ -236,52 +215,63 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                 onUnlock={handleUnlockTargetCourse}
             />
 
+            {/* Onboarding Tour Modal */}
+            <AnimatePresence>
+                {showTour && (
+                    <OnboardingTour
+                        user={user}
+                        onFinish={handleOnboardingFinish}
+                        onSkip={() => setShowTour(false)}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* Floating Help Button */}
+            <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                onClick={() => setShowTour(true)}
+                className="fixed bottom-8 left-8 z-[150] p-4 bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-full text-blue-400 hover:text-white hover:border-blue-500 shadow-2xl transition-all group"
+                title="Besoin d'aide ?"
+            >
+                <HelpCircle size={24} className="group-hover:rotate-12 transition-transform" />
+            </motion.button>
+
             {/* Modal Félicitations Déblocage */}
             {recentlyUnlocked && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setRecentlyUnlocked(null)}></div>
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0, y: 50 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
-                        className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-3xl p-8 text-center shadow-2xl z-10"
+                        className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 rounded-[2.5rem] p-8 text-center shadow-2xl z-[210]"
                     >
-                        <div className="mx-auto w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/30">
+                        <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30">
                             <BookOpen size={48} className="text-white drop-shadow-md" />
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tighter">Félicitations !</h2>
-                        <p className="text-slate-600 dark:text-gray-300 mb-8 font-medium">
-                            En terminant le niveau précédent, vous avez officiellement débloqué votre nouvelle cible d'apprentissage : <br />
-                            <strong className="text-blue-500 dark:text-blue-400 mt-3 block text-xl bg-blue-500/10 p-4 rounded-xl border border-blue-500/20">{recentlyUnlocked.title}</strong>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tighter">Accès Autorisé</h2>
+                        <p className="text-slate-600 dark:text-gray-400 mb-8 font-medium">
+                            Tes compétences ont été validées. Tu as débloqué : <br />
+                            <strong className="text-blue-500 dark:text-blue-400 mt-3 block text-xl bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20">{recentlyUnlocked.title || recentlyUnlocked.name}</strong>
                         </p>
                         <button
                             onClick={() => {
                                 setRecentlyUnlocked(null);
                                 navigate(`/course/${recentlyUnlocked._id || recentlyUnlocked.id}`);
                             }}
-                            className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-black uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-blue-500/25 transform hover:-translate-y-1"
+                            className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-blue-500/25 transform hover:-translate-y-1"
                         >
-                            Démarrer le cours
-                        </button>
-                        <button
-                            onClick={() => setRecentlyUnlocked(null)}
-                            className="w-full mt-3 py-3 text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white font-bold text-sm uppercase transition-colors"
-                        >
-                            Fermer
+                            Démarrer maintenant
                         </button>
                     </motion.div>
                 </div>
             )}
 
             {/* Header */}
-            <div className="pt-8 pb-12 px-6 lg:px-12 relative overflow-hidden">
-                {/* Background Blobs */}
+            <div className="pt-12 pb-20 px-6 lg:px-12 relative overflow-hidden">
                 <motion.div
-                    style={{ x: mousePosition.x * 0.8, y: mousePosition.y * 0.8 }}
-                    className="absolute top-10 right-[10%] w-64 h-64 bg-blue-500/10 blur-[100px] rounded-full -z-10"
-                />
-                <motion.div
-                    style={{ x: mousePosition.x * -0.5, y: mousePosition.y * -0.5 }}
-                    className="absolute top-20 left-[5%] w-48 h-48 bg-purple-500/10 blur-[80px] rounded-full -z-10"
+                    style={{ x: mousePosition.x * 0.5, y: mousePosition.y * 0.5 }}
+                    className="absolute top-10 right-[10%] w-96 h-96 bg-blue-500/5 blur-[120px] rounded-full -z-10"
                 />
 
                 <motion.div
@@ -289,104 +279,43 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                     animate={{ opacity: 1, y: 0 }}
                     className="max-w-7xl mx-auto flex flex-col items-center text-center"
                 >
-                    <div className="relative group cursor-default mb-2">
+                    <div className="relative group cursor-default mb-6">
+                        <div className="flex items-center gap-2 mb-4 justify-center opacity-40">
+                            <div className="w-8 h-px bg-blue-500" />
+                            <span className="text-[10px] font-black font-mono tracking-[0.3em] text-blue-400 uppercase">Système d'Apprentissage</span>
+                            <div className="w-8 h-px bg-blue-500" />
+                        </div>
                         <motion.h1
-                            className="text-center font-black tracking-tighter leading-[0.8] flex flex-col items-center"
+                            className="text-center font-black tracking-tighter leading-none flex flex-col items-center"
                         >
-                            <span className="block text-6xl md:text-[10rem] text-slate-900 dark:text-white mb-2 opacity-100">
+                            <span className="block text-5xl md:text-8xl text-slate-900 dark:text-white mb-2 opacity-100">
                                 BIENVENUE,
                             </span>
-                            <span className="inline-block text-5xl md:text-8xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-sm pb-4 mt-2">
-                                {user?.firstName?.toUpperCase() || 'MYSTÉRIEUX'} !
+                            <span className="inline-block text-4xl md:text-7xl bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 bg-clip-text text-transparent drop-shadow-sm pb-4 tracking-tighter">
+                                {user?.firstName?.toUpperCase() || 'AGENT'}
                             </span>
-                            <motion.div
-                                animate={{ rotate: [0, 20, -10, 20, -10, 0] }}
-                                transition={{
-                                    duration: 1.5,
-                                    repeat: Infinity,
-                                    repeatDelay: 3,
-                                    ease: 'easeInOut'
-                                }}
-                                whileHover={{
-                                    scale: 1.2,
-                                    rotate: [0, 25, -15, 25, -15, 0],
-                                    transition: { duration: 0.8, repeat: Infinity }
-                                }}
-                                whileTap={{ scale: 0.9 }}
-                                className="inline-block ml-4 origin-bottom-right cursor-pointer drop-shadow-lg"
-                                title="Coucou !"
-                            >
-                                👋
-                            </motion.div>
                         </motion.h1>
 
                         <motion.p
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5, duration: 1 }}
-                            className="text-lg md:text-xl text-slate-600 dark:text-gray-400 font-medium max-w-2xl mx-auto opacity-90 leading-relaxed"
+                            transition={{ delay: 0.3 }}
+                            className="text-base md:text-lg text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto mt-6 leading-relaxed italic"
                         >
-                            Prêt à continuer ton apprentissage mystérieux ? <br className="hidden md:block" />
-                            Ta quête vers la maîtrise technologique continue ici.
+                            "La maîtrise n'est pas une destination, mais une quête perpétuelle." <br />
+                            Prêt à continuer ton ascension vers l'élite ?
                         </motion.p>
                     </div>
 
-                    <motion.div
-                        initial={{ opacity: 0, scaleX: 0 }}
-                        animate={{ opacity: 1, scaleX: 1 }}
-                        transition={{ delay: 0.8, duration: 0.8 }}
-                        className="mt-8 flex items-center gap-4 justify-center"
-                    >
-                        <div className="h-[2px] w-12 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent rounded-full" />
-                        <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                        <div className="h-[2px] w-12 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent rounded-full" />
-                    </motion.div>
+                    <div className="flex items-center gap-4 mt-8 opacity-20">
+                        <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-blue-500" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                        <div className="h-[1px] w-24 bg-gradient-to-l from-transparent to-blue-500" />
+                    </div>
                 </motion.div>
             </div>
 
-            {/* Section Aide/Onboarding pour les nouveaux */}
-            {(!user?.xp || user.xp < 10) && (
-                <div className="max-w-7xl mx-auto px-6 mb-12">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="bg-blue-600/10 border border-blue-500/20 rounded-[2rem] p-6 md:p-10 relative overflow-hidden flex flex-col md:flex-row items-center gap-8"
-                    >
-                        <div className="flex-1 space-y-4 relative z-10">
-                            <div className="inline-block px-4 py-1.5 bg-blue-500 text-white text-xs font-black rounded-full uppercase tracking-widest mb-2">
-                                Guide du Novice
-                            </div>
-                            <h2 className="text-3xl font-black text-slate-800 dark:text-white">Salut, {user?.firstName} ! Nouveau ici ?</h2>
-                            <p className="text-slate-600 dark:text-gray-400 font-medium leading-relaxed">
-                                Mysterious Classroom est une académie de haut niveau. Voici comment commencer ta quête :
-                            </p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-blue-500 text-white rounded-full p-2 shrink-0">1</div>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-gray-300">Commence par les cours <span className="text-blue-500 underline decoration-2">Débutants</span> pour poser les bases.</p>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-purple-500 text-white rounded-full p-2 shrink-0">2</div>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-gray-300">Passe les tests de niveau si tu as déjà des connaissances.</p>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-yellow-500 text-white rounded-full p-2 shrink-0">3</div>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-gray-300">Gagne de l'XP pour monter dans le <span className="text-yellow-500 underline decoration-2 cursor-pointer" onClick={() => navigate('/leaderboard')}>Classement</span>.</p>
-                                </div>
-                                <div className="flex items-start gap-3">
-                                    <div className="bg-indigo-500 text-white rounded-full p-2 shrink-0">4</div>
-                                    <p className="text-sm font-bold text-slate-700 dark:text-gray-300">Réalise les <span className="text-indigo-500 underline decoration-2 cursor-pointer" onClick={() => navigate('/projects')}>Projets Finaux</span> pour prouver ton expertise.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Arrows pointing to Nav Items if needed, but here we use a small floating graphic */}
-
-                    </motion.div>
-                </div>
-            )}
-
-            {/* Categories avec défilement horizontal */}
+            {/* Categories */}
             <div className="space-y-12">
                 {finalCategories.map((category, index) => (
                     <motion.div
@@ -407,7 +336,7 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                     const unlocked = isCourseUnlocked(course);
                                     return (
                                         <motion.div
-                                            key={course.id}
+                                            key={course.id || course._id}
                                             whileHover={unlocked ? { scale: 1.01, y: -5 } : { scale: 1 }}
                                             onClick={() => {
                                                 if (unlocked) {
@@ -432,23 +361,19 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                                     </button>
                                                 </div>
                                             )}
-                                            {/* Image du cours */}
+
                                             <div className={`${category.items.length === 1 ? 'h-80' : 'h-48'} relative overflow-hidden`}>
                                                 <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
                                                 <img
-                                                    src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course._id || course.id}`}
+                                                    src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.title}`}
                                                     alt={course.title || course.name}
                                                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100"
-                                                    onError={(e) => {
-                                                        e.target.src = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80'; // Fallback image
-                                                    }}
                                                 />
                                                 <div className="absolute top-3 right-3 z-20">
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            const cid = course.id || course._id;
-                                                            toggleFavorite(cid);
+                                                            toggleFavorite(course.id || course._id);
                                                         }}
                                                         className="p-2 bg-black/40 backdrop-blur-md rounded-full hover:bg-black/60 transition-colors"
                                                     >
@@ -458,16 +383,8 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                                         />
                                                     </button>
                                                 </div>
-                                                <div className="absolute top-3 left-3 z-20 flex gap-2">
-                                                    {course.tags?.slice(0, 2).map((tag, i) => (
-                                                        <span key={i} className={`px-2 py-0.5 text-[10px] font-black uppercase tracking-widest bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded-full backdrop-blur-md ${category.items.length === 1 ? 'text-xs px-3 py-1' : ''}`}>
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                </div>
                                             </div>
 
-                                            {/* Contenu */}
                                             <div className={`p-6 md:p-8 ${category.items.length === 1 ? 'md:flex md:flex-col md:justify-center' : ''}`}>
                                                 <h3 className={`${category.items.length === 1 ? 'text-3xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
                                                     {course.title || course.name}
@@ -476,21 +393,6 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                                     {course.description || course.desc}
                                                 </p>
 
-                                                {/* Métadonnées - Admin Only */}
-                                                {user?.email === 'mouhamedfall@esp.sn' && (
-                                                    <div className="flex items-center justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">
-                                                        <div className="flex items-center gap-1.5">
-                                                            <Users size={12} className="text-purple-500/50" />
-                                                            <span>{courseStats[course.id] || 0}</span>
-                                                        </div>
-                                                        <div className="flex items-center gap-1.5">
-                                                            <Star size={12} className="text-yellow-500 fill-yellow-500/20" />
-                                                            <span>{course.rating || '4.8'}</span>
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {/* Barre de progression ou bouton */}
                                                 {progressions[course._id || course.id] ? (
                                                     <div className="space-y-2 pt-2">
                                                         <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-blue-400">
@@ -505,14 +407,13 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <button className="w-full py-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 hover:shadow-[0_10px_20px_rgba(37,99,235,0.2)] transition-all duration-300 flex items-center justify-center gap-2">
-                                                        Commencer
-                                                        <ChevronRight size={14} />
+                                                    <button className="w-full py-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 transition-all duration-300 flex items-center justify-center gap-2">
+                                                        Commencer <ChevronRight size={14} />
                                                     </button>
                                                 )}
                                             </div>
                                         </motion.div>
-                                    )
+                                    );
                                 })}
                             </div>
                         </div>
@@ -532,9 +433,6 @@ const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions,
                     background: linear-gradient(to right, #3b82f6, #9333ea);
                     border-radius: 10px;
                     border: 1px solid rgba(255, 255, 255, 0.05);
-                }
-                .custom-horizontal-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: linear-gradient(to right, #60a5fa, #a855f7);
                 }
             `}</style>
         </div>

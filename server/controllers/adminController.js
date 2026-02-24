@@ -1,4 +1,5 @@
 const Notification = require('../models/Notification');
+const AdminNotification = require('../models/AdminNotification');
 const User = require('../models/User');
 const Course = require('../models/Course');
 const coursesData = require('../data/courses/index');
@@ -341,6 +342,42 @@ const seedCourses = async (req, res) => {
   }
 };
 
+// @desc    Signaler une erreur vidéo (système/utilisateur)
+// @route   POST /api/admin/report-video-error
+const reportVideoError = async (req, res) => {
+  try {
+    const { courseId, chapterId, videoId, errorType, url } = req.body;
+
+    // Déterminer la priorité
+    let priority = 'medium';
+    if (errorType === '100' || errorType === '101' || errorType === '150') {
+      priority = 'high'; // Vidéo inexistante ou bloquée
+    }
+
+    const adminNotification = await AdminNotification.create({
+      type: 'video_error',
+      courseId,
+      chapterId,
+      videoId,
+      errorType: errorType?.toString() || 'unknown',
+      url,
+      priority
+    });
+
+    // Logging pour l'admin
+    console.log(`🎥 ALERTE MULTIMÉDIA: Vidéo ${videoId} en erreur (${errorType}) dans le cours ${courseId}`);
+
+    res.status(201).json({
+      success: true,
+      message: 'Erreur multimédia signalée avec succès',
+      notificationId: adminNotification._id
+    });
+  } catch (error) {
+    console.error('Erreur lors du signalement vidéo:', error);
+    res.status(500).json({ message: 'Erreur interne lors du signalement' });
+  }
+};
+
 module.exports = {
   getAllUsers,
   deleteUser,
@@ -354,5 +391,6 @@ module.exports = {
   lockCourseForUser,
   getAllNotifications,
   deleteNotification,
-  seedCourses
+  seedCourses,
+  reportVideoError
 };

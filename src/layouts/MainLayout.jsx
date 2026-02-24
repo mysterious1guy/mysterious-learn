@@ -8,7 +8,7 @@ import ActivityTracker from '../components/ActivityTracker';
 import UsageMonitor from '../components/UsageMonitor';
 import { API_URL } from '../config';
 
-const MainLayout = ({ user, onLogout, onSearch }) => {
+const MainLayout = ({ user, onLogout, onSearch, progressions }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showUsageMonitor, setShowUsageMonitor] = useState(false);
   const location = useLocation();
@@ -63,7 +63,7 @@ const MainLayout = ({ user, onLogout, onSearch }) => {
         <AIAssistant
           user={user}
           currentView={currentView}
-          courseId={courseId}
+          progressions={progressions}
           onAction={handleAIAction}
           isAdmin={user?.email === 'mouhamedfall@esp.sn' || user?.role === 'admin'}
           API_URL={API_URL}

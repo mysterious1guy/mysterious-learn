@@ -328,45 +328,53 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     className="fixed top-0 right-0 h-full w-[400px] bg-slate-950/95 border-l border-blue-500/20 backdrop-blur-2xl z-[150] shadow-[-10px_0_50px_rgba(0,0,0,0.5)] flex flex-col"
                 >
                     {/* Header */}
-                    <div className="p-4 border-b border-white/10 flex justify-between items-center bg-black/40">
-                        <div className="flex items-center gap-3">
-                            <div className="relative w-12 h-12">
+                    <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/60 shadow-xl relative z-10">
+                        <div className="flex items-center gap-4">
+                            <div className="relative w-14 h-14">
+                                <div className="absolute inset-0 bg-blue-500/20 blur-lg rounded-full animate-pulse" />
                                 <AnimatedAIAvatar isTyping={isTyping} />
-                                {/* Online indicator pulse */}
-                                <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-green-500 rounded-full border border-black animate-pulse z-10"></div>
+                                <div className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-slate-950 z-10"></div>
                             </div>
-                            <span className="font-mono font-bold text-white tracking-widest text-sm">
-                                Mysterious Assistant
-                            </span>
+                            <div className="flex flex-col">
+                                <span className="font-mono font-black text-white tracking-[0.2em] text-xs uppercase opacity-90">
+                                    Oracle Mentor
+                                </span>
+                                <span className="text-[10px] text-blue-400 font-bold opacity-60">
+                                    Système de Logique Avancé
+                                </span>
+                            </div>
                         </div>
-                        <button onClick={onClose} className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
-                            <ChevronRight size={20} />
+                        <button
+                            onClick={onClose}
+                            className="p-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all active:scale-90 group"
+                        >
+                            <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
 
                     {/* Messages Area */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-blue-500/30 scrollbar-track-transparent">
+                    <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
                         {messages.map((msg, idx) => (
                             <motion.div
                                 key={idx}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
                                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
-                                <div className={`flex items-end gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} w-full`}>
+                                <div className={`flex items-start gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} w-full max-w-[90%]`}>
                                     {/* Avatar Column */}
-                                    <div className="shrink-0 mb-1">
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center overflow-hidden border ${msg.role === 'user' ? 'border-blue-400/30' : 'border-slate-700'}`}>
+                                    <div className="shrink-0 mt-1">
+                                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden border shadow-lg ${msg.role === 'user' ? 'border-blue-500/30' : 'border-slate-800 bg-slate-900'}`}>
                                             {msg.role === 'user' ? (
                                                 (user?.avatar || user?.picture) ? (
                                                     <img src={user.avatar || user.picture} alt="Me" className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <div className="w-full h-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                                                    <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-xs font-black text-white uppercase">
                                                         {user?.firstName?.charAt(0) || user?.name?.charAt(0) || 'U'}
                                                     </div>
                                                 )
                                             ) : (
-                                                <div className="w-full h-full">
+                                                <div className="w-full h-full scale-110">
                                                     <AnimatedAIAvatar isTyping={false} />
                                                 </div>
                                             )}
@@ -374,33 +382,45 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                     </div>
 
                                     {/* Message Column */}
-                                    <div className={`max-w-[85%] rounded-2xl p-4 shadow-lg ${msg.role === 'user'
-                                        ? 'bg-blue-600 text-white rounded-br-none border border-blue-500/50'
-                                        : msg.type === 'suggestion'
-                                            ? 'bg-amber-900/40 text-amber-100 border border-amber-500/30 rounded-bl-none'
-                                            : 'bg-slate-900/80 text-slate-200 border border-white/5 rounded-bl-none'
-                                        }`}>
-                                        {msg.role !== 'user' && (
-                                            <div className="flex items-center gap-2 mb-2 opacity-70">
-                                                {msg.type === 'suggestion' ? <Sparkles size={12} className="text-amber-400" /> : <Terminal size={12} className="text-blue-400" />}
-                                                <span className="text-[10px] font-mono tracking-wider uppercase">
-                                                    {msg.type === 'suggestion' ? 'Proactif' : 'Système'}
-                                                </span>
-                                            </div>
-                                        )}
+                                    <div className="flex flex-col gap-2 w-full">
+                                        <div className={`px-5 py-4 rounded-[1.5rem] shadow-2xl relative overflow-hidden ${msg.role === 'user'
+                                                ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-tr-none border border-blue-400/30'
+                                                : msg.type === 'suggestion'
+                                                    ? 'bg-gradient-to-br from-amber-500/10 to-amber-900/20 text-amber-100 border border-amber-500/20 rounded-tl-none'
+                                                    : 'bg-gradient-to-br from-slate-900/80 to-slate-950/90 text-slate-200 border border-white/5 rounded-tl-none'
+                                            }`}>
+                                            {/* Subtile background patterns for AI */}
+                                            {msg.role !== 'user' && (
+                                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[50px] pointer-events-none" />
+                                            )}
 
-                                        {renderMessageContent(msg.content, msg.role)}
+                                            {msg.role !== 'user' && (
+                                                <div className="flex items-center gap-2 mb-3 opacity-60">
+                                                    {msg.type === 'suggestion' ? <Sparkles size={12} className="text-amber-400" /> : <Terminal size={12} className="text-blue-400" />}
+                                                    <span className="text-[10px] font-black font-mono tracking-widest uppercase">
+                                                        {msg.type === 'suggestion' ? 'Suggestion' : 'Assistant'}
+                                                    </span>
+                                                </div>
+                                            )}
+
+                                            {renderMessageContent(msg.content, msg.role)}
+                                        </div>
+
+                                        {/* Timestamp/Status (Subtle) */}
+                                        <span className={`text-[9px] font-mono opacity-30 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                                            {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </span>
                                     </div>
                                 </div>
                             </motion.div>
                         ))}
 
                         {isTyping && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
-                                <div className="bg-slate-900/80 border border-white/5 rounded-2xl rounded-tl-sm p-4 w-20 flex justify-center items-center gap-1 shadow-lg">
-                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start pl-14">
+                                <div className="bg-slate-900/60 border border-white/5 rounded-full px-5 py-3 flex justify-center items-center gap-1.5 shadow-xl">
+                                    <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                                    <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                                    <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                                 </div>
                             </motion.div>
                         )}
@@ -408,32 +428,40 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     </div>
 
                     {/* Input Area */}
-                    <div className="p-4 bg-slate-950/80 border-t border-white/10 backdrop-blur-md">
+                    <div className="p-6 bg-black/40 border-t border-white/10 backdrop-blur-3xl">
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 if (!isTyping && input.trim()) handleSend(e);
                             }}
-                            className="relative flex items-center"
+                            className="relative flex items-center group"
                         >
+                            <div className="absolute inset-0 bg-blue-500/5 blur-xl group-focus-within:bg-blue-500/10 transition-all rounded-2xl" />
+
                             <input
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Pose ta question..."
-                                className="w-full bg-slate-900 border border-slate-700/50 text-white placeholder-slate-500 rounded-xl py-3 pl-4 pr-12 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all font-medium text-sm shadow-inner"
+                                placeholder="Pose ta question au mentor..."
+                                className="w-full bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 rounded-2xl py-4 pl-5 pr-14 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all font-medium text-sm shadow-2xl relative z-10"
                             />
                             <button
                                 type="submit"
                                 disabled={!input.trim() || isTyping}
-                                className="absolute right-2 p-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 disabled:text-slate-500 text-white rounded-lg transition-colors group"
+                                className="absolute right-2 p-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800/50 disabled:text-slate-600 text-white rounded-xl transition-all group/btn active:scale-95 shadow-lg relative z-20"
                             >
-                                <Send size={16} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                                <Send size={18} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
                             </button>
                         </form>
-                        <div className="mt-2 text-center">
-                            <p className="text-[10px] text-slate-500 font-mono">Appuie sur ↵ pour envoyer</p>
+                        <div className="mt-4 flex justify-center gap-4">
+                            <button className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                                <Maximize2 size={10} /> Mode Focus
+                            </button>
+                            <span className="text-[10px] text-slate-700">|</span>
+                            <button className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                                <Terminal size={10} /> Aide
+                            </button>
                         </div>
                     </div>
                 </motion.div>

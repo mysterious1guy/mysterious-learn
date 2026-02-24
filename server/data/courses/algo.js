@@ -12,6 +12,7 @@ const algoCourses = [
         language: "french",
         isFree: true,
         tags: ["algorithme", "logique", "débutant", "bases", "fondations"],
+        motivationVideo: "kM9VKRowit0",
         chapters: [
             {
                 title: "Chapitre 1 : L'Algorithme : C'est quoi au juste ?",
@@ -24,7 +25,7 @@ const algoCourses = [
                     {
                         title: "Analogie : Le Matin",
                         description: "Mettez ces étapes dans le bon ordre logique pour un algorithme 'Se préparer le matin' : [S'habiller, Se lever, Prendre son petit-déjeuner]",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "1. Se lever\n2. Prendre son petit-déjeuner\n3. S'habiller",
                         hints: ["On ne s'habille généralement pas avant de sortir du lit !"]
                     }
@@ -118,7 +119,7 @@ const algoCourses = [
                     {
                         title: "L'Étiquette",
                         description: "Si vous créez une variable `vitesse` et que vous y mettez `50`. Quel est le NOM et quelle est la VALEUR ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "Le NOM est 'vitesse'. La VALEUR est '50'.",
                         hints: ["Le nom est l'étiquette sur la boîte."]
                     }
@@ -188,14 +189,16 @@ const algoCourses = [
                 objectives: ["Comprendre l'utilité des types", "Réaliser que les opérations dépendent du type"],
                 exercises: [
                     {
-                        title: "L'Intrus",
-                        description: "Laquelle de ces opérations semble illogique pour un ordinateur ? A: 5 + 5 / B: 'Bonjour' * 5 / C: 10 - 2",
-                        difficulty: "Facile",
-                        solution: "B: 'Bonjour' * 5 (Sauf dans certains langages comme Python, mais logiquement, on ne multiplie pas du texte par un nombre mathématiquement).",
-                        hints: ["Réfléchissez au sens mathématique des symboles."]
+                        title: "L'Intrus Technique",
+                        description: "Si j'essaie de calculer `\"10\" + 5` dans un langage à typage fort. Que se passe-t-il ?",
+                        difficulty: "Moyen",
+                        solution: "Une erreur de type (TypeError). L'ordinateur refuse d'additionner du texte et un nombre sans conversion explicite.",
+                        hints: ["Réfléchissez au sens des guillemets."]
                     }
                 ],
-                resources: []
+                resources: [
+                    { title: "Comprendre les Types de données (Video)", type: "video", url: "https://www.youtube.com/embed/n4XW4W_jM6k" }
+                ]
             },
             {
                 title: "Chapitre 11 : Les Entiers (Integer) : L'art de compter",
@@ -208,7 +211,7 @@ const algoCourses = [
                     {
                         title: "Le Compteur",
                         description: "Si j'ai une variable `nombreEnfants = 2.5`. Que vaudra-t-elle réellement en mémoire si c'est un Entier ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "2. La partie décimale est supprimée.",
                         hints: ["On ne peut pas avoir une moitié d'enfant !"]
                     }
@@ -262,7 +265,7 @@ const algoCourses = [
                     {
                         title: "L'Interrupteur",
                         description: "Si je veux savoir si un utilisateur a accepté les conditions d'utilisation, quel type de variable dois-je utiliser ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "Un Booléen (Vrai s'il a accepté, Faux sinon).",
                         hints: ["C'est une réponse par oui ou non."]
                     }
@@ -280,7 +283,7 @@ const algoCourses = [
                     {
                         title: "Le Calculateur",
                         description: "Si `a = 5` et `b = 10`. Que vaut `c` si `c = a + b` ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "15",
                         hints: ["Remplacez les noms par leurs valeurs."]
                     }
@@ -460,7 +463,7 @@ const algoCourses = [
                     {
                         title: "Le Quiz Final",
                         description: "Quel concept permet de ne pas écrire 1000 fois la même ligne ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "La Boucle (ou l'Itération).",
                         hints: ["C'est l'outil de répétition."]
                     }
@@ -494,7 +497,7 @@ const algoCourses = [
                     {
                         title: "L'Inventaire",
                         description: "Si je veux stocker les noms de 500 épées dans un jeu vidéo, est-il préférable d'utiliser 500 variables ou 1 tableau ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "1 tableau. C'est beaucoup plus simple à manipuler et à transporter dans le code.",
                         hints: ["Imaginez devoir écrire `epee1`, `epee2`... jusqu'à 500."]
                     }
@@ -512,7 +515,7 @@ const algoCourses = [
                     {
                         title: "Le Premier Élément",
                         description: "Dans le tableau `nombres = [10, 20, 30]`. Quel est l'index de la valeur `10` ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "0",
                         hints: ["On commence toujours par zéro."]
                     }
@@ -602,7 +605,7 @@ const algoCourses = [
                     {
                         title: "L'Efficacité",
                         description: "Si je dois calculer la TVA sur 50 produits différents, est-il mieux de copier le calcul 50 fois ou de créer une fonction `calculerTVA()` ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "Créer une fonction `calculerTVA()`. Si le taux de TVA change, on ne le modifie qu'à un seul endroit.",
                         hints: ["Pensez à la maintenance du code."]
                     }

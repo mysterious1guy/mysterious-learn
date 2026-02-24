@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Clock, Users, Star, BookOpen, CheckCircle, PlayCircle } from 'lucide-react';
 import GenericCourse from '../components/GenericCourse';
 import ComingSoon from '../components/ComingSoon';
+import VideoPlayer from '../components/VideoPlayer';
 import { coursesData } from '../courses/data.jsx';
 
 const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }) => {
@@ -218,6 +219,16 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
                                         <span>{course.rating || 0}/5</span>
                                     </div>
                                 </div>
+                            )}
+
+                            {course.motivationVideo && (
+                                <VideoPlayer
+                                    videoId={course.motivationVideo}
+                                    title={`Motivation - ${course.title}`}
+                                    courseId={course._id || course.id}
+                                    chapterId="motivation"
+                                    API_URL={API_URL}
+                                />
                             )}
 
                             <div className="mt-8">

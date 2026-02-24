@@ -12,7 +12,7 @@ const cCourses = [
         language: "c",
         isFree: true,
         tags: ["c", "backend", "fondations", "débutant", "programmation"],
-        motivationVideo: "nKIu9yen5nc", // Code.org: What Most Schools Don't Teach
+        motivationVideo: "nKIu9yen5nc",
         chapters: [
             {
                 title: "Chapitre 1 : Qu'est-ce que C ? (Le moteur sous le capot)",
@@ -25,12 +25,14 @@ const cCourses = [
                     {
                         title: "L'Ancêtre",
                         description: "Vrai ou Faux : Le C a été créé après le langage Java ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "Faux. Le C est bien plus ancien (1972) et a servi de base pour créer Java.",
                         hints: ["C'est un langage pionnier."]
                     }
                 ],
-                resources: []
+                resources: [
+                    { title: "Introduction au C (Video)", type: "video", url: "https://www.youtube.com/embed/n4XW4W_jM6k" }
+                ]
             },
             {
                 title: "Chapitre 2 : La Chaine de Compilation : Du texte au binaire",
@@ -43,7 +45,7 @@ const cCourses = [
                     {
                         title: "Le Traducteur",
                         description: "Comment appelle-t-on le logiciel qui transforme votre code C en langage machine ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "Le Compilateur (ex: GCC ou Clang).",
                         hints: ["Comme pour traduire une langue étrangère."]
                     }
@@ -61,7 +63,7 @@ const cCourses = [
                     {
                         title: "La Porte d'Entrée",
                         description: "Sans quelle fonction spéciale un programme C refuse-t-il de démarrer ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "La fonction `main()`.",
                         hints: ["C'est l'entrée principale."]
                     }
@@ -77,14 +79,16 @@ const cCourses = [
                 objectives: ["Afficher du texte simple", "Utiliser le saut de ligne \\n"],
                 exercises: [
                     {
-                        title: "Le Salut",
-                        description: "Écrivez l'instruction pour afficher 'Salut' puis passer à la ligne.",
-                        difficulty: "Trés Facile",
-                        solution: 'printf("Salut\\n");',
-                        hints: ["Utilisez les guillemets et le slash spécial."]
+                        title: "Le Salut Technique",
+                        description: "Quel est l'affichage de ce code ?\n```c\n#include <stdio.h>\nint main() {\n  printf(\"Hello\");\n  printf(\"World\");\n  return 0;\n}```",
+                        difficulty: "Moyen",
+                        solution: "HelloWorld (Collé, car il manque le \\n dans le premier printf).",
+                        hints: ["Le retour à la ligne n'est pas automatique !"]
                     }
                 ],
-                resources: []
+                resources: [
+                    { title: "Maîtriser le printf (Video)", type: "video", url: "https://www.youtube.com/embed/9Bv_8Ipxe3U" }
+                ]
             },
             {
                 title: "Chapitre 5 : La Mémoire en C : Les adresses physiques",
@@ -97,7 +101,7 @@ const cCourses = [
                     {
                         title: "La Case",
                         description: "Vrai ou Faux : En C, chaque variable possède une adresse unique en mémoire ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "Vrai.",
                         hints: ["Comme chaque maison a une adresse postale."]
                     }
@@ -115,7 +119,7 @@ const cCourses = [
                     {
                         title: "La Réservation",
                         description: "Comment déclare-t-on une variable entière nommée 'score' en C ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "`int score;`",
                         hints: ["Type d'abord, nom ensuite."]
                     }
@@ -151,7 +155,7 @@ const cCourses = [
                     {
                         title: "Le Remplissage",
                         description: "Écrivez la ligne complète pour créer une variable 'vitesse' et lui donner la valeur 50.",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "`int vitesse = 50;`",
                         hints: ["N'oubliez pas le point-virgule !"]
                     }
@@ -403,7 +407,7 @@ const cCourses = [
                     {
                         title: "La Limite Humaine",
                         description: "Si je veux afficher 'Bonjour' 1000 fois, est-il raisonnable d'écrire 1000 fois `printf` ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "Non, c'est une perte de temps et source d'erreurs.",
                         hints: ["Il doit y avoir un outil pour ça."]
                     }
@@ -421,7 +425,7 @@ const cCourses = [
                     {
                         title: "Le Cycle",
                         description: "Comment appelle-t-on le fait de recommencer un bloc de code plusieurs fois ?",
-                        difficulty: "Trés Facile",
+                        difficulty: "Facile",
                         solution: "L'itération (ou faire une boucle).",
                         hints: ["Pensez à une roue qui tourne."]
                     }

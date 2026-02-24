@@ -208,25 +208,21 @@ function App() {
                   <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />
                 </Route>
 
-                <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} onSearch={setSearchQuery} />}>
+                <Route element={<MainLayout user={user} progressions={progressions} onLogout={handleLogout} onSearch={setSearchQuery} />}>
                   <Route index element={user ? <Navigate to="/dashboard" replace /> : <HomePage API_URL={API_URL} />} />
                   <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
                   <Route path="dashboard" element={
                     user ? (
-                      user.hasCompletedOnboarding ? (
-                        <DashboardPage
-                          user={user}
-                          setUser={handleUpdateUser}
-                          favorites={favorites}
-                          toggleFavorite={handleToggleFavorite}
-                          progressions={progressions}
-                          API_URL={API_URL}
-                          setToast={setToast}
-                          searchQuery={searchQuery}
-                        />
-                      ) : (
-                        <Navigate to="/dashboard" replace />
-                      )
+                      <DashboardPage
+                        user={user}
+                        onUpdateUser={handleUpdateUser}
+                        favorites={favorites}
+                        toggleFavorite={handleToggleFavorite}
+                        progressions={progressions}
+                        API_URL={API_URL}
+                        setToast={setToast}
+                        searchQuery={searchQuery}
+                      />
                     ) : (
                       <Navigate to="/auth" replace />
                     )
