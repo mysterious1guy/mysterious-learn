@@ -1,36 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-
-// Configuration robuste pour Render
-const connectDB = async () => {
-  try {
-    const mongoURI = process.env.MONGO_URI;
-
-    if (!mongoURI) {
-      throw new Error("MONGO_URI non défini dans les variables d'environnement");
-    }
-
-    const options = {
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-      maxPoolSize: 10,
-      minPoolSize: 2,
-      maxIdleTimeMS: 30000,
-    };
-
-    if (mongoose.connection.readyState === 1) {
-      console.log('✅ Mongoose déjà connecté');
-      return true;
-    }
-
-    await mongoose.connect(mongoURI, options);
-    console.log('✅ Connexion à MongoDB réussie');
-    return true;
-  } catch (error) {
-    console.error('❌ Erreur de connexion MongoDB:', error.message);
-    return false;
-  }
-};
+const connectDB = require('./config/db');
 const Course = require('./models/Course');
 
 const coursesData = require('./data/courses/index');
@@ -39,7 +9,7 @@ async function seedCourses(closeConnection = true) {
   try {
     const isConnected = await connectDB();
 
-    if (isConnected) {
+    if (isConnected || mongoose.connection.readyState === 1) {
       // Connexion réussie - utiliser MongoDB
       console.log('🗑️ Collection courses vidée');
 
