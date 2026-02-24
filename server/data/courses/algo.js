@@ -150,6 +150,5 @@ const algoCourses = [
         ]
     }
 ];
-];
 
 module.exports = algoCourses;
