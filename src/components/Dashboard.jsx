@@ -17,30 +17,32 @@ const Dashboard = ({ user, courses, favorites, onSelectCourse, toggleFavorite, p
     // Helper to check if a course is unlocked
     const isCourseUnlocked = (item) => {
         if (!item) return true;
+
         // L'Admin a toujours accès à tout
         if (user?.role === 'admin') return true;
-        // Tous les débutants sont débloqués par défaut
-        if (item.level === 'Débutant') return true;
 
-        // Si l'utilisateur l'a débloqué individuellement (via test de placement futur)
-        if (user?.unlockedCourses?.includes(item.id)) return true;
+        // 1. Orientation est MANDATOIRE pour tout le reste
+        const orientationId = "orientation-comprendre-les-roles-des-disciplines";
+        const orientationProgress = progressions?.[orientationId]?.progress || 0;
 
-        // Déduction logique : Intermédiaire requiert le Débutant, Avancé requiert l'Intermédiaire
-        let targetLevelToCheck = '';
-        if (item.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
-        if (item.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
+        if (item.id === 'orientation') return true;
+        if (orientationProgress < 100) return false;
 
-        for (const cat of courses) {
-            if (cat.items.some(i => i.id === item.id)) {
-                // Trouver le cours pré-requis dans la même catégorie
-                const reqCourse = cat.items.find(i => i.level === targetLevelToCheck);
-                if (reqCourse) {
-                    const reqProgress = progressions?.[reqCourse.id]?.progress || 0;
-                    return reqProgress >= 100;
-                }
-            }
+        // 2. Git et Réseaux : Accessibles après avoir fini au moins UN niveau débutant d'un autre sujet
+        if (item.id === 'git' || item.id === 'network') {
+            const hasFinishedADébutant = Object.entries(progressions || {}).some(([id, data]) => {
+                if (id === orientationId) return false;
+                // On vérifie si c'est un cours de niveau débutant (par l'ID ou en cherchant dans les data)
+                // Pour simplifier ici on regarde si au moins un cours hors orientation est à 100%
+                return data.progress >= 100;
+            });
+            if (!hasFinishedADébutant) return false;
         }
-        return false;
+
+        // 3. Logic de progression par niveau (Débutant -> Moyen -> Intermédiaire -> Expert)
+        // Note: Dans le Dashboard, 'item' est le sujet global.
+        // La logique de blocage par niveau se fera à l'intérieur du composant de cours ou via les IDs.
+        return true;
     };
 
     return (

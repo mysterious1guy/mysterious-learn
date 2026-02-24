@@ -1,3 +1,6 @@
+const orientationCourse = require("./orientation");
+const gitCourses = require("./git");
+const networkCourses = require("./network");
 const algoCourses = require("./algo");
 const cCourses = require("./c");
 const pythonCourses = require("./python");
@@ -12,6 +15,9 @@ const mysqlCourses = require("./mysql");
 const reactCourses = require("./react");
 
 const allCourses = [
+    ...orientationCourse,
+    ...gitCourses,
+    ...networkCourses,
     ...algoCourses,
     ...cCourses,
     ...pythonCourses,

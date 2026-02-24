@@ -143,23 +143,39 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                     {lessons.map((lesson, idx) => {
                         const lessonId = lesson._id || lesson.id || lesson.title;
                         const isActive = activeLesson?.title === lesson.title;
+
+                        // Logic de verrouillage par niveau
+                        let isLocked = false;
+                        if (idx > 0 && !isAdmin) {
+                            const prevLesson = lessons[idx - 1];
+                            const prevLessonId = prevLesson._id || prevLesson.id || prevLesson.title;
+                            if (!isLessonCompleted(prevLessonId)) {
+                                isLocked = true;
+                            }
+                        }
+
                         return (
                             <button
                                 key={lessonId || idx}
+                                disabled={isLocked}
                                 onClick={() => {
-                                    setActiveLesson(lesson);
-                                    setShowSolutionFor(null);
+                                    if (!isLocked) {
+                                        setActiveLesson(lesson);
+                                        setShowSolutionFor(null);
+                                    }
                                 }}
-                                className={`shrink-0 md:w-full text-left p-2 md:p-3 rounded-xl flex items-center gap-3 transition min-w-[120px] md:min-w-0 ${isActive ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50 ring-1 ring-blue-500/20 shadow-lg shadow-blue-500/10' : 'hover:bg-gray-900 text-white/60 hover:text-white border border-transparent'}`}
+                                className={`shrink-0 md:w-full text-left p-2 md:p-3 rounded-xl flex items-center gap-3 transition min-w-[120px] md:min-w-0 ${isActive ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50 ring-1 ring-blue-500/20 shadow-lg shadow-blue-500/10' : isLocked ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-gray-900 text-white/60 hover:text-white border border-transparent'}`}
                             >
                                 {isLessonCompleted(lessonId) ? (
                                     <CheckCircle size={16} className="text-green-500 shrink-0" />
+                                ) : isLocked ? (
+                                    <Lock size={16} className="text-gray-500 shrink-0" />
                                 ) : (
                                     <div className={`w-5 h-5 rounded-full border text-[10px] flex items-center justify-center shrink-0 ${isActive ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-700 bg-gray-900 text-gray-400'}`}>
                                         {idx + 1}
                                     </div>
                                 )}
-                                <span className="text-xs md:text-sm font-bold truncate">{lesson.title}</span>
+                                <span className={`text-xs md:text-sm font-bold truncate ${isLocked ? 'text-gray-500' : ''}`}>{lesson.title}</span>
                             </button>
                         )
                     })}
