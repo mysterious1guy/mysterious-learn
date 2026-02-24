@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, Code, Award, CheckCircle, Trophy, Medal, Star, Flame, Loader2 } from 'lucide-react';
+import { Briefcase, Code, Award, CheckCircle, Trophy, Medal, Star, Flame, Loader2, ArrowRight, Lock, Plus, Calendar, X } from 'lucide-react';
 import AIAssistant from '../components/AIAssistant';
 
 const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
