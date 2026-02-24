@@ -1,146 +1,82 @@
 const htmlCourses = [
     {
         id: "html-niveau-d-butant",
-        title: "HTML - Niveau Débutant",
-        description: "L'ossature fondamentale du Web. Maîtrisez la syntaxe, la sémantique de base et l'imbrication des balises pour construire des documents robustes.",
-        category: "Web",
+        title: "HTML5 - Niveau Débutant",
+        description: "Le squelette du Web. Apprenez à structurer vos pages.",
+        category: "Programmation",
         level: "Débutant",
-        duration: "15 heures",
-        image: "https://images.unsplash.com/photo-1616469829581-73993eb86b02?w=800&q=80",
+        duration: "20 heures",
+        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
         rating: 4.8,
-        students: 42000,
-        language: "french",
+        language: "html",
         isFree: true,
-        tags: ["HTML", "Web", "Débutant", "Architecture", "DOM"],
+        tags: ["html", "web", "débutant"],
         chapters: [
-            {
-                title: "1. Structure & Sémantique de base",
-                description: "Comprendre l'anatomie d'un document HTML5 et les balises textuelles.",
-                order: 1,
-                duration: "8 heures",
-                content: "Le HTML est le squelette du web. Un document commence par `<!DOCTYPE html>`. On utilise `<h1>` pour les titres et `<p>` pour les paragraphes. La sémantique est vitale pour le SEO et l'accessibilité.",
-                objectives: ["Écrire le boilerplate HTML5", "Utiliser les balises de titre et paragraphes", "Comprendre le head vs body"],
-                exercises: [
-                    {
-                        title: "Anatomie Minimale",
-                        description: "Créez un document HTML5 avec 'Mysterious' en titre.",
-                        difficulty: "Facile",
-                        solution: "<!DOCTYPE html><html><head><title>Mysterious</title></head><body><h1>Hello</h1></body></html>",
-                        hints: ["Structure standard."]
-                    }
-                ],
-                resources: []
-            },
-            {
-                title: "2. Liens & Médias",
-                description: "Apprenez à lier des documents et à intégrer des images.",
-                order: 2,
-                duration: "7 heures",
-                content: "L'essence du web est le lien hypertexte via `<a>`. Pour les images, on utilise `<img>` avec l'attribut `alt` obligatoire pour l'accessibilité.",
-                objectives: ["Maîtriser les liens relatifs et absolus", "Intégrer des images avec Alt", "Ouvrir des liens dans de nouveaux onglets"],
-                resources: []
-            }
+            { title: "1. Vision Globale : Le Squelette", description: "Le rôle du HTML.", order: 1, content: "HTML définit le contenu de la page.", objectives: ["Comprendre le rôle du HTML"] },
+            { title: "2. Concept : Les Balises", description: "Ouvrir et fermer l'info.", order: 2, content: "Tout est balise : <h1>, <p>, <a>.", objectives: ["Maîtriser la syntaxe"] },
+            { title: "3. Exemple Concret : Titres", description: "Hiérarchie du contenu.", order: 3, content: "Utilisez h1 à h6.", objectives: ["Structurer du texte"] },
+            { title: "4. Cas Pratique : Images", description: "Illustrer la page.", order: 4, content: "Utilisez <img src='...'>.", objectives: ["Intégrer des médias"] },
+            { title: "5. Exercice : Premier CV", description: "Projet de synthèse.", order: 5, content: "Créez une page avec votre nom et parcours.", objectives: ["Appliquer les bases"] }
+        ]
+    },
+    {
+        id: "html-niveau-moyen",
+        title: "HTML5 - Niveau Moyen",
+        description: "Formulaires et Tableaux. Gérez les données utilisateur.",
+        category: "Programmation",
+        level: "Moyen",
+        duration: "25 heures",
+        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+        rating: 4.8,
+        language: "html",
+        isFree: true,
+        tags: ["html", "forms", "moyen"],
+        chapters: [
+            { title: "1. Vision Globale : L'Interactivité", description: "Envoyer des données.", order: 1, content: "Les formulaires sont le canal de communication.", objectives: ["Comprendre le workflow client-serveur"] },
+            { title: "2. Concept : Input types", description: "Texte, Password, Email.", order: 2, content: "Choisissez le bon type pour chaque donnée.", objectives: ["Maîtriser les types d'input"] },
+            { title: "3. Exemple Concret : Formulaire d'inscription", description: "Un cas réel.", order: 3, content: "Regroupez les champs dans un <form>.", objectives: ["Structurer un formulaire"] },
+            { title: "4. Cas Pratique : Les Tableaux", description: "Afficher des data complexes.", order: 4, content: "Utilisez <table>, <tr>, <td>.", objectives: ["Gérer l'affichage tabulaire"] },
+            { title: "5. Exercice : Formulaire de contact complet", description: "Validation basique.", order: 5, content: "Créez un formulaire avec textarea et select.", objectives: ["Synthétiser les entrées"] }
         ]
     },
     {
         id: "html-niveau-interm-diaire",
-        title: "HTML - Niveau Moyen",
-        description: "L'ingénierie de la page Web. Sémantique HTML5 avancée et structures tabulaires.",
-        category: "Web",
-        level: "Moyen",
-        duration: "20 heures",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
-        rating: 4.9,
-        students: 28000,
-        language: "french",
-        isFree: true,
-        tags: ["HTML5", "Sémantique", "Tableaux", "Intermédiaire"],
-        chapters: [
-            {
-                title: "1. Sémantique Structurelle HTML5",
-                description: "Utilisez header, nav, main, section et article avec précision.",
-                order: 1,
-                duration: "10 heures",
-                content: "Le HTML5 apporte des balises de structure qui ont du sens pour les moteurs de recherche. Ne faites pas de 'div-itis'.",
-                objectives: ["Structurer une page complexe", "Distinguer section et article", "Optimiser le document outline"],
-                resources: []
-            },
-            {
-                title: "2. Tableaux & Listes Complexes",
-                description: "Maîtrisez les données tabulaires et les listes imbriquées.",
-                order: 2,
-                duration: "10 heures",
-                content: "Le tag `<table>` est réservé aux données, pas au design. Utilisez thead, tbody et tfoot pour une structure robuste.",
-                objectives: ["Créer des tableaux accessibles", "Utiliser colspan et rowspan", "Manipuler les listes descriptives <dl>"],
-                resources: []
-            }
-        ]
-    },
-    {
-        id: "html-niveau-avanc",
-        title: "HTML - Niveau Intermédiaire",
-        description: "Maîtrisez les interactions utilisateur complexes : Formulaires transactionnels et multi-média avancé.",
-        category: "Web",
+        title: "HTML5 - Niveau Intermédiaire",
+        description: "Sémantique et Accessibilité. Le Web pour tous.",
+        category: "Programmation",
         level: "Intermédiaire",
-        duration: "25 heures",
+        duration: "30 heures",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
-        rating: 4.9,
-        students: 19500,
-        language: "french",
+        rating: 4.8,
+        language: "html",
         isFree: true,
-        tags: ["Formulaires", "Vidéo", "Audio", "Avancé"],
+        tags: ["html", "seo", "accessibility"],
         chapters: [
-            {
-                title: "1. Formulaires & Validation Native",
-                description: "Construisez des entrées utilisateur robustes et sécurisées.",
-                order: 1,
-                duration: "15 heures",
-                content: "Les formulaires sont le pont entre l'utilisateur et le serveur. Utilisez les types d'input HTML5 (email, date, number) et la validation par Regex native avec l'attribut `pattern`.",
-                objectives: ["Maîtriser tous les types d'input", "Utiliser labels et fieldsets", "Validation sans JavaScript"],
-                resources: []
-            },
-            {
-                title: "2. Multimédia & Embedding",
-                description: "Intégrez des vidéos, de l'audio et des iframes sandboxés.",
-                order: 2,
-                duration: "10 heures",
-                content: "Utilisez `<video>` et `<audio>` avec des formats multiples pour le fallback. Maîtrisez les IFrames avec l'attribut `sandbox` pour la sécurité.",
-                objectives: ["Intégrer des lecteurs natifs", "Sécuriser les Iframes", "Gérer les sources multiples"],
-                resources: []
-            }
+            { title: "1. Vision Globale : Le Web Sémantique", description: "Aider les robots et les humains.", order: 1, content: "Utilisez <main>, <article>, <section>.", objectives: ["Comprendre la sémantique"] },
+            { title: "2. Concept : Accessibilité (ARIA)", description: "Inclure tout le monde.", order: 2, content: "Apprenez les rôles ARIA et les labels alternatifs.", objectives: ["Rendre le web accessible"] },
+            { title: "3. Exemple Concret : Un article optimisé", description: "Structure parfaite.", order: 3, content: "Combinez balises sémantiques et attributs alt.", objectives: ["Améliorer le SEO technique"] },
+            { title: "4. Cas Pratique : Audio & Vidéo", description: "Multi-médias natif.", order: 4, content: "Utilisez les balises <video> et <audio>.", objectives: ["Intégrer du multimédia sans plugin"] },
+            { title: "5. Exercice : Audit d'une page", description: "Améliorer l'existant.", order: 5, content: "Prenez une page simple et rajoutez-y la sémantique manquante.", objectives: ["Optimiser une structure"] }
         ]
     },
     {
         id: "html-niveau-expert",
-        title: "HTML - Niveau Expert",
-        description: "L'ingénierie Frontend Absolue. SEO industriel, Accessibilité A11Y ARIA et APIs HTML5 natives.",
-        category: "Web",
+        title: "HTML5 - Niveau Expert",
+        description: "APIs Web et Canvas. Repoussez les limites du navigateur.",
+        category: "Programmation",
         level: "Expert",
-        duration: "30 heures",
+        duration: "35 heures",
         image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
         rating: 5.0,
-        language: "french",
+        language: "html",
         isFree: true,
-        tags: ["SEO", "ARIA", "Canvas", "Expert"],
+        tags: ["html", "canvas", "api"],
         chapters: [
-            {
-                title: "1. SEO & OpenGraph",
-                description: "Optimisez la visibilité de vos pages pour les robots et les réseaux sociaux.",
-                order: 1,
-                duration: "15 heures",
-                content: "Maîtrisez les meta balises head, le link canonical, et le protocole OpenGraph pour un partage parfait sur les réseaux sociaux.",
-                objectives: ["SEO technique avancé", "Configuration OpenGraph complète", "Optimisations head critiques"],
-                resources: []
-            },
-            {
-                title: "2. Accessibilité & APIs Natives",
-                description: "ARIA, Canvas et Dialog : repoussez les limites du navigateur.",
-                order: 2,
-                duration: "15 heures",
-                content: "Utilisez ARIA pour les lecteurs d'écran. Découvrez le `<canvas>` pour le dessin 2D/3D et la balise `<dialog>` pour les modales natives.",
-                objectives: ["Rendre tout composant accessible", "S'initier au Canvas", "Utiliser les APIs HTML5 modernes"],
-                resources: []
-            }
+            { title: "1. Vision Globale : Le HTML5 Programmatique", description: "Le navigateur est un OS.", order: 1, content: "Découvrez les APIs Geolocation, Drag and Drop, Web Storage.", objectives: ["Exploiter les APIs navigateur"] },
+            { title: "2. Concept : Le Canvas 2D", description: "Dessiner en code.", order: 2, content: "Utilisez <canvas> pour générer des graphiques en JS.", objectives: ["Maîtriser le dessin programmable"] },
+            { title: "3. Exemple Concret : Un graphique dynamique", description: "Visualisation de données.", order: 3, content: "Tracez une ligne de progression sur un canvas.", objectives: ["Lier données et visuel"] },
+            { title: "4. Cas Pratique : SVG vs Canvas", description: "Choisir le bon format.", order: 4, content: "Découvrez quand utiliser le vectoriel (SVG) ou le matriciel.", objectives: ["Optimiser les graphiques web"] },
+            { title: "5. Exercice : Mini-moteur de dessin", description: "Synthèse de l'expertise.", order: 5, content: "Créez un espace où l'on peut dessiner à la souris sur un canvas.", objectives: ["Bâtir une application HTML5 riche"] }
         ]
     }
 ];

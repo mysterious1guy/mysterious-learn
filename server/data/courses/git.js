@@ -1,97 +1,51 @@
 const gitCourses = [
     {
-        id: "git-niveau-d-butant",
-        title: "Git & GitHub - Niveau Débutant",
-        description: "Maîtrisez le voyage dans le temps pour votre code. Apprenez le versionnage local avec Git et la collaboration avec GitHub.",
+        id: "git-fondamentaux-pratiques",
+        title: "Git & GitHub - Fondamentaux Pratiques",
+        description: "Maîtrisez le versionnage et la collaboration. Un module unique, concret et orienté action.",
         category: "Outils",
-        level: "Débutant",
-        duration: "10 heures",
-        image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
-        rating: 4.8,
-        language: "french",
-        isFree: true,
-        tags: ["git", "github", "débutant"],
-        chapters: [
-            {
-                title: "1. Vos premiers Commits",
-                description: "Initialiser un projet et sauvegarder son état.",
-                order: 1,
-                duration: "5 heures",
-                content: "Découvrez `git init`, `git add` et `git commit`. Apprenez à voir l'historique avec `git log`. Comprenez pourquoi Git est l'outil n°1 du développeur moderne.",
-                objectives: ["Initialiser un repo", "Faire un commit propre"],
-                resources: []
-            }
-        ]
-    },
-    {
-        id: "git-niveau-moyen",
-        title: "Git & GitHub - Niveau Moyen",
-        description: "L'art des branches. Apprenez à travailler sur plusieurs fonctionnalités en parallèle sans tout casser.",
-        category: "Outils",
-        level: "Moyen",
-        duration: "12 heures",
-        image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
-        rating: 4.8,
-        language: "french",
-        isFree: true,
-        tags: ["branches", "merge", "git"],
-        chapters: [
-            {
-                title: "1. Branches & Merges",
-                description: "Naviguer entre les versions.",
-                order: 1,
-                duration: "12 heures",
-                content: "Maîtrisez `git branch` et `git checkout`. Apprenez à fusionner vos travaux via `git merge` et à comprendre la philosophie des branches de fonctionnalité.",
-                objectives: ["Créer et fusionner des branches", "Gérer les conflits simples"],
-                resources: []
-            }
-        ]
-    },
-    {
-        id: "git-niveau-interm-diaire",
-        title: "Git & GitHub - Niveau Intermédiaire",
-        description: "Collaboration et Pull Requests. Maîtrisez le travail en équipe sur GitHub.",
-        category: "Outils",
-        level: "Intermédiaire",
+        level: "Débutant", // On garde un niveau technique pour la cohérence UI mais le titre dit "Fondamentaux"
         duration: "15 heures",
         image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
         rating: 4.9,
         language: "french",
         isFree: true,
-        tags: ["GitHub", "Collaboration", "Remote"],
+        tags: ["git", "github", "collaboration"],
         chapters: [
             {
-                title: "1. Travailler à plusieurs",
-                description: "Push, Pull et Pull Requests.",
+                title: "1. Introduction & Workflow",
+                description: "Pourquoi Git est indispensable.",
                 order: 1,
-                duration: "15 heures",
-                content: "Apprenez à lier votre projet local à GitHub via `git remote`. Maîtrisez le cycle `push`/`pull` et apprenez à ouvrir votre première Pull Request pour collaborer.",
-                objectives: ["Utiliser un dépôt distant", "Comprendre le workflow PR"],
-                resources: []
-            }
-        ]
-    },
-    {
-        id: "git-niveau-expert",
-        title: "Git & GitHub - Niveau Expert",
-        description: "Workflow Industriel. Rebase, Cherry-pick et résolution de conflits complexes.",
-        category: "Outils",
-        level: "Expert",
-        duration: "20 heures",
-        image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
-        rating: 5.0,
-        language: "french",
-        isFree: true,
-        tags: ["Rebase", "GitFlow", "Expert"],
-        chapters: [
+                content: "Git est l'outil de versionnage n°1. Il permet de sauvegarder chaque étape de votre code et de collaborer sans écraser le travail des autres.",
+                objectives: ["Comprendre le concept de versioning"]
+            },
             {
-                title: "1. Git Avancé",
-                description: "Nettoyer l'historique et réparer les erreurs.",
-                order: 1,
-                duration: "20 heures",
-                content: "Maîtrisez `git rebase` pour un historique propre. Apprenez à utiliser `git cherry-pick` et `git stash`. Découvrez les workflows industriels comme GitFlow.",
-                objectives: ["Maîtriser le Rebase", "Gérer des conflits complexes"],
-                resources: []
+                title: "2. Concept : Commits & Branches",
+                description: "Les briques de Git.",
+                order: 2,
+                content: "Le commit est un instantané de votre code. La branche est une ligne de développement parallèle. `git init`, `git add`, `git commit` sont vos premiers outils.",
+                objectives: ["Maîtriser le cycle local"]
+            },
+            {
+                title: "3. Exemple Concret : Premier Repo",
+                description: "Initialiser et sauvegarder un projet.",
+                order: 3,
+                content: "Création d'un dossier, `git init`, création de `index.html`, `git add .`, `git commit -m 'Premier commit'`. Votre historique commence ici.",
+                objectives: ["Pratiquer le workflow local"]
+            },
+            {
+                title: "4. Cas Pratique : Collaboration sur GitHub",
+                description: "Lier local et distant.",
+                order: 4,
+                content: "Configuration d'un remote (`git remote add origin`), `git push` vers GitHub. Découverte de l'interface GitHub et des Pull Requests.",
+                objectives: ["Utiliser GitHub comme serveur de partage"]
+            },
+            {
+                title: "5. Exercice : Résoudre un conflit",
+                description: "Gérer les problèmes de fusion.",
+                order: 5,
+                content: "Simulez une modification sur la même ligne dans deux branches. Utilisez `git merge` et réparez manuellement le conflit affiché par Git.",
+                objectives: ["Gérer les conflits de fusion"]
             }
         ]
     }

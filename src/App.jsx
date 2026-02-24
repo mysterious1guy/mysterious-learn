@@ -32,6 +32,7 @@ import Particles from './Particles';
 import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
+import UserGuide from './components/UserGuide';
 
 import { API_URL } from './config';
 import { SoundProvider } from './context/SoundContext';
@@ -40,6 +41,7 @@ function App() {
   const [user, setUser] = useLocalStorage('user', null);
   const [toast, setToast] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showGuide, setShowGuide] = useState(false);
   const [progressions, setProgressions] = useState({});
   const [favorites, setFavorites] = useLocalStorage('favorites', []);
   const { setUserCookie, getUserCookie, removeUserCookie, setProgressCookie, getProgressCookie } = useCookies();
@@ -163,6 +165,12 @@ function App() {
     };
   }, [user]);
 
+  useEffect(() => {
+    const handleOpenGuide = () => setShowGuide(true);
+    window.addEventListener('open-user-guide', handleOpenGuide);
+    return () => window.removeEventListener('open-user-guide', handleOpenGuide);
+  }, []);
+
   const handleToggleFavorite = (id) => {
     const newFavs = favorites.includes(id)
       ? favorites.filter(f => f !== id)
@@ -181,6 +189,7 @@ function App() {
 
               <AnimatePresence>
                 {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+                {user && <UserGuide isOpen={showGuide} onClose={() => setShowGuide(false)} />}
               </AnimatePresence>
 
               <Routes>

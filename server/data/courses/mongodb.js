@@ -2,133 +2,81 @@ const mongodbCourses = [
     {
         id: "mongodb-niveau-d-butant",
         title: "MongoDB - Niveau Débutant",
-        description: "Libérez-vous du schéma rigide. Apprenez à stocker des données comme des objets JavaScript dans la base NoSQL la plus populaire au monde.",
-        category: "Bases de données",
+        description: "Flexibilité du NoSQL.",
+        category: "Base de Données",
         level: "Débutant",
-        duration: "15 heures",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+        duration: "25 heures",
+        image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?w=800&q=80",
         rating: 4.8,
-        language: "french",
+        language: "javascript",
         isFree: true,
-        tags: ["NoSQL", "MongoDB", "JSON", "BSON"],
+        tags: ["mongodb", "nosql"],
         chapters: [
-            {
-                title: "1. Philosophie NoSQL & Document JSON",
-                description: "Comprenez pourquoi MongoDB est différent de SQL.",
-                order: 1,
-                duration: "7 heures",
-                content: "MongoDB stocke des documents BSON (Binary JSON). Contrairement aux tables, les documents peuvent avoir des structures différentes. Apprenez à modéliser sans contraintes de colonnes.",
-                objectives: ["Comprendre le concept de Document", "Différencier SQL et NoSQL", "Installer et lancer Mongosh"],
-                resources: []
-            },
-            {
-                title: "2. CRUD de base (Insert/Find)",
-                description: "Vos premières opérations de lecture et d'écriture.",
-                order: 2,
-                duration: "8 heures",
-                content: "Apprenez `insertOne`, `insertMany` et maîtrisez le moteur de recherche `find()`. Utilisez des filtres simples pour extraire vos premières données.",
-                objectives: ["Insérer des documents", "Rechercher avec filtres", "Utiliser l'ID unique _id"],
-                resources: []
-            }
+            { title: "1. Vision Globale : NoSQL vs SQL", description: "Le choix de la vitesse.", order: 1, content: "MongoDB stocke du JSON (BSON).", objectives: ["Comprendre le NoSQL"] },
+            { title: "2. Concept : Documents", description: "Objets flexibles.", order: 2, content: "Utilisez {}, pas de colonnes fixes.", objectives: ["Maîtriser le format document"] },
+            { title: "3. Exemple Concret : Premier insert", description: "insertOne().", order: 3, content: "Créez votre première fiche produit.", objectives: ["Manipuler les documents"] },
+            { title: "4. Cas Pratique : Filtre simple", description: "Trouver par clé.", order: 4, content: "Utilisez .find({ price: 20 }).", objectives: ["Filtrer les data"] },
+            { title: "5. Exercice : Liste d'utilisateurs", description: "CRUD express.", order: 5, content: "Gérez une collection simple.", objectives: ["Récurrences CRUD NoSQL"] }
+        ]
+    },
+    {
+        id: "mongodb-niveau-moyen",
+        title: "MongoDB - Niveau Moyen",
+        description: "Requêtes avancées et Aggregations.",
+        category: "Base de Données",
+        level: "Moyen",
+        duration: "30 heures",
+        image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?w=800&q=80",
+        rating: 4.8,
+        language: "javascript",
+        isFree: true,
+        tags: ["mongodb", "aggregation"],
+        chapters: [
+            { title: "1. Vision Globale : Le Pipeline", description: "Transformer la donnée.", order: 1, content: "L'aggregation est le moteur de stats de Mongo.", objectives: ["Comprendre les pipelines"] },
+            { title: "2. Concept : $match & $group", description: "Filtrer et agréger.", order: 2, content: "Calculez des moyennes en un éclair.", objectives: ["Maîtriser les opérateurs"] },
+            { title: "3. Exemple Concret : Stats de vente", description: "Analyse en direct.", order: 3, content: "Calculez le CA total par catégorie.", objectives: ["Transformer les data complexes"] },
+            { title: "4. Cas Pratique : Indexation Géo", description: "Trouver autour de soi.", order: 4, content: "Utilisez les index 2dsphere pour la géolocalisation.", objectives: ["Utiliser les index spéciaux"] },
+            { title: "5. Exercice : Dashboard analytique", description: "Synthèse data.", order: 5, content: "Produisez un set de données prêt pour un graphique.", objectives: ["Mapper les aggregations"] }
         ]
     },
     {
         id: "mongodb-niveau-interm-diaire",
-        title: "MongoDB - Niveau Moyen",
-        description: "Manipulez les données en volume. Maîtrisez les opérateurs de mise à jour et la structuration complexe des documents.",
-        category: "Bases de données",
-        level: "Moyen",
-        duration: "20 heures",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
-        rating: 4.9,
-        language: "french",
-        isFree: true,
-        tags: ["NoSQL", "Querying", "CRUD"],
-        chapters: [
-            {
-                title: "1. Update & Delete Avancé",
-                description: "Modifiez vos documents avec précision chirurgicale.",
-                order: 1,
-                duration: "10 heures",
-                content: "Utilisez les opérateurs `$set`, `$inc`, `$push` et `$pull`. Apprenez à modifier des tableaux imbriqués et à supprimer proprement des lots de données.",
-                objectives: ["Mettre à jour des champs spécifiques", "Manipuler des tableaux avec $push", "Utiliser upsert"],
-                resources: []
-            },
-            {
-                title: "2. Modélisation : Embed vs Reference",
-                description: "Lien ou Inclusion ? L'art de la structure NoSQL.",
-                order: 2,
-                duration: "10 heures",
-                content: "Apprenez quand imbriquer des documents (Embedding) et quand utiliser des références (Linking). C'est la base de la performance MongoDB.",
-                objectives: ["Choisir la bonne stratégie de données", "Éviter les jointures excessives", "Comprendre les limites de taille (16Mo)"],
-                resources: []
-            }
-        ]
-    },
-    {
-        id: "mongodb-niveau-avanc",
         title: "MongoDB - Niveau Intermédiaire",
-        description: "L'art du traitement massif. Maîtrisez l'Aggregation Framework pour transformer vos données en informations stratégiques.",
-        category: "Bases de données",
+        description: "Performances et Modélisation.",
+        category: "Base de Données",
         level: "Intermédiaire",
-        duration: "25 heures",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+        duration: "40 heures",
+        image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?w=800&q=80",
         rating: 4.9,
-        language: "french",
+        language: "javascript",
         isFree: true,
-        tags: ["Aggregation", "Pipelines", "ETL"],
+        tags: ["mongodb", "performance"],
         chapters: [
-            {
-                title: "1. Aggregation Framework",
-                description: "Le pipeline de traitement de données ultra-puissant.",
-                order: 1,
-                duration: "15 heures",
-                content: "Le pipeline d'agrégation est l'outil n°1 de MongoDB. Utilisez `$match`, `$group`, `$sort` et `$project` pour créer des rapports complexes en une seule requête.",
-                objectives: ["Construire des pipelines multiphases", "Grouper des résultats par catégories", "Transformer les données à la volée"],
-                resources: []
-            },
-            {
-                title: "2. Indexation & Performance",
-                description: "Rendez vos requêtes instantanées sur des millions de documents.",
-                order: 2,
-                duration: "10 heures",
-                content: "Comprenez comment MongoDB cherche les données. Créez des index simples et composés. Apprenez à lire un `explain()` pour diagnostiquer les lenteurs.",
-                objectives: ["Créer des index performants", "Utiliser explain()", "Éviter les scans de collection complets"],
-                resources: []
-            }
+            { title: "1. Vision Globale : Modélisation", description: "Embedded vs Reference.", order: 1, content: "Comment lier les documents proprement ?", objectives: ["Choisir sa structure"] },
+            { title: "2. Concept : Index de performance", description: "Accélérer les lectures.", order: 2, content: "Maîtrisez les index composés.", objectives: ["Éviter les COLLSCAN"] },
+            { title: "3. Exemple Concret : Optimisation de recherche", description: "Explain() magique.", order: 3, content: "Analysez pourquoi une requête est lente.", objectives: ["Profiler ses requêtes"] },
+            { title: "4. Cas Pratique : Transactions Multi-doc", description: "Solidité ACID.", order: 4, content: "Gérez plusieurs collections de manière atomique.", objectives: ["Garantir l'intégrité"] },
+            { title: "5. Exercice : Refacto de structure", description: "Amélioration continue.", order: 5, content: "Passez d'une structure rigide à une structure scalable.", objectives: ["Faire évoluer son schéma"] }
         ]
     },
     {
         id: "mongodb-niveau-expert",
         title: "MongoDB - Niveau Expert",
-        description: "Infrastructure et Architecture Cloud. Maîtrisez le Sharding, le Replica Set et la sécurité industrielle.",
-        category: "Bases de données",
+        description: "Administration, Sharding et Réplication.",
+        category: "Base de Données",
         level: "Expert",
-        duration: "30 heures",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+        duration: "50 heures",
+        image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?w=800&q=80",
         rating: 5.0,
-        language: "french",
+        language: "javascript",
         isFree: true,
-        tags: ["Scaling", "Sharding", "ReplicaSet", "Security"],
+        tags: ["mongodb", "sharding", "expert"],
         chapters: [
-            {
-                title: "1. Haute Disponibilité (Replica Sets)",
-                description: "Assurez la survie de vos données en cas de panne serveur.",
-                order: 1,
-                duration: "15 heures",
-                content: "Apprenez à configurer un Replica Set. Comprenez l'élection du Primary et comment les Secondaries assurent la redondance et la lecture.",
-                objectives: ["Configurer un cluster répliqué", "Gérer le failover", "Optimiser les préférences de lecture"],
-                resources: []
-            },
-            {
-                title: "2. Scalabilité Horizontale (Sharding)",
-                description: "Distribuez vos données sur des dizaines de serveurs.",
-                order: 2,
-                duration: "15 heures",
-                content: "Maîtrisez le Sharding pour dépasser les limites d'un seul serveur. Apprenez à choisir une Shard Key efficace pour éviter les 'hotspots'.",
-                objectives: ["Comprendre l'architecture Shard", "Choisir une Shard Key", "Gérer l'équilibrage des données"],
-                resources: []
-            }
+            { title: "1. Vision Globale : High Availability", description: "Ne jamais s'arrêter.", order: 1, content: "Apprenez les Replica Sets.", objectives: ["Assurer la continuité"] },
+            { title: "2. Concept : Sharding (Horiz. Scaling)", description: "Infini de données.", order: 2, content: "Découpez les data sur plusieurs serveurs.", objectives: ["Passer à l'échelle massive"] },
+            { title: "3. Exemple Concret : Cluster Atlas pro", description: "Cloud management.", order: 3, content: "Gérez un cluster distribué mondialement.", objectives: ["Maîtriser MongoDB Atlas"] },
+            { title: "4. Cas Pratique : Backup & Restore pro", description: "Sécurité maximale.", order: 4, content: "Gérez les snapshots et le point-in-time recovery.", objectives: ["Plan de reprise d'activité"] },
+            { title: "5. Exercice : Simulation de panne massive", description: "Résilience.", order: 5, content: "Provoquez une bascule de serveur Master vers Slave.", objectives: ["Valider la résilience système"] }
         ]
     }
 ];

@@ -15,8 +15,8 @@ const seedCourses = require('./seedCourses');
 connectDB().then(async () => {
   try {
     const count = await Course.countDocuments();
-    if (count !== 57) {
-      console.log(`⚙️ Base de données désynchronisée (${count} cours trouvés, 57 obligatoires). Lancement de l'auto-seeding...`);
+    if (count !== 50) {
+      console.log(`⚙️ Base de données désynchronisée (${count} cours trouvés, 50 obligatoires). Lancement de l'auto-seeding...`);
       await Course.deleteMany({}); // Purger l'existant
       await seedCourses(false);
     }

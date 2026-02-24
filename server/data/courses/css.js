@@ -1,136 +1,82 @@
 const cssCourses = [
     {
         id: "css-niveau-d-butant",
-        title: "CSS - Niveau Débutant",
-        description: "Peignez le Web. Comprenez la cascade, l'héritage, et le modèle de boîte fondamental pour donner vie à vos structures HTML.",
-        category: "Web",
+        title: "CSS3 - Niveau Débutant",
+        description: "L'art du design web. Apprenez à styliser vos pages.",
+        category: "Programmation",
         level: "Débutant",
-        duration: "18 heures",
+        duration: "20 heures",
         image: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
         rating: 4.8,
-        students: 35000,
-        language: "french",
+        language: "css",
         isFree: true,
-        tags: ["CSS", "Design", "Débutant", "Box Model"],
+        tags: ["css", "design"],
         chapters: [
-            {
-                title: "1. Cascade, Sélecteurs & Couleurs",
-                description: "Le principe fondamental du CSS : cibler pour styliser.",
-                order: 1,
-                duration: "9 heures",
-                content: "Le CSS (Cascading Style Sheets) gère l'apparence. Apprenez à cibler des éléments via balises, classes (.) et IDs (#). Maîtrisez la cascade et les couleurs (hex, rgb, hsl).",
-                objectives: ["Lier un fichier CSS", "Maîtriser les sélecteurs de base", "Utiliser les couleurs et la typographie"],
-                resources: []
-            },
-            {
-                title: "2. Le Modèle de Boîte (Box Model)",
-                description: "Padding, Border, Margin : le dogme dimensionnel du Web.",
-                order: 2,
-                duration: "9 heures",
-                content: "Tout élément est un rectangle. Apprenez à gérer l'espace intérieur (padding), la bordure (border) et l'espace extérieur (margin). Utilisez `box-sizing: border-box` pour éviter les maux de tête.",
-                objectives: ["Comprendre le calcul des dimensions", "Appliquer des bordures et arrondis", "Maîtriser l'espacement"],
-                resources: []
-            }
+            { title: "1. Vision Globale : Le Peintre", description: "Le rôle du CSS.", order: 1, content: "Le CSS gère l'apparence (couleurs, polices).", objectives: ["Comprendre le rôle du CSS"] },
+            { title: "2. Concept : Les Sélecteurs", description: "Cibler vos éléments.", order: 2, content: "Ciblez par balise, classe (.) ou ID (#).", objectives: ["Maîtriser le ciblage"] },
+            { title: "3. Exemple Concret : Couleurs & Polices", description: "Premier style.", order: 3, content: "Changez le background et la color d'un texte.", objectives: ["Appliquer des styles simples"] },
+            { title: "4. Cas Pratique : Box Model", description: "Marges et Bordures.", order: 4, content: "Comprenez margin, border et padding.", objectives: ["Gérer l'espacement"] },
+            { title: "5. Exercice : Mise en page texte", description: "Synthèse design.", order: 5, content: "Stylez un article entier proprement.", objectives: ["Appliquer les bases du design"] }
+        ]
+    },
+    {
+        id: "css-niveau-moyen",
+        title: "CSS3 - Niveau Moyen",
+        description: "Flexbox et Positionnement.",
+        category: "Programmation",
+        level: "Moyen",
+        duration: "25 heures",
+        image: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
+        rating: 4.8,
+        language: "css",
+        isFree: true,
+        tags: ["css", "flexbox"],
+        chapters: [
+            { title: "1. Vision Globale : Le Layout", description: "Aligner les éléments.", order: 1, content: "Flexbox a révolutionné le positionnement web.", objectives: ["Comprendre les containers"] },
+            { title: "2. Concept : Justify & Align", description: "Centrer en un clic.", order: 2, content: "Utilisez justify-content et align-items.", objectives: ["Maîtriser Flexbox"] },
+            { title: "3. Exemple Concret : Barre de navigation", description: "Un classique.", order: 3, content: "Créez une navbar avec logo à gauche et liens à droite.", objectives: ["Bâtir un menu moderne"] },
+            { title: "4. Cas Pratique : Position Absolute & Relative", description: "Superposer les éléments.", order: 4, content: "Apprenez à sortir du flux normal de la page.", objectives: ["Maîtriser le positionnement"] },
+            { title: "5. Exercice : Galerie de cartes", description: "Synthèse Flex.", order: 5, content: "Affichez 3 cartes de manière responsive.", objectives: ["Appliquer le layout moderne"] }
         ]
     },
     {
         id: "css-niveau-interm-diaire",
-        title: "CSS - Niveau Moyen",
-        description: "Orchestrez l'architecture et la structuration géométrique. Maîtrisez Flexbox et les positionnements hors-flux.",
-        category: "Web",
-        level: "Moyen",
-        duration: "24 heures",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
-        rating: 4.9,
-        students: 22000,
-        language: "french",
-        isFree: true,
-        tags: ["Flexbox", "Positionnement", "Layouts"],
-        chapters: [
-            {
-                title: "1. Flexbox : L'alignement divin",
-                description: "Le layout unidimensionnel moderne.",
-                order: 1,
-                duration: "12 heures",
-                content: "Flexbox a révolutionné le design web. Centrez des éléments, gérez les espaces et l'ordre d'affichage sans effort.",
-                objectives: ["Maîtriser justify-content et align-items", "Gérer flex-grow et flex-shrink", "Créer des barres de navigation réactives"],
-                resources: []
-            },
-            {
-                title: "2. Positionnement & Profondeur",
-                description: "Relative, Absolute, Fixed et Sticky : brisez le flux normal.",
-                order: 2,
-                duration: "12 heures",
-                content: "Apprenez à détacher des éléments du flux pour créer des headers collants, des modales ou des superpositions via le z-index.",
-                objectives: ["Différencier les modes de positionnement", "Manipuler le z-index", "Utiliser position: sticky"],
-                resources: []
-            }
-        ]
-    },
-    {
-        id: "css-niveau-avanc",
-        title: "CSS - Niveau Intermédiaire",
-        description: "L'ingénierie visuelle. Maîtrisez CSS Grid, les variables natives et les animations keyframes.",
-        category: "Web",
+        title: "CSS3 - Niveau Intermédiaire",
+        description: "Grid Layout et Responsive Design.",
+        category: "Programmation",
         level: "Intermédiaire",
         duration: "30 heures",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
-        rating: 5.0,
-        language: "french",
+        image: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
+        rating: 4.9,
+        language: "css",
         isFree: true,
-        tags: ["CSS Grid", "Animations", "Variables"],
+        tags: ["css", "grid", "responsive"],
         chapters: [
-            {
-                title: "1. CSS Grid Layout",
-                description: "Le summum de la distribution spatiale bidimensionnelle.",
-                order: 1,
-                duration: "15 heures",
-                content: "Si Flexbox est une ligne, Grid est un échiquier. Créez des mises en page complexes avec des zones nommées et une précision chirurgicale.",
-                objectives: ["Construire des grilles complexes", "Utiliser grid-template-areas", "Maîtriser l'unité fr"],
-                resources: []
-            },
-            {
-                title: "2. Animations & Variables (Custom Properties)",
-                description: "Fluidifiez l'UX et centralisez votre design système.",
-                order: 2,
-                duration: "15 heures",
-                content: "Utilisez les variables CSS pour gérer vos thèmes et `@keyframes` pour créer des animations fluides accélérées par le GPU.",
-                objectives: ["Créer des thèmes dynamiques", "Maîtriser les transitions et animations", "Optimiser les performances d'animation"],
-                resources: []
-            }
+            { title: "1. Vision Globale : CSS Grid", description: "Le 2D Layout.", order: 1, content: "Grid gère les lignes et les colonnes simultanément.", objectives: ["Comprendre CSS Grid"] },
+            { title: "2. Concept : Media Queries", description: "S'adapter au mobile.", order: 2, content: "Transformez votre site selon la largeur de l'écran.", objectives: ["Maîtriser le Responsive"] },
+            { title: "3. Exemple Concret : Header Adaptatif", description: "Mobile First.", order: 3, content: "Cachez ou changez le menu sur mobile.", objectives: ["Penser responsive"] },
+            { title: "4. Cas Pratique : CSS Variables", description: "Maintenir son style.", order: 4, content: "Utilisez --main-color pour changer tout le site d'un coup.", objectives: ["Optimiser la maintenance"] },
+            { title: "5. Exercice : Page Magazine complexe", description: "Synthèse Grid.", order: 5, content: "Bâtissez un layout asymétrique avec CSS Grid.", objectives: ["Architecturer des designs complexes"] }
         ]
     },
     {
         id: "css-niveau-expert",
-        title: "CSS - Niveau Expert",
-        description: "L'architecture CSS de pointe. Design Systems, Responsive Moderne et Glassmorphism.",
-        category: "Web",
+        title: "CSS3 - Niveau Expert",
+        description: "Animations, Transitions et Shaders.",
+        category: "Programmation",
         level: "Expert",
-        duration: "30 heures",
-        image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80",
+        duration: "45 heures",
+        image: "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=800&q=80",
         rating: 5.0,
-        language: "french",
+        language: "css",
         isFree: true,
-        tags: ["Architecture", "Responsive", "Glassmorphism"],
+        tags: ["css", "animations", "expert"],
         chapters: [
-            {
-                title: "1. Architecture (BEM) & Design Systems",
-                description: "Écrivez du CSS maintenable à l'échelle industrielle.",
-                order: 1,
-                duration: "15 heures",
-                content: "Apprenez la méthodologie BEM et comment structurer un projet CSS massif sans conflits.",
-                objectives: ["Mettre en place BEM", "Logique de composants", "Maintenabilité"],
-                resources: []
-            },
-            {
-                title: "2. Responsive Moderne & Effets Avancés",
-                description: "Container Queries et Glassmorphism.",
-                order: 2,
-                duration: "15 heures",
-                content: "Allez au-delà des media queries avec les Container Queries. Maîtrisez le backdrop-filter pour les effets de verre poli.",
-                objectives: ["UX adaptative par composant", "Effets visuels premium", "Mobile First radical"],
-                resources: []
-            }
+            { title: "1. Vision Globale : Motion Design", description: "Rendre le site vivant.", order: 1, content: "Le mouvement guide l'utilisateur.", objectives: ["Appréhender l'animation web"] },
+            { title: "2. Concept : Keyframes", description: "Le timing parfait.", order: 2, content: "Créez des animations boucle et complexes.", objectives: ["Maîtriser les timelines CSS"] },
+            { title: "3. Exemple Concret : Loader custom", description: "Patienter avec style.", order: 3, content: "Créez un cercle qui tourne avec des effets de lueur.", objectives: ["Bâtir des feedbacks visuels"] },
+            { title: "4. Cas Pratique : Transformations 3D", description: "Profondeur visuelle.", order: 4, content: "Faites pivoter des cartes sur l'axe Y.", objectives: ["Exploiter la 3D GPU"] },
+            { title: "5. Exercice : Interface Futuriste", description: "Synthèse expertise.", order: 5, content: "Créez un bouton avec reflets animés et micro-interactions.", objectives: ["Atteindre le niveau AAA"] }
         ]
     }
 ];
