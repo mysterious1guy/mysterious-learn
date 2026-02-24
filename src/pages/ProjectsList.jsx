@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Briefcase, Code, Award, CheckCircle, ArrowRight, Lock, Loader2, Plus, Calendar, X } from 'lucide-react';
-import axios from 'axios';
+import { Briefcase, Code, Award, CheckCircle, Trophy, Medal, Star, Flame, Loader2 } from 'lucide-react';
 import AIAssistant from '../components/AIAssistant';
 
 const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
@@ -15,27 +14,35 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = user?.token || localStorage.getItem('token');
                 if (!token) throw new Error('Non authentifié');
 
+                // Standardiser les appels avec fetch (plus fiable pour les headers d'auth)
                 const [projectsRes, coursesRes] = await Promise.all([
-                    axios.get(`${API_URL}/projects`, { headers: { Authorization: `Bearer ${token}` } }),
-                    axios.get(`${API_URL}/courses`, { headers: { Authorization: `Bearer ${token}` } })
+                    fetch(`${API_URL}/projects`, { headers: { Authorization: `Bearer ${token}` } }),
+                    fetch(`${API_URL}/courses`, { headers: { Authorization: `Bearer ${token}` } })
                 ]);
 
-                setProjects(projectsRes.data);
-                setCourses(coursesRes.data);
+                if (!projectsRes.ok || !coursesRes.ok) {
+                    const errData = await projectsRes.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Erreur lors du chargement des données');
+                }
+
+                const projectsData = await projectsRes.json();
+                const coursesData = await coursesRes.json();
+
+                setProjects(projectsData);
+                setCourses(coursesData);
             } catch (err) {
                 console.error('❌ ProjectsList Error:', err);
-                const msg = err.response?.data?.message || err.message || 'Erreur inconnue';
-                setError(`Impossible de charger les projets : ${msg} (URL: ${API_URL}/projects)`);
+                setError(`Impossible de charger les projets : ${err.message} (URL: ${API_URL}/projects)`);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchProjects();
-    }, []);
+    }, [API_URL]);
 
     // Helper pour savoir si on peut débloquer le projet
     // L'utilisateur doit avoir débloqué le cours Avancé du langage cible (ou être Admin, ou déjà l'avoir complété)
@@ -63,11 +70,21 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
     const handleSubmitProject = async (projectId) => {
         try {
             setSubmitting(true);
-            const token = localStorage.getItem('token');
-            const { data } = await axios.post(`${API_URL}/projects/${projectId}/submit`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
+            const token = user?.token || localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/projects/${projectId}/submit`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
             });
 
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.message || 'Erreur lors de la soumission');
+            }
+
+            const data = await response.json();
             setToast({ message: data.message || `Projet validé ! +${data.xpGained} XP`, type: 'success' });
 
             // Mettre à jour l'utilisateur localement
@@ -80,7 +97,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
             setActiveProject(null);
         } catch (err) {
             console.error(err);
-            setToast({ message: err.response?.data?.message || 'Erreur lors de la soumission', type: 'error' });
+            setToast({ message: err.message || 'Erreur lors de la soumission', type: 'error' });
         } finally {
             setSubmitting(false);
         }

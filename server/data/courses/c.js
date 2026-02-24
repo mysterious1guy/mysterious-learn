@@ -15,100 +15,455 @@ const cCourses = [
         motivationVideo: "nKIu9yen5nc", // Code.org: What Most Schools Don't Teach
         chapters: [
             {
-                title: "Chapitre 1 : Philosophie du C et Chaine de Compilation",
-                description: "Le premier pas dans l'univers de la programmation sérieuse.",
+                title: "Chapitre 1 : Qu'est-ce que C ? (Le moteur sous le capot)",
+                description: "Comprenez pourquoi le C est le langage le plus puissant et respecté au monde.",
                 order: 1,
-                duration: "6 heures",
-                content: "Bienvenue dans le monde du C ! Créé en 1972, ce langage est le père de presque tous les langages modernes (Python, JavaScript, Java). Apprendre le C, c'est comme apprendre la mécanique d'une voiture : une fois que vous savez comment le moteur fonctionne, vous pouvez conduire n'importe quel véhicule. \n\nDans ce chapitre, nous allons simplement apprendre à préparer notre environnement de travail, à écrire votre tout premier programme, et à comprendre comment l'ordinateur transforme votre texte en une application qui fonctionne. Pas de panique, nous irons étape par étape !",
-                objectives: ["Installer les outils nécessaires", "Écrire et lancer votre premier 'Hello World'", "Comprendre la structure d'un programme simple"],
+                duration: "2 heures",
+                content: "Si la programmation était de la mécanique, le JavaScript serait une voiture automatique moderne, et le **C serait le moteur lui-même**. \n\n* Pourquoi apprendre le C ? \n  1. Pour comprendre comment la mémoire fonctionne réellement. \n  2. Parce que Linux, Windows, macOS et même votre micro-ondes sont écrits en C. \n  3. C'est le langage 'père' : si vous connaissez le C, vous apprendrez n'importe quel autre langage en 2 jours. \n\nEn C, on n'a pas peur de la complexité, on l'apprivoise pour créer des programmes ultra-rapides.",
+                objectives: ["Comprendre la place du C dans l'informatique", "Réaliser que le C est plus proche du matériel que les autres langages"],
                 exercises: [
                     {
-                        title: "Votre Premier Affichage",
-                        description: "Quelle est la fonction standard en C pour afficher du texte à l'écran (comme 'Hello World') ?",
-                        difficulty: "Facile",
-                        solution: "C'est la fonction `printf`. Exemple : `printf(\"Hello World\\n\");`. Elle est définie dans la bibliothèque `<stdio.h>`.",
-                        hints: ["Le 'f' de printf signifie 'formatted'."]
-                    },
-                    {
-                        title: "La Magie du Point d'Entrée",
-                        description: "Toute exécution d'un programme C commence par une fonction spéciale. Quel est son nom exact ?",
-                        difficulty: "Facile",
-                        solution: "Il s'agit de la fonction `main`. Sans elle, le compilateur ne sait pas par où commencer l'exécution.",
-                        hints: ["C'est un mot anglais qui signifie 'principal'."]
+                        title: "L'Ancêtre",
+                        description: "Vrai ou Faux : Le C a été créé après le langage Java ?",
+                        difficulty: "Trés Facile",
+                        solution: "Faux. Le C est bien plus ancien (1972) et a servi de base pour créer Java.",
+                        hints: ["C'est un langage pionnier."]
                     }
                 ],
-                resources: [
-                    { title: "L'Histoire de UNIX et du C", type: "article", url: "https://fr.wikipedia.org/wiki/Histoire_d%27Unix" }
-                ]
+                resources: []
             },
             {
-                title: "Chapitre 2 : Types Primitifs, Tailles Mémorielles et Transtypage",
-                description: "La taille compte. Un octet de trop et votre système embarqué explose.",
+                title: "Chapitre 2 : La Chaine de Compilation : Du texte au binaire",
+                description: "Le voyage magique de votre code vers le processeur.",
                 order: 2,
-                duration: "8 heures",
-                content: "Le C est statiquement et faiblement typé (on peut feinter le compilateur). Vous étudierez les types : `char` (généralement 1 octet), `short` (2 octets), `int` (4 octets), `long` (8 octets en 64-bit), `float` et `double`. Vous apprendrez l'opérateur fondamental `sizeof()` pour déterminer dynamiquement l'empreinte mémoire d'une donnée selon l'architecture de la machine. Nous verrons les dangers du dépassement de capacité (Integer Overflow) et la promotion entière (Casting) explicite vs implicite. En C, un booléen (`bool`) n'existait pas historiquement : 0 est Faux, tout le reste est Vrai.",
-                objectives: ["Mesurer l'encombrement RAM via sizeof", "Maîtriser les limites (INT_MAX, INT_MIN)", "Comprendre la représentation en complément à deux formellement"],
+                duration: "3 heures",
+                content: "L'ordinateur ne comprend pas le texte que vous écrivez. Il ne comprend que les 0 et les 1 (le binaire). \n\n* Le **Compilateur** est un traducteur qui prend votre fichier `.c` et le transforme en un fichier exécutable (`.exe` ou `.out`). \n* Contrairement au JavaScript qui est interprété en direct, le C doit être 'préparé' entièrement avant de pouvoir être lancé. \n\nC'est ce qui le rend si rapide : au moment où vous lancez l'application, tout le travail de traduction est déjà fini !",
+                objectives: ["Comprendre le rôle du compilateur", "Distinguer fichier source et fichier exécutable"],
                 exercises: [
                     {
-                        title: "Le Danger du Dépassement Intégral (Integer Overflow)",
-                        description: "Si `unsigned char x = 255;`, que se passe-t-il après `x = x + 1;` ?",
-                        difficulty: "Moyen",
-                        solution: "La valeur devient 0. Un `unsigned char` fait 1 octet (8 bits). 255 en binaire est 11111111. Ajouter 1 modifie la valeur en (1)00000000. Le 9ème bit est perdu (tronqué), donc x revient à 0. C'est le principe du modulo.",
-                        hints: ["Visualisez 8 bits remplis de 1, et l'effet de l'addition d'une retenue infinie."]
-                    },
-                    {
-                        title: "Transtypage Explicite (Cast)",
-                        description: "Expliquez pourquoi `float moyenne = 5 / 2;` donne `2.000` au lieu de `2.500`, et fournissez le correctif exact.",
-                        difficulty: "Difficile",
-                        solution: "L'opérateur de division `/` entre deux entiers effectue une division euclidienne stricte, générant l'entier `2`. Ce `2` est ensuite casté implicitement en `float` (2.0) pour l'affection. Le correctif est de forcer au moins un des opérandes en flottant : `float moyenne = (float)5 / 2;` ou `... = 5.0 / 2;`.",
-                        hints: ["En C, le type de sortie dépend avant tout du type des membres de l'opération, pas du type de destination de l'affectation."]
+                        title: "Le Traducteur",
+                        description: "Comment appelle-t-on le logiciel qui transforme votre code C en langage machine ?",
+                        difficulty: "Trés Facile",
+                        solution: "Le Compilateur (ex: GCC ou Clang).",
+                        hints: ["Comme pour traduire une langue étrangère."]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 3 : Structuration, Boucles et Sécurité des Saisies",
-                description: "Le flux de contrôle brutal. Scanf et ses failles béantes de sécurité.",
+                title: "Chapitre 3 : La Structure Minimale : #include et int main()",
+                description: "Apprenez les hiéroglyphes obligatoires pour tout programme C.",
                 order: 3,
-                duration: "10 heures",
-                content: "Maîtrise des blocs logiques (if, else, switch) et itérateurs (for, while, do-while). Nous nous concentrerons particulièrement sur la fonction d'entrée standard `scanf`. `scanf` est l'une des fonctions les plus dangereuses jamais écrites, causant des milliers de failles 'Buffer Overflow' si elle est mal encadrée. Nous verrons comment le buffer d'entrée du clavier (`stdin`) conserve des sauts de lignes fantômes (`\\n`) qui corrompent les saisies suivantes, et de quelle manière les ingénieurs senior utilisent `fgets()` couplé à `sscanf` pour une robustesse industrielle absolue.",
-                objectives: ["Vider le buffer clavier (fflush/fpurge logic)", "Remédier aux pièges de scanf()", "Capter les signaux d'EOF"],
+                duration: "2 heures",
+                content: "Tout programme C commence par ces lignes : \n\n`#include <stdio.h>` : C'est une bibliothèque qui permet de parler à l'écran. \n`int main() { ... }` : C'est le **point d'entrée**. L'ordinateur cherche toujours le mot 'main' pour savoir par où commencer. \n\nSi vous oubliez ces lignes, votre programme est comme une voiture sans clé : elle ne démarrera jamais.",
+                objectives: ["Mémoriser la structure de base", "Comprendre l'utilité des bibliothèques (.h)"],
                 exercises: [
                     {
-                        title: "Le Déni de Scanf",
-                        description: "Pourquoi `scanf(\"%s\", mot)` est-il un danger critique de sécurité dans un programme d'entreprise ?",
-                        difficulty: "Difficile",
-                        solution: "Si `mot` est défini comme `char mot[10];`, un hacker peut taper 500 caractères. `scanf` n'impose aucune limite de base et écrasera aveuglément la mémoire au-delà du tableau, détruisant l'intégrité de la pile d'exécution (Smashing the stack for fun and profit). Il FAUT écrire : `scanf(\"%9s\", mot);`.",
-                        hints: ["Que se passe-t-il si l'utilisateur saisit un roman pour un nom_limite à 10 lettres ?"]
+                        title: "La Porte d'Entrée",
+                        description: "Sans quelle fonction spéciale un programme C refuse-t-il de démarrer ?",
+                        difficulty: "Trés Facile",
+                        solution: "La fonction `main()`.",
+                        hints: ["C'est l'entrée principale."]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 4 : La Table ASCII, Les Chaînes et l'Absence d'Objets",
-                description: "Une chaîne de caractères n'est qu'une illusion mathématique masquant de la mémoire contiguë.",
+                title: "Chapitre 4 : printf() : Parler au monde",
+                description: "Votre premier outil pour afficher des informations à l'écran.",
                 order: 4,
-                duration: "11 heures",
-                content: "Le C ne connaît pas le texte. Une chaîne (string) est obligatoirement un tableau unidimensionnel de type `char`, obligatoirement terminé par le caractère Nul `\\0` (ASCII 0). Sans ce `\\0`, toutes les fonctions comme `printf` ou `strlen` liront la RAM indéfiniment jusqu'à un crash 'Segmentation Fault'. Nous étudierons la bibliothèque `<string.h>` (`strcpy`, `strcmp`, `strcat`), mais surtout pourquoi il faut toujours leur préférer leurs versions sécurisées (`strncpy`, `strncat`).",
-                objectives: ["Comprendre l'impératif du pointeur nul de fin de chaine", "Créer des tableaux de strings (Matrices de Char)", "Manipuler explicitement les codes ASCII par addition/soustraction"],
+                duration: "2 heures",
+                content: "Pour afficher du texte, on utilise `printf` (Print Formatted). \n\n* Syntaxe : `printf(\"Bonjour !\\n\");` \n* Le `\\n` à la fin est très important : il demande à l'ordinateur de passer à la ligne suivante. \n\nN'oubliez jamais le **point-virgule** `;` à la fin de chaque instruction ! En C, oublier un `;` est le crime le plus courant qui empêche la compilation.",
+                objectives: ["Afficher du texte simple", "Utiliser le saut de ligne \\n"],
                 exercises: [
                     {
-                        title: "Changement de Casse Manuel (Sans fonction native)",
-                        description: "Écrivez un algorithme en C pour convertir tous les caractères minuscules d'une chaîne `T` en majuscules avec une simple addition arithmétique.",
-                        difficulty: "Difficile",
-                        solution: "for (int i = 0; T[i] != '\\0'; i++) {\n  if (T[i] >= 'a' && T[i] <= 'z') {\n    T[i] = T[i] - 32;\n  }\n}",
-                        hints: ["En ASCII, la lettre 'A' vaut 65, et 'a' vaut 97. L'écart est de 32 précis."]
-                    },
-                    {
-                        title: "L'oubli du Backslashzéro",
-                        description: "Si on initialise `char msg[3] = {'Y', 'e', 's'};` et qu'on appelle `printf(\"%s\", msg)`, que va-t-il se passer ?",
-                        difficulty: "Moyen",
-                        solution: "Comportement indéfini (Undefined Behavior). Le `printf` lira 'Yes' mais continuera de lire et d'imprimer la mémoire RAM adjacente (affichant des déchets ou crachant le programme) jusqu'à tomber au hasard sur un octet valant 0 (`\\0`). Le tableau DEVRAIT faire 4 cases : `{'Y', 'e', 's', '\\0'}`.",
-                        hints: ["Toute fonction qui demande un \"%s\" est aveugle. Comment sait-elle où s'arrêter ?"]
+                        title: "Le Salut",
+                        description: "Écrivez l'instruction pour afficher 'Salut' puis passer à la ligne.",
+                        difficulty: "Trés Facile",
+                        solution: 'printf("Salut\\n");',
+                        hints: ["Utilisez les guillemets et le slash spécial."]
                     }
                 ],
                 resources: []
-            }
+            },
+            {
+                title: "Chapitre 5 : La Mémoire en C : Les adresses physiques",
+                description: "Regardez dans les entrailles de votre ordinateur.",
+                order: 5,
+                duration: "3 heures",
+                content: "En C, on ne parle pas de 'nuage' ou de données abstraites. On parle de **cases mémoire**. \n\n* Chaque donnée que vous stockez occupe une place física dans votre barrette de RAM. \n* Chaque case a un numéro unique : son **Adresse**. \n\nComprendre que vos variables sont des emplacements physiques réels est la clé pour devenir un maître du C.",
+                objectives: ["Visualiser la RAM comme une grille d'adresses", "Se préparer au concept de pointeur"],
+                exercises: [
+                    {
+                        title: "La Case",
+                        description: "Vrai ou Faux : En C, chaque variable possède une adresse unique en mémoire ?",
+                        difficulty: "Trés Facile",
+                        solution: "Vrai.",
+                        hints: ["Comme chaque maison a une adresse postale."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 6 : Créer une variable en C : int x;",
+                description: "Réservez votre place en mémoire avant de l'utiliser.",
+                order: 6,
+                duration: "2 heures",
+                content: "Contrairement à d'autres langages, en C vous devez **Déclarer** vos variables en précisant leur type. \n\n* Exemple : `int age;` \n* `int` veut dire que c'est un nombre entier (Integer). \n* Cette ligne dit à l'ordinateur : 'Réserve-moi 4 octets de RAM et appelle cet emplacement age'. \n\nVous ne pouvez pas changer le type d'une variable après l'avoir créée. C'est la rigueur du C.",
+                objectives: ["Déclarer une variable entière", "Comprendre la réservation mémoire"],
+                exercises: [
+                    {
+                        title: "La Réservation",
+                        description: "Comment déclare-t-on une variable entière nommée 'score' en C ?",
+                        difficulty: "Trés Facile",
+                        solution: "`int score;`",
+                        hints: ["Type d'abord, nom ensuite."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 7 : Nommer ses variables : Les règles du C",
+                description: "Le compilateur est strict sur les noms. Apprenez ce qui est autorisé.",
+                order: 7,
+                duration: "1 heure",
+                content: "En C, les noms de variables doivent : \n1. Commencer par une lettre ou un `_`. \n2. Ne pas contenir d'espaces ni d'accents. \n3. Être différents des mots réservés (comme `int` ou `main`). \n\n* Attention : Le C fait la différence entre les majuscules et les minuscules. `age` et `Age` sont deux variables totalement différentes !",
+                objectives: ["Connaître les limites syntaxiques des identificateurs", "Comprendre la sensibilité à la casse (Case Sensitivity)"],
+                exercises: [
+                    {
+                        title: "L'Erreur",
+                        description: "Le nom `2emeNombre` est-il valide en C ?",
+                        difficulty: "Facile",
+                        solution: "Non, car il commence par un chiffre.",
+                        hints: ["Relisez la règle n°1."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 8 : L'Affectation (=) : Le mouvement des données",
+                description: "Remplissez vos cases mémoire avec des valeurs.",
+                order: 8,
+                duration: "2 heures",
+                content: "Le signe `=` sert à mettre une valeur dans une variable. \n\n* `age = 25;` \n* Cela prend le nombre 25 et le stocke physiquement à l'adresse de la variable `age`. \n* On peut aussi faire les deux en même temps : `int score = 100;`. \n\nSouvenez-vous de l'Algorithmique : c'est un mouvement de la droite vers la gauche.",
+                objectives: ["Initialiser des variables", "Maîtriser le sens de l'affectation"],
+                exercises: [
+                    {
+                        title: "Le Remplissage",
+                        description: "Écrivez la ligne complète pour créer une variable 'vitesse' et lui donner la valeur 50.",
+                        difficulty: "Trés Facile",
+                        solution: "`int vitesse = 50;`",
+                        hints: ["N'oubliez pas le point-virgule !"]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 9 : Lecture vs Écriture : Utiliser vs Changer",
+                description: "Manipulez vos données sans les perdre.",
+                order: 9,
+                duration: "2 heures",
+                content: "Une fois qu'une variable a une valeur, vous pouvez l'utiliser dans `printf` ou dans des calculs. \n\n* Pour afficher une variable `int`, on utilise un code spécial : `%d`. \n* `printf(\"J'ai %d ans\", age);` \n* L'ordinateur va lire l'adresse de `age`, récupérer la valeur, et la mettre à la place du `%d`. \n\nSi vous essayez de lire une variable vide, vous obtiendrez n'importe quoi (la 'poubelle' de la mémoire) !",
+                objectives: ["Utiliser le format %d", "Distinguer le nom de la variable de sa valeur affichée"],
+                exercises: [
+                    {
+                        title: "La Substitution",
+                        description: "Quel symbole utilise-t-on dans printf pour dire 'Mets un entier ici' ?",
+                        difficulty: "Facile",
+                        solution: "`%d`",
+                        hints: ["C'est une lettre après un pourcent."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 10 : Introduction aux types système : Pourquoi trier ?",
+                description: "Tous les types n'ont pas la même taille en mémoire.",
+                order: 10,
+                duration: "2 heures",
+                content: "Pourquoi ne pas utiliser `int` pour tout ? \n\n* Parce qu'un `int` prend 4 octets. Si vous n'avez besoin de stocker qu'une seule lettre, c'est du gâchis ! \n* En C, on choisit le type le plus petit possible pour économiser la RAM de l'ordinateur. \n* Nous allons voir dans les prochains chapitres les types `char`, `float` et `double`.",
+                objectives: ["Comprendre l'importance de l'économie de mémoire en C", "Se préparer à l'étude des types primitifs"],
+                exercises: [
+                    {
+                        title: "L'Économie",
+                        description: "Pourquoi le C nous force-t-il à choisir des types précis ?",
+                        difficulty: "Facile",
+                        solution: "Pour optimiser l'utilisation de la mémoire RAM et la vitesse du programme.",
+                        hints: ["C'est un langage de performance."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 11 : Le type 'int' : Pourquoi 4 octets ?",
+                description: "Le monde binaire et les limites des nombres entiers.",
+                order: 11,
+                duration: "3 heures",
+                content: "Un `int` occupe généralement 4 octets (32 bits). \n\n* Pourquoi ? Parce que cela permet de stocker des nombres allant de -2 milliards à +2 milliards. \n* Si vous dépassez cette limite, le nombre 'reboucle' (Overflow). \n* C'est comme un compteur kilométrique de voiture : arrivé à 999 999, il revient à 0. \n\nEn C, on apprend à respecter ces limites physiques pour éviter que notre programme ne raconte n'importe quoi.",
+                objectives: ["Comprendre l'encombrement d'un entier", "Réaliser l'existence du dépassement de capacité (Overflow)"],
+                exercises: [
+                    {
+                        title: "La Limite",
+                        description: "Combien d'octets prend un 'int' en général ?",
+                        difficulty: "Facile",
+                        solution: "4 octets.",
+                        hints: ["C'est le standard sur la plupart des PC actuels."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 12 : Le type 'float' : Les nombres à virgule",
+                description: "Gérez les prix, les moyennes et les mesures scientifiques.",
+                order: 12,
+                duration: "2 heures",
+                content: "Pour stocker des nombres avec une virgule, on utilise `float`. \n\n* Déclaration : `float prix = 19.99;` \n* Affichage : On utilise `%f`. \n* Attention : Un `float` a une précision limitée. Si vous avez besoin de 50 chiffres après la virgule, il faut utiliser un `double` (Double précision). \n\nN'oubliez pas d'utiliser le point `.` et non la virgule `,` pour les chiffres !",
+                objectives: ["Déclarer et afficher un flottant", "Distinguer float et double"],
+                exercises: [
+                    {
+                        title: "La Virgule",
+                        description: "Quel est le symbole de formatage pour afficher un float dans printf ?",
+                        difficulty: "Facile",
+                        solution: "`%f`",
+                        hints: ["f comme float."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 13 : Le type 'char' : Le lien entre chiffre et lettre",
+                description: "Découvrez que pour l'ordinateur, 'A' est juste un nombre.",
+                order: 13,
+                duration: "4 heures",
+                content: "Le type `char` stocke un seul caractère. \n\n* Déclaration : `char lettre = 'A';` (Utilisez des guillemets simples !). \n* Secret : Un `char` ne prend qu'un octet. En réalité, il stocke le code **ASCII** de la lettre. \n* 'A' est stocké comme le nombre 65. \n\nCela permet de faire des calculs sur les lettres (ex: 'A' + 1 = 'B'). C'est fascinant car cela montre comment tout est numérique pour la machine.",
+                objectives: ["Comprendre le type char", "Faire le lien avec la table ASCII"],
+                exercises: [
+                    {
+                        title: "Le Code Secret",
+                        description: "Si j'affiche un `char` avec `%d` au lieu de `%c`, qu'est-ce qui va s'afficher ?",
+                        difficulty: "Moyen",
+                        solution: "Son numéro dans la table ASCII.",
+                        hints: ["%d affiche le nombre, %c affiche le caractère."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 14 : scanf() : Écouter l'utilisateur",
+                description: "Le premier dialogue entre votre programme et l'humain.",
+                order: 14,
+                duration: "5 heures",
+                content: "Pour demander une valeur à l'utilisateur, on utilise `scanf`. \n\n* Syntaxe : `scanf(\"%d\", &age);` \n* **TRÈS IMPORTANT** : Il faut mettre un `&` devant le nom de la variable. \n* Pourquoi ? Le `&` veut dire 'Adresse'. Vous dites à `scanf` : 'Va mettre le chiffre écrit au clavier à CETTE adresse'. \n\nSi vous oubliez le `&`, votre programme va probablement planter ('Crash'). Soyez vigilant !",
+                objectives: ["Savoir utiliser scanf avec l'opérateur d'adresse &", "Comprendre le flux d'entrée standard (stdin)"],
+                exercises: [
+                    {
+                        title: "L'Oubli Fatal",
+                        description: "Que manque-t-il dans ce code : `scanf(\"%d\", score);` ?",
+                        difficulty: "Facile",
+                        solution: "Il manque le symbole `&` avant 'score'.",
+                        hints: ["On doit donner l'adresse, pas la variable elle-même."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 15 : Les Opérateurs Mathématiques : Calculer comme une machine",
+                description: "Faites faire les devoirs de maths à votre ordinateur.",
+                order: 15,
+                duration: "3 heures",
+                content: "Le C utilise les signes classiques : `+`, `-`, `*`, `/`. \n\n* Attention particulière à la division `/` : \n  * Si vous divisez deux entiers (`5 / 2`), le résultat sera `2` (la partie entière). \n  * Pour avoir `2.5`, il faut que l'une des variables soit un `float`. \n\nL'ordinateur est une calculatrice ultra-rapide, mais il suit les règles de priorité que nous avons vues en Algorithmique.",
+                objectives: ["Récupérer les résultats de calculs", "Comprendre la particularité de la division entière"],
+                exercises: [
+                    {
+                        title: "Le Calculateur",
+                        description: "Quel sera le résultat de `10 / 3` si le résultat est stocké dans un `int` ?",
+                        difficulty: "Facile",
+                        solution: "3",
+                        hints: ["L'entier ignore tout ce qu'il y a après la virgule."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 16 : Priorités et Modulo : Les astuces de calcul",
+                description: "Apprenez à prédire le résultat de calculs complexes.",
+                order: 16,
+                duration: "2 heures",
+                content: "Comme en maths, la multiplication et la division passent avant l'addition. \n\n* Un opérateur très utile en C est le **Modulo** (`%`). \n* `10 % 3` donne `1` (c'est le reste de la division). \n* On l'utilise tout le temps pour savoir si un nombre est pair (`n % 2 == 0`) ou pour créer des cycles (ex: les jours de la semaine).",
+                objectives: ["Maîtriser l'ordre des opérations", "Utiliser l'opérateur modulo %"],
+                exercises: [
+                    {
+                        title: "Le Reste",
+                        description: "Quel est le résultat de `7 % 2` ?",
+                        difficulty: "Facile",
+                        solution: "1",
+                        hints: ["7 divisé par 2 donne 3, et il reste 1."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 17 : Logique Booléenne en C : 0 et 1",
+                description: "Le vrai secret du C : Pourquoi il n'y a pas de type 'Vrai/Faux'.",
+                order: 17,
+                duration: "4 heures",
+                content: "Historiquement, le C n'a pas de type `boolean`. \n\n* **Règle d'or** : \n  * `0` veut dire FAUX. \n  * `Tout le reste` (généralement 1) veut dire VRAI. \n\nC'est pour cela qu'on peut écrire `if (1) { ... }` et que ça marchera toujours. C'est simple, brutal et très efficace pour le processeur.",
+                objectives: ["Comprendre la représentation numérique de la vérité", "Utiliser les entiers comme booléens"],
+                exercises: [
+                    {
+                        title: "La Vérité Brute",
+                        description: "En C, si une condition renvoie `0`, est-elle considérée comme Vraie ou Fausse ?",
+                        difficulty: "Facile",
+                        solution: "Fausse.",
+                        hints: ["Zéro est la seule valeur fausse."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 18 : Les Conditions : if et else",
+                description: "Donnez un cerveau à votre programme pour qu'il prenne des décisions.",
+                order: 18,
+                duration: "3 heures",
+                content: "Le bloc `if` permet de n'exécuter du code QUE si une condition est remplie. \n\n* Syntaxe : `if (age >= 18) { printf(\"Majeur\"); }` \n* Le bloc `else` (sinon) permet de donner une alternative si la condition est fausse. \n\nAttention aux parenthèses `()` autour de la condition et aux accolades `{}` pour délimiter le bloc de code !",
+                objectives: ["Écrire une structure de décision simple", "Respecter la syntaxe des blocs {}"],
+                exercises: [
+                    {
+                        title: "Le Choix",
+                        description: "Comment écrit-on 'Si x est égal à 10' en C ? (Attention au signe !)",
+                        difficulty: "Moyen",
+                        solution: "`if (x == 10)`",
+                        hints: ["Un seul `=` c'est pour donner une valeur, deux `==` c'est pour comparer !"]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 19 : if / else if / else : Les choix multiples",
+                description: "Gérez des situations complexes avec plusieurs sorties possibles.",
+                order: 19,
+                duration: "3 heures",
+                content: "Parfois, 'Oui' ou 'Non' ne suffit pas. On utilise `else if` pour tester d'autres conditions. \n\n* Exemple : \n  `if (note > 15) { ... }` \n  `else if (note > 10) { ... }` \n  `else { ... }` \n\nL'ordinateur teste les conditions une par une et s'arrête dès qu'il en trouve une vraie. C'est l'ordre qui compte !",
+                objectives: ["Structurer des décisions en cascade", "Optimiser le flux logique"],
+                exercises: [
+                    {
+                        title: "L'Exclusion",
+                        description: "Vrai ou Faux : Si le premier `if` est vrai, l'ordinateur va quand même tester le `else if` ?",
+                        difficulty: "Moyen",
+                        solution: "Faux. Il s'arrête à la première condition remplie.",
+                        hints: ["C'est une structure exclusive."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 20 : Switch : L'aiguilleur de précision",
+                description: "Une alternative élégante quand vous avez beaucoup de choix sur une seule variable.",
+                order: 20,
+                duration: "3 heures",
+                content: "Le `switch` est parfait quand vous comparez une variable à plusieurs valeurs précises. \n\n* Syntaxe : `switch(choix) { case 1: ... break; default: ... }` \n* **ATTENTION** : N'oubliez pas le `break;` à la fin de chaque case, sinon l'ordinateur continue de lire les suivants (c'est le bug du 'fall-through') !",
+                objectives: ["Utiliser le switch pour la clarté du code", "Ne pas oublier les instructions break"],
+                exercises: [
+                    {
+                        title: "Le Menu",
+                        description: "Quelle instruction permet de sortir immédiatement d'un bloc Switch ?",
+                        difficulty: "Facile",
+                        solution: "L'instruction `break;`.",
+                        hints: ["Cela veut dire 'Casse' ou 'Arrête-toi là'."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 21 : Imbrication de conditions : Les décisions complexes",
+                description: "Apprenez à vérifier plusieurs couches de conditions.",
+                order: 21,
+                duration: "3 heures",
+                content: "Parfois, une décision dépend d'une autre. \n\n* Exemple : 'SI tu as faim ET SI le frigo est plein, ALORS cuisine'. \n* En C, on met un `if` à l'intérieur d'un autre `if`. \n* `if (faim) { if (frigoPlein) { ... } }` \n\nC'est très puissant mais attention : si vous avez trop de couches, votre code devient illisible (le fameux 'code spaghetti'). Nous verrons d'autres méthodes plus tard !",
+                objectives: ["Maîtriser les blocs de conditions imbriqués", "Anticiper les problèmes de lisibilité"],
+                exercises: [
+                    {
+                        title: "Le Labyrinthe",
+                        description: "Dans un `if` imbriqué, quand est-ce que le code le plus profond est exécuté ?",
+                        difficulty: "Moyen",
+                        solution: "Seulement si TOUTES les conditions parentes sont vraies.",
+                        hints: ["C'est comme passer plusieurs portes verrouillées."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 22 : Logique de choix avancé : Préparer l'itération",
+                description: "Préparez votre esprit à la répétition.",
+                order: 22,
+                duration: "2 heures",
+                content: "Nous avons appris à faire des choix. Mais que se passe-t-il si vous devez faire 100 choix à la suite ? \n\n* En C, on commence à voir l'intérêt de ne pas copier-coller son code. \n* Imaginez devoir vérifier l'âge de 500 invités un par un. \n* C'est ici que s'arrête la programmation linéaire et que commence la véritable puissance informatique : la répétition automatisée.",
+                objectives: ["Identifier les limites du copier-coller", "Comprendre la nécessité des boucles"],
+                exercises: [
+                    {
+                        title: "La Limite Humaine",
+                        description: "Si je veux afficher 'Bonjour' 1000 fois, est-il raisonnable d'écrire 1000 fois `printf` ?",
+                        difficulty: "Trés Facile",
+                        solution: "Non, c'est une perte de temps et source d'erreurs.",
+                        hints: ["Il doit y avoir un outil pour ça."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 23 : Introduction à l'itération : Faire répéter la machine",
+                description: "Le concept qui donne vie à vos programmes.",
+                order: 23,
+                duration: "2 heures",
+                content: "L'**Itération** (ou Boucle) est la capacité de l'ordinateur à répéter un bloc de code tant qu'une condition est vraie. \n\n* Analogie : 'Tant qu'il y a de l'eau dans la baignoire, continue de vider'. \n* C'est ce qui permet de créer des jeux (une boucle qui affiche les images 60 fois par seconde) ou des serveurs (une boucle qui attend les clients).",
+                objectives: ["Comprendre le concept d'itération", "Visualiser le cycle une boucle"],
+                exercises: [
+                    {
+                        title: "Le Cycle",
+                        description: "Comment appelle-t-on le fait de recommencer un bloc de code plusieurs fois ?",
+                        difficulty: "Trés Facile",
+                        solution: "L'itération (ou faire une boucle).",
+                        hints: ["Pensez à une roue qui tourne."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 24 : La boucle while en C : Tant que c'est vrai",
+                description: "Votre première boucle concrète en C.",
+                order: 24,
+                duration: "4 heures",
+                content: "La boucle `while` est la plus simple. \n\n* Syntaxe : `while (condition) { ... }` \n* Tant que la parenthèse est vraie (différente de 0), l'ordinateur fait le code entre les accolades. \n* **ATTENTION AU PIÈGE** : Si la condition est toujours vraie, votre programme ne s'arrêtera JAMAIS (Boucle Infinie). Votre ventilateur va souffler fort !",
+                objectives: ["Écrire une boucle while fonctionnelle", "Éviter les boucles infinies en modifiant la condition"],
+                exercises: [
+                    {
+                        title: "Le Compteur",
+                        description: "Si je fais `while(1) { printf(\"A\"); }`, que se passe-t-il ?",
+                        difficulty: "Moyen",
+                        solution: "Le programme affichera 'A' indéfiniment jusqu'à ce que vous le fermiez de force.",
+                        hints: ["Souvenez-vous que 1 veut dire VRAI en C."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 25 : Félicitations ! Cap sur le niveau Intermédiaire",
+                description: "Bilan de vos fondations et ouverture vers la suite.",
+                order: 25,
+                duration: "2 heures",
+                content: "Bravo ! Vous avez survécu au niveau Débutant. \n\n* Vous savez : Compiler, parler à l'écran, stocker des nombres, lire le clavier, et prendre des décisions. \n* Vous avez les bases de la syntaxe C, la plus rigoureuse qui soit. \n\nDans le niveau Intermédiaire, nous allons découvrir les **Tableaux**, les **Fonctions**, et surtout le Saint Graal du C : les **Pointeurs** (la gestion directe de la mémoire). Reposez-vous, la suite est intense !",
+                objectives: ["Récapituler les acquis du niveau débutant", "Se motiver pour les défis du niveau intermédiaire"],
+                exercises: [
+                    {
+                        title: "Le Bilan",
+                        description: "Quelle est la chose la plus importante que vous avez apprise sur la mémoire en C ?",
+                        difficulty: "Facile",
+                        solution: "Que chaque variable a une adresse physique réelle en RAM.",
+                        hints: ["C'est la base de tout le C."]
+                    }
+                ],
+                resources: []
+            },
         ]
     },
     {
@@ -128,84 +483,365 @@ const cCourses = [
         tags: ["c", "pointers", "malloc", "mémoire", "intermédiaire"],
         chapters: [
             {
-                title: "Chapitre 1 : Pointeurs et Adresses (L'Éveil)",
-                description: "Le concept le plus terrifiant et puissant de la programmation. Ce qui différencie un développeur C d'un autre.",
-                order: 1,
-                duration: "10 heures",
-                content: "Un pointeur n'est rien d'autre qu'une variable. Mais au lieu de stocker un entier ou un caractère, elle stocke une Adresse Mémoire Vivante. Nous étudierons en profondeur l'Opérateur d'Adresse (`&`), qui extrait l'adresse d'une variable existante, et l'Opérateur d'Indirection ou de Déréférencement (`*`), qui ordonne au CPU d'aller voir 'ce qu'il y a à cette adresse'. Nous verrons pourquoi un pointeur doit être fortement typé (un pointeur de `int` sait qu'il doit lire 4 octets à partir de l'adresse de base). Vous construirez vos premières fonctions avec un 'passage par adresse' réel.",
-                objectives: ["Déclarer, initialiser et déréférencer des pointeurs", "Altérer la valeur de variables distantes inter-fonctions", "Comprendre les Déréférencement Nuls (Segfaults)"],
+                title: "Chapitre 26 : Les Tableaux en C : L'étagère contiguë",
+                description: "Apprenez à regrouper vos données dans un seul bloc mémoire.",
+                order: 26,
+                duration: "4 heures",
+                content: "Un tableau en C est une suite de cases mémoire du même type, collées les unes aux autres. \n\n* Déclaration : `int scores[5];` \n* Cela réserve exactement 5 * 4 octets = 20 octets de RAM d'un coup. \n* C'est beaucoup plus efficace que de créer 5 variables séparées car l'ordinateur peut y accéder très rapidement grâce à leur position les unes après les autres.",
+                objectives: ["Déclarer un tableau statique", "Comprendre l'organisation contiguë en mémoire"],
                 exercises: [
                     {
-                        title: "L'Échange Absolu (Swap By Pointer)",
-                        description: "Écrivez la fonction stricte `void swap(int *a, int *b)` qui modifie deux variables passées depuis le `main()`. Interdit d'utiliser `return`.",
-                        difficulty: "Difficile",
-                        solution: "void swap(int *a, int *b) {\n  int temp = *a; // va chercher la VAUR brute\n  *a = *b;       // remplace la valeur lointaine A par celle lointaine B\n  *b = temp;     // remet la valeur originelle\n}",
-                        hints: ["On vous donne les clés de deux maisons (les adresses pointer). Utilisez `*` pour entrer dedans et interchanger les meubles."]
+                        title: "La Réservation Groupée",
+                        description: "Comment déclare-t-on un tableau de 10 nombres flottants (float) nommé 'mesures' ?",
+                        difficulty: "Facile",
+                        solution: "`float mesures[10];`",
+                        hints: ["Type, nom, puis taille entre crochets."]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 2 : Arithmétique des Pointeurs et Tableaux Réels",
-                description: "La vérité cachée : Un tableau n'a jamais existé. Il n'est qu'un sucre syntaxique pour un pointeur constant.",
-                order: 2,
-                duration: "12 heures",
-                content: "Quand vous déclarez `int T[5];`, `T` n'est pas un tableau. `T` est un 'const pointer' pointant secrètement sur la case mémoire `T[0]`. Nous allons détruire la syntaxe des crochets : vous apprendrez que écrire `T[3]` est stictement remplacé par le compilateur en `*(T + 3)`. C'est l'Arithmétique des Pointeurs : si T est un pointeur d'entiers (4 octets), faire `T + 1` ne rajoute pas 1 à l'adresse mémoire, mais bondit de 4 octets vers la case suivante ! Nous aborderons les Pointeurs sur Pointeurs (`**ptr`) (nécessaires pour les matrices d'adresses).",
-                objectives: ["Traverser un tableau par pure arithmétique de pointeur", "Comprendre que (T + i) vaut l'adresse et *(T + i) vaut la valeur", "Transmettre un tableau sans sa taille (et les enjeux de sécurité qui suivent)"],
+                title: "Chapitre 27 : Indexation et Taille : Pourquoi le C est impitoyable",
+                description: "Apprenez à ne jamais dépasser les limites (Buffer Overflow).",
+                order: 27,
+                duration: "3 heures",
+                content: "Comme en Algorithmique, la première case est `tab[0]`. \n\n* Si votre tableau fait 5 cases, la dernière est `tab[4]`. \n* **DANGER** : Le C ne vérifie pas si vous dépassez ! Si vous écrivez dans `tab[10]`, vous allez écraser d'autres données au hasard dans votre RAM. \n* C'est la cause n°1 des virus et des crashs informatiques. Soyez le gardien de vos index !",
+                objectives: ["Maîtriser l'accès par index 0 à N-1", "Comprendre le risque du dépassement de tableau"],
                 exercises: [
                     {
-                        title: "Équivalence stricte",
-                        description: "Dans le langage C, la syntaxe autorise formellement à écrire `3[T]` au lieu de `T[3]`. Prouvez pourquoi cela fonctionne en utilisant la définition mathématique interne.",
-                        difficulty: "Difficile",
-                        solution: "Le compilateur traduit intrinsèquement `X[Y]` par `*(X + Y)`. L'addition étant commutative, `*(T + 3)` est strictement égal à `*(3 + T)`. Par rétro-traduction magique, `*(3 + T)` donne `3[T]`. C'est l'une des bizarreries fondatrices du langage.",
-                        hints: ["Revenez à la définition d'un offset depuis une adresse de base via la formule d'addition du déréférencement."]
-                    }
-                ],
-                resources: []
-            },
-            {
-                title: "Chapitre 3 : Allocation Dynamique (Le Malloc) du C (Heap vs Stack)",
-                description: "La Pile ne suffit plus, invoquons le Tas (Heap). Devenez architecte des fondations RAM.",
-                order: 3,
-                duration: "15 heures",
-                content: "Toute variable normale meurt à la fin de la fonction qui l'abrite (Scope). Elle est sur la Stack (Rapide, mais très limitée en Mo). Pour charger 1 Gigaoctet de données depuis un disque dur, il faut recourir à la Heap (Le Tas) via l'Allocation Dynamique. Ce chapitre couvre les légendaires `malloc()`, `calloc()` (initialisation à 0), et `realloc()` (étirement mémoire). Le corollaire ultime : quiconque emprunte de la mémoire système DOIT la rendre. La fonction `free()` doit être invoquée scrupuleusement, sous peine d'un fatal 'Memory Leak' qui paralysera le serveur et forcera un reboot brutal.",
-                objectives: ["Demander de la mémoire au système l'opération malloc(sizeof(Type) * N)", "Rendre proprement la ram via free(ptr)", "Détecter avec rigueur les Pointeurs Fous / Sauvages (Dangling Pointers) et les remettre à NULL", "Maîtriser Valgrind, l'outil détective de fuites mémoires"],
-                exercises: [
-                    {
-                        title: "La Fuite Cataclysmique (Memory Leak)",
-                        description: "Créez une fonction `void generate()` qui alloue un tableau dynamique de 100 entiers mais ne le libère pas. Quel est l'impact si cette fonction est appelée 10 millions de fois dans une boucle serveur ?",
+                        title: "La Limite Invisible",
+                        description: "Si j'ai `int tab[3]`, qu'arrive-t-il si j'écris `tab[3] = 10;` ?",
                         difficulty: "Moyen",
-                        solution: "Chaque appel prend environ 400 octets (100 * 4 octets). Sur 10 millions, cela consomme 4 Go de RAM irrécupérables en quelques secondes (Leak). Le système d'exploitation tuera le processus (OOM Killer - Out Of Memory). L'oubli de `free(tab);` est fatal.",
-                        hints: ["Pensez à ce qui arrive quand vous louez des appartements sans jamais rendre les clés ni résilier le bail."]
-                    },
-                    {
-                        title: "Stabilité du Dangling Pointer",
-                        description: "Pourquoi la règle d'or industrielle après un `free(ptr)` est-elle d'invoquer immédiatement `ptr = NULL;` ?",
-                        difficulty: "Difficile",
-                        solution: "`free(ptr)` avertit l'OS que la RAM liée peut être réutilisée, mais la variable ptr CONSERVE toujours physiquement l'adresse. Si quelqu'un d'autre tente de faire `*ptr = 10;` plus tard dans le code (Use-After-Free), c'est une corruption de mémoire atroce (Faille de Sécurité majeure de type 0-Day). Assigner `NULL` (adresse 0 invalide) garantit un crash propre et lisible en cas de réutilisation involontaire, plutôt qu'une faille pernicieuse.",
-                        hints: ["Que se passe-t-il quand la nouvelle valeur écrase les données du prochain acheteur de cet espace RAM ?"]
+                        solution: "C'est une erreur grave. La case `tab[3]` n'existe pas (il n'y a que 0, 1 et 2). Vous écrivez dans une zone mémoire interdite.",
+                        hints: ["Comptez sur vos doigts : 0, 1, 2... combien ça fait de cases ?"]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 4 : Structuration Complexes et Pointeurs de Fonctions",
-                description: "Construire des types de données personnalisés et l'illusion de l'Orienté Objet en C brut.",
-                order: 4,
-                duration: "13 heures",
-                content: "Une `struct` (Structure) forme l'agrégation de multiples variables sous forme de \"Mégaclasse\" primitive. Par exemple, assembler un X(float) et un Y(float) pour définir un point GPS. Nous décortiquerons l'opérateur Arrow ou flèche (`->`) : un sucre syntaxique ultra-rapide pour `(*ptr_struct).attribut`. Nous parlerons d'une des notions les plus complexes du C : les Pointeurs de Fonctions (pouvoir passer dynamiquement toute une fonction comme paramètre ou créer des dictionnaires d'exécution pour émuler un comportement Polymorphe (OOP)).",
-                objectives: ["Créer des structures imbriquées", "Maîtriser Typedef pour masquer les noms de structures longues", "Invoquer dynamiquement via un tableau de Pointeurs de Fonctions"],
+                title: "Chapitre 28 : Parcours de Tableau : La puissance du 'for'",
+                description: "Utilisez la boucle For pour traiter des milliers de données en 3 lignes.",
+                order: 28,
+                duration: "4 heures",
+                content: "Le couple 'Boucle + Tableau' est le moteur de l'informatique. \n\n* Syntaxe typique : \n  `for (int i = 0; i < 5; i++) { printf(\"%d\", tab[i]); }` \n* Ici, `i` sert d'index. À chaque tour, il augmente, et on accède à la case suivante. \n* C'est ainsi qu'on calcule des moyennes, qu'on cherche un nom ou qu'on affiche une liste.",
+                objectives: ["Combiner boucle for et tableau", "Itérer proprement par index"],
                 exercises: [
                     {
-                        title: "Déréférencement Stricts de Structures",
-                        description: "Soit `struct Etudiant *ptr = allocEtudiant()`. Écrivez la syntaxe pure mathématique, sans sucre syntaxique avec la flèche (`->`), pour récupérer le champ 'age'.",
-                        difficulty: "Moyen",
-                        solution: "Il faut déréférencer le pointeur avec des parenthèses avant d'accéder à l'attribut dot (`.`) : `(*ptr).age`. La syntaxe flèche `ptr->age` a été inventée spécifiquement parce que les parenthèses de `(*ptr).age` rendaient le code trop inesthétique aux yeux de Ritchies.",
-                        hints: ["N'oubliez pas les parenthèses de priorité pour empêcher l'opérateur Point de passer avant le Déréférencement !"]
+                        title: "La Visite",
+                        description: "Dans la boucle `for`, quelle variable change de valeur à chaque tour pour désigner une nouvelle case ?",
+                        difficulty: "Facile",
+                        solution: "La variable `i` (l'itérateur).",
+                        hints: ["C'est celle qui est entre les crochets `tab[...]`."]
                     }
                 ],
                 resources: []
-            }
+            },
+            {
+                title: "Chapitre 29 : Modification par Index : Écrire dans la RAM",
+                description: "Mettez à jour vos listes de données dynamiquement.",
+                order: 29,
+                duration: "3 heures",
+                content: "On modifie une case de tableau comme une variable normale. \n\n* `scores[2] = 150;` \n* Cela ne touche qu'à la 3ème case. Les autres restent inchangées. \n* C'est utile pour mettre à jour un inventaire de jeu ou corriger une saisie utilisateur erronée.",
+                objectives: ["Affecter des valeurs à des cases spécifiques", "Comprendre la persistance des données dans le tableau"],
+                exercises: [
+                    {
+                        title: "La Mise à Jour",
+                        description: "Si `tab[0]` valait 10, et que je fais `tab[0] = tab[0] + 5;`. Que vaut `tab[0]` maintenant ?",
+                        difficulty: "Facile",
+                        solution: "15",
+                        hints: ["C'est une addition classique sur un emplacement mémoire."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 30 : Les Tableaux à 2 Dimensions : Grilles et Pixels",
+                description: "Créez des structures complexes comme des cartes ou des images.",
+                order: 30,
+                duration: "5 heures",
+                content: "En C, on peut créer un tableau de tableaux. \n\n* Déclaration : `int grille[3][3];` \n* Cela crée une grille de 9 cases (3 lignes x 3 colonnes). \n* On y accède avec deux crochets : `grille[ligne][colonne]`. \n* C'est ainsi que l'ordinateur représente votre écran (une grille de pixels) ou une carte de jeu.",
+                objectives: ["Déclarer une matrice", "Manipuler le double indexage [i][j]"],
+                exercises: [
+                    {
+                        title: "Le Tic-Tac-Toe",
+                        description: "Quelle case de `grille[3][3]` représente le centre exact de la grille ?",
+                        difficulty: "Moyen",
+                        solution: "`grille[1][1]`",
+                        hints: ["N'oubliez pas que l'on commence à 0. Donc 0, 1, 2."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 31 : Introduction aux Fonctions en C : Modulariser le moteur",
+                description: "Apprenez à découper votre programme en petits outils réutilisables.",
+                order: 31,
+                duration: "4 heures",
+                content: "Une fonction en C a une structure stricte : `type_retour nom(parametres) { ... }`. \n\n* Si elle ne renvoie rien, on utilise le type `void`. \n* Si elle renvoie un entier, on utilise `int` et on finit par `return`. \n* Cela permet de cacher la complexité : au lieu d'écrire 50 lignes de calcul, vous appelez juste `calculerScore()`. \n\nC'est la base d'un code propre et professionnel.",
+                objectives: ["Déclarer une fonction avec type de retour", "Comprendre l'utilité du type void"],
+                exercises: [
+                    {
+                        title: "Le Type de Retour",
+                        description: "Si ma fonction doit renvoyer un nombre avec une virgule, quel type de retour dois-je marquer au début ?",
+                        difficulty: "Facile",
+                        solution: "`float` (ou `double`)",
+                        hints: ["C'est le type de la valeur que vous allez 'return'."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 32 : Déclaration vs Définition : Les prototypes",
+                description: "Apprenez à prévenir le compilateur avant d'utiliser une fonction.",
+                order: 32,
+                duration: "3 heures",
+                content: "En C, le compilateur lit de haut en bas. Si vous utilisez une fonction avant de l'avoir écrite, il va râler. \n\n* On utilise un **Prototype** : c'est juste la première ligne de la fonction, placée tout en haut du fichier (finissant par un `;`). \n* Cela dit au compilateur : 'Ne t'inquiète pas, j'ai prévu une fonction qui s'appelle comme ça, je te donne les détails plus bas'. \n\nC'est indispensable quand on commence à avoir des fichiers de 1000 lignes !",
+                objectives: ["Savoir écrire un prototype", "Comprendre l'importance de l'ordre de lecture du compilateur"],
+                exercises: [
+                    {
+                        title: "La Signature",
+                        description: "Quelle est la différence entre une définition de fonction et un prototype ?",
+                        difficulty: "Moyen",
+                        solution: "Le prototype est une simple promesse (finit par `;`), la définition contient le code réel (entre `{}`).",
+                        hints: ["L'un annonce, l'autre exécute."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 33 : Paramètres et Arguments : Transmettre des outils",
+                description: "Donnez des données à vos fonctions pour qu'elles travaillent mieux.",
+                order: 33,
+                duration: "3 heures",
+                content: "Les paramètres sont les variables que la fonction attend. \n\n* Exemple : `void saluer(int fois) { ... }` \n* Quand vous l'appelez : `saluer(3);`, le chiffre 3 est l'**Argument**. \n* On peut passer des tableaux en paramètres, mais attention : en C, un tableau passé en paramètre perd sa taille. Il faut souvent passer la taille en plus !",
+                objectives: ["Passer plusieurs paramètres", "Savoir transmettre un tableau à une fonction"],
+                exercises: [
+                    {
+                        title: "Le Passage d'Infos",
+                        description: "Dans `void addition(int a, int b)`, que sont `a` et `b` ?",
+                        difficulty: "Facile",
+                        solution: "Des paramètres.",
+                        hints: ["Ce sont des variables locales créées pour la fonction."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 34 : Passage par Valeur : Le comportement par défaut",
+                description: "Comprenez pourquoi une fonction ne peut pas (facilement) modifier vos variables d'origine.",
+                order: 34,
+                duration: "4 heures",
+                content: "C'est un concept crucial en C : par défaut, le C **COPIE** la valeur. \n\n* Si vous envoyez `age` à une fonction, elle reçoit une copie de `age`. \n* Si elle change la valeur de la copie, votre `age` d'origine dans le `main` ne bouge pas ! \n* C'est une sécurité, mais cela peut être frustrant. Pour modifier la 'vraie' variable, il faudra utiliser les **Pointers** (nous verrons cela bientôt).",
+                objectives: ["Expérimenter la copie de valeur en mémoire", "Comprendre l'isolation des fonctions"],
+                exercises: [
+                    {
+                        title: "L'Illusion",
+                        description: "Si je fais `modifier(x)` et que la fonction met `x = 10`. Si au départ `x` valait 5, que vaut `x` après l'appel ?",
+                        difficulty: "Moyen",
+                        solution: "Il vaut toujours 5. La fonction n'a touché qu'à sa propre copie.",
+                        hints: ["N'oubliez pas : C = Copie par défaut."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 35 : Portée des Variables (Scope) et la Pile (Stack)",
+                description: "Découvrez où vivent et où meurent vos variables.",
+                order: 35,
+                duration: "4 heures",
+                content: "Les variables créées dans une fonction vivent sur la **Pile** (Stack). \n\n* Dès que la fonction se termine, la Pile est jetée et les variables sont détruites. \n* C'est pour cela que vous ne pouvez pas utiliser une variable du `main` dans une autre fonction. \n* C'est une gestion automatique de la mémoire très rapide, mais éphémère.",
+                objectives: ["Visualiser la Stack mémoire", "Maîtriser le cycle de vie des variables locales"],
+                exercises: [
+                    {
+                        title: "Le Cycle de Vie",
+                        description: "Comment appelle-t-on la zone mémoire automatique où sont stockées les variables locales ?",
+                        difficulty: "Facile",
+                        solution: "La Pile (ou Stack).",
+                        hints: ["C'est comme une pile d'assiettes : on ajoute et on retire par le haut."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 36 : Les Pointeurs : Le GPS de la Mémoire",
+                description: "Apprenez à manipuler les adresses plutôt que les valeurs.",
+                order: 36,
+                duration: "5 heures",
+                content: "Un pointeur est une variable qui stocke le numéro d'une case mémoire (une **Adresse**). \n\n* On utilise l'opérateur `&` pour obtenir l'adresse d'une variable. \n* Exemple : `int *ptr = &age;` \n* Analogie : `age` est la maison, et `ptr` est un papier sur lequel est écrit l'adresse de la maison. \n\nC'est l'outil le plus puissant du C car il permet de 'voir' où les données sont rangées physiquement.",
+                objectives: ["Déclarer un pointeur", "Utiliser l'opérateur d'adresse &"],
+                exercises: [
+                    {
+                        title: "L'Adresse",
+                        description: "Si j'ai `int score = 100;`, quel code me donne l'adresse de 'score' ?",
+                        difficulty: "Facile",
+                        solution: "`&score`",
+                        hints: ["C'est le symbole 'et commercial'."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 37 : L'Indirection : Accéder à distance",
+                description: "Utilisez votre pointeur pour modifier une valeur à l'autre bout du programme.",
+                order: 37,
+                duration: "4 heures",
+                content: "Une fois que vous avez l'adresse dans `ptr`, vous pouvez utiliser l'étoile `*` pour aller voir dedans. \n\n* `*ptr = 20;` veut dire : 'Va à l'adresse stockée dans ptr et mets-y le chiffre 20'. \n* On appelle cela le **Déréférencement**. \n* C'est comme si vous utilisiez une télécommande : vous n'êtes pas devant la télé, mais vous changez la chaîne à distance.",
+                objectives: ["Déréférencer un pointeur avec *", "Modifier une variable via son pointeur"],
+                exercises: [
+                    {
+                        title: "La Télécommande",
+                        description: "Si `ptr` pointe sur `age`, que fait l'instruction `*ptr = 0;` ?",
+                        difficulty: "Moyen",
+                        solution: "Elle met la variable `age` à 0.",
+                        hints: ["L'étoile permet de rentrer dans la case."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 38 : Passage par Référence : Modifier les variables distantes",
+                description: "Résolvez enfin le problème de la 'copie' des fonctions.",
+                order: 38,
+                duration: "5 heures",
+                content: "Pour qu'une fonction modifie une variable du `main`, on ne lui envoie pas la valeur, on lui envoie son **Adresse**. \n\n* Exemple : `void modifier(int *p) { *p = 10; }` \n* Appel : `modifier(&x);` \n* La fonction reçoit l'adresse, elle utilise `*` pour entrer dans la case de `x` et change la valeur. \n\nC'est ainsi qu'on gagne en performance (pas de copie inutile) et en flexibilité.",
+                objectives: ["Implémenter un passage par référence", "Comprendre l'intérêt pour la performance"],
+                exercises: [
+                    {
+                        title: "Le Vrai Changement",
+                        description: "Vrai ou Faux : Le passage par référence permet de modifier une variable locale d'une autre fonction ?",
+                        difficulty: "Facile",
+                        solution: "Vrai.",
+                        hints: ["C'est tout l'intérêt des pointeurs dans les fonctions."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 39 : Pointeurs et Tableaux : La vérité cachée",
+                description: "Découvrez que les tableaux et les pointeurs sont presque la même chose.",
+                order: 39,
+                duration: "4 heures",
+                content: "En C, le nom d'un tableau est secrètement le **Pointeur** de sa première case. \n\n* `tab` est strictement égal à `&tab[0]`. \n* C'est pour cela qu'on ne met pas de `&` quand on envoie un tableau à une fonction : il est DÉJÀ une adresse ! \n\nComprendre ce lien est le moment où tout s'éclaire pour un étudiant en C.",
+                objectives: ["Comprendre l'équivalence Nom du tableau = Adresse de base", "Expliquer pourquoi les tableaux ne sont pas copiés"],
+                exercises: [
+                    {
+                        title: "Le Secret",
+                        description: "Si `int tab[5];`, à quoi correspond le nom `tab` tout court ?",
+                        difficulty: "Moyen",
+                        solution: "À l'adresse de la première case (`&tab[0]`).",
+                        hints: ["C'est le point de départ en mémoire."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 40 : Arithmétique des Pointeurs : Voyager dans la RAM",
+                description: "Déplacez-vous dans votre mémoire avec des additions et soustractions.",
+                order: 40,
+                duration: "4 heures",
+                content: "Si `ptr` est sur la case 0 d'un tableau, faire `ptr + 1` vous emmène à la case 1. \n\n* Le C est intelligent : si c'est un tableau de `int` (4 octets), faire `+1` fait bondir l'adresse de 4 octets. \n* C'est une manière ultra-rapide de parcourir des données sans utiliser d'index `[i]`. \n\nLes experts en C utilisent souvent cette méthode pour créer des programmes extrêmement véloces.",
+                objectives: ["Manipuler les adresses par addition", "Comprendre que le bond dépend du type de donnée"],
+                exercises: [
+                    {
+                        title: "Le Bond",
+                        description: "Si `ptr` pointe sur un `int` à l'adresse 1000, quelle sera l'adresse de `ptr + 1` ?",
+                        difficulty: "Difficile",
+                        solution: "1004 (car un int fait 4 octets).",
+                        hints: ["Le bond est égal à la taille du type en mémoire."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 41 : Allocation Dynamique : malloc et free",
+                description: "Apprenez à demander de la mémoire pendant que le programme tourne.",
+                order: 41,
+                duration: "6 heures",
+                content: "Jusqu'à présent, nous réservions la mémoire à l'avance. Avec `malloc`, vous pouvez en demander quand vous voulez sur le **Tas** (Heap). \n\n* `int *tab = malloc(5 * sizeof(int));` \n* Cela demande 5 cases d'entiers dynamiquement. \n* **REGLE D'OR** : Tout ce qui est loué avec `malloc` doit être rendu avec `free`. Sinon, vous créez une Fuite Mémoire (Memory Leak) qui finit par faire planter l'ordinateur !",
+                objectives: ["Utiliser malloc pour l'allocation dynamique", "Libérer la mémoire avec free"],
+                exercises: [
+                    {
+                        title: "Le Nettoyage",
+                        description: "Quelle fonction doit-on appeler impérativement après avoir fini d'utiliser un bloc `malloc` ?",
+                        difficulty: "Facile",
+                        solution: "La fonction `free()`.",
+                        hints: ["C'est comme rendre les clés d'un appartement loué."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 42 : Structures en C : Organiser vos données",
+                description: "Créez vos propres types de données personnalisés.",
+                order: 42,
+                duration: "5 heures",
+                content: "Une `struct` permet de regrouper plusieurs variables de types différents. \n\n* Exemple : `struct Personne { char nom[50]; int age; };` \n* C'est très pratique pour représenter des objets du monde réel comme un joueur, une voiture ou une transaction bancaire.",
+                objectives: ["Définir une structure", "Accéder aux membres avec le point (.)"],
+                exercises: [
+                    {
+                        title: "Le Regroupage",
+                        description: "Quel mot-clé utilise-t-on pour créer un groupe de variables en C ?",
+                        difficulty: "Facile",
+                        solution: "`struct`",
+                        hints: ["Abréviation de Structure."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 43 : Pointeurs de Structures : L'opérateur flèche",
+                description: "Manipulez des structures complexes via des adresses.",
+                order: 43,
+                duration: "4 heures",
+                content: "Quand vous avez un pointeur sur une structure, le C a inventé un raccourci élégant : la flèche `->`. \n\n* Au lieu de faire `(*ptr).age`, on écrit `ptr->age`. \n* C'est beaucoup plus facile à lire et c'est ce que tous les pros utilisent.",
+                objectives: ["Maîtriser l'opérateur flèche ->", "Distinguer accès direct et accès par pointeur"],
+                exercises: [
+                    {
+                        title: "Le Raccourci",
+                        description: "Comment accède-t-on au champ 'score' d'un pointeur de structure `joueur` ?",
+                        difficulty: "Moyen",
+                        solution: "`joueur->score`",
+                        hints: ["Utilisez le signe moins suivi du signe supérieur."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 44 : Gestion d'Erreurs et Segfaults : Survivre en territoire hostile",
+                description: "Apprenez à comprendre quand et pourquoi votre programme plante.",
+                order: 44,
+                duration: "4 heures",
+                content: "Le 'Segmentation Fault' est le crash le plus célèbre en C. \n\n* Cela arrive quand vous essayez de lire une adresse mémoire interdite (ou un pointeur `NULL`). \n* Le C ne vous pardonne rien, mais il vous donne le contrôle total. Apprendre à débugger ses Segfaults, c'est devenir un véritable ingénieur système.",
+                objectives: ["Identifier les causes des Segmentation Faults", "Apprendre à tester si un pointeur est NULL"],
+                exercises: [
+                    {
+                        title: "Le Crash",
+                        description: "Qu'arrive-t-il si vous essayez de déréférencer (`*`) un pointeur qui vaut `NULL` ?",
+                        difficulty: "Difficile",
+                        solution: "Le programme s'arrête immédiatement avec une erreur 'Segmentation Fault'.",
+                        hints: ["NULL est l'adresse 0, une zone strictement interdite."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 45 : Vers le niveau Expert : Bilan Final",
+                description: "Félicitations, vous maîtrisez maintenant les entrailles de l'ordinateur.",
+                order: 45,
+                duration: "3 heures",
+                content: "Vous avez parcouru un chemin incroyable. \n\n* En Algorithmique, vous avez appris à Penser. \n* En C, vous avez appris à Exécuter au plus près du silicium. \n\nDans le niveau Expert, nous explorerons les API du système Linux (POSIX), les Threads (multitâches) et les Sockets (réseaux). Vous avez maintenant toutes les clés pour construire des systèmes industriels.",
+                objectives: ["Bilan des compétences C acquises", "Ouverture vers la programmation système de bas niveau"],
+                exercises: [
+                    {
+                        title: "La Réussite",
+                        description: "Quelle est selon vous la force principale du langage C après avoir fini ce cours ?",
+                        difficulty: "Facile",
+                        solution: "La performance et le contrôle absolu sur la mémoire RAM.",
+                        hints: ["Pensez à la vitesse et à la proximité avec le matériel."]
+                    }
+                ],
+                resources: []
+            },
         ]
     },
     {

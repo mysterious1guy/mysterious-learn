@@ -14,107 +14,459 @@ const algoCourses = [
         tags: ["algorithme", "logique", "débutant", "bases", "fondations"],
         chapters: [
             {
-                title: "Chapitre 1 : Philosophie et Pensée Algorithmique",
-                description: "Comprendre la genèse de l'informatique avant de toucher à la moindre ligne de code.",
+                title: "Chapitre 1 : L'Algorithme : C'est quoi au juste ?",
+                description: "Désacralisons le mot 'algorithme'. Indice : vous en utilisez déjà tous les jours sans le savoir.",
                 order: 1,
-                duration: "5 heures",
-                content: "L'informatique ne consiste pas à taper sur un clavier, mais à apprendre à penser. Un algorithme est, formellement défini, un ensemble fini et non ambigu d'instructions exécutables, visant à résoudre un problème donné en un temps fini. Nous allons ici déconstruire la notion d'état, de transition, de donnée d'entrée (input) et de donnée de sortie (output). Vous apprendrez à 'penser comme une machine' : de manière séquentielle, déterministe, et sans aucune ambiguïté. C'est ici que réside la différence entre un bricoleur et un ingénieur logiciel.",
-                objectives: ["Définir formellement un algorithme", "Comprendre le déterminisme", "Séparer le problème de son implémentation", "Modéliser un problème de la vie réelle mathématiquement"],
+                duration: "1 heure",
+                content: "Un algorithme n'est pas une formule mathématique complexe réservée aux génies de la NASA. C'est simplement une **liste d'étapes précises** pour accomplir une tâche. \n\n* Pourquoi l'apprend-on ? \nPour résoudre des problèmes de manière logique. \n* Prenons une recette de cuisine : \n1. Chauffer l'eau. \n2. Mettre les pâtes. \n3. Attendre 8 min. \nC'est un algorithme ! Si vous changez l'ordre (mettre les pâtes avant de chauffer l'eau), le résultat est raté. En informatique, c'est pareil : l'ordinateur suit vos instructions à la lettre, dans l'ordre où vous les donnez.",
+                objectives: ["Comprendre qu'un algorithme est une suite d'étapes", "Réaliser que l'ordinateur est un exécutant aveugle", "Identifier des algorithmes dans la vie réelle"],
                 exercises: [
                     {
-                        title: "Modélisation : La Tour de Hanoï",
-                        description: "Écrivez les étapes manuelles, sous forme pseudo-algorithmique stricte, pour résoudre une Tour de Hanoï à 3 disques.",
-                        difficulty: "Moyen",
-                        solution: "1. Déplacer Disque(1) de A vers C\n2. Déplacer Disque(2) de A vers B\n3. Déplacer Disque(1) de C vers B\n4. Déplacer Disque(3) de A vers C\n5. Déplacer Disque(1) de B vers A\n6. Déplacer Disque(2) de B vers C\n7. Déplacer Disque(1) de A vers C",
-                        hints: ["Nommez vos piquets A, B et C.", "Rappelez-vous : un plus grand disque ne peut jamais reposer sur un plus petit."]
-                    },
-                    {
-                        title: "Le Distributeur Automatique",
-                        description: "Créez un algorithme séquentiel qui décrit le comportement d'un distributeur de boisson : insertion de monnaie, vérification du stock, rendu de monnaie.",
-                        difficulty: "Facile",
-                        solution: "1. LIRE Montant_Insere\n2. LIRE Choix_Boisson\n3. SI Stock(Choix_Boisson) == 0 ALORS Rendre Montant_Insere ET Terminer\n4. SI Montant_Insere < Prix(Choix_Boisson) ALORS Rendre Montant_Insere ET Signaler Erreur ET Terminer\n5. Distribuer Choix_Boisson\n6. Rendre (Montant_Insere - Prix(Choix_Boisson))\n7. Reduire_Stock(Choix_Boisson, 1)",
-                        hints: ["N'oubliez pas les états d'erreurs (pas de stock, pas assez d'argent)."]
+                        title: "Analogie : Le Matin",
+                        description: "Mettez ces étapes dans le bon ordre logique pour un algorithme 'Se préparer le matin' : [S'habiller, Se lever, Prendre son petit-déjeuner]",
+                        difficulty: "Trés Facile",
+                        solution: "1. Se lever\n2. Prendre son petit-déjeuner\n3. S'habiller",
+                        hints: ["On ne s'habille généralement pas avant de sortir du lit !"]
                     }
                 ],
                 resources: [
-                    { title: "Histoire de l'Algorithmique par Al-Khwarizmi", type: "article", url: "https://fr.wikipedia.org/wiki/Al-Khw%C3%A2rizm%C3%AE" }
+                    { title: "Introduction aux algorithmes (Video)", type: "video", url: "https://www.youtube.com/embed/kM9VKRowit0" }
                 ]
             },
             {
-                title: "Chapitre 2 : Mémoire, Variables et Typage Rigoureux",
-                description: "Domptez la gestion de la mémoire, les types de données primitifs et l'allocation.",
+                title: "Chapitre 2 : L'Ordinateur : Une machine bête mais rapide",
+                description: "Pourquoi devons-nous être si précis ? Apprenez comment l'ordinateur 'pense'.",
                 order: 2,
-                duration: "7 heures",
-                content: "Une machine manipule de la mémoire vive (RAM). Pour notre algorithme, cela se traduit par la déclaration de 'variables'. Mais attention : une variable n'est pas magique. Elle a une taille (en octets), une adresse (où elle est stockée), un Nom (identificateur), un Type (entier, flottant, pointeur, caractère, booléen) et une Valeur. Nous allons voir pourquoi le typage rigoureux est essentiel. Vous apprendrez la différence entre l'affectation (=) et l'égalité (==), ainsi que les principes de portée (scope local vs global).",
-                objectives: ["Maîtriser les types primitifs", "Comprendre la représentation binaire en mémoire", "Éviter les erreurs d'affectation et d'effets de bord"],
+                duration: "1 heure",
+                content: "L'ordinateur est l'élève le plus bête du monde, mais il court à la vitesse de la lumière. Il ne comprend pas le 'à peu près'. \n\n* Le cycle de vie d'un programme : \n1. Entrée (Input) : Vous lui donnez une info (un clic, un texte). \n2. Traitement : Il suit votre algorithme. \n3. Sortie (Output) : Il affiche le résultat. \n\nSi vous lui dites 'Fais un café', il ne saura pas quoi faire. Vous devez lui dire : 'Prends la tasse, pose-la ici, appuie sur ce bouton'. C'est cette **précision chirurgicale** que nous allons apprendre.",
+                objectives: ["Distinguer Entrée, Traitement et Sortie", "Comprendre que l'ordinateur n'a pas d'intuition"],
                 exercises: [
                     {
-                        title: "Permutation Circulaire (A, B, C)",
-                        description: "Écrivez un algorithme pour échanger les valeurs de 3 variables : la valeur de A va dans B, celle de B dans C, et celle de C dans A.",
-                        difficulty: "Moyen",
-                        solution: "VARIABLE Temp, A, B, C\nTemp = C\nC = B\nB = A\nA = Temp",
-                        hints: ["Utilisez au moins une variable de sauvegarde."]
-                    },
-                    {
-                        title: "Conversions de Types",
-                        description: "Que se passe-t-il si vous tentez d'additionner un Entier(5) et une Chaîne('10') dans un langage fortement typé ?",
-                        difficulty: "Moyen",
-                        solution: "Une erreur de compilation ou une exception au runtime est levée (ex: Type Mismatch), car le compilateur refuse de mélanger aveuglément des types mathématiques et textuels sans fonction de 'cast' explicite.",
-                        hints: ["Pensez à la différence entre concaténation et addition mathématique."]
+                        title: "Le Robot Idiot",
+                        description: "Si vous dites à un robot 'Marche jusqu'au mur' sans lui dire de s'arrêter, que se passera-t-il ?",
+                        difficulty: "Facile",
+                        solution: "Il va continuer de marcher contre le mur indéfiniment car il n'a pas reçu l'instruction de s'arrêter. Il n'a pas d'instinct de conservation.",
+                        hints: ["L'ordinateur ne devine jamais vos intentions."]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 3 : Structures de Contrôle et Algèbre de Boole",
-                description: "Le cerveau de l'algorithme : branchements conditionnels et opérateurs logiques complexes.",
+                title: "Chapitre 3 : La Pensée Séquentielle : L'ordre fait tout",
+                description: "Pourquoi l'étape 1 doit toujours venir avant l'étape 2.",
                 order: 3,
-                duration: "8 heures",
-                content: "Les conditions transforment une simple calculatrice en une machine intelligente. Nous plongeons ici dans l'Algèbre de Boole : opérateurs ET (AND), OU (OR), NON (NOT), OU Exclusif (XOR). Vous apprendrez à construire des tables de vérité pour prouver formellement la justesse de vos conditions. Nous aborderons les structures conditionnelles imbriquées (IF, ELSE IF, ELSE) et le fameux Switch (Selon). Savoir simplifier une condition via les lois de De Morgan est une compétence d'ingénieur indispensable.",
-                objectives: ["Construire une table de vérité complete", "Appliquer les Lois de De Morgan", "Maîtriser les branchements décisionnels multiples"],
+                duration: "2 heures",
+                content: "En algorithmique, on lit de **haut en bas**. \n\nImaginez que vous vouliez verser de l'eau dans un verre. \n* Algorithme A : 1. Ouvrir la bouteille. 2. Verser. (Réussite) \n* Algorithme B : 1. Verser. 2. Ouvrir la bouteille. (Catastrophe) \n\nL'ordinateur ne reviendra jamais en arrière pour 'corriger' votre erreur si vous avez oublié d'ouvrir la bouteille. Chaque ligne de code est une commande impérative.",
+                objectives: ["Maîtriser la lecture descendante", "Anticiper les erreurs d'inversion logique"],
                 exercises: [
                     {
-                        title: "Loi de De Morgan Appliquée",
-                        description: "Simplifiez l'expression logique suivante : NON(A ET B) OU NON(A).",
-                        difficulty: "Difficile",
-                        solution: "Par De Morgan : NON(A ET B) = NON(A) OU NON(B).\nDonc l'expression devient : (NON(A) OU NON(B)) OU NON(A).\nCe qui se simplifie en : NON(A) OU NON(B).",
-                        hints: ["Révisez les tables de vérité. NON(A ET B) n'est pas NON(A) ET NON(B)."]
-                    },
-                    {
-                        title: "L'Année Bissextile",
-                        description: "Un classique mondial. Écrivez la condition logique absolue pour déterminer si une année 'A' est bissextile.",
-                        difficulty: "Moyen",
-                        solution: "SI (A modulo 4 == 0 ET A modulo 100 != 0) OU (A modulo 400 == 0) ALORS\n  AFFICHER 'Bissextile'\nSINON\n  AFFICHER 'Non Bissextile'\nFIN SI",
-                        hints: ["Une année divisible par 4 est bissextile, SAUF si elle l'est par 100, AUQUEL CAS elle doit aussi l'être par 400."]
+                        title: "Le Verre d'Eau",
+                        description: "Pourquoi l'Algorithme B échoue-t-il ?",
+                        difficulty: "Facile",
+                        solution: "Parce qu'au moment de l'étape 1 (Verser), la bouteille est encore fermée. L'ordinateur n'anticipe pas que l'étape 2 va l'ouvrir.",
+                        hints: ["L'ordinateur ne connaît que le présent de la ligne qu'il exécute."]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 4 : La Puissance de l'Itération (Boucles)",
-                description: "Maîtriser la répétition algorithmique : Boucles déterministes et indéterministes.",
+                title: "Chapitre 4 : L'État : Pourquoi se souvenir de choses ?",
+                description: "L'ordinateur n'a pas de mémoire naturelle. Nous devons lui créer des souvenirs.",
                 order: 4,
-                duration: "10 heures",
-                content: "La véritable puissance des ordinateurs réside dans leur capacité à répéter des milliards d'opérations sans erreur. Nous analysons en profondeur : 1) La boucle POUR (FOR), itération déterministe avec compteur d'initialisation, borne et pas d'incrémentation. 2) La boucle TANT QUE (WHILE), itération conditionnelle. 3) La boucle REPETER... JUSQU'A (DO... WHILE), s'exécutant au moins une fois. Nous traiterons des pièges mortels en entreprise : les boucles infinies, les effets de bord dans les itérateurs, et l'optimisation des sauts (Break, Continue).",
-                objectives: ["Sélectionner la boucle optimale pour chaque situation", "Prouver la terminaison d'une boucle (Variant de boucle)", "Maîtriser les compteurs, accumulateurs et drapeaux (flags)"],
+                duration: "2 heures",
+                content: "Si je vous demande votre âge, vous le savez. L'ordinateur, lui, oublie tout dès qu'il a fini une ligne, sauf si on lui dit explicitement de **garder une info**. \n\n* C'est ce qu'on appelle l'état du programme. \n* Sans mémoire, un jeu vidéo ne saurait pas quel est votre score ou combien de vies il vous reste. \n\nNous allons apprendre à créer des 'petites boîtes' pour stocker ces informations. Ces boîtes sont les fondations de tout ce qui suit.",
+                objectives: ["Comprendre le besoin de stockage d'information", "Visualiser l'état d'un programme"],
                 exercises: [
                     {
-                        title: "La Suite de Fibonacci (Itérative)",
-                        description: "Générez les N premiers termes de la célèbre suite de Fibonacci en utilisant uniquement une boucle.",
-                        difficulty: "Difficile",
-                        solution: "LIRE N\nPrev1 = 0, Prev2 = 1\nSI N >= 1 ALORS AFFICHER Prev1\nSI N >= 2 ALORS AFFICHER Prev2\nPOUR i ALLANT DE 3 A N FAIRE\n  Nouveau = Prev1 + Prev2\n  AFFICHER Nouveau\n  Prev1 = Prev2\n  Prev2 = Nouveau\nFIN POUR",
-                        hints: ["La suite commence par 0, 1. Ensuite, chaque nombre est la somme des deux précédents. Maintenez toujours la trace des deux derniers !"]
-                    },
-                    {
-                        title: "Nombres Premiers (Recherche Exhaustive)",
-                        description: "Écrivez un algorithme algorithmique pour vérifier si un nombre X est premier en testant ses diviseurs avec une boucle WHILE optimisée.",
-                        difficulty: "Difficile",
-                        solution: "LIRE X\nSI X <= 1 ALORS RETOURNER Faux\ndiviseur = 2\nTANT QUE diviseur * diviseur <= X FAIRE\n  SI X modulo diviseur == 0 ALORS\n    RETOURNER Faux\n  FIN SI\n  diviseur = diviseur + 1\nFIN TANT QUE\nRETOURNER Vrai",
-                        hints: ["Il n'est pas nécessaire de tester jusqu'à X. S'arrêter à la racine carrée de X (diviseur * diviseur <= X) est la preuve mathématique d'optimisation."]
+                        title: "Le Score du Jeu",
+                        description: "Si un jeu ne stockait pas le score en mémoire, que se passerait-il à chaque fois que vous tuez un monstre ?",
+                        difficulty: "Facile",
+                        solution: "Le score afficherait '1' puis reviendrait à '0' immédiatement car il ne 'se souviendrait' pas des points précédents.",
+                        hints: ["La mémoire permet d'accumuler des résultats."]
                     }
                 ],
                 resources: []
-            }
+            },
+            {
+                title: "Chapitre 5 : La Mémoire Vive (RAM) : Les Milliers de Boîtes",
+                description: "Entrez dans le cerveau physique de la machine.",
+                order: 5,
+                duration: "3 heures",
+                content: "Imaginez la mémoire de l'ordinateur (la RAM) comme un immense entrepôt rempli de **millions de boîtes vides**. \n\n* Chaque boîte a une adresse (un numéro). \n* Pour ne pas s'embrouiller avec des numéros compliqués, nous, les humains, allons donner des **Noms** à ces boîtes. \n\nC'est la naissance du concept de **Variable**. En haut niveau, on ne dit pas 'Cherche dans la boîte n°4587', on dit 'Cherche dans la boîte qui s'appelle Score'.",
+                objectives: ["Visualiser la RAM comme un espace de stockage", "Comprendre le lien entre adresse physique et nom symbolique"],
+                exercises: [
+                    {
+                        title: "L'Entrepôt",
+                        description: "Pourquoi est-il plus facile pour un humain d'utiliser des noms de boîtes plutôt que des numéros d'adresses ?",
+                        difficulty: "Facile",
+                        solution: "Parce que retenir 'Prénom' est plus naturel et logique que de retenir 'Adresse 0x7FFF1234'. Les noms donnent du sens au code.",
+                        hints: ["L'informatique est faite par des humains pour des humains."]
+                    }
+                ],
+                resources: [
+                    { title: "Comment fonctionne la RAM ? (Video)", type: "video", url: "https://www.youtube.com/embed/p3q5zWCw8J4" }
+                ]
+            },
+            {
+                title: "Chapitre 6 : La Variable : Donner un nom à une boîte",
+                description: "Apprenez à identifier vos données pour ne jamais les perdre.",
+                order: 6,
+                duration: "2 heures",
+                content: "Une variable, c'est l'association d'un **Nom** (l'étiquette) et d'une **Valeur** (ce qu'il y a dedans). \n\n* Analogie : Imaginez que vous rangiez vos vêtements. Vous n'écrivez pas 'Boîte 1' sur le carton, vous écrivez 'Chaussettes'. \n* En informatique, on fait pareil. Si on stocke le nom de l'utilisateur, on appelle la variable `nomUtilisateur`. \n\nC'est ce qu'on appelle un **identificateur**. Il doit être unique pour que l'ordinateur sache exactement de quelle boîte vous parlez.",
+                objectives: ["Comprendre le concept d'identificateur", "Distinguer le nom de la variable de sa valeur"],
+                exercises: [
+                    {
+                        title: "L'Étiquette",
+                        description: "Si vous créez une variable `vitesse` et que vous y mettez `50`. Quel est le NOM et quelle est la VALEUR ?",
+                        difficulty: "Trés Facile",
+                        solution: "Le NOM est 'vitesse'. La VALEUR est '50'.",
+                        hints: ["Le nom est l'étiquette sur la boîte."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 7 : Le Nommage : L'art de la clarté",
+                description: "Pourquoi `a = 10` est une mauvaise idée, mais `nombreDeVies = 10` est génial.",
+                order: 7,
+                duration: "1 heure",
+                content: "Le code est écrit pour être lu par des humains. Si vous appelez toutes vos variables `a`, `b`, `x`, vous allez vous perdre en 5 minutes. \n\n* Les bonnes pratiques : \n1. Soyez descriptif : `prixTotal` au lieu de `p`. \n2. Utilisez une convention : \n   * **camelCase** : `monScoreFinal` (utilisé en JS, Java, C). \n   * **snake_case** : `mon_score_final` (utilisé en Python). \n\nUn bon nom de variable explique ce que contient la boîte sans même avoir besoin de regarder dedans.",
+                objectives: ["Apprendre les conventions camelCase et snake_case", "Comprendre l'importance de la sémantique"],
+                exercises: [
+                    {
+                        title: "Le Baptême",
+                        description: "Proposez un bon nom en camelCase pour stocker le nombre de jours restant avant Noël.",
+                        difficulty: "Facile",
+                        solution: "`joursRestantsAvantNoel`",
+                        hints: ["Commencez par une minuscule, puis une majuscule à chaque nouveau mot."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 8 : L'Affectation (=) : Mettre une valeur dans la boîte",
+                description: "Le symbole `=` ne signifie pas 'égalité' au sens mathématique. C'est un mouvement !",
+                order: 8,
+                duration: "2 heures",
+                content: "Attention, c'est le piège n°1 des débutants ! \n\n* En maths : `x = 5` veut dire que x est égal à 5. \n* En informatique : `x = 5` est une **instruction d'affectation**. \n   * Cela veut dire : 'Prends la valeur 5 et **écrase** ce qu'il y avait dans la boîte x par 5'. \n\nC'est un mouvement de la droite vers la gauche : `Boîte = Valeur`. Si vous écrivez `5 = x`, l'ordinateur explose (virtuellement) car on ne peut pas mettre une variable dans le chiffre 5 !",
+                objectives: ["Maîtriser le sens de l'affectation (droite vers gauche)", "Comprendre que l'affectation écrase la valeur précédente"],
+                exercises: [
+                    {
+                        title: "L'Écrasement",
+                        description: "Si `score = 10` puis à la ligne suivante `score = 20`. Que vaut `score` à la fin ?",
+                        difficulty: "Facile",
+                        solution: "20. La valeur 10 a été totalement écrasée et remplacée par 20.",
+                        hints: ["L'ordinateur ne garde que le dernier état."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 9 : La Lecture vs L'Écriture : Regarder vs Remplir",
+                description: "Sachez quand vous utilisez la valeur et quand vous la changez.",
+                order: 9,
+                duration: "2 heures",
+                content: "Il y a deux façons d'utiliser une variable : \n\n1. **L'écriture** : Quand elle est à gauche du `=`. (`score = 100`) \n2. **La lecture** : Quand on l'utilise ailleurs. (`afficher(score)`) \n\nSi vous essayez de lire une variable qui n'a jamais été remplie (écrite), l'ordinateur va paniquer (« Undefined » ou « Null »). C'est comme essayer de lire une lettre dans une boîte aux lettres vide.",
+                objectives: ["Distinguer les phases de lecture et d'écriture", "Comprendre le danger des variables non-initialisées"],
+                exercises: [
+                    {
+                        title: "La Boîte Vide",
+                        description: "Que se passe-t-il si je demande à l'ordinateur d'afficher `prix` alors que je n'ai jamais défini `prix = ...` ?",
+                        difficulty: "Facile",
+                        solution: "Une erreur survient car l'ordinateur ne sait pas ce que contient 'prix'. Elle n'est pas initialisée.",
+                        hints: ["On ne peut pas lire ce qui n'existe pas."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 10 : Les Types de données : Pourquoi trier ?",
+                description: "Toutes les données ne se ressemblent pas. Apprenez à les classer.",
+                order: 10,
+                duration: "2 heures",
+                content: "Dans vos boîtes, vous pouvez mettre des choses très différentes. \n\n* Si vous essayez de faire une addition entre un Prénom ('Alice') et un Chiffre (5), l'ordinateur est perdu. \n* C'est pourquoi on définit des **Types**. \n\nLe type définit ce qu'on a le droit de faire avec la donnée. On peut multiplier deux chiffres, mais on ne peut pas diviser une phrase par deux (en tout cas, pas naturellement !). Nous allons voir les 4 types de base dans les prochains chapitres.",
+                objectives: ["Comprendre l'utilité des types", "Réaliser que les opérations dépendent du type"],
+                exercises: [
+                    {
+                        title: "L'Intrus",
+                        description: "Laquelle de ces opérations semble illogique pour un ordinateur ? A: 5 + 5 / B: 'Bonjour' * 5 / C: 10 - 2",
+                        difficulty: "Facile",
+                        solution: "B: 'Bonjour' * 5 (Sauf dans certains langages comme Python, mais logiquement, on ne multiplie pas du texte par un nombre mathématiquement).",
+                        hints: ["Réfléchissez au sens mathématique des symboles."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 11 : Les Entiers (Integer) : L'art de compter",
+                description: "Le type le plus utilisé : pour tout ce qui ne se coupe pas en morceaux.",
+                order: 11,
+                duration: "2 heures",
+                content: "L'**Entier** (ou `int`) sert à stocker des nombres sans virgule. \n\n* Exemples : Un nombre de vies (3), un âge (20), un nombre de clics (150). \n* Un ordinateur traite les entiers très rapidement car ils sont stockés simplement en binaire. \n* La seule règle : vous ne pouvez pas mettre `1.5` dans un entier. Si vous le faites, l'ordinateur va simplement 'couper' la virgule et garder `1` (on appelle ça la troncature).",
+                objectives: ["Identifier quand utiliser un entier", "Comprendre la notion de troncature"],
+                exercises: [
+                    {
+                        title: "Le Compteur",
+                        description: "Si j'ai une variable `nombreEnfants = 2.5`. Que vaudra-t-elle réellement en mémoire si c'est un Entier ?",
+                        difficulty: "Trés Facile",
+                        solution: "2. La partie décimale est supprimée.",
+                        hints: ["On ne peut pas avoir une moitié d'enfant !"]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 12 : Les Réels (Float/Double) : La précision du monde",
+                description: "Pour les poids, les prix, et tout ce qui demande de la finesse.",
+                order: 12,
+                duration: "2 heures",
+                content: "Quand vous avez besoin de virgules, vous utilisez un **Réel** (souvent appelé `float` ou `double`). \n\n* Pourquoi deux noms ? `float` est précis, `double` est **doublement** précis. \n* Attention : En informatique, on n'utilise pas la virgule `,` mais le **point** `.` (ex: `10.5`). \n* Les réels prennent un peu plus de place en mémoire que les entiers, donc on ne les utilise que si c'est nécessaire.",
+                objectives: ["Apprendre à utiliser le point décimal", "Choisir entre entier et réel selon le besoin"],
+                exercises: [
+                    {
+                        title: "Le Juste Prix",
+                        description: "Quelle variable doit être un Réel ? A: Nombre d'articles / B: Prix total du panier",
+                        difficulty: "Facile",
+                        solution: "B: Prix total du panier (car il peut y avoir des centimes, ex: 15.99).",
+                        hints: ["Est-ce que ça peut avoir une virgule ?"]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 13 : Les Chaînes de caractères (String) : Parler à l'humain",
+                description: "Stockez du texte, des noms, des adresses ou même des émojis.",
+                order: 13,
+                duration: "2 heures",
+                content: "Une **Chaîne** (ou `string`) est une suite de lettres, de chiffres ou de symboles. \n\n* Règles d'or : On entoure toujours le texte de **guillemets** (`\"Bonjour\"`). \n* Sans guillemets, l'ordinateur croit que `bonjour` est le nom d'une variable. \n* Avec guillemets, il comprend que c'est du texte brut à afficher. \n\nUne chaîne de caractères peut être vide (`\"\"`) ou très longue.",
+                objectives: ["Apprendre l'usage des guillemets", "Distinguer une variable d'une chaîne de texte"],
+                exercises: [
+                    {
+                        title: "Le Message",
+                        description: "Quelle est la différence entre `score` et `\"score\"` ?",
+                        difficulty: "Facile",
+                        solution: "`score` est une variable (une boîte qui contient une valeur), alors que `\"score\"` est juste le mot 'score' écrit en texte.",
+                        hints: ["Les guillemets changent tout !"]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 14 : Les Booléens (True/False) : La base du choix",
+                description: "Le type le plus simple : Oui ou Non. Vrai ou Faux.",
+                order: 14,
+                duration: "2 heures",
+                content: "Le **Booléen** (ou `boolean`) ne peut avoir que deux valeurs : `Vrai` (True) ou `Faux` (False). \n\n* C'est le cerveau de la logique. \n* On s'en sert pour vérifier des conditions : \n   * `estConnecte = Vrai` \n   * `partieTerminee = Faux` \n\nToute la logique de l'ordinateur repose sur ces deux états (le fameux 0 et 1).",
+                objectives: ["Comprendre l'aspect binaire de la logique", "Utiliser les booléens pour des drapeaux (flags)"],
+                exercises: [
+                    {
+                        title: "L'Interrupteur",
+                        description: "Si je veux savoir si un utilisateur a accepté les conditions d'utilisation, quel type de variable dois-je utiliser ?",
+                        difficulty: "Trés Facile",
+                        solution: "Un Booléen (Vrai s'il a accepté, Faux sinon).",
+                        hints: ["C'est une réponse par oui ou non."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 15 : Les Opérateurs mathématiques : La trousse à outils",
+                description: "Addition, Soustraction, Multiplication, Division : transformez vos données.",
+                order: 15,
+                duration: "2 heures",
+                content: "Maintenant que nous avons des boîtes avec des chiffres, il faut savoir les manipuler. \n\n* `+` : Addition \n* `-` : Soustraction \n* `*` : Multiplication \n* `/` : Division \n\nVous pouvez combiner des variables et des nombres : `total = prix + 5`. L'ordinateur va lire la valeur de `prix`, lui ajouter 5, et mettre le résultat dans la boîte `total`. L'ordre des opérations (PEMDAS) s'applique ici aussi !",
+                objectives: ["Réaliser des calculs simples", "Combiner variables et opérateurs"],
+                exercises: [
+                    {
+                        title: "Le Calculateur",
+                        description: "Si `a = 5` et `b = 10`. Que vaut `c` si `c = a + b` ?",
+                        difficulty: "Trés Facile",
+                        solution: "15",
+                        hints: ["Remplacez les noms par leurs valeurs."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 16 : La Priorité des opérations : L'ordre caché",
+                description: "Apprenez pourquoi l'ordinateur fait les multiplications avant les additions.",
+                order: 16,
+                duration: "1 heure",
+                content: "Tout comme à l'école, l'ordinateur suit des règles de priorité. \n\n* Si vous écrivez `res = 1 + 2 * 3`, l'ordinateur va calculer `2 * 3` (= 6) puis ajouter `1` (= 7). \n* Si vous vouliez faire l'addition en premier, vous devez utiliser des **parenthèses** : `res = (1 + 2) * 3` (= 9). \n\nLes parenthèses sont vos meilleures amies pour être sûr que l'ordinateur fait exactement ce que vous avez en tête.",
+                objectives: ["Comprendre la hiérarchie des opérateurs", "Utiliser les parenthèses pour forcer un ordre"],
+                exercises: [
+                    {
+                        title: "Le Piège",
+                        description: "Que vaut `x` si `x = 10 / 2 + 3` ?",
+                        difficulty: "Facile",
+                        solution: "8 (10/2 = 5, puis 5 + 3 = 8)",
+                        hints: ["La division est prioritaire sur l'addition."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 17 : Le Modulo (%) : L'outil secret du reste",
+                description: "Le signe % ne calcule pas un pourcentage, mais le reste d'une division.",
+                order: 17,
+                duration: "2 heures",
+                content: "Le **Modulo** est l'un des opérateurs les plus utiles en programmation. \n\n* `10 % 3` donne `1`. Pourquoi ? Parce que dans 10, il y a 3 fois 3 (9) et il reste **1**. \n* À quoi ça sert ? \n   1. Savoir si un nombre est pair : `nombre % 2 == 0`. \n   2. Gérer des cycles (jours de la semaine, heures). \n\nC'est la division de l'école primaire où on s'arrête avant la virgule !",
+                objectives: ["Comprendre le calcul du reste", "Identifier l'utilité du modulo pour la parité"],
+                exercises: [
+                    {
+                        title: "Pair ou Impair ?",
+                        description: "Si `n % 2` donne `1`, le nombre `n` est-il pair ou impair ?",
+                        difficulty: "Facile",
+                        solution: "Impair. Car s'il reste 1 après division par 2, c'est qu'il n'est pas divisible par 2.",
+                        hints: ["Un nombre pair a toujours un reste de 0 quand on le divise par 2."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 18 : L'Algèbre de Boole : ET, OU, NON",
+                description: "Apprenez à combiner vos vérités pour créer des conditions complexes.",
+                order: 18,
+                duration: "2 heures",
+                content: "Parfois, une seule condition ne suffit pas. \n\n* **Le ET (&&)** : La condition est vraie si TOUT est vrai. (Ex: 'J'ai faim' ET 'Le frigo est plein'). \n* **Le OU (||)** : La condition est vraie si AU MOINS UN truc est vrai. (Ex: 'J'ai une carte' OU 'J'ai du liquide'). \n* **Le NON (!)** : Inverse le résultat. (Le NON de Vrai est Faux). \n\nC'est comme ça qu'on construit des raisonnements complexes comme : 'SI l'utilisateur est admin OU s'il possède le fichier...'.",
+                objectives: ["Distinguer le fonctionnement du ET et du OU", "Utiliser l'opérateur de négation"],
+                exercises: [
+                    {
+                        title: "La Sortie",
+                        description: "Pour sortir dehors, il faut (Il fait beau) ET (J'ai fini mes devoirs). Si 'Il fait beau' est VRAI mais 'J'ai fini mes devoirs' est FAUX, puis-je sortir ?",
+                        difficulty: "Facile",
+                        solution: "Non. Avec un ET, toutes les conditions doivent être vraies.",
+                        hints: ["Le ET est très strict."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 19 : La Condition Simple (SI) : Faire un choix",
+                description: "L'ordinateur commence à devenir intelligent : il peut choisir quel code exécuter.",
+                order: 19,
+                duration: "2 heures",
+                content: "C'est la structure la plus importante : le **SI** (ou `if`). \n\n* Structure : `SI (condition) ALORS (instructions)`. \n* Si la condition est vraie, l'ordinateur exécute le code à l'intérieur. \n* Si elle est fausse, il **saute** tout simplement le bloc et continue son chemin de haut en bas. \n\nC'est grâce au SI qu'un jeu peut dire : 'SI vies == 0 ALORS Game Over'.",
+                objectives: ["Comprendre le déroutement du code", "Savoir écrire une structure SI simple"],
+                exercises: [
+                    {
+                        title: "Le Videur",
+                        description: "Écrivez en français la condition pour laisser entrer quelqu'un dans une boîte de nuit si l'âge minimum est 18.",
+                        difficulty: "Facile",
+                        solution: "SI (age >= 18) ALORS Entrée autorisée",
+                        hints: ["Utilisez le signe 'supérieur ou égal'."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 20 : La Condition Alternative (SINON) : Le Plan B",
+                description: "Gérez ce qui se passe quand la condition n'est pas remplie.",
+                order: 20,
+                duration: "2 heures",
+                content: "Le **SINON** (ou `else`) complète le SI. \n\n* Structure : `SI (condition) ALORS (A) SINON (B)`. \n* C'est une porte à deux sorties. L'ordinateur prendra FORCÉMENT soit le chemin A, soit le chemin B. \n* Jamais les deux, et jamais aucun des deux. \n\nExemple : SI (score > 50) ALORS 'Gagné' SINON 'Perdu'.",
+                objectives: ["Maîtriser l'alternative binaire", "Comprendre l'aspect exclusif du SI/SINON"],
+                exercises: [
+                    {
+                        title: "Le Pile ou Face",
+                        description: "Dans une structure SI/SINON, est-il possible que les deux blocs d'instructions soient exécutés en même temps ?",
+                        difficulty: "Facile",
+                        solution: "Non, c'est impossible. C'est soit l'un, soit l'autre.",
+                        hints: ["C'est comme un carrefour : on ne peut pas aller à gauche et à droite en même temps."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 21 : Les Conditions Imbriquées : Choix dans le choix",
+                description: "Apprenez à gérer des situations à plusieurs tiroirs.",
+                order: 21,
+                duration: "2 heures",
+                content: "Parfois, une seule alternative (Vrai/Faux) ne suffit pas. On peut mettre un SI à l'intérieur d'un autre SI. \n\n* Exemple : \n  * SI (Il pleut) ALORS \n    * SI (J'ai un parapluie) ALORS 'Sortir' \n    * SINON 'Rester au sec' \n  * SINON 'Sortir bronzer' \n\nC'est ce qu'on appelle l'**imbrication**. C'est très puissant mais attention : si vous en mettez trop, votre code devient un vrai labyrinthe que personne ne comprend !",
+                objectives: ["Comprendre la hiérarchie des conditions", "Apprendre à indenter son code pour la clarté"],
+                exercises: [
+                    {
+                        title: "Le Labyrinthe",
+                        description: "Si 'Il pleut' est VRAI mais 'J'ai un parapluie' est FAUX. Selon l'exemple ci-dessus, que fait-on ?",
+                        difficulty: "Facile",
+                        solution: "On reste au sec.",
+                        hints: ["Suivez les étapes une par une, de l'extérieur vers l'intérieur."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 22 : Le Switch (Le 'Selon') : Gérer plusieurs cas",
+                description: "Une alternative élégante quand vous avez beaucoup de choix prédéfinis.",
+                order: 22,
+                duration: "2 heures",
+                content: "Quand vous avez 10 choix possibles (ex: un menu avec 10 plats), faire 10 'SI... SINON SI...' est fatiguant. \n\n* On utilise alors le **Selon** (ou `switch`). \n* On dit à l'ordinateur : 'SELON la valeur de la variable Choix, fais tel ou tel truc'. \n* Chaque possibilité est un `cas` (case). \n\nC'est beaucoup plus propre et lisible pour gérer des menus, des directions ou des modes de jeu.",
+                objectives: ["Découvrir la structure switch/case", "Savoir quand préférer le switch au if/else"],
+                exercises: [
+                    {
+                        title: "Le Menu du Restaurant",
+                        description: "Si j'ai un menu avec 3 options : (1: Pizza, 2: Burger, 3: Salade). Pourquoi un Switch est-il plus adapté qu'un IF ?",
+                        difficulty: "Facile",
+                        solution: "Parce que c'est plus lisible et évite de répéter 'SI... SINON SI...' trois fois.",
+                        hints: ["Pensez à la clarté de lecture pour un autre humain."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 23 : Introduction à l'Itération : Pourquoi ne pas copier-coller ?",
+                description: "Dites adieu aux tâches répétitives et ennuyeuses.",
+                order: 23,
+                duration: "2 heures",
+                content: "Imaginez que vous deviez afficher 'Bonjour' 100 fois. \n* Mauvaise méthode : Écrire 100 lignes de code. (Si vous voulez changer 'Bonjour' en 'Salut', vous devez le faire 100 fois !). \n* Bonne méthode : L'**Itération** (la boucle). \n\nOn dit à l'ordinateur : 'Répète cette ligne tant que je ne te dis pas d'arrêter'. C'est la base de tout traitement de masse (gérer 10 000 clients, 1 000 000 de pixels, etc.).",
+                objectives: ["Comprendre le concept de répétition automatique", "Identifier le besoin de boucles"],
+                exercises: [
+                    {
+                        title: "La Punition",
+                        description: "Un élève doit copier 100 fois 'Je ne dois pas parler en classe'. Combien d'instructions un algorithme bien fait doit-il comporter pour faire ça ?",
+                        difficulty: "Facile",
+                        solution: "Une seule instruction à l'intérieur d'une consigne de répétition.",
+                        hints: ["Ne comptez pas l'affichage, mais la logique de répétition."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 24 : La Boucle 'Tant que' (While) : Répéter tant que...",
+                description: "La boucle la plus simple : l'ordinateur vérifie avant chaque tour si c'est fini.",
+                order: 24,
+                duration: "3 heures",
+                content: "La boucle **TANT QUE** (ou `while`) est comme un garde-barrière. \n\n* Tant que la condition est VRAIE, il vous laisse refaire un tour. \n* Dès qu'elle devient FAUSSE, il ferme la barrière et vous sortez de la boucle. \n\n**Attention au piège !** Si la condition est toujours vraie et ne change jamais, l'ordinateur boucle à l'infini et plante (le fameux 'Infinite Loop'). Vous devez toujours avoir un truc qui change à l'intérieur pour un jour sortir.",
+                objectives: ["Maîtriser la boucle while", "Apprendre à éviter les boucles infinies"],
+                exercises: [
+                    {
+                        title: "Le Réservoir",
+                        description: "Si on vide un réservoir de 10L à coup de 1L. Quelle est la condition pour continuer à vider ?",
+                        difficulty: "Facile",
+                        solution: "Tant que (reservoir > 0)",
+                        hints: ["On s'arrête quand il n'y a plus rien."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 25 : Premier pas vers l'optimisation : Vers le niveau Intermédiaire",
+                description: "Félicitations ! Vous avez les bases. Voyons la suite du voyage.",
+                order: 25,
+                duration: "2 heures",
+                content: "Vous savez maintenant : \n1. Comment l'ordinateur stocke des infos (Variables/Types). \n2. Comment il calcule (Opérateurs). \n3. Comment il choisit (Conditions). \n4. Comment il répète (Boucles). \n\nVous avez les 'briques' de Lego. Dans le niveau Intermédiaire, nous allons apprendre à construire des châteaux : des **Tableaux** pour grouper les données et des **Fonctions** pour ne jamais se répéter. \n\n*Prochaine étape : Maîtriser les collections de données !*",
+                objectives: ["Récapituler les acquis du niveau débutant", "Se préparer psychologiquement au niveau intermédiaire"],
+                exercises: [
+                    {
+                        title: "Le Quiz Final",
+                        description: "Quel concept permet de ne pas écrire 1000 fois la même ligne ?",
+                        difficulty: "Trés Facile",
+                        solution: "La Boucle (ou l'Itération).",
+                        hints: ["C'est l'outil de répétition."]
+                    }
+                ],
+                resources: []
+            },
         ]
     },
     {
@@ -132,84 +484,365 @@ const algoCourses = [
         tags: ["algorithme", "tableaux", "tris", "fonctions", "intermédiaire"],
         chapters: [
             {
-                title: "Chapitre 1 : Vecteurs, Tableaux Unidimensionnels et Parcourabilité",
-                description: "Le fondement des collections de données, l'accès mémoire séquentiel et la manipulation d'index.",
-                order: 1,
-                duration: "10 heures",
-                content: "Les variables simples trouvent vite leurs limites. Un Tableau (Array) permet l'agrégation de N éléments contigus en mémoire sous une même entité. C'est l'un des concepts les plus cruciaux de l'ingénierie logicielle. Nous décortiquons l'allocation statique vs dynamique, le dépassement d'index (Buffer Overflow - la plus grave faille de sécurité historique), ainsi que les techniques de balayage complet (Maps, Folds, accumulatrices). L'élève devra être capable d'inverser un tableau en place, de supprimer un élément par décalage, et d'y insérer une donnée au détriment de l'optimisation coûtante O(n).",
-                objectives: ["Contrôler les limites (Out of Bounds)", "Réaliser des opérations 'In-Place' (sans utiliser de second tableau)", "Maîtriser la recherche séquentielle (Linear Search)"],
+                title: "Chapitre 26 : Le Tableau (Array) : L'étagère de données",
+                description: "Apprenez à regrouper vos boîtes sous un seul nom.",
+                order: 26,
+                duration: "3 heures",
+                content: "Jusqu'à présent, nous avions des variables séparées (`vie1`, `vie2`, `vie3`). C'est lourd ! \n\n* Un **Tableau** (Array) est une étagère géante qui porte un seul nom. \n* Dans cette étagère, on peut mettre autant de boîtes que l'on veut. \n* Analogie : Une boîte de 12 œufs est un tableau. Vous portez la boîte (le tableau), mais elle contient 12 éléments individuels. \n\nC'est l'outil indispensable pour gérer des listes de clients, des inventaires d'objets ou des scores de joueurs.",
+                objectives: ["Comprendre le concept de collection de données", "Visualiser la structure contiguë d'un tableau"],
                 exercises: [
                     {
-                        title: "Inversion d'un Tableau en Place (In-Place Reversal)",
-                        description: "Inversez tous les éléments d'un tableau T de taille N sans déclarer de nouveau tableau (mémoire O(1)).",
-                        difficulty: "Difficile",
-                        solution: "gauche = 0\ndroite = N - 1\nTANT QUE gauche < droite FAIRE\n  Temp = T[gauche]\n  T[gauche] = T[droite]\n  T[droite] = Temp\n  gauche = gauche + 1\n  droite = droite - 1\nFIN TANT QUE",
-                        hints: ["Utilisez le concept de 'Two Pointers' (deux curseurs) se dirigeant l'un vers l'autre."]
-                    },
+                        title: "L'Inventaire",
+                        description: "Si je veux stocker les noms de 500 épées dans un jeu vidéo, est-il préférable d'utiliser 500 variables ou 1 tableau ?",
+                        difficulty: "Trés Facile",
+                        solution: "1 tableau. C'est beaucoup plus simple à manipuler et à transporter dans le code.",
+                        hints: ["Imaginez devoir écrire `epee1`, `epee2`... jusqu'à 500."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 27 : Indices et Longueur : Compter à partir de Zéro",
+                description: "Le concept le plus étrange mais vital : on commence par zéro !",
+                order: 27,
+                duration: "2 heures",
+                content: "Pour désigner une boîte précise dans l'étagère, on utilise un **Index** (ou indice). \n\n* **Règle absolue** : En informatique, la première case est la n°0. \n* Si mon tableau `fruits` contient [\"Pomme\", \"Banane\"], alors : \n   * `fruits[0]` est la Pomme. \n   * `fruits[1]` est la Banane. \n\nLa **Longueur** (length) du tableau est le nombre total d'éléments. Ici, la longueur est 2, mais l'index maximum est 1. Ne pas oublier ça évite bien des bugs !",
+                objectives: ["Maîtriser l'indexation à partir de zéro", "Distinguer la longueur de l'index"],
+                exercises: [
                     {
-                        title: "Décalage d'Éléments (Shift)",
-                        description: "Supprimez l'élément à l'index K d'un tableau et décalez toute la suite d'un cran vers la gauche.",
+                        title: "Le Premier Élément",
+                        description: "Dans le tableau `nombres = [10, 20, 30]`. Quel est l'index de la valeur `10` ?",
+                        difficulty: "Trés Facile",
+                        solution: "0",
+                        hints: ["On commence toujours par zéro."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 28 : Parcours de Tableau : La visite guidée",
+                description: "Apprenez à passer en revue chaque élément un par un.",
+                order: 28,
+                duration: "3 heures",
+                content: "Si vous avez 1000 clients dans votre tableau, vous n'allez pas écrire 1000 lignes pour les afficher. \n\n* On utilise une **Boucle** pour 'parcourir' le tableau. \n* On dit à l'ordinateur : \n  * 'Variable `i` commence à 0'. \n  * 'Tant que `i` est inférieur à la longueur du tableau'. \n  * 'Affiche l'élément à l'index `i`'. \n  * 'Ajoute 1 à `i`'. \n\nC'est ainsi qu'on peut traiter des millions de données en une fraction de seconde.",
+                objectives: ["Combiner boucles et tableaux", "Comprendre le mécanisme d'itération par index"],
+                exercises: [
+                    {
+                        title: "La Boucle de Parcours",
+                        description: "Quel est l'élément qui change à chaque tour de boucle pour passer à l'élément suivant ?",
+                        difficulty: "Facile",
+                        solution: "L'index (souvent noté `i`).",
+                        hints: ["C'est l'étage de l'étagère que l'on regarde."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 29 : Modification de Tableau : Remplacer un étage",
+                description: "Changez le contenu d'une case précise sans toucher aux autres.",
+                order: 29,
+                duration: "2 heures",
+                content: "Un tableau est dynamique. On peut changer la valeur d'une case à tout moment. \n\n* Syntaxe : `tableau[index] = nouvelleValeur`. \n* Exemple : `monPanier[0] = \"Pizza\"`. \n* Ça fonctionne exactement comme une variable normale, sauf qu'on précise quel 'tiroir' on ouvre. \n\nC'est utile pour mettre à jour un score, changer un nom d'utilisateur ou remplacer un objet cassé dans un inventaire.",
+                objectives: ["Apprendre l'affectation par index", "Modifier des données existantes dans une collection"],
+                exercises: [
+                    {
+                        title: "Le Remplacement",
+                        description: "Si `tab = [1, 2, 3]`. Je fais `tab[1] = 10`. Que contient `tab` maintenant ?",
+                        difficulty: "Facile",
+                        solution: "[1, 10, 3]",
+                        hints: ["N'oubliez pas que l'index 1 est la DEUXIÈME case."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 30 : Recherche Linéaire : Trouver l'intrus",
+                description: "Votre premier algorithme de recherche concret.",
+                order: 30,
+                duration: "4 heures",
+                content: "Comment savoir si le mot \"Alice\" est dans votre liste de 500 invités ? \n\n* On utilise la **Recherche Linéaire** : \n  1. On parcourt le tableau du début à la fin. \n  2. Pour chaque case, on SI (valeur == \"Alice\") ALORS 'Trouvé !'. \n  3. Si on arrive à la fin sans rien trouver, on affiche 'Absent'. \n\nC'est la méthode la plus simple, mais elle peut être lente si le tableau est gigantesque. Nous verrons des méthodes plus rapides plus tard !",
+                objectives: ["Implémenter une logique de recherche simple", "Comprendre le concept d'échec de recherche (fin de tableau)"],
+                exercises: [
+                    {
+                        title: "Où est Charlie ?",
+                        description: "Dans le pire des cas, combien de cases doit-on regarder pour trouver un élément dans un tableau de taille 100 ?",
+                        difficulty: "Facile",
+                        solution: "100 cases (si l'élément est à la toute fin ou s'il n'existe pas).",
+                        hints: ["On doit tout vérifier pour être sûr."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 31 : Les Tableaux à 2 Dimensions : Grilles et Matrices",
+                description: "Apprenez à gérer des plans, des cartes et des tableaux Excel.",
+                order: 31,
+                duration: "4 heures",
+                content: "Un tableau à 2 dimensions est un tableau qui contient d'autres tableaux. \n\n* Analogie : Une grille de Sudoku ou un échiquier. \n* Pour trouver une case, il faut deux indices : `grille[ligne][colonne]`. \n* `grille[0][0]` est le coin en haut à gauche. \n\nC'est la base de tout ce qui est graphique ou spatial en informatique : la position d'un joueur sur une carte, ou les pixels d'une image.",
+                objectives: ["Visualiser une matrice", "Manipuler le double indexage [i][j]"],
+                exercises: [
+                    {
+                        title: "La Bataille Navale",
+                        description: "Si je veux viser la case à la 3ème ligne et 5ème colonne, quel code dois-je écrire ?",
+                        difficulty: "Facile",
+                        solution: "`grille[2][4]`",
+                        hints: ["N'oubliez pas que l'on commence à 0 !"]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 32 : Introduction aux Fonctions : Votre premier employé",
+                description: "Le secret pour ne plus jamais copier-coller de code.",
+                order: 32,
+                duration: "3 heures",
+                content: "Une **Fonction** est un petit programme autonome à l'intérieur de votre programme. \n\n* Pourquoi l'utiliser ? Pour donner un nom à une suite d'actions. \n* Analogie : Au lieu d'écrire à chaque fois 'Prendre un œuf, casser l'œuf, mélanger...', vous créez une fonction `faireOmelette()`. \n* Désormais, quand vous avez faim, vous n'écrivez qu'une seule ligne : `faireOmelette()`. \n\nC'est ce qu'on appelle l'**Encapsulation**.",
+                objectives: ["Comprendre l'utilité des fonctions", "Adopter la philosophie DRY (Don't Repeat Yourself)"],
+                exercises: [
+                    {
+                        title: "L'Efficacité",
+                        description: "Si je dois calculer la TVA sur 50 produits différents, est-il mieux de copier le calcul 50 fois ou de créer une fonction `calculerTVA()` ?",
+                        difficulty: "Trés Facile",
+                        solution: "Créer une fonction `calculerTVA()`. Si le taux de TVA change, on ne le modifie qu'à un seul endroit.",
+                        hints: ["Pensez à la maintenance du code."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 33 : Définition vs Appel : La recette vs le plat",
+                description: "Ne confondez pas donner une instruction et l'exécuter.",
+                order: 33,
+                duration: "2 heures",
+                content: "Il y a deux étapes cruciales avec une fonction : \n\n1. **La Définition** : Vous expliquez à l'ordinateur COMMENT faire. (`DÉFINIR saluer() { afficher(\"Bonjour\") }`). À ce stade, rien ne s'affiche. \n2. **L'Appel** : Vous donnez l'ordre de le faire. (`saluer()`). C'est là que le code s'exécute. \n\nDéfinir une fonction sans l'appeler, c'est comme avoir une recette de cuisine mais ne jamais cuisiner : vous aurez toujours faim !",
+                objectives: ["Distinguer le bloc de code de son exécution", "Comprendre le flux d'exécution"],
+                exercises: [
+                    {
+                        title: "L'Oubli",
+                        description: "J'ai écrit 50 fonctions magnifiques mais mon programme n'affiche rien. Quel est le problème probable ?",
+                        difficulty: "Facile",
+                        solution: "Vous avez défini les fonctions mais vous ne les avez jamais appelées.",
+                        hints: ["L'ordinateur n'exécute pas les fonctions tout seul."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 34 : Paramètres : Personnaliser le travail",
+                description: "Donnez des outils et des infos à vos fonctions pour qu'elles soient polyvalentes.",
+                order: 34,
+                duration: "4 heures",
+                content: "Une fonction est encore plus puissante si elle peut s'adapter. Pour cela, on utilise des **Paramètres**. \n\n* Exemple : `saluer(nom)`. \n* Si j'appelle `saluer(\"Alice\")`, elle affiche \"Bonjour Alice\". \n* Si j'appelle `saluer(\"Bob\")`, elle affiche \"Bonjour Bob\". \n\nLe paramètre est comme un tiroir vide que l'on remplit au moment de l'appel. On peut en mettre plusieurs : `additionner(a, b)`.",
+                objectives: ["Savoir déclarer des paramètres", "Comprendre le passage d'arguments"],
+                exercises: [
+                    {
+                        title: "La Personnalisation",
+                        description: "Dans `fonction multiplier(x, y)`, comment appelle-t-on `x` et `y` ?",
+                        difficulty: "Facile",
+                        solution: "Des paramètres (ou arguments lors de l'appel).",
+                        hints: ["Ce sont les données d'entrée de la fonction."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 35 : Valeurs de Retour : Récupérer le fruit du travail",
+                description: "Comment une fonction nous redonne une information calculée.",
+                order: 35,
+                duration: "4 heures",
+                content: "Parfois, on ne veut pas que la fonction affiche quelque chose, on veut qu'elle nous RENVOIE le résultat pour l'utiliser plus tard. \n\n* On utilise le mot-clé **RETOURNER** (return). \n* Analogie : Vous demandez à un employé de compter les stocks. Il ne doit pas juste crier le chiffre, il doit vous rapporter le papier avec le chiffre écrit dessus. \n* `resultat = calculerSomme(10, 20)`. Ici, `resultat` contiendra 30.",
+                objectives: ["Maîtriser le mot-clé return", "Utiliser le résultat d'une fonction dans une variable"],
+                exercises: [
+                    {
+                        title: "Le Messager",
+                        description: "Quelle est la différence entre `afficher(x)` et `retourner(x)` ?",
                         difficulty: "Moyen",
-                        solution: "POUR i ALLANT DE K A N - 2 FAIRE\n  T[i] = T[i + 1]\nFIN POUR\nN = N - 1",
-                        hints: ["Si j'efface la case 3, je dois y mettre le contenu de la case 4, et ainsi de suite."]
+                        solution: "`afficher` montre la valeur à l'écran (pour l'humain), `retourner` donne la valeur au reste du programme (pour l'ordinateur).",
+                        hints: ["Pensez à qui reçoit l'information."]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 2 : Sous-programmes, Fonctions et Procédures (DRY)",
-                description: "La modularisation du code : paramètres, retours, portées, et passage par valeur vs référence.",
-                order: 2,
-                duration: "10 heures",
-                content: "Un code 'Spaghetti' monolithique est indébuggable. L'art de l'ingénieur réside dans l'encapsulation de blocs logiques autonomes : les sous-programmes. Nous définirons avec intransigeance la différence entre : Les Paramètres Formels (dans la définition) et les Paramètres Effectifs ou Arguments (lors de l'appel). Nous étudierons le 'Passage par Valeur' (copie de la donnée, aucune altération globale) et le 'Passage par Référence' (pointeur brut de mémoire, altération profonde redoutable). La compréhension de la portée (Scope lexical) et du masquage de variables est exigée.",
-                objectives: ["Écrire des fonctions pures", "Maîtriser le Call Stack (Pile d'exécution)", "Distinguer Valeur et Référence"],
+                title: "Chapitre 36 : Portée des Variables (Scope) : Le concept de Bulle",
+                description: "Comprenez pourquoi une variable n'existe pas partout.",
+                order: 36,
+                duration: "3 heures",
+                content: "Une variable créée à l'intérieur d'une fonction est dans une **Bulle**. \n\n* Elle n'existe que là-bas. On l'appelle une **Variable Locale**. \n* C'est génial car vous pouvez appeler une variable `score` dans 10 fonctions différentes sans qu'elles ne s'emmêlent les pinceaux. \n* Les variables créées tout en haut du programme sont des **Variables Globales** : elles sont visibles partout, mais attention à ne pas trop en abuser !",
+                objectives: ["Distinguer variable locale et globale", "Comprendre la protection mémoire par bloc"],
                 exercises: [
                     {
-                        title: "Danger du Passage par Référence",
-                        description: "Si T est un tableau passé à une procédure 'ViderTableau(Tab)', le tableau d'origine T est-il impacté ? Pourquoi ?",
+                        title: "La Bulle Noire",
+                        description: "Si je crée `x = 5` dans une fonction `A()`, puis-je lire `x` dans une fonction `B()` ?",
+                        difficulty: "Facile",
+                        solution: "Non, `x` est local à la fonction `A()`. `B()` ne peut pas la voir.",
+                        hints: ["Chaque fonction a son propre jardin secret."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 37 : La Boucle 'Pour' (For) : L'outil de précision",
+                description: "La boucle préférée des développeurs quand on connaît le nombre de tours à l'avance.",
+                order: 37,
+                duration: "4 heures",
+                content: "La boucle **POUR** (ou `for`) regroupe 3 infos sur une seule ligne : \n1. **Départ** : `i = 0` \n2. **Condition** : `i < 10` \n3. **Pas** : `i = i + 1` \n\nC'est beaucoup plus compact et cela évite d'oublier d'augmenter l'index (le bug n°1 du `while`). On l'utilise quasi systématiquement pour parcourir des tableaux.",
+                objectives: ["Savoir transformer un While en For", "Maîtriser la syntaxe du For"],
+                exercises: [
+                    {
+                        title: "Le Compte à rebours",
+                        description: "Comment écrire le 'Pas' d'une boucle For pour qu'elle descende de 1 à chaque tour (ex: 10, 9, 8...) ?",
+                        difficulty: "Facile",
+                        solution: "`i = i - 1` (ou `i--`)",
+                        hints: ["On fait une soustraction au lieu d'une addition."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 38 : For vs While : Choisir son camp",
+                description: "Apprenez quel outil sortir de votre boîte pour chaque situation.",
+                order: 38,
+                duration: "2 heures",
+                content: "C'est une question de philosophie : \n\n* Utilisez **POUR** quand vous savez EXACTEMENT combien de fois vous allez boucler (ex: parcourir un tableau de 10 cases). \n* Utilisez **TANT QUE** quand vous ne savez pas quand ça va s'arrêter (ex: attendre qu'un utilisateur clique sur un bouton, vider un réservoir dont on ignore le niveau). \n\nUn bon développeur choisit le plus lisible pour la situation.",
+                objectives: ["Identifier la nature déterministe ou non d'un problème", "Améliorer la clarté du code par le choix de boucle"],
+                exercises: [
+                    {
+                        title: "Le Choix du Roi",
+                        description: "Pour lire tous les noms d'un carnet d'adresses, quel type de boucle utiliseriez-vous ?",
+                        difficulty: "Facile",
+                        solution: "Une boucle Pour (car on connaît le nombre de noms dans le carnet).",
+                        hints: ["Est-ce que le nombre de tours est connu ?"]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 39 : Accumulateurs : Faire les comptes dans une boucle",
+                description: "Le motif algorithmique le plus courant pour calculer des totaux.",
+                order: 39,
+                duration: "4 heures",
+                content: "Un **Accumulateur** est une variable qu'on initialise à 0 AVANT la boucle et qu'on fait grandir À L'INTÉRIEUR. \n\n* `somme = 0` \n* `POUR chaque prix DANS tableau_prix FAIRE` \n  * `somme = somme + prix` \n\nÀ la fin de la boucle, `somme` contient le total de tous les prix. C'est magique et hyper utile pour les moyennes, les scores totaux ou les inventaires.",
+                objectives: ["Maîtriser le pattern d'accumulation", "Comprendre l'initialisation hors boucle"],
+                exercises: [
+                    {
+                        title: "La Cagnotte",
+                        description: "Que se passe-t-il si j'initialise `somme = 0` À L'INTÉRIEUR de la boucle au lieu de l'extérieur ?",
                         difficulty: "Moyen",
-                        solution: "Oui. Historiquement et techniquement, les tableaux sont généralement passés par référence (ou pointeur vers leur adresse mémoire initiale) pour éviter le coût exorbitant de la copie de milliers d'éléments. La procédure modifie l'adresse d'origine.",
-                        hints: ["Copier un tableau de 1 Gigaoctet à chaque appel ralentirait le PC."]
+                        solution: "La variable sera remise à 0 à chaque tour de boucle, on perdra le total précédent. Le résultat sera faux.",
+                        hints: ["Réfléchissez au cycle de vie de la variable."]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 3 : Les Algorithmes de Tri Quadratiques (O(n²))",
-                description: "Comprendre comment remettre de l'ordre dans le chaos, brique par brique.",
-                order: 3,
-                duration: "10 heures",
-                content: "Le Tri est le défi par excellence de la Computer Science. L'apprentissage débute par les tris naïfs, dont le temps d'exécution croît de façon quadratique avec le nombre d'éléments. Nous étudierons : 1. Le Tri par Sélection (Chercher le plus petit, le mettre au début). 2. Le Tri par Insertion (Comme ranger sa main aux cartes). 3. Le Tri à Bulles (Faire remonter les plus grandes valeurs comme des bulles d'air). Nous décortiquerons ligne par ligne l'imbrication fatale de leurs boucles générant la complexité de O(N²).",
-                objectives: ["Implémenter de mémoire le Tri par Sélection", "Comprendre visuellement le Tri Insertion", "Compter le nombre d'opérations exactes requises"],
+                title: "Chapitre 40 : Drapeaux (Flags) : Détecter un événement",
+                description: "Apprenez à capturer une information discrète au milieu d'une masse de données.",
+                order: 40,
+                duration: "3 heures",
+                content: "Un **Drapeau** (Flag) est un Booléen qu'on lève si on trouve ce qu'on cherche. \n\n* `trouve = Faux` \n* `POUR chaque case DANS tableau FAIRE` \n  * `SI (case == \"Intrus\") ALORS trouve = Vrai` \n\nÀ la fin, vous n'avez qu'à regarder `trouve`. Si c'est Vrai, c'est que l'intrus était là. C'est ainsi qu'on gère les détections de collisions dans les jeux ou les alertes de sécurité.",
+                objectives: ["Utiliser un booléen comme état de détection", "Optimiser la sortie de boucle (Break)"],
                 exercises: [
                     {
-                        title: "L'Algorithme du Tri Insertion",
-                        description: "Écrivez le pseudo-code absolu du tri par insertion.",
-                        difficulty: "Difficile",
-                        solution: "POUR i ALLANT DE 1 A N-1 FAIRE\n  cle = T[i]\n  j = i - 1\n  TANT QUE j >= 0 ET T[j] > cle FAIRE\n    T[j + 1] = T[j]\n    j = j - 1\n  FIN TANT QUE\n  T[j + 1] = cle\nFIN POUR",
-                        hints: ["On sauvegarde l'élément actuel (cle). On décale vers la droite tous les éléments plus grands que 'cle', puis on l'insère dans le vide créé."]
+                        title: "L'Alerte Intrus",
+                        description: "Une fois qu'on a trouvé l'intrus et mis `trouve = Vrai`, doit-on continuer à regarder les autres cases ?",
+                        difficulty: "Moyen",
+                        solution: "Non, c'est une perte de temps (optimisation). On peut utiliser une instruction pour sortir de la boucle immédiatement (le `break`).",
+                        hints: ["Si vous cherchez vos clés et que vous les trouvez, continuez-vous à chercher ?"]
                     }
                 ],
                 resources: []
             },
             {
-                title: "Chapitre 4 : Manipulation de Chaînes de Caractères (Strings)",
-                description: "L'analyse lexicale, les tables ASCII et la gestion fine du texte.",
-                order: 4,
-                duration: "10 heures",
-                content: "L'humanité communique par le texte, les machines par les nombres. Une Chaîne (String) n'est fondamentalement qu'un tableau de caractères codés en nombres (ASCII, UTF-8). Nous verrons des algorithmes de NLP (Natural Language Processing) de base : vérifier un palindrome, chercher des sous-chaînes (Pattern Matching naïf), effacer les espaces redondants, et convertir en Majuscule/Minuscule sans utiliser de fonctions intégrées (par soustraction arithmétique de la table ASCII).",
-                objectives: ["Manipuler la table ASCII", "Comprendre un String comme un Array inhérent", "Dédoubler des mots et analyser du texte brut"],
+                title: "Chapitre 41 : Introduction à la Complexité : Pourquoi certains codes rament ?",
+                description: "Le secret qui sépare les bons codeurs des grands ingénieurs.",
+                order: 41,
+                duration: "3 heures",
+                content: "Face à 1000 données, tous les programmes sont rapides. Face à 1 milliard, certains mettent une seconde et d'autres mettent 100 ans. \n\n* La **Complexité** mesure le nombre d'opérations selon le nombre de données (N). \n* Si vous avez une boucle simple, c'est du **Linéaire** (O(N)). \n* Si vous avez une boucle dans une boucle, c'est du **Quadratique** (O(N²)). \n* O(N²) est votre pire ennemi quand N devient grand. Apprenez à le fuir !",
+                objectives: ["Comprendre l'impact de l'échelle", "Identifier les boucles imbriquées comme source de lenteur"],
                 exercises: [
                     {
-                        title: "Le Détecteur de Palindromes Parfait",
-                        description: "Écrivez un algorithme pour déterminer si un mot est un palindrome (ex: KAYAK, RADAR) en ignorant les espaces et en temps O(N).",
+                        title: "L'Escalade",
+                        description: "Si traiter 1000 éléments prend 1 seconde en O(N²), combien de temps faudra-t-il environ pour 2000 éléments ?",
                         difficulty: "Difficile",
-                        solution: "gauche = 0\ndroite = Longueur(MOT) - 1\nTANT QUE gauche < droite FAIRE\n  SI MOT[gauche] == ESPACE ALORS gauche = gauche + 1\n  SINON SI MOT[droite] == ESPACE ALORS droite = droite - 1\n  SINON SI Majuscule(MOT[gauche]) != Majuscule(MOT[droite]) ALORS RETOURNER Faux\n  SINON\n    gauche = gauche + 1\n    droite = droite - 1\nFIN TANT QUE\nRETOURNER Vrai",
-                        hints: ["Utilisez le pattern Two-Pointers (gauche et droite). Ignorez les caractères spéciaux en demandant à vos pointeurs d'avancer s'ils en croisent."]
+                        solution: "4 secondes (Car 2 au carré = 4). La croissance est exponentielle.",
+                        hints: ["Multipliez le temps par le carré de l'augmentation."]
                     }
                 ],
                 resources: []
-            }
+            },
+            {
+                title: "Chapitre 42 : Le Tri à bulles : Votre premier algorithme célèbre",
+                description: "Apprenez à mettre de l'ordre dans le chaos via des échanges successifs.",
+                order: 42,
+                duration: "5 heures",
+                content: "Le **Tri à Bulles** est l'algorithme de tri le plus simple conceptuellement. \n\n* On parcourt le tableau et on compare chaque élément avec son voisin. \n* Si l'ordre est mauvais, on les échange. \n* On répète l'opération jusqu'à ce que les plus grandes valeurs 'remontent' comme des bulles d'air vers la fin du tableau. \n* C'est un algorithme en O(N²), donc parfait pour débuter mais limité pour les grosses données.",
+                objectives: ["Implémenter la logique d'échange (Swap)", "Comprendre l'imbrication de boucles pour le tri"],
+                exercises: [
+                    {
+                        title: "Le Swap",
+                        description: "Pour échanger `A` et `B`, peut-on simplement faire `A = B` puis `B = A` ?",
+                        difficulty: "Moyen",
+                        solution: "Non, parce que `A = B` efface la valeur d'origine de `A`. On doit utiliser une variable temporaire `C` pour sauvegarder `A` avant.",
+                        hints: ["Imaginez échanger le contenu de deux verres d'eau. Vous avez besoin d'un troisième verre vide !"]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 43 : Manipulation de texte avancée : Découper une phrase",
+                description: "Transformez une chaîne de caractères en une collection de mots.",
+                order: 43,
+                duration: "4 heures",
+                content: "Un ordinateur voit une phrase comme un long tableau de lettres. \n\n* L'opération de **Découpage** (Split) consiste à parcourir la chaîne et à isoler les mots chaque fois qu'on croise un espace. \n* Cela crée un nouveau tableau de mots. \n* C'est la base de tout ce qui est recherche de texte, analyse de messages ou création de correcteurs orthographiques.",
+                objectives: ["Manipuler les types String comme des Array", "Utiliser des délimiteurs pour structurer du texte"],
+                exercises: [
+                    {
+                        title: "Le Compteur de Mots",
+                        description: "Si j'ai une phrase de 50 lettres. Quel est l'algorithme simple pour compter les mots ?",
+                        difficulty: "Facile",
+                        solution: "On parcourt les 50 lettres et on compte combien de fois on croise le caractère espace ' '.",
+                        hints: ["Chaque espace sépare deux mots."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 44 : Les Références : Le concept de l'adresse",
+                description: "Comprenez que l'ordinateur ne déplace pas toujours les données, il les pointe.",
+                order: 44,
+                duration: "4 heures",
+                content: "Pour les gros tableaux, l'ordinateur ne s'amuse pas à les copier sans arrêt. \n\n* Au lieu de passer tout le tableau à une fonction, il lui donne son **Adresse** (sa Référence). \n* Analogie : Si je vous invite chez moi, je ne transporte pas ma maison dans votre salon. Je vous donne mon **Adresse** sur un papier. \n* Attention : Si vous modifiez le tableau via sa référence, il est modifié PARTOUT dans le programme.",
+                objectives: ["Comprendre le passage par référence vs valeur", "Visualiser l'adresse mémoire"],
+                exercises: [
+                    {
+                        title: "Le GPS",
+                        description: "Si je donne l'adresse de mon tableau à deux fonctions différentes, et que la première modifie la case 0. Que verra la deuxième fonction dans la case 0 ?",
+                        difficulty: "Moyen",
+                        solution: "Elle verra la modification. Car elles pointent toutes les deux vers la même maison physique en mémoire.",
+                        hints: ["Elles ont le même papier avec la même adresse écrit dessus."]
+                    }
+                ],
+                resources: []
+            },
+            {
+                title: "Chapitre 45 : Vers le niveau Expert : Introduction aux Arbres et Graphes",
+                description: "Préparez-vous à entrer dans la cour des grands ingénieurs.",
+                order: 45,
+                duration: "3 heures",
+                content: "Félicitations ! Vous avez maîtrisé la structure linéaire. \n* Mais le monde n'est pas qu'une ligne. C'est une toile. \n* Les **Arbres** permettent de classer par hiérarchie (ex: dossiers sur votre PC). \n* Les **Graphes** permettent de représenter des réseaux (ex: amis Facebook, trajets Google Maps). \n\nDans le dernier niveau (Expert), nous apprendrons à naviguer dans ces structures complexes et à utiliser la **Dichotomie** pour chercher 1 milliard de fois plus vite !",
+                objectives: ["Découvrir les structures de données non-linéaires", "S'ouvrir aux algorithmes de réseau"],
+                exercises: [
+                    {
+                        title: "Le Prochain Défi",
+                        description: "Quel type de structure de données utiliseriez-vous pour représenter les routes entre les villes de France ?",
+                        difficulty: "Facile",
+                        solution: "Un Graphe (car les villes sont reliées entre elles de façon non-linéaire).",
+                        hints: ["Pensez à une toile d'araignée."]
+                    }
+                ],
+                resources: []
+            },
         ]
     },
     {

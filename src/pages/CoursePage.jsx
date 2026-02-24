@@ -114,7 +114,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
     if (showCustomTimeline) {
         const handleLessonComplete = async (courseId, lessonId) => {
             try {
-                const token = localStorage.getItem('token');
+                const token = user?.token || localStorage.getItem('token');
                 if (!token) {
                     setToast({ message: 'Session expirée. Reconnecte-toi.', type: 'error' });
                     return;

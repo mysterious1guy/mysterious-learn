@@ -36,12 +36,15 @@ const CallbackPage = ({ setUser, setToast, fetchProgressions }) => {
                 })
                 .then(data => {
                     console.log('✅ CallbackPage: Profil récupéré, stockage...');
-                    // Stocker les infos utilisateur dans localStorage pour le tracking
-                    localStorage.setItem('user', JSON.stringify(data));
-                    localStorage.setItem('token', data.token);
+
+                    // Stocker les infos utilisateur dans localStorage
+                    // On garde le token initialement reçu dans l'URL
+                    const userData = { ...data, token };
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.setItem('token', token);
 
                     console.log('✅ CallbackPage: Redirection...');
-                    setUser({ ...data, token });
+                    setUser(userData);
 
                     if (data.role === 'admin') {
                         navigate('/admin');

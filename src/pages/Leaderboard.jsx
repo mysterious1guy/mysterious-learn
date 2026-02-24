@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Medal, Star, Flame, Loader2 } from 'lucide-react';
-import axios from 'axios';
 
 const Leaderboard = ({ user, API_URL, setToast }) => {
     const [leaders, setLeaders] = useState([]);
@@ -11,25 +10,30 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const token = localStorage.getItem('token');
+                const token = user?.token || localStorage.getItem('token');
                 if (!token) throw new Error('Non authentifié');
 
-                const { data } = await axios.get(`${API_URL}/users/leaderboard`, {
+                const response = await fetch(`${API_URL}/users/leaderboard`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || 'Erreur lors du chargement du classement');
+                }
+
+                const data = await response.json();
                 setLeaders(data);
             } catch (err) {
                 console.error('❌ Leaderboard Error:', err);
-                const msg = err.response?.data?.message || err.message || 'Erreur inconnue';
-                setError(`Impossible de charger le classement : ${msg} (URL: ${API_URL}/users/leaderboard)`);
+                setError(`Impossible de charger le classement : ${err.message} (URL: ${API_URL}/users/leaderboard)`);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchLeaderboard();
-    }, []);
+    }, [API_URL]);
 
     const getRankIcon = (index) => {
         if (index === 0) return <Medal className="text-yellow-400 w-8 h-8 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]" />;

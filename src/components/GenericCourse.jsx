@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-    ArrowLeft, ChevronRight, BookOpen,
+    ArrowLeft, ChevronRight, BookOpen, Clock,
     CheckCircle, Circle, Play, Check, CheckSquare, Target, Lightbulb, Code,
-    Zap, Shield, Database, AlertTriangle, Cpu, Link, Terminal as TerminalIcon
+    Zap, Shield, Database, AlertTriangle, Cpu, Link, Terminal as TerminalIcon,
+    Star, Users, Lock, ArrowRight
 } from 'lucide-react';
 import CourseTerminal from '../courses/CourseTerminal';
 

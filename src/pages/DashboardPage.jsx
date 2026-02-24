@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight } from 'lucide-react';
+import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
 
 const DashboardPage = ({ user, setUser, favorites, toggleFavorite, progressions, API_URL, setToast, searchQuery = '' }) => {
