@@ -13,7 +13,8 @@ const {
   lockCourseForUser,
   getAllNotifications,
   deleteNotification,
-  seedCourses
+  seedCourses,
+  reportVideoError
 } = require('../controllers/adminController');
 
 const router = express.Router();

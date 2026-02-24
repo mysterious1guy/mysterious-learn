@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, messageSquare, ChevronLeft, X, EyeOff } from 'lucide-react';
+import { Sparkles, MessageSquare, ChevronLeft, X, EyeOff } from 'lucide-react';
 import MysteriousCopilot from './MysteriousCopilot';
 import AnimatedAIAvatar from './AnimatedAIAvatar';
 import useIntelligentMurmurs from '../hooks/useIntelligentMurmurs';
