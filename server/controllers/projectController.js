@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Project = require('../models/Project');
 const User = require('../models/User');
 const staticProjects = require('../data/projects');
@@ -39,7 +40,16 @@ const getProjects = async (req, res) => {
 const submitProject = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
-        const project = await Project.findById(req.params.id);
+        const projectId = req.params.id;
+
+        let project;
+        if (mongoose.Types.ObjectId.isValid(projectId)) {
+            project = await Project.findById(projectId);
+        }
+
+        if (!project) {
+            project = staticProjects.find(p => p._id === projectId);
+        }
 
         if (!user || !project) {
             return res.status(404).json({ message: 'Utilisateur ou projet non trouvé' });
