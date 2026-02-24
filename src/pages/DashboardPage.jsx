@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft, HelpCircle } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
+import OnboardingTour from '../components/OnboardingTour';
 
 const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, progressions = {}, API_URL }) => {
     const navigate = useNavigate();
