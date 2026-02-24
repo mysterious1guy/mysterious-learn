@@ -9,7 +9,7 @@ import {
 import CourseTerminal from '../courses/CourseTerminal';
 import VideoPlayer from './VideoPlayer';
 
-const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonComplete }) => {
+const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonComplete, API_URL }) => {
     // Dans la nouvelle DB, les leçons s'appellent "chapters"
     const lessons = course?.chapters || course?.lessons || [];
     const [activeLesson, setActiveLesson] = useState(lessons.length > 0 ? lessons[0] : null);

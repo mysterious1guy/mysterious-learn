@@ -156,6 +156,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
                 user={user}
                 completedLessons={completedForThisCourse}
                 onLessonComplete={handleLessonComplete}
+                API_URL={API_URL}
             />
         );
     }

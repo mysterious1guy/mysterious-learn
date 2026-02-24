@@ -27,6 +27,10 @@ const deleteUser = async (req, res) => {
     }
 
     // Protection Admin
+    if (req.params.id === req.user._id.toString()) {
+      return res.status(403).json({ message: 'Vous ne pouvez pas supprimer votre propre compte administrateur' });
+    }
+
     const isPrimaryAdmin = targetUser.email === 'mouhamedfall@esp.sn' || targetUser.adminTier === 'owner';
     if (targetUser.role === 'admin' || isPrimaryAdmin) {
       return res.status(403).json({ message: 'Impossible de supprimer un compte administrateur principal' });
@@ -195,6 +199,11 @@ const updateUserRole = async (req, res) => {
     const targetUser = await User.findById(req.params.id);
     if (targetUser && (targetUser.email === 'mouhamedfall@esp.sn' || targetUser.adminTier === 'owner')) {
       return res.status(403).json({ message: 'Impossible de modifier le rôle de l\'administrateur principal' });
+    }
+
+    // Protection auto-downgrade
+    if (req.params.id === req.user._id.toString() && role !== 'admin') {
+      return res.status(403).json({ message: 'Vous ne pouvez pas rétrograder votre propre rôle administrateur' });
     }
 
     const user = await User.findByIdAndUpdate(
