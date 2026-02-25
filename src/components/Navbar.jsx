@@ -13,7 +13,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
     <nav className="relative w-full p-2 sm:p-4 border-b border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900 z-[60] transition-colors duration-300">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-2 sm:gap-4">
-          <button onClick={onMenuClick} className="md:hidden p-2 hover:bg-slate-100 dark:hover:bg-gray-800 rounded-lg transition shrink-0 text-slate-600 dark:text-gray-300">
+          <button onClick={onMenuClick} className="lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-gray-800 rounded-lg transition shrink-0 text-slate-600 dark:text-gray-300">
             <Menu size={20} />
           </button>
 
@@ -28,7 +28,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
           </Link>
         </div>
 
-        <div className="flex-1 flex justify-center items-center gap-2 sm:gap-6 hidden md:flex">
+        <div className="flex-1 flex justify-center items-center gap-2 sm:gap-6 hidden lg:flex">
           <Link
             to="/dashboard"
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/dashboard' ? 'bg-blue-500/10 text-blue-500 ring-1 ring-blue-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
@@ -78,7 +78,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                   title={t('admin')}
                 >
                   <Crown size={16} className="text-yellow-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-bold text-yellow-500 hidden md:block">{t('admin')}</span>
+                  <span className="text-sm font-bold text-yellow-500 hidden lg:block">{t('admin')}</span>
                 </Link>
               )}
 
@@ -86,7 +86,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                 to="/account"
                 className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-gray-800 px-3 py-2 rounded-lg transition"
               >
-                <div className="flex flex-col items-end hidden md:flex">
+                <div className="flex flex-col items-end hidden lg:flex">
                   <span className="text-sm font-bold text-slate-800 dark:text-white leading-none">
                     {user.firstName} {user.lastName}
                   </span>
