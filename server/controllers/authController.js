@@ -131,13 +131,9 @@ const verifyEmail = async (req, res) => {
       email: pendingUser.email,
       password: pendingUser.password,
       role: pendingUser.role || 'user',
-      programmingLevel: pendingUser.startingLevel === 'Expérimenté' ? 'advanced' : (pendingUser.startingLevel === 'Amateur' ? 'intermediate' : 'beginner'),
-      onboardingProfile: {
-        goal: pendingUser.goal,
-        startingLevel: pendingUser.startingLevel
-      },
+      // On laisse hasCompletedOnboarding à false car il doit faire le questionnaire après vérification
+      hasCompletedOnboarding: false,
       isEmailVerified: true,
-      hasCompletedOnboarding: true, // Standard signup already did the Wizard
       joinedAt: new Date()
     });
 

@@ -30,6 +30,13 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
         }
     }, [formData.password, formData.confirmPassword]);
 
+    // Skip password step if user is NOT from Google (already has a password)
+    useEffect(() => {
+        if (user && !user.googleId && step === 1) {
+            setStep(2);
+        }
+    }, [user, step]);
+
     const handleCompleteOnboarding = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -95,7 +102,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                             {step === 1 && (
                                 <motion.div key="step1" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-6">
                                     <div className="text-center p-4 bg-blue-50/50 rounded-2xl border border-blue-100 mb-4">
-                                        <p className="text-sm text-slate-600 font-medium">Vous êtes connecté via Google. Définissez un mot de passe pour pouvoir vous connecter directement avec <strong className="text-blue-600">{user.email}</strong> la prochaine fois.</p>
+                                        <p className="text-sm text-slate-600 font-medium">Bienvenue ! Comme tu es connecté via Google, définis un mot de passe pour pouvoir te connecter directement avec <strong className="text-blue-600">{user.email}</strong> la prochaine fois.</p>
                                     </div>
                                     <div className="relative">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />

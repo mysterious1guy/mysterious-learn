@@ -377,19 +377,11 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                     </button>
                                                 ) : (
                                                     <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || formData.password.length < 6 || !passwordsMatch || !agreedToPolicy || !agreedToTerms) {
-                                                                setAuthError("Veuillez remplir correctement tous les champs.");
-                                                                return;
-                                                            }
-                                                            setAuthError('');
-                                                            setSignupStep(2);
-                                                        }}
-                                                        disabled={(!agreedToPolicy || !agreedToTerms || !passwordsMatch || !formData.password || formData.password.length < 6)}
-                                                        className={`w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 group ${(!agreedToPolicy || !agreedToTerms || !passwordsMatch || !formData.password || formData.password.length < 6) ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
+                                                        type="submit"
+                                                        disabled={isLoading || (!agreedToPolicy || !agreedToTerms || !passwordsMatch || !formData.password || formData.password.length < 6)}
+                                                        className={`w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 group ${(isLoading || !agreedToPolicy || !agreedToTerms || !passwordsMatch || !formData.password || formData.password.length < 6) ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
                                                     >
-                                                        Suivant
+                                                        {isLoading ? 'Création...' : "S'inscrire"}
                                                         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                                     </button>
                                                 )}
@@ -397,71 +389,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                         </AnimatePresence>
                                     )}
 
-                                    {authMode === 'signup' && signupStep === 2 && (
-                                        <AnimatePresence mode="wait">
-                                            <motion.div key="step2" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-4">
-                                                <h3 className="text-xl font-bold text-center text-slate-800">Quel est ton objectif principal ?</h3>
-                                                <p className="text-center text-sm text-slate-500 mb-4">Cela nous aide à personnaliser ton parcours.</p>
-                                                <div className="grid grid-cols-1 gap-3">
-                                                    {['Découvrir le code', 'Créer des sites web', 'Devenir développeur', 'Passer des examens'].map(goal => (
-                                                        <button
-                                                            key={goal}
-                                                            type="button"
-                                                            onClick={() => setFormData({ ...formData, goal })}
-                                                            className={`p-4 rounded-xl border text-left font-semibold transition-all ${formData.goal === goal ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-md' : 'border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-blue-300'}`}
-                                                        >
-                                                            {goal}
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                                <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
-                                                    <button type="button" onClick={() => setSignupStep(1)} className="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition">Retour</button>
-                                                    <button type="button" onClick={() => setSignupStep(3)} disabled={!formData.goal} className={`flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition ${!formData.goal ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700 hover:shadow-lg'}`}>Suivant <ArrowRight size={18} /></button>
-                                                </div>
-                                            </motion.div>
-                                        </AnimatePresence>
-                                    )}
-
-                                    {authMode === 'signup' && signupStep === 3 && (
-                                        <AnimatePresence mode="wait">
-                                            <motion.div key="step3" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }} className="space-y-4">
-                                                <h3 className="text-xl font-bold text-center text-slate-800">Quel est ton niveau actuel ?</h3>
-                                                <p className="text-center text-sm text-slate-500 mb-4">Nous adapterons la difficulté de tes leçons.</p>
-                                                <div className="grid grid-cols-1 gap-3">
-                                                    <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Débutant' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Débutant' ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-purple-300'}`}>
-                                                        <div className="flex flex-col text-left">
-                                                            <span className={`font-bold ${formData.startingLevel === 'Débutant' ? 'text-purple-700' : 'text-slate-700'}`}>Total Débutant</span>
-                                                            <span className="text-xs text-slate-500 mt-1">Je n'ai jamais codé de ma vie</span>
-                                                        </div>
-                                                        <span className="text-2xl ml-4">🐣</span>
-                                                    </button>
-                                                    <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Amateur' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Amateur' ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-blue-300'}`}>
-                                                        <div className="flex flex-col text-left">
-                                                            <span className={`font-bold ${formData.startingLevel === 'Amateur' ? 'text-blue-700' : 'text-slate-700'}`}>Amateur</span>
-                                                            <span className="text-xs text-slate-500 mt-1">J'ai quelques bases en programmation</span>
-                                                        </div>
-                                                        <span className="text-2xl ml-4">🚀</span>
-                                                    </button>
-                                                    <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Expérimenté' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Expérimenté' ? 'border-orange-500 bg-orange-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-orange-300'}`}>
-                                                        <div className="flex flex-col text-left">
-                                                            <span className={`font-bold ${formData.startingLevel === 'Expérimenté' ? 'text-orange-700' : 'text-slate-700'}`}>Expérimenté</span>
-                                                            <span className="text-xs text-slate-500 mt-1">Je code déjà de façon autonome</span>
-                                                        </div>
-                                                        <span className="text-2xl ml-4">💻</span>
-                                                    </button>
-                                                </div>
-
-                                                {authError && <p className="text-red-500 text-sm text-center font-bold bg-red-500/10 py-2 rounded-xl border border-red-500/20">{authError}</p>}
-
-                                                <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
-                                                    <button type="button" onClick={() => setSignupStep(2)} className="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition">Retour</button>
-                                                    <button type="submit" disabled={!formData.startingLevel || isLoading} className={`flex-1 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition ${!formData.startingLevel || isLoading ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:scale-105'}`}>
-                                                        {isLoading ? 'Création...' : 'Valider & Créer 🎉'}
-                                                    </button>
-                                                </div>
-                                            </motion.div>
-                                        </AnimatePresence>
-                                    )}
+                                    {/* Onboarding steps removed from here, moved to OnboardingPage after verification */}
 
                                 </motion.div>
                             )}
