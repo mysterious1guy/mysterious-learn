@@ -295,7 +295,7 @@ const HomePage = ({ API_URL }) => {
                             <div className="w-14 h-14 bg-green-50 dark:bg-green-500/10 text-green-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993.0004.5511-.4482.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02L19.55 6.002a.4173.4173 0 00-.5903-.1197.4174.4174 0 00-.1197.5904l-1.6373 3.251c-1.353-.616-2.8724-.9545-4.4812-.9545-1.6092 0-3.1286.3385-4.4816.9545L6.6026 6.4727A.417.417 0 005.8926 6.353a.4175.4175 0 00.1197.5905l1.6685 3.3195C3.3915 12.6288 1.1541 16.5915 1 21.0827h22c-.154-4.4912-2.3914-8.454-6.6815-10.82Z" /></svg>
                             </div>
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">App Android</h3>
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">Google Play Store</h3>
                             <p className="text-sm text-slate-600 dark:text-slate-400 font-medium mb-6">Une application légère (Play Store PWA).</p>
                             <div className="space-y-3 text-sm text-slate-500 dark:text-slate-400 font-medium bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
                                 <p>1. Ouvrez Chrome sur Android.</p>
@@ -309,7 +309,7 @@ const HomePage = ({ API_URL }) => {
                             <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.328 14.881c-1.077.587-2.327.904-3.66.904-4.14 0-7.495-3.355-7.495-7.495 0-1.333.317-2.583.904-3.66l10.251 10.251zm1.464-1.464L6.541 5.166C7.618 4.579 8.868 4.262 10.201 4.262c4.14 0 7.495 3.355 7.495 7.495 0 1.333-.317 2.583-.904 3.66z" className="hidden" /><path d="M16.92 18.068c-1.127 1.637-2.316 3.27-4.128 3.32-1.782.046-2.368-1.037-4.425-1.037-2.057 0-2.704 1.002-4.425 1.054-1.812.053-3.155-1.751-4.298-3.391C-2.744 14.61-1.063 9.771 1.259 7.641c1.144-1.053 2.651-1.714 4.195-1.739 1.748-.029 3.374 1.18 4.453 1.18 1.08 0 3.012-1.42 5.148-1.206 1.802.083 3.425.88 4.524 2.476-4.522 2.709-3.805 9.074 1.341 11.21-.861 2.126-1.928 4.208-3.88 6.556 0 0-.063.078-.12.181zM11.967 5.62c-.08 2.37-1.94 4.536-4.263 4.515-.145-2.296 1.705-4.593 4.126-4.64.043.05.093.09.137.125z" /></svg>
                             </div>
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">Apple iOS</h3>
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2">Apple App Store</h3>
                             <p className="text-sm text-slate-600 dark:text-slate-400 font-medium mb-6">Optimisé pour iPhone et iPad via Safari.</p>
                             <div className="space-y-3 text-sm text-slate-500 dark:text-slate-400 font-medium bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
                                 <p>1. Ouvrez ce site sur Safari.</p>
