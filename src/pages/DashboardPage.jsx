@@ -360,7 +360,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
             )}
 
             {/* Header */}
-            <div className="pt-12 pb-20 px-6 lg:px-12 relative overflow-hidden">
+            <div className="pt-6 pb-20 px-6 lg:px-12 relative overflow-hidden">
                 <motion.div
                     style={{ x: mousePosition.x * 0.5, y: mousePosition.y * 0.5 }}
                     className="absolute top-10 right-[10%] w-96 h-96 bg-blue-500/5 blur-[120px] rounded-full -z-10"
