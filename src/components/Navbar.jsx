@@ -62,13 +62,6 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                 </span>
               </Link>
-              <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-user-guide'))}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold text-slate-600 dark:text-gray-400 hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-              >
-                <BookOpen size={18} />
-                Guide
-              </button>
             </>
           )}
         </div>
