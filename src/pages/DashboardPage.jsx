@@ -158,6 +158,16 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
 
     const groupedCourses = Object.values(subjectsMap);
 
+    // Sort groups: Git and Network courses at the bottom
+    groupedCourses.sort((a, b) => {
+        const isA_Bottom = a.category.includes('Git') || a.category.includes('Réseau');
+        const isB_Bottom = b.category.includes('Git') || b.category.includes('Réseau');
+
+        if (isA_Bottom && !isB_Bottom) return 1;
+        if (!isA_Bottom && isB_Bottom) return -1;
+        return 0; // Keep original order for others
+    });
+
     const filteredCourses = groupedCourses.map(subject => ({
         ...subject,
         items: subject.items.filter(course =>
@@ -324,11 +334,11 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="pl-6 lg:pl-12"
+                        className="px-6 lg:px-12"
                     >
-                        <div className="flex items-center gap-3 mb-8">
+                        <div className="flex flex-col items-center justify-center gap-3 mb-8 text-center">
                             <h2 className="text-xl md:text-2xl brand-font-secondary text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-500 dark:from-white dark:to-white/40 uppercase tracking-[0.2em] font-black">{category.category}</h2>
-                            <div className="h-px flex-1 bg-gradient-to-r from-blue-500/20 to-transparent ml-6" />
+                            <div className="h-px w-32 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
                         </div>
 
                         <div className="overflow-x-auto pb-8 custom-horizontal-scrollbar pr-6 scroll-smooth">
