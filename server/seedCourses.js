@@ -13,10 +13,16 @@ async function seedCourses(closeConnection = true) {
       // Connexion réussie - utiliser MongoDB
       console.log('🗑️ Collection courses vidée');
 
-      // S'assurer que chaque cours a son identifiant métier 'id'
+      // S'assurer que chaque cours a son identifiant métier 'id' et ses chapitres conformes
       const coursesToInsert = coursesData.map(c => ({
         ...c,
-        id: c.id || c._id // Assurer la présence du champ 'id' métier
+        id: c.id || c._id,
+        chapters: (c.chapters || []).map((ch, idx) => ({
+          ...ch,
+          order: ch.order || (idx + 1),
+          duration: ch.duration || '15 min',
+          content: ch.content || 'Contenu à venir...'
+        }))
       }));
 
       await Course.insertMany(coursesToInsert);

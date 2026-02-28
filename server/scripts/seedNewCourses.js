@@ -25,7 +25,19 @@ async function seedDB() {
         await Course.deleteMany({});
         console.log("🗑️ Collection Course vidée.");
 
-        await Course.insertMany(data);
+        // S'assurer que chaque cours a ses chapitres conformes
+        const coursesToInsert = data.map((c, idx) => ({
+            ...c,
+            id: c.id || `course_${idx + 1}`,
+            chapters: (c.chapters || []).map((ch, cidx) => ({
+                ...ch,
+                order: ch.order || (cidx + 1),
+                duration: ch.duration || '15 min',
+                content: ch.content || 'Contenu à venir...'
+            }))
+        }));
+
+        await Course.insertMany(coursesToInsert);
         console.log(`🚀 ${data.length} cours majeurs (multi-niveaux) ont été insérés dans MongoDB.`);
 
         mongoose.connection.close();

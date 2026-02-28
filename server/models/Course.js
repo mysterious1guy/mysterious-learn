@@ -71,7 +71,8 @@ const courseSchema = new mongoose.Schema({
     },
     duration: {
       type: String,
-      required: true
+      required: false,
+      default: '15 min'
     },
     content: {
       type: String,
