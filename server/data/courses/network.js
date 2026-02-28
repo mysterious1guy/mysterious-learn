@@ -3,9 +3,9 @@ const networkCourses = [
         id: "network-fondamentaux-reseaux",
         title: "Bases des Réseaux - L'Essentiel",
         description: "Comprenez comment les données voyagent sur Internet. Un module simple, direct et pratique.",
-        category: "DevOps",
+        category: "DevOps & SI",
         level: "Débutant",
-        duration: "15 heures",
+        duration: "10 heures",
         image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=800&auto=format&fit=crop",
         rating: 4.8,
         language: "french",
@@ -13,39 +13,25 @@ const networkCourses = [
         tags: ["réseau", "IP", "HTTP"],
         chapters: [
             {
-                title: "1. Vision Globale : Le Web",
+                title: "1. Le Web & IP",
                 description: "De votre PC au serveur.",
                 order: 1,
-                content: "Internet est une toile de câbles et d'ondes. Tout repose sur le modèle Client-Serveur : vous demandez, le serveur répond.",
-                objectives: ["Comprendre le modèle Client-Serveur"]
+                content: "Internet est une toile de câbles et d'ondes reposant sur le modèle Client-Serveur. L'adresse IP est votre numéro d'identification sur ce réseau.",
+                objectives: ["Comprendre le modèle Client-Serveur", "Reconnaître une IP"]
             },
             {
-                title: "2. Concept : IP & DNS",
-                description: "Les adresses du Web.",
+                title: "2. DNS & Requêtes HTTP",
+                description: "Les adresses du Web et le voyage d'une page.",
                 order: 2,
-                content: "L'adresse IP est votre numéro de téléphone sur le réseau. Le DNS est l'annuaire qui traduit 'google.fr' en adresse IP.",
-                objectives: ["Différencier IP et DNS"]
+                content: "Le DNS est l'annuaire qui traduit 'google.fr' en IP. Quand vous tapez une URL, votre navigateur envoie une requête GET au serveur, qui vous renvoie du HTML. C'est le protocole HTTP.",
+                objectives: ["Comprendre le DNS", "Analyser un échange HTTP"]
             },
             {
-                title: "3. Exemple Concret : Requête HTTP",
-                description: "Le voyage d'une page web.",
+                title: "3. Exercice Pratique : Configuration et Ping",
+                description: "Masques, Passerelles & Diagnostic.",
                 order: 3,
-                content: "Quand vous tapez une URL, votre navigateur envoie une requête GET. Le serveur renvoie du HTML. C'est le protocole HTTP.",
-                objectives: ["Analyser un échange HTTP"]
-            },
-            {
-                title: "4. Cas Pratique : Configurer son réseau",
-                description: "Masques et Passerelles.",
-                order: 4,
-                content: "Apprenez à identifier votre IP locale (`ipconfig` ou `ifconfig`). Comprenez le rôle du routeur (passerelle) pour sortir sur Internet.",
-                objectives: ["Diagnostiquer sa connexion"]
-            },
-            {
-                title: "5. Exercice : Ping & Traceroute",
-                description: "Tester la communication.",
-                order: 5,
-                content: "Utilisez la commande `ping` pour vérifier si un serveur répond. Utilisez `traceroute` pour voir tous les 'chemins' empruntés par vos données.",
-                objectives: ["Utiliser les outils de diagnostic réseau"]
+                content: "Apprenez à identifier votre IP locale (`ipconfig` ou `ifconfig`). Comprenez le rôle du routeur (passerelle) pour sortir sur Internet. Utilisez les commandes `ping` et `traceroute` pour vérifier et pister la communication réseau.",
+                objectives: ["Diagnostiquer sa connexion locale", "Tester le réseau via le terminal"]
             }
         ]
     }
