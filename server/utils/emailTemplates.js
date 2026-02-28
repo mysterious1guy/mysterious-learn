@@ -93,8 +93,8 @@ const getWelcomeEmail = (name) => `
   </div>
   
   <div style="${bodyStyles}">
-    <h2 style="color: #ffffff; text-align: center; font-size: 24px;">Prêt à explorer, ${name} ?</h2>
-    <p style="color: #cbd5e1; font-size: 16px; text-align: center; margin-bottom: 30px;">Ton compte est désormais actif. Tu as maintenant un accès complet à la plateforme et au catalogue de cours.</p>
+    <h2 style="color: #ffffff; text-align: center; font-size: 24px;">Bonjour ${name} ! 👋</h2>
+    <p style="color: #cbd5e1; font-size: 16px; text-align: center; margin-bottom: 30px;">Prêt à explorer Mysterious Classroom ? Ton compte est désormais actif.</p>
     
     <div style="background: rgba(30, 41, 59, 0.5); border-radius: 20px; padding: 30px; margin: 30px 0; border: 1px solid #1e293b;">
        <h4 style="color: #60a5fa; margin-top: 0; text-transform: uppercase; font-size: 11px; letter-spacing: 1px;">TES AVANTAGES :</h4>
@@ -127,7 +127,7 @@ const getEmailChangeEmail = (name, code) => `
   </div>
   <div style="${bodyStyles}">
     <h2 style="color: #ffffff;">Confirmation Obligatoire 👋</h2>
-    <p style="color: #cbd5e1;">Bonjour ${name}, pour valider ton nouvel email, entre ce code :</p>
+    <p style="color: #cbd5e1;">Bonjour ${name}, pour valider ton nouvel email Mysterious Classroom, entre ce code :</p>
     <div style="text-align: center; margin: 30px 0;">
       <div style="display: inline-block; background: #1e293b; padding: 20px 40px; border-radius: 12px; font-size: 32px; font-weight: bold; color: #60a5fa; letter-spacing: 5px;">
         ${code}

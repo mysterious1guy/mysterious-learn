@@ -20,9 +20,8 @@ const sendEmail = async ({ to, subject, html, text }) => {
         subject: subject.startsWith('[Mysterious') ? subject : `[Mysterious Classroom] ${subject}`,
         text: text || '',
         html: html,
-        name: "Mysterious Classroom", // Identité Branding forcée (pour MailApp options)
-        senderName: "Mysterious Classroom",
-        from: "Mysterious Classroom <mysteriousclassroom@gmail.com>",
+        name: "Mysterious Classroom",
+        from: "Mysterious Classroom",
         key: 'mysterious_secret_key_2026'
       })
     });
