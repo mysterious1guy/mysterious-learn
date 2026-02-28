@@ -29,44 +29,48 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
         </div>
 
         <div className="flex-1 flex justify-center items-center gap-2 sm:gap-6 hidden lg:flex">
-          <Link
-            to="/dashboard"
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/dashboard' ? 'bg-blue-500/10 text-blue-500 ring-1 ring-blue-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
-          >
-            <BarChart3 size={18} />
-            {t('dashboard')}
-          </Link>
-          <Link
-            id="tour-projects"
-            to="/projects"
-            className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/projects' ? 'bg-indigo-500/10 text-indigo-500 ring-1 ring-indigo-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
-          >
-            <Briefcase size={18} />
-            {t('projects')}
-            <span className="absolute -top-1 -right-1 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-            </span>
-          </Link>
-          <Link
-            id="tour-leaderboard"
-            to="/leaderboard"
-            className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/leaderboard' ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-amber-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
-          >
-            <Trophy size={18} />
-            {t('leaderboard')}
-            <span className="absolute -top-1 -right-1 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-            </span>
-          </Link>
-          <button
-            onClick={() => window.dispatchEvent(new CustomEvent('open-user-guide'))}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold text-slate-600 dark:text-gray-400 hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
-          >
-            <BookOpen size={18} />
-            Guide
-          </button>
+          {user && (
+            <>
+              <Link
+                to="/dashboard"
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/dashboard' ? 'bg-blue-500/10 text-blue-500 ring-1 ring-blue-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              >
+                <BarChart3 size={18} />
+                {t('dashboard')}
+              </Link>
+              <Link
+                id="tour-projects"
+                to="/projects"
+                className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/projects' ? 'bg-indigo-500/10 text-indigo-500 ring-1 ring-indigo-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              >
+                <Briefcase size={18} />
+                {t('projects')}
+                <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+                </span>
+              </Link>
+              <Link
+                id="tour-leaderboard"
+                to="/leaderboard"
+                className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/leaderboard' ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-amber-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              >
+                <Trophy size={18} />
+                {t('leaderboard')}
+                <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                </span>
+              </Link>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-user-guide'))}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold text-slate-600 dark:text-gray-400 hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+              >
+                <BookOpen size={18} />
+                Guide
+              </button>
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-1 sm:gap-4 ml-auto">
