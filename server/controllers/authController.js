@@ -130,7 +130,8 @@ const verifyEmail = async (req, res) => {
       name: pendingUser.name,
       email: pendingUser.email,
       password: pendingUser.password,
-      role: pendingUser.role,
+      role: pendingUser.role || 'user',
+      programmingLevel: pendingUser.startingLevel === 'Expérimenté' ? 'advanced' : (pendingUser.startingLevel === 'Amateur' ? 'intermediate' : 'beginner'),
       onboardingProfile: {
         goal: pendingUser.goal,
         startingLevel: pendingUser.startingLevel
@@ -576,7 +577,13 @@ const updateProfile = async (req, res) => {
     }
     if (hasCompletedOnboarding !== undefined) user.hasCompletedOnboarding = hasCompletedOnboarding;
     if (programmingLevel !== undefined) user.programmingLevel = programmingLevel;
-    if (onboardingProfile !== undefined) user.onboardingProfile = onboardingProfile;
+    if (onboardingProfile !== undefined) {
+      user.onboardingProfile = onboardingProfile;
+      // Sync programmingLevel if not manually set
+      if (onboardingProfile.startingLevel && !programmingLevel) {
+        user.programmingLevel = onboardingProfile.startingLevel === 'Expérimenté' ? 'advanced' : (onboardingProfile.startingLevel === 'Amateur' ? 'intermediate' : 'beginner');
+      }
+    }
     if (unlockedCourses !== undefined) user.unlockedCourses = unlockedCourses;
 
     // Persistance des guides et préférences UI
