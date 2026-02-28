@@ -7,7 +7,14 @@ import CyberPet from '../CyberPet';
 const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState({ password: '', confirmPassword: '', goal: '', startingLevel: '' });
+    const [formData, setFormData] = useState({
+        firstName: user?.firstName || '',
+        lastName: user?.lastName || '',
+        password: '',
+        confirmPassword: '',
+        goal: '',
+        startingLevel: ''
+    });
     const [showPassword, setShowPassword] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +37,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
         }
     }, [formData.password, formData.confirmPassword]);
 
-    // Skip password step if user is NOT from Google (already has a password)
+    // Determine initial step
     useEffect(() => {
         if (user && !user.googleId && step === 1) {
             setStep(2);
@@ -50,6 +57,8 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                     Authorization: `Bearer ${user.token}`
                 },
                 body: JSON.stringify({
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
                     password: formData.password,
                     hasCompletedOnboarding: true,
                     onboardingProfile: {

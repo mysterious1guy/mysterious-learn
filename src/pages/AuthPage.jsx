@@ -378,11 +378,10 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                 ) : (
                                                     <button
                                                         type="submit"
-                                                        disabled={isLoading || (!agreedToPolicy || !agreedToTerms || !passwordsMatch || !formData.password || formData.password.length < 6)}
-                                                        className={`w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 group ${(isLoading || !agreedToPolicy || !agreedToTerms || !passwordsMatch || !formData.password || formData.password.length < 6) ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
+                                                        disabled={isLoading || !formData.firstName || !formData.lastName || !!emailError || !formData.password || !passwordsMatch || !agreedToPolicy || !agreedToTerms}
+                                                        className={`w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 group ${(isLoading || !formData.firstName || !formData.lastName || !!emailError || !formData.password || !passwordsMatch || !agreedToPolicy || !agreedToTerms) ? 'opacity-50 grayscale cursor-not-allowed' : 'shadow-blue-500/25 hover:scale-[1.02] active:scale-95'}`}
                                                     >
-                                                        {isLoading ? 'Création...' : "S'inscrire"}
-                                                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                                        {isLoading ? 'Création...' : "S'inscrire"} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                                     </button>
                                                 )}
                                             </motion.div>
