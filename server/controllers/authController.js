@@ -33,7 +33,7 @@ const sendVerificationEmail = async (email, name, code) => {
   const html = getVerificationEmail(name, code);
   await sendEmail({
     to: email,
-    subject: 'Vérifie ton email — Mysterious Classroom',
+    subject: 'Vérifie ton email',
     html
   });
 };
@@ -43,7 +43,7 @@ const sendEmailChangeCode = async (email, name, code) => {
   const html = getEmailChangeEmail(name, code);
   await sendEmail({
     to: email,
-    subject: "Code de confirmation — Changement d'email",
+    subject: "Confirmation de changement d'email",
     html
   });
 };
@@ -661,8 +661,8 @@ const forgotPassword = async (req, res) => {
     const html = getPasswordResetEmail(user.firstName || user.name, resetUrl);
 
     await sendEmail({
-      to: email,
-      subject: 'Réinitialisation de ton mot de passe — Mysterious Classroom',
+      to: user.email,
+      subject: 'Réinitialisation de ton mot de passe',
       html
     });
     res.json({ message: 'Email envoyé' });
@@ -755,8 +755,8 @@ const deleteAccount = async (req, res) => {
     const html = getAccountDeletionEmail(firstName || name || 'Aventurier');
     try {
       await sendEmail({
-        to: email,
-        subject: 'Confirmation de suppression de compte - Mysterious Classroom',
+        to: user.email,
+        subject: 'Ton compte a été supprimé',
         html
       });
     } catch (emailErr) {

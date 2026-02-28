@@ -21,7 +21,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
         text: text || '',
         html: html,
         name: "Mysterious Classroom",
-        from: "Mysterious Classroom",
+        from: "Mysterious Classroom <mysteriousclassroom@gmail.com>",
         key: 'mysterious_secret_key_2026'
       })
     });
