@@ -6,7 +6,7 @@ const gitCourses = [
         category: "DevOps",
         level: "Débutant", // On garde un niveau technique pour la cohérence UI mais le titre dit "Fondamentaux"
         duration: "15 heures",
-        image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",
+        image: "https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=800&auto=format&fit=crop",
         rating: 4.9,
         language: "french",
         isFree: true,

@@ -6,7 +6,7 @@ const networkCourses = [
         category: "DevOps",
         level: "Débutant",
         duration: "15 heures",
-        image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?w=800&q=80",
+        image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=800&auto=format&fit=crop",
         rating: 4.8,
         language: "french",
         isFree: true,
