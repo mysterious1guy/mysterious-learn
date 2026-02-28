@@ -184,6 +184,21 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
 
     const groupedCategories = Object.values(categoriesMap);
 
+    // Apply explicit priority ordering to the categories
+    const categoryPriority = {
+        'Théorie': 1,
+        'Programmation': 2,
+        'Web': 3,
+        'Data': 4,
+        'DevOps & SI': 5
+    };
+
+    groupedCategories.sort((a, b) => {
+        const orderA = categoryPriority[a.category] || 99;
+        const orderB = categoryPriority[b.category] || 99;
+        return orderA - orderB;
+    });
+
     const filteredCategories = groupedCategories.map(cat => ({
         ...cat,
         subjects: Object.values(cat.subjects).map(sub => ({
@@ -432,7 +447,8 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                                 className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100"
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
-                                                                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent((course.title || course.name)?.substring(0, 2) || 'C')}&background=0D8ABC&color=fff&size=512`;
+                                                                    // Fallback esthétique plutôt que des lettres (demande utilisateur)
+                                                                    e.target.src = `https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&q=80`;
                                                                 }}
                                                             />
                                                             <div className="absolute top-3 right-3 z-20">
