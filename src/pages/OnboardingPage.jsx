@@ -59,11 +59,13 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                 navigate('/dashboard');
             } else {
                 setError(data.message || "Erreur lors de la sauvegarde.");
+                setIsLoading(false); // Immediate reset on specific error
             }
         } catch (err) {
             setError("Erreur réseau");
-        } finally {
             setIsLoading(false);
+        } finally {
+            // We only keep loading if navigating away
         }
     };
 

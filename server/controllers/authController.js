@@ -233,6 +233,16 @@ const login = async (req, res) => {
       });
     }
 
+    // Check if 2FA is enabled for this user
+    const twoFactor = await mongoose.model('TwoFactorAuth').findOne({ userId: user._id, isEnabled: true });
+    if (twoFactor) {
+      return res.status(200).json({
+        twoFactorRequired: true,
+        email: user.email,
+        message: 'Authentification à deux étapes requise.'
+      });
+    }
+
     // Logic Streak
     const today = new Date().setHours(0, 0, 0, 0);
     const last = user.lastLogin ? new Date(user.lastLogin).setHours(0, 0, 0, 0) : 0;
@@ -351,6 +361,21 @@ const googleAuth = async (req, res) => {
         isEmailVerified: true,
         hasCompletedOnboarding: false,
         joinedAt: new Date(),
+      });
+
+      // 5. Envoi du mail de félicitations (Bienvenue) pour les nouveaux inscrits Google (Popup)
+      sendWelcomeEmail(existingUser.email, existingUser.firstName).catch(err => {
+        console.error('❌ Échec envoi mail de bienvenue (Google Popup):', err);
+      });
+
+      // 6. Notification à l'administrateur
+      const adminHtml = getAdminNotificationEmail(existingUser.name, existingUser.email);
+      sendEmail({
+        to: 'mouhamedfall@esp.sn',
+        subject: 'Nouveau membre sur Mysterious Classroom (Google Popup)',
+        html: adminHtml
+      }).catch(err => {
+        console.error('❌ Échec envoi notification admin (Popup):', err);
       });
     }
 

@@ -83,14 +83,20 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
             });
             const data = await response.json();
             if (response.ok) {
-                setPetSecret({ type: 'excited' });
-                localStorage.setItem('user', JSON.stringify(data));
-                localStorage.setItem('token', data.token);
-                setUser(data);
-                // Delay to see the pet reaction
-                setTimeout(() => {
-                    navigate(data.role === 'admin' ? '/admin' : '/dashboard');
-                }, 1000);
+                if (data.twoFactorRequired) {
+                    setAuthMode('two-factor');
+                    setFormData({ ...formData, email: data.email });
+                    setToast({ message: data.message, type: 'info' });
+                } else {
+                    setPetSecret({ type: 'excited' });
+                    localStorage.setItem('user', JSON.stringify(data));
+                    localStorage.setItem('token', data.token);
+                    setUser(data);
+                    // Delay to see the pet reaction
+                    setTimeout(() => {
+                        navigate(data.role === 'admin' ? '/admin' : '/dashboard');
+                    }, 1000);
+                }
             } else if (response.status === 403 && data.unverified) {
                 setAuthMode('verification');
                 setFormData({ ...formData, email: data.email });
@@ -179,6 +185,33 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
         }
     };
 
+    const handleVerifyTwoFactor = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setAuthError('');
+        try {
+            const response = await fetch(`${API_URL}/2fa/login-verify`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: formData.email, code: verificationKey }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('token', data.token);
+                setUser(data.user);
+                setToast({ message: 'Authentification réussie !', type: 'success' });
+                navigate('/dashboard');
+            } else {
+                setAuthError(data.message || 'Code invalide');
+            }
+        } catch (err) {
+            setAuthError('Erreur réseau');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-transparent overflow-hidden relative">
 
@@ -196,9 +229,9 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                         {authMode === 'verification' ? 'Vérification' : (authMode === 'signin' ? 'Connexion' : 'Inscription')}
                     </h2>
 
-                    <form onSubmit={authMode === 'verification' ? handleVerifyEmail : (authMode === 'signin' ? handleLogin : handleRegister)} className="space-y-4">
+                    <form onSubmit={authMode === 'verification' ? handleVerifyEmail : (authMode === 'two-factor' ? handleVerifyTwoFactor : (authMode === 'signin' ? handleLogin : handleRegister))} className="space-y-4">
                         <AnimatePresence mode="wait">
-                            {authMode === 'verification' ? (
+                            {(authMode === 'verification' || authMode === 'two-factor') ? (
                                 <motion.div
                                     key="verify"
                                     initial={{ opacity: 0, x: 20 }}
@@ -207,7 +240,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                     className="space-y-6"
                                 >
                                     <p className="text-slate-500 text-center text-sm font-medium">
-                                        Code envoyé à <span className="text-blue-600 font-bold">{formData.email}</span>
+                                        {authMode === 'two-factor' ? "Saisis le code 2FA envoyé à ton téléphone" : `Code envoyé à ${formData.email}`}
                                     </p>
                                     <input
                                         type="text"
@@ -223,18 +256,20 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                         disabled={isLoading || verificationKey.length !== 6}
                                         className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/25"
                                     >
-                                        {isLoading ? 'Vérification...' : 'Activer mon compte'}
+                                        {isLoading ? 'Vérification...' : (authMode === 'two-factor' ? 'Vérifier' : 'Activer mon compte')}
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleResendCode}
-                                        disabled={resendCooldown > 0}
-                                        className={`w-full text-slate-500 hover:text-white text-sm transition-colors ${resendCooldown > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    >
-                                        {resendCooldown > 0
-                                            ? `Renvoyer le code (${resendCooldown}s)`
-                                            : "Renvoyer le code"}
-                                    </button>
+                                    {authMode === 'verification' && (
+                                        <button
+                                            type="button"
+                                            onClick={handleResendCode}
+                                            disabled={resendCooldown > 0}
+                                            className={`w-full text-slate-500 hover:text-white text-sm transition-colors ${resendCooldown > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        >
+                                            {resendCooldown > 0
+                                                ? `Renvoyer le code (${resendCooldown}s)`
+                                                : "Renvoyer le code"}
+                                        </button>
+                                    )}
                                 </motion.div>
                             ) : (
                                 <motion.div key="auth" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
