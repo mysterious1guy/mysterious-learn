@@ -407,7 +407,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                         </div>
                                     )}
                                     <div className="overflow-x-auto pb-4 custom-horizontal-scrollbar scroll-smooth">
-                                        <div className={`flex gap-6 w-full ${subject.items.length === 1 ? '' : 'w-max'} px-6 lg:px-12`}>
+                                        <div className={`flex gap-6 w-full ${subject.items.length === 1 ? 'justify-center mx-auto max-w-5xl' : 'w-max'} px-6 lg:px-12`}>
                                             {subject.items.map((course) => {
                                                 const unlocked = isCourseUnlocked(course);
                                                 return (
