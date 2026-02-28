@@ -134,48 +134,67 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
         }
     };
 
-    // Regrouper les cours par Technologie (Sujet)
-    const subjectsMap = {};
+    // Définir les palettes de couleurs par macro-catégorie
+    const categoryColors = {
+        'Programmation': 'from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-300',
+        'Web': 'from-purple-600 to-pink-500 dark:from-purple-400 dark:to-pink-300',
+        'Data': 'from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300',
+        'DevOps': 'from-orange-600 to-amber-500 dark:from-orange-400 dark:to-amber-300',
+        'Théorie': 'from-rose-600 to-pink-500 dark:from-rose-400 dark:to-pink-300',
+        'default': 'from-slate-600 to-slate-500 dark:from-slate-400 dark:to-slate-300',
+        'Mes Cours Favoris': 'from-yellow-500 to-amber-500 dark:from-yellow-400 dark:to-amber-300',
+        "Reprendre l'apprentissage": 'from-indigo-600 to-blue-500 dark:from-indigo-400 dark:to-blue-300'
+    };
+
+    // Regrouper les cours par Macro-Catégorie puis par Sujet
+    const categoriesMap = {};
 
     courses.forEach(course => {
-        if (!course || !course.title) return; // Defensive: skip malformed courses
+        if (!course || !course.category) return;
+        const categoryName = course.category;
         const subjectName = course.title.split(' - ')[0] || course.title;
-        if (!subjectsMap[subjectName]) {
-            subjectsMap[subjectName] = {
+
+        if (!categoriesMap[categoryName]) {
+            categoriesMap[categoryName] = {
+                id: categoryName.toLowerCase().replace(/\s+/g, '-'),
+                category: categoryName,
+                colorClass: categoryColors[categoryName] || categoryColors['default'],
+                subjects: {}
+            };
+        }
+
+        if (!categoriesMap[categoryName].subjects[subjectName]) {
+            categoriesMap[categoryName].subjects[subjectName] = {
                 id: subjectName.toLowerCase().replace(/\s+/g, '-'),
-                category: subjectName,
+                title: subjectName,
                 items: []
             };
         }
-        subjectsMap[subjectName].items.push(course);
+
+        categoriesMap[categoryName].subjects[subjectName].items.push(course);
     });
 
     // Trier les items à l'intérieur de chaque sujet par niveau (Débutant -> Intermédiaire -> Avancé)
     const levelOrder = { 'Débutant': 1, 'Intermédiaire': 2, 'Avancé': 3 };
-    Object.values(subjectsMap).forEach(subject => {
-        subject.items.sort((a, b) => (levelOrder[a.level] || 99) - (levelOrder[b.level] || 99));
+    Object.values(categoriesMap).forEach(category => {
+        Object.values(category.subjects).forEach(subject => {
+            subject.items.sort((a, b) => (levelOrder[a.level] || 99) - (levelOrder[b.level] || 99));
+        });
     });
 
-    const groupedCourses = Object.values(subjectsMap);
+    const groupedCategories = Object.values(categoriesMap);
 
-    // Sort groups: Git and Network courses at the bottom
-    groupedCourses.sort((a, b) => {
-        const isA_Bottom = a.category.includes('Git') || a.category.includes('Réseau');
-        const isB_Bottom = b.category.includes('Git') || b.category.includes('Réseau');
-
-        if (isA_Bottom && !isB_Bottom) return 1;
-        if (!isA_Bottom && isB_Bottom) return -1;
-        return 0; // Keep original order for others
-    });
-
-    const filteredCourses = groupedCourses.map(subject => ({
-        ...subject,
-        items: subject.items.filter(course =>
-            (course.title && course.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
-            (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-            (course.tags && course.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
-        )
-    })).filter(cat => cat.items.length > 0);
+    const filteredCategories = groupedCategories.map(cat => ({
+        ...cat,
+        subjects: Object.values(cat.subjects).map(sub => ({
+            ...sub,
+            items: sub.items.filter(course =>
+                (course.title && course.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (course.description && course.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                (course.tags && course.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+            )
+        })).filter(sub => sub.items.length > 0)
+    })).filter(cat => cat.subjects.length > 0);
 
     const userCategories = [];
 
@@ -195,6 +214,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
             userCategories.push({
                 id: 'resume',
                 category: "Reprendre l'apprentissage",
+                colorClass: categoryColors["Reprendre l'apprentissage"],
                 items: inProgressCourses
             });
         }
@@ -210,12 +230,13 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
             userCategories.push({
                 id: 'favorites',
                 category: 'Mes Cours Favoris',
+                colorClass: categoryColors['Mes Cours Favoris'],
                 items: favoriteCourses
             });
         }
     }
 
-    const finalCategories = [...userCategories, ...filteredCourses];
+    const finalCategories = [...userCategories, ...filteredCategories];
 
     return (
         <div className="min-h-screen transition-colors duration-500 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 dark:from-gray-900 dark:via-[#0a0f1e] dark:to-black pb-20">
@@ -337,100 +358,115 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         className="w-full"
                     >
                         <div className="flex flex-col items-center justify-center gap-3 mb-8 text-center px-6 lg:px-12">
-                            <h2 className="text-xl md:text-2xl brand-font-secondary text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-500 dark:from-white dark:to-white/40 uppercase tracking-[0.2em] font-black">{category.category}</h2>
-                            <div className="h-px w-32 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+                            <h2 className={`text-xl md:text-2xl brand-font-secondary text-transparent bg-clip-text bg-gradient-to-r ${category.colorClass || 'from-slate-800 to-slate-500 dark:from-white dark:to-white/40'} uppercase tracking-[0.2em] font-black`}>
+                                {category.category}
+                            </h2>
+                            <div className={`h-px w-32 bg-gradient-to-r from-transparent via-current to-transparent opacity-50 text-transparent bg-clip-text ${category.colorClass || 'from-blue-500'}`} />
                         </div>
 
-                        <div className="overflow-x-auto pb-8 custom-horizontal-scrollbar pr-6 scroll-smooth">
-                            <div className={`flex gap-6 w-full ${category.items.length === 1 ? '' : 'w-max'}`}>
-                                {category.items.map((course) => {
-                                    const unlocked = isCourseUnlocked(course);
-                                    return (
-                                        <motion.div
-                                            key={course.id || course._id}
-                                            whileHover={unlocked ? { scale: 1.01, y: -5 } : { scale: 1 }}
-                                            onClick={() => {
-                                                if (unlocked) {
-                                                    navigate(`/course/${course._id || course.id}`);
-                                                }
-                                            }}
-                                            className={`${category.items.length === 1 ? 'w-full max-w-5xl' : 'w-[300px] md:w-[400px]'} flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl transition-all group relative ${unlocked ? 'hover:shadow-blue-500/10 cursor-pointer' : 'cursor-default grayscale'}`}
-                                        >
-                                            {!unlocked && (
-                                                <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
-                                                    <Lock size={40} className="text-gray-400 mb-3 drop-shadow-lg" />
-                                                    <span className="text-sm font-bold text-gray-300 drop-shadow-md px-4 text-center mb-4">Niveau {course.level} Verrouillé</span>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setSelectedLockedCourse(course);
-                                                            setIsTestModalOpen(true);
+                        <div className="space-y-8">
+                            {(category.subjects || [category]).map((subject, subIndex) => (
+                                <div key={subject.id || `sub-${subIndex}`} className="w-full">
+                                    {category.subjects && (
+                                        <div className="px-6 lg:px-12 mb-3">
+                                            <h3 className={`text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400`}>
+                                                &gt; {subject.title}
+                                            </h3>
+                                        </div>
+                                    )}
+                                    <div className="overflow-x-auto pb-4 custom-horizontal-scrollbar scroll-smooth">
+                                        <div className={`flex gap-6 w-full ${subject.items.length === 1 ? '' : 'w-max'} px-6 lg:px-12`}>
+                                            {subject.items.map((course) => {
+                                                const unlocked = isCourseUnlocked(course);
+                                                return (
+                                                    <motion.div
+                                                        key={course.id || course._id}
+                                                        whileHover={unlocked ? { scale: 1.01, y: -5 } : { scale: 1 }}
+                                                        onClick={() => {
+                                                            if (unlocked) {
+                                                                navigate(`/course/${course._id || course.id}`);
+                                                            }
                                                         }}
-                                                        className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5"
+                                                        className={`${subject.items.length === 1 ? 'w-full max-w-5xl' : 'w-[300px] md:w-[400px]'} flex-shrink-0 bg-white/60 dark:bg-slate-900/40 backdrop-blur-xl border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl transition-all group relative ${unlocked ? 'hover:shadow-blue-500/10 cursor-pointer' : 'cursor-default grayscale'}`}
                                                     >
-                                                        Passer le test
-                                                    </button>
-                                                </div>
-                                            )}
+                                                        {!unlocked && (
+                                                            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
+                                                                <Lock size={40} className="text-gray-400 mb-3 drop-shadow-lg" />
+                                                                <span className="text-sm font-bold text-gray-300 drop-shadow-md px-4 text-center mb-4">Niveau {course.level} Verrouillé</span>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setSelectedLockedCourse(course);
+                                                                        setIsTestModalOpen(true);
+                                                                    }}
+                                                                    className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5"
+                                                                >
+                                                                    Passer le test
+                                                                </button>
+                                                            </div>
+                                                        )}
 
-                                            <div className={`${category.items.length === 1 ? 'h-80' : 'h-48'} relative overflow-hidden`}>
-                                                <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
-                                                <img
-                                                    src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.title}`}
-                                                    alt={course.title || course.name}
-                                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100"
-                                                    onError={(e) => {
-                                                        e.target.onerror = null;
-                                                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent((course.title || course.name)?.substring(0, 2) || 'C')}&background=0D8ABC&color=fff&size=512`;
-                                                    }}
-                                                />
-                                                <div className="absolute top-3 right-3 z-20">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            toggleFavorite(course.id || course._id);
-                                                        }}
-                                                        className="p-2 bg-black/40 backdrop-blur-md rounded-full hover:bg-black/60 transition-colors"
-                                                    >
-                                                        <Star
-                                                            size={16}
-                                                            className={favorites.includes(course.id || course._id) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
-                                                        />
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className={`p-6 md:p-8 ${category.items.length === 1 ? 'md:flex md:flex-col md:justify-center' : ''}`}>
-                                                <h3 className={`${category.items.length === 1 ? 'text-3xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
-                                                    {course.title || course.name}
-                                                </h3>
-                                                <p className={`${category.items.length === 1 ? 'text-base' : 'text-xs'} text-slate-600 dark:text-gray-400 font-medium mb-6 line-clamp-2 min-h-[40px] leading-relaxed`}>
-                                                    {course.description || course.desc}
-                                                </p>
-
-                                                {progressions[course._id || course.id] ? (
-                                                    <div className="space-y-2 pt-2">
-                                                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-blue-400">
-                                                            <span>Progression</span>
-                                                            <span>{progressions[course._id || course.id].progress}%</span>
-                                                        </div>
-                                                        <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
-                                                            <div
-                                                                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
-                                                                style={{ width: `${progressions[course._id || course.id].progress}%` }}
+                                                        <div className={`${subject.items.length === 1 ? 'h-80' : 'h-48'} relative overflow-hidden`}>
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent dark:from-slate-900 z-10" />
+                                                            <img
+                                                                src={course.image || `https://images.unsplash.com/photo-1550439062-609e1531270e?w=800&q=80`}
+                                                                alt={course.title || course.name}
+                                                                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100"
+                                                                onError={(e) => {
+                                                                    e.target.onerror = null;
+                                                                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent((course.title || course.name)?.substring(0, 2) || 'C')}&background=0D8ABC&color=fff&size=512`;
+                                                                }}
                                                             />
+                                                            <div className="absolute top-3 right-3 z-20">
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        toggleFavorite(course.id || course._id);
+                                                                    }}
+                                                                    className="p-2 bg-black/40 backdrop-blur-md rounded-full hover:bg-black/60 transition-colors"
+                                                                >
+                                                                    <Star
+                                                                        size={16}
+                                                                        className={favorites.includes(course.id || course._id) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
+                                                                    />
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                ) : (
-                                                    <button className="w-full py-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 transition-all duration-300 flex items-center justify-center gap-2">
-                                                        Commencer <ChevronRight size={14} />
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </motion.div>
-                                    );
-                                })}
-                            </div>
+
+                                                        <div className={`p-6 md:p-8 ${subject.items.length === 1 ? 'md:flex md:flex-col md:justify-center' : ''}`}>
+                                                            <h3 className={`${subject.items.length === 1 ? 'text-3xl' : 'text-xl'} font-black text-slate-900 dark:text-white mb-3 line-clamp-1 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors tracking-tight`}>
+                                                                {course.title || course.name}
+                                                            </h3>
+                                                            <p className={`${subject.items.length === 1 ? 'text-base' : 'text-xs'} text-slate-600 dark:text-gray-400 font-medium mb-6 line-clamp-2 min-h-[40px] leading-relaxed`}>
+                                                                {course.description || course.desc}
+                                                            </p>
+
+                                                            {progressions[course._id || course.id] ? (
+                                                                <div className="space-y-2 pt-2">
+                                                                    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-blue-400">
+                                                                        <span>Progression</span>
+                                                                        <span>{progressions[course._id || course.id].progress}%</span>
+                                                                    </div>
+                                                                    <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
+                                                                        <div
+                                                                            className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(59,130,246,0.3)]"
+                                                                            style={{ width: `${progressions[course._id || course.id].progress}%` }}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            ) : (
+                                                                <button className="w-full py-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 transition-all duration-300 flex items-center justify-center gap-2">
+                                                                    Commencer <ChevronRight size={14} />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </motion.div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </motion.div>
                 ))}
