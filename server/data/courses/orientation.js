@@ -6,7 +6,7 @@ const orientationCourse = [
         category: "Théorie",
         level: "Débutant",
         duration: "2h15",
-        image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80",
+        image: ""https://images.unsplash.com/photo-1518433278988-d9bcda90d0b1?q=80&w=800&auto=format&fit=crop",
         rating: 5.0,
         language: "french",
         isFree: true,
