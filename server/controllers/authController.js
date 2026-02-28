@@ -580,9 +580,9 @@ const updateProfile = async (req, res) => {
     if (programmingLevel !== undefined) user.programmingLevel = programmingLevel;
     if (onboardingProfile !== undefined) {
       user.onboardingProfile = onboardingProfile;
-      // Sync programmingLevel if not manually set
-      if (onboardingProfile.startingLevel && !programmingLevel) {
-        user.programmingLevel = onboardingProfile.startingLevel === 'Expérimenté' ? 'advanced' : (onboardingProfile.startingLevel === 'Amateur' ? 'intermediate' : 'beginner');
+      // Sync programmingLevel
+      if (onboardingProfile.startingLevel) {
+        user.programmingLevel = onboardingProfile.startingLevel;
       }
     }
     if (unlockedCourses !== undefined) user.unlockedCourses = unlockedCourses;

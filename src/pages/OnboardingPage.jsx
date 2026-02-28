@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Lock, Eye, EyeOff } from 'lucide-react';
 import CyberPet from '../CyberPet';
+import GlobalPlacementTest from '../components/GlobalPlacementTest';
 
 const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [passwordsMatch, setPasswordsMatch] = useState(true);
+    const [showPlacementTest, setShowPlacementTest] = useState(false);
 
     useEffect(() => {
         if (!user) {
@@ -44,10 +46,11 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
         }
     }, [user, step]);
 
-    const handleCompleteOnboarding = async (e) => {
-        e.preventDefault();
+    const handleCompleteOnboarding = async (forcedLevel = null) => {
         setIsLoading(true);
         setError('');
+
+        const finalLevel = forcedLevel || formData.startingLevel;
 
         try {
             const response = await fetch(`${API_URL}/auth/profile`, {
@@ -63,7 +66,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                     hasCompletedOnboarding: true,
                     onboardingProfile: {
                         goal: formData.goal,
-                        startingLevel: formData.startingLevel
+                        startingLevel: finalLevel
                     }
                 })
             });
@@ -71,17 +74,29 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
             const data = await response.json();
             if (response.ok) {
                 setUser({ ...user, ...data, token: user.token });
-                setToast({ message: "Bienvenue sur l'interface !", type: 'success' });
+                setToast({
+                    message: forcedLevel ? `On t'a mis en Débutant pour commencer sereinement !` : "Bienvenue sur l'interface !",
+                    type: forcedLevel ? 'info' : 'success'
+                });
                 navigate('/dashboard');
             } else {
                 setError(data.message || "Erreur lors de la sauvegarde.");
-                setIsLoading(false); // Immediate reset on specific error
+                setIsLoading(false);
+                setShowPlacementTest(false);
             }
         } catch (err) {
             setError("Erreur réseau");
             setIsLoading(false);
-        } finally {
-            // We only keep loading if navigating away
+            setShowPlacementTest(false);
+        }
+    };
+
+    const handleOnboardingSubmit = (e) => {
+        e.preventDefault();
+        if (formData.startingLevel === 'Débutant') {
+            handleCompleteOnboarding();
+        } else {
+            setShowPlacementTest(true);
         }
     };
 
@@ -89,10 +104,19 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-transparent overflow-hidden relative">
+
+            {showPlacementTest && (
+                <GlobalPlacementTest
+                    level={formData.startingLevel}
+                    onPass={() => handleCompleteOnboarding()}
+                    onFail={() => handleCompleteOnboarding('Débutant')}
+                />
+            )}
+
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-full max-w-md relative z-10"
+                className={`w-full max-w-md relative z-10 ${showPlacementTest ? 'blur-md pointer-events-none' : ''}`}
             >
                 <div className="bg-white/90 backdrop-blur-2xl border border-blue-500/20 p-8 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(59,130,246,0.15)]">
                     <div className="flex justify-center mb-6">
@@ -106,7 +130,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                         Configurez votre accès local
                     </p>
 
-                    <form onSubmit={step === 3 ? handleCompleteOnboarding : (e) => { e.preventDefault(); setStep(step + 1) }} className="space-y-4">
+                    <form onSubmit={step === 3 ? handleOnboardingSubmit : (e) => { e.preventDefault(); setStep(step + 1) }} className="space-y-4">
                         <AnimatePresence mode="wait">
                             {step === 1 && (
                                 <motion.div key="step1" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-6">
