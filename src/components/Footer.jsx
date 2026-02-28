@@ -104,7 +104,15 @@ const Footer = () => {
                   {c.creatorAvatar?.length <= 2 ? (
                     <span className="text-white font-bold text-lg">{c.creatorAvatar}</span>
                   ) : (
-                    <img src={c.creatorAvatar} alt="Creator" className="w-full h-full rounded-full object-cover" />
+                    <img
+                      src={c.creatorAvatar}
+                      alt="Creator"
+                      className="w-full h-full rounded-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.creatorName || 'MF')}&background=3B82F6&color=fff`;
+                      }}
+                    />
                   )}
                 </div>
                 <div>

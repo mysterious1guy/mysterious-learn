@@ -87,7 +87,15 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
 
                             <div className="relative">
                                 {user.avatar ? (
-                                    <img src={user.avatar} alt="Avatar" className="w-12 h-12 md:w-16 md:h-16 rounded-full border-2 border-gray-700 object-cover" />
+                                    <img
+                                        src={user.avatar}
+                                        alt="Avatar"
+                                        className="w-12 h-12 md:w-16 md:h-16 rounded-full border-2 border-gray-700 object-cover"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || 'U')}+${encodeURIComponent(user.lastName || '')}&background=F59E0B&color=fff&size=128`;
+                                        }}
+                                    />
                                 ) : (
                                     <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg ring-2 ring-gray-800">
                                         {(user.firstName?.[0] || user.name?.[0] || '?').toUpperCase()}

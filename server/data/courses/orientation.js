@@ -3,7 +3,7 @@ const orientationCourse = [
         id: "orientation-comprendre-les-roles-des-disciplines",
         title: "Orientation - Mission Zéro : Devenir Développeur",
         description: "Le sas d'entrée de MYSTERIOUS CLASSROOM. Ici, tu construis ton plan de bataille, tu comprends comment fonctionne un produit numérique de bout en bout et tu valides ta première mission concrète.",
-        category: "Orientation",
+        category: "Théorie",
         level: "Débutant",
         duration: "2h15",
         image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80",

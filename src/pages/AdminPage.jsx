@@ -472,7 +472,14 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
           <div className="flex items-center gap-3">
             <div className="relative group">
               {user?.avatar ? (
-                <img src={user.avatar} className="w-10 h-10 rounded-full border-2 border-blue-500 cursor-pointer" />
+                <img
+                  src={user.avatar}
+                  className="w-10 h-10 rounded-full border-2 border-blue-500 cursor-pointer object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || 'U')}&background=2563EB&color=fff&size=64`;
+                  }}
+                />
               ) : (
                 <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold">{user?.firstName?.[0]}</div>
               )}
@@ -951,7 +958,15 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                           {config.creatorAvatar?.length <= 2 ? (
                             <span className="text-2xl font-black text-purple-600 dark:text-white">{config.creatorAvatar}</span>
                           ) : (
-                            <img src={config.creatorAvatar} alt="Creator" className="w-full h-full object-cover" />
+                            <img
+                              src={config.creatorAvatar}
+                              alt="Creator"
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(config.creatorName || 'C')}&background=9333EA&color=fff&size=128`;
+                              }}
+                            />
                           )}
                         </div>
                         <button onClick={() => configAvatarRef.current.click()} className="absolute -bottom-1 -right-1 p-2 bg-purple-600 text-white rounded-lg shadow-lg hover:scale-110 transition-all">

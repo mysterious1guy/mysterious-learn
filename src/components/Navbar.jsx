@@ -99,6 +99,10 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                     src={user.avatar}
                     alt="Avatar"
                     className="w-9 h-9 rounded-full object-cover border-2 border-blue-500 shadow-lg shadow-blue-500/20"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || 'U')}+${encodeURIComponent(user.lastName || '')}&background=2563EB&color=fff`;
+                    }}
                   />
                 ) : (
                   <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-purple-700 rounded-full flex items-center justify-center text-sm font-black text-white shadow-lg border-2 border-slate-800">

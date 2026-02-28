@@ -77,6 +77,10 @@ const CourseCarousel = ({ courses }) => {
                                     src={currentCourse.image}
                                     alt={currentCourse.name}
                                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent((currentCourse.name)?.substring(0, 2) || 'C')}&background=2563EB&color=fff&size=512`;
+                                    }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-slate-900/90 hidden md:block" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent md:hidden" />

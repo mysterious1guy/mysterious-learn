@@ -367,7 +367,15 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                         <div className={`w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden border shadow-lg ${msg.role === 'user' ? 'border-blue-500/30' : 'border-slate-800 bg-slate-900'}`}>
                                             {msg.role === 'user' ? (
                                                 (user?.avatar || user?.picture) ? (
-                                                    <img src={user.avatar || user.picture} alt="Me" className="w-full h-full object-cover" />
+                                                    <img
+                                                        src={user.avatar || user.picture}
+                                                        alt="Me"
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || 'U')}&background=2563EB&color=fff&size=64`;
+                                                        }}
+                                                    />
                                                 ) : (
                                                     <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-xs font-black text-white uppercase">
                                                         {user?.firstName?.charAt(0) || user?.name?.charAt(0) || 'U'}
@@ -384,10 +392,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                     {/* Message Column */}
                                     <div className="flex flex-col gap-2 w-full">
                                         <div className={`px-5 py-4 rounded-[1.5rem] shadow-2xl relative overflow-hidden ${msg.role === 'user'
-                                                ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-tr-none border border-blue-400/30'
-                                                : msg.type === 'suggestion'
-                                                    ? 'bg-gradient-to-br from-amber-500/10 to-amber-900/20 text-amber-100 border border-amber-500/20 rounded-tl-none'
-                                                    : 'bg-gradient-to-br from-slate-900/80 to-slate-950/90 text-slate-200 border border-white/5 rounded-tl-none'
+                                            ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-tr-none border border-blue-400/30'
+                                            : msg.type === 'suggestion'
+                                                ? 'bg-gradient-to-br from-amber-500/10 to-amber-900/20 text-amber-100 border border-amber-500/20 rounded-tl-none'
+                                                : 'bg-gradient-to-br from-slate-900/80 to-slate-950/90 text-slate-200 border border-white/5 rounded-tl-none'
                                             }`}>
                                             {/* Subtile background patterns for AI */}
                                             {msg.role !== 'user' && (

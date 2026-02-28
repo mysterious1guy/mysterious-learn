@@ -325,7 +325,15 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         <div className="relative">
           <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-3xl font-bold text-white overflow-hidden">
             {user?.avatar ? (
-              <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+              <img
+                src={user.avatar}
+                alt="Profile"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || 'U')}+${encodeURIComponent(user.lastName || '')}&background=8B5CF6&color=fff&size=256`;
+                }}
+              />
             ) : (
               `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`
             )}

@@ -3,7 +3,7 @@ const gitCourses = [
         id: "git-fondamentaux-pratiques",
         title: "Git & GitHub - Fondamentaux Pratiques",
         description: "Maîtrisez le versionnage et la collaboration. Un module unique, concret et orienté action.",
-        category: "Outils",
+        category: "DevOps",
         level: "Débutant", // On garde un niveau technique pour la cohérence UI mais le titre dit "Fondamentaux"
         duration: "15 heures",
         image: "https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=800&q=80",

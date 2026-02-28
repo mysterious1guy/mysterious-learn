@@ -3,7 +3,7 @@ const networkCourses = [
         id: "network-fondamentaux-reseaux",
         title: "Bases des Réseaux - L'Essentiel",
         description: "Comprenez comment les données voyagent sur Internet. Un module simple, direct et pratique.",
-        category: "Système",
+        category: "DevOps",
         level: "Débutant",
         duration: "15 heures",
         image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?w=800&q=80",

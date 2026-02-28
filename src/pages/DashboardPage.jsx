@@ -369,6 +369,10 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                     src={course.image || `https://source.unsplash.com/random/800x600/?coding,${course.title}`}
                                                     alt={course.title || course.name}
                                                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500 opacity-60 group-hover:opacity-100"
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent((course.title || course.name)?.substring(0, 2) || 'C')}&background=0D8ABC&color=fff&size=512`;
+                                                    }}
                                                 />
                                                 <div className="absolute top-3 right-3 z-20">
                                                     <button

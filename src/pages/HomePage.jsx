@@ -190,8 +190,9 @@ const HomePage = ({ API_URL }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
                         {/* Level 1 */}
-                        <div className="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 hover:border-blue-500/50 transition-all group shadow-2xl">
-                            <div className="w-16 h-16 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all">
+                        <div className="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 cyber-card group shadow-2xl relative overflow-hidden glass-panel">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full" />
+                            <div className="w-16 h-16 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all shadow-[0_0_15px_rgba(59,130,246,0.2)]">
                                 <span className="text-3xl">🐣</span>
                             </div>
                             <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3">Niveau Débutant</h3>
@@ -200,9 +201,9 @@ const HomePage = ({ API_URL }) => {
                             </p>
                         </div>
                         {/* Level 2 */}
-                        <div className="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 hover:border-purple-500/50 transition-all group shadow-2xl relative overflow-hidden">
+                        <div className="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 cyber-card group shadow-2xl relative overflow-hidden glass-panel">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full" />
-                            <div className="w-16 h-16 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                            <div className="w-16 h-16 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]">
                                 <span className="text-3xl">🚀</span>
                             </div>
                             <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3">Intermédiaire</h3>
@@ -211,8 +212,9 @@ const HomePage = ({ API_URL }) => {
                             </p>
                         </div>
                         {/* Level 3 */}
-                        <div className="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 hover:border-orange-500/50 transition-all group shadow-2xl">
-                            <div className="w-16 h-16 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                        <div className="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-8 cyber-card group shadow-2xl relative overflow-hidden glass-panel">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-3xl rounded-full" />
+                            <div className="w-16 h-16 bg-orange-500/10 text-orange-600 dark:text-orange-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-[0_0_15px_rgba(249,115,22,0.2)]">
                                 <span className="text-3xl">💻</span>
                             </div>
                             <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3">Expertise Avancée</h3>
@@ -273,7 +275,15 @@ const HomePage = ({ API_URL }) => {
                             <div className="w-24 h-24 p-1.5 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full shadow-2xl overflow-hidden">
                                 <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center overflow-hidden">
                                     {config?.creatorAvatar && config.creatorAvatar.length > 2 ? (
-                                        <img src={config.creatorAvatar} alt="Créateur" className="w-full h-full object-cover" />
+                                        <img
+                                            src={config.creatorAvatar}
+                                            alt="Créateur"
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(config?.creatorName || 'MF')}&background=0D8ABC&color=fff&size=128`;
+                                            }}
+                                        />
                                     ) : (
                                         <span className="text-3xl font-black bg-gradient-to-tr from-blue-400 to-purple-400 bg-clip-text text-transparent">
                                             {config?.creatorAvatar || 'MF'}
