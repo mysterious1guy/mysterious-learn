@@ -55,7 +55,12 @@ const sendEmailChangeCode = async (email, name, code) => {
 const register = async (req, res) => {
   try {
     const { firstName, lastName, email, password, goal, startingLevel } = req.body;
-    const name = `${firstName} ${lastName}`;
+
+    if (!firstName || !lastName || firstName.trim() === '' || lastName.trim() === '') {
+      return res.status(400).json({ message: 'Le prénom et le nom sont obligatoires.' });
+    }
+
+    const name = `${firstName.trim()} ${lastName.trim()}`;
 
     // 1. Vérifier si l'utilisateur existe déjà officiellement
     const userExists = await User.findOne({ email });

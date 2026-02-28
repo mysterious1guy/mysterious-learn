@@ -341,49 +341,48 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                                             }
                                         }}
                                         disabled={lessons.indexOf(activeLesson) === lessons.length - 1}
+                                        data-type="next-lesson"
                                         className={`px-6 py-3 bg-gray-800 rounded-xl border border-gray-700 text-white hover:bg-gray-700 transition ${lessons.indexOf(activeLesson) === lessons.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         Suivant <ChevronRight className="inline ml-2" size={16} />
                                     </button>
                                 </div>
 
-                                {/* 🎯 "Valider la leçon" uniquement si c'est la DERNIÈRE leçon du cours */}
-                                {lessons.indexOf(activeLesson) === lessons.length - 1 && (
-                                    <div className="relative group/validation">
-                                        <button
-                                            onClick={handleFinishLesson}
-                                            disabled={isGuardActive || (!isAdmin && isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title))}
-                                            className={`px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition w-full sm:w-auto ${isGuardActive ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed' : (isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) && !isAdmin)
-                                                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white cursor-default'
-                                                : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg hover:shadow-blue-500/25'
-                                                }`}
-                                        >
-                                            {(isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) && !isAdmin) ? (
-                                                <>
-                                                    <Check size={20} /> Terminée
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {isGuardActive ? (
-                                                        <>
-                                                            <Clock size={18} className="animate-spin-slow" /> {timeLeft}s restantes
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            {isAdmin && isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) ? 'Revalider' : 'Valider la leçon'} <ChevronRight size={20} />
-                                                        </>
-                                                    )}
-                                                </>
-                                            )}
-                                        </button>
-
-                                        {isGuardActive && (
-                                            <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-white text-[10px] rounded-lg opacity-0 group-hover/validation:opacity-100 transition-opacity whitespace-nowrap border border-slate-700 shadow-xl pointer-events-none">
-                                                Prends le temps de lire ! Encore {timeLeft}s
-                                            </div>
+                                {/* 🎯 "Valider la leçon" pour débloquer le suivant */}
+                                <div className="relative group/validation">
+                                    <button
+                                        onClick={handleFinishLesson}
+                                        disabled={isGuardActive || (!isAdmin && isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title))}
+                                        className={`px-8 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition w-full sm:w-auto ${isGuardActive ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed' : (isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) && !isAdmin)
+                                            ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white cursor-default'
+                                            : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg hover:shadow-blue-500/25'
+                                            }`}
+                                    >
+                                        {(isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) && !isAdmin) ? (
+                                            <>
+                                                <Check size={20} /> Terminée
+                                            </>
+                                        ) : (
+                                            <>
+                                                {isGuardActive ? (
+                                                    <>
+                                                        <Clock size={18} className="animate-spin-slow" /> {timeLeft}s restantes
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {isAdmin && isLessonCompleted(activeLesson._id || activeLesson.id || activeLesson.title) ? 'Revalider' : 'Valider la leçon'} <ChevronRight size={20} />
+                                                    </>
+                                                )}
+                                            </>
                                         )}
-                                    </div>
-                                )}
+                                    </button>
+
+                                    {isGuardActive && (
+                                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 px-3 py-1 bg-slate-800 text-white text-[10px] rounded-lg opacity-0 group-hover/validation:opacity-100 transition-opacity whitespace-nowrap border border-slate-700 shadow-xl pointer-events-none">
+                                            Prends le temps de lire ! Encore {timeLeft}s
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </motion.div>
                     ) : (

@@ -119,7 +119,7 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
                         Authorization: `Bearer ${user.token}`,
                     },
                     body: JSON.stringify({
-                        lessonId: chapter.id,
+                        lessonId: chapter.id || chapter.title,
                         // totalLessons could be course.chapters.length normally
                         totalLessons: course.chapters.length
                     })

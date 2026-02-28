@@ -121,22 +121,21 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
                     return;
                 }
 
-                const response = await fetch(`${API_URL}/users/progress`, {
+                const response = await fetch(`${API_URL}/courses/${courseId}/progress`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({
-                        courseId,
                         lessonId,
-                        status: 'completed'
+                        totalLessons: course.chapters.length
                     })
                 });
 
                 if (response.ok) {
                     setToast({ message: 'Leçon validée ! Bravo 🚀', type: 'success' });
-                    fetchProgressions(); // Refresh UI
+                    if (fetchProgressions) fetchProgressions(); // Refresh UI
                 } else {
                     const data = await response.json();
                     setToast({ message: data.message || 'Erreur lors de la validation', type: 'error' });
@@ -147,7 +146,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
             }
         };
 
-        const completedForThisCourse = progressions?.[course.id]?.completedChapters || [];
+        const completedForThisCourse = progressions[course.id]?.completedLessons || [];
 
         return (
             <GenericCourse
