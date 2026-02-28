@@ -16,6 +16,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
     const [courseStats, setCourseStats] = useState({});
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [showTour, setShowTour] = useState(!user?.seenGuides?.includes('main_onboarding'));
+    const [tourStep, setTourStep] = useState(user?.uiPreferences?.tourStep || 0);
 
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -155,10 +156,16 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user.token}`
                     },
-                    body: JSON.stringify({ seenGuides: updatedSeenGuides })
+                    body: JSON.stringify({
+                        seenGuides: updatedSeenGuides,
+                        'uiPreferences.tourStep': 0
+                    })
                 });
                 if (response.ok) {
-                    onUpdateUser({ seenGuides: updatedSeenGuides });
+                    onUpdateUser({
+                        seenGuides: updatedSeenGuides,
+                        uiPreferences: { ...user.uiPreferences, tourStep: 0 }
+                    });
                     window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
                         detail: { text: "Félicitations pour avoir complété ton initiation. L'aventure commence vraiment maintenant." }
                     }));
@@ -166,6 +173,23 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
             } catch (err) {
                 console.error("Erreur persistence onboarding:", err);
             }
+        }
+    };
+
+    const handleTourStepChange = async (step) => {
+        setTourStep(step);
+        try {
+            fetch(`${API_URL}/auth/profile`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify({ 'uiPreferences.tourStep': step })
+            });
+            onUpdateUser({ uiPreferences: { ...user.uiPreferences, tourStep: step } });
+        } catch (err) {
+            console.error("Error saving tour step:", err);
         }
     };
 
@@ -288,20 +312,27 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
 
     const finalCategories = [...userCategories, ...filteredCategories];
 
-    // Identify the first beginner course for the onboarding tour
-    let firstBeginnerCourseId = null;
+    // Identify the best course to suggest for the onboarding tour based on user level
+    let suggestedCourseId = null;
+    const userLevel = (user?.programmingLevel || user?.onboardingProfile?.startingLevel || 'Débutant');
+
     for (const cat of finalCategories) {
         if (cat.id === 'resume' || cat.id === 'favorites') continue;
         for (const sub of cat.subjects || []) {
             for (const course of sub.items) {
-                if (course.level === 'Débutant') {
-                    firstBeginnerCourseId = course.id || course._id;
+                if (course.level === userLevel) {
+                    suggestedCourseId = course.id || course._id;
                     break;
                 }
             }
-            if (firstBeginnerCourseId) break;
+            if (suggestedCourseId) break;
         }
-        if (firstBeginnerCourseId) break;
+        if (suggestedCourseId) break;
+    }
+
+    // Fallback if no exact match
+    if (!suggestedCourseId && courses.length > 0) {
+        suggestedCourseId = courses[0].id || courses[0]._id;
     }
 
     return (
@@ -320,21 +351,12 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         user={user}
                         onFinish={handleOnboardingFinish}
                         onSkip={() => setShowTour(false)}
-                        targetCourseId={firstBeginnerCourseId}
+                        targetCourseId={suggestedCourseId}
+                        stepIndex={tourStep}
+                        onStepChange={handleTourStepChange}
                     />
                 )}
             </AnimatePresence>
-
-            {/* Floating Help Button */}
-            <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                onClick={() => setShowTour(true)}
-                className="fixed bottom-8 left-8 z-[150] p-4 bg-slate-900/80 backdrop-blur-xl border border-blue-500/30 rounded-full text-blue-400 hover:text-white hover:border-blue-500 shadow-2xl transition-all group"
-                title="Besoin d'aide ?"
-            >
-                <HelpCircle size={24} className="group-hover:rotate-12 transition-transform" />
-            </motion.button>
 
             {/* Modal Félicitations Déblocage */}
             {recentlyUnlocked && (
@@ -448,7 +470,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                 return (
                                                     <motion.div
                                                         key={course.id || course._id}
-                                                        id={(course.id || course._id) === firstBeginnerCourseId ? 'tour-first-course' : undefined}
+                                                        id={(course.id || course._id) === suggestedCourseId ? 'tour-first-course' : undefined}
                                                         whileHover={unlocked ? { scale: 1.01, y: -5 } : { scale: 1 }}
                                                         onClick={() => {
                                                             if (unlocked) {

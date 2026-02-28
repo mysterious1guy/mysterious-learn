@@ -1,7 +1,7 @@
 import React from 'react';
 import Joyride, { STATUS } from 'react-joyride';
 
-const OnboardingTour = ({ user, onFinish, onSkip, targetCourseId }) => {
+const OnboardingTour = ({ user, onFinish, onSkip, targetCourseId, stepIndex, onStepChange }) => {
 
     const steps = [
         {
@@ -37,39 +37,52 @@ const OnboardingTour = ({ user, onFinish, onSkip, targetCourseId }) => {
             disableBeacon: true,
         },
         {
+            target: '#tour-ai',
+            content: (
+                <div className="p-1">
+                    <h3 className="text-lg font-bold text-blue-500 mb-2 uppercase tracking-wide">Ton Mentor IA</h3>
+                    <p className="text-slate-700 text-sm font-medium">Ceci est ton Oracle. Si tu as un doute ou besoin d'une explication sur un code, clique ici pour lui parler. Il veille sur toi.</p>
+                </div>
+            ),
+            disableBeacon: true,
+        },
+        {
             target: '#tour-first-course',
             content: (
                 <div className="p-1">
                     <h3 className="text-lg font-bold text-emerald-500 mb-2 uppercase tracking-wide">Ta Première Quête</h3>
-                    <p className="text-slate-700 text-sm font-medium">Voici ton premier cours de niveau Débutant. Pour l'instant, concentre-toi sur cette étape. Clique sur terminer, puis accède à ce cours !</p>
+                    <p className="text-slate-700 text-sm font-medium">C'est ici que tout commence. Ce cours est spécialement choisi pour ton niveau. Clique sur terminer pour commencer ton aventure !</p>
                 </div>
             ),
             disableBeacon: true,
-            spotlightClicks: true, // Allow clicking the target!
+            spotlightClicks: true,
         }
     ];
 
-    // Fallback if the first course isn't found in the DOM (e.g. user has no beginner courses mapped)
-    const validSteps = targetCourseId ? steps : steps.slice(0, 3);
+    // Build steps dynamically based on what's available
+    const activeSteps = targetCourseId ? steps : steps.filter(s => s.target !== '#tour-first-course');
 
     const handleJoyrideCallback = (data) => {
-        const { status } = data;
+        const { status, index, action } = data;
         const finishedStatuses = [STATUS.FINISHED, STATUS.SKIPPED];
 
         if (finishedStatuses.includes(status)) {
             onFinish();
+        } else if (action === 'next' || action === 'prev') {
+            onStepChange(index);
         }
     };
 
     return (
         <Joyride
-            steps={validSteps}
+            steps={activeSteps}
             run={true}
             continuous={true}
+            stepIndex={stepIndex}
             scrollToFirstStep={true}
-            showSkipButton={false} // Force reading
-            disableOverlayClose={true} // Force reading
-            disableCloseOnEsc={true} // Force reading
+            showSkipButton={false}
+            disableOverlayClose={true}
+            disableCloseOnEsc={true}
             hideCloseButton={true}
             callback={handleJoyrideCallback}
             styles={{

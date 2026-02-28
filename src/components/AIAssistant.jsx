@@ -135,6 +135,7 @@ const AIAssistant = ({ user, currentView, progressions, API_URL }) => {
                 className="fixed bottom-8 right-8 z-[140]"
             >
                 <motion.button
+                    id="tour-ai"
                     onClick={() => setIsCopilotOpen(true)}
                     className="relative w-16 h-16 bg-slate-950/60 border border-white/10 backdrop-blur-xl rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5)] flex items-center justify-center group overflow-hidden transition-all duration-500 hover:border-blue-500/40"
                     whileHover={{ scale: 1.05 }}

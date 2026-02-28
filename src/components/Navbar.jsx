@@ -10,7 +10,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
   const { t } = useLanguage();
   const isCoursePage = location.pathname.startsWith('/course/') || location.pathname.startsWith('/chapter/');
   return (
-    <nav className="relative w-full p-2 sm:p-4 border-b border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900 z-[60] transition-colors duration-300">
+    <nav className="sticky top-0 w-full p-2 sm:p-4 border-b border-slate-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl z-[100] transition-colors duration-300 shadow-sm">
       <div className="max-w-6xl mx-auto flex justify-between items-center">
         <div className="flex items-center gap-2 sm:gap-4">
           <button onClick={onMenuClick} className="lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-gray-800 rounded-lg transition shrink-0 text-slate-600 dark:text-gray-300">
@@ -87,25 +87,25 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
               >
                 <div className="flex flex-col items-end hidden lg:flex">
                   <span className="text-sm font-bold text-slate-800 dark:text-white leading-none">
-                    {user.firstName} {user.lastName}
+                    {user.firstName || user.name?.split(' ')[0] || 'Agent'} {user.lastName || user.name?.split(' ').slice(1).join(' ') || ''}
                   </span>
                   <span className="text-[10px] text-blue-400 font-medium uppercase tracking-wider">
                     {t('account')}
                   </span>
                 </div>
-                {user.avatar ? (
+                {(user.avatar || user.picture) ? (
                   <img
-                    src={user.avatar}
+                    src={user.avatar || user.picture}
                     alt="Avatar"
                     className="w-9 h-9 rounded-full object-cover border-2 border-blue-500 shadow-lg shadow-blue-500/20"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || 'U')}+${encodeURIComponent(user.lastName || '')}&background=2563EB&color=fff`;
+                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || user.name?.split(' ')[0] || 'U')}+${encodeURIComponent(user.lastName || user.name?.split(' ').slice(1).join(' ') || '')}&background=2563EB&color=fff`;
                     }}
                   />
                 ) : (
                   <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-purple-700 rounded-full flex items-center justify-center text-sm font-black text-white shadow-lg border-2 border-slate-800">
-                    {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+                    {(user.firstName || user.name?.split(' ')[0])?.charAt(0) || 'U'}{(user.lastName || user.name?.split(' ').slice(1).join(' '))?.charAt(0) || ''}
                   </div>
                 )}
               </Link>

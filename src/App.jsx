@@ -57,9 +57,11 @@ function App() {
 
   const handleUpdateUser = (updatedData) => {
     if (!updatedData) return;
-    const name = updatedData.name || '';
-    const firstName = updatedData.firstName || name.split(' ')[0] || '';
-    const lastName = updatedData.lastName || (name.split(' ').length > 1 ? name.split(' ').slice(1).join(' ') : '') || '';
+
+    // Support either derivation or direct fields
+    const name = updatedData.name || user?.name || '';
+    const firstName = updatedData.firstName || (name.split(' ')[0] !== 'Agent' ? name.split(' ')[0] : '') || user?.firstName || '';
+    const lastName = updatedData.lastName || (name.split(' ').length > 1 ? name.split(' ').slice(1).join(' ') : '') || user?.lastName || '';
 
     if (updatedData.favorites) {
       setFavorites(updatedData.favorites);
@@ -68,8 +70,9 @@ function App() {
     const updatedUser = {
       ...user,
       ...updatedData,
-      firstName,
-      lastName
+      firstName: firstName || user?.firstName,
+      lastName: lastName || user?.lastName,
+      name: name || user?.name
     };
 
     setUser(updatedUser);
@@ -80,6 +83,21 @@ function App() {
     setProgressions({});
     removeUserCookie();
     window.location.href = '/'; // Redirect to home on logout
+  };
+
+  const fetchUserProfile = async () => {
+    if (!user || !user.token) return;
+    try {
+      const response = await fetch(`${API_URL}/auth/profile`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        handleUpdateUser(data);
+      }
+    } catch (err) {
+      console.error('Erreur fetch profile:', err);
+    }
   };
 
   const fetchProgressions = async () => {
@@ -106,9 +124,10 @@ function App() {
 
   useEffect(() => {
     if (user?.token) {
+      fetchUserProfile();
       fetchProgressions();
     }
-  }, [user]);
+  }, [user?.token]);
 
   // Intercepteur global pour les erreurs 401 (compte supprimé ou token expiré)
   useEffect(() => {
