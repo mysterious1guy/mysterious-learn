@@ -37,6 +37,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
             {t('dashboard')}
           </Link>
           <Link
+            id="tour-projects"
             to="/projects"
             className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/projects' ? 'bg-indigo-500/10 text-indigo-500 ring-1 ring-indigo-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
           >
@@ -48,6 +49,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
             </span>
           </Link>
           <Link
+            id="tour-leaderboard"
             to="/leaderboard"
             className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/leaderboard' ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-amber-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
           >

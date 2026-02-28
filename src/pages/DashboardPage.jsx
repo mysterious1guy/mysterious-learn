@@ -238,6 +238,22 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
 
     const finalCategories = [...userCategories, ...filteredCategories];
 
+    // Identify the first beginner course for the onboarding tour
+    let firstBeginnerCourseId = null;
+    for (const cat of finalCategories) {
+        if (cat.id === 'resume' || cat.id === 'favorites') continue;
+        for (const sub of cat.subjects || []) {
+            for (const course of sub.items) {
+                if (course.level === 'Débutant') {
+                    firstBeginnerCourseId = course.id || course._id;
+                    break;
+                }
+            }
+            if (firstBeginnerCourseId) break;
+        }
+        if (firstBeginnerCourseId) break;
+    }
+
     return (
         <div className="min-h-screen transition-colors duration-500 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 dark:from-gray-900 dark:via-[#0a0f1e] dark:to-black pb-20">
             <PlacementTestModal
@@ -254,6 +270,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         user={user}
                         onFinish={handleOnboardingFinish}
                         onSkip={() => setShowTour(false)}
+                        targetCourseId={firstBeginnerCourseId}
                     />
                 )}
             </AnimatePresence>
@@ -381,6 +398,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                 return (
                                                     <motion.div
                                                         key={course.id || course._id}
+                                                        id={(course.id || course._id) === firstBeginnerCourseId ? 'tour-first-course' : undefined}
                                                         whileHover={unlocked ? { scale: 1.01, y: -5 } : { scale: 1 }}
                                                         onClick={() => {
                                                             if (unlocked) {
