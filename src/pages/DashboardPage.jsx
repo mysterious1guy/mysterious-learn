@@ -86,14 +86,42 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
         }
     };
 
+    const handlePremiumCheckout = async (e, courseId) => {
+        e.stopPropagation();
+        try {
+            const res = await fetch(`${API_URL}/payment/create-checkout-session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user.token}`
+                },
+                body: JSON.stringify({ courseId })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.url) {
+                    window.location.href = data.url;
+                }
+            } else {
+                const errData = await res.json();
+                alert(`Erreur: ${errData.message || 'Impossible de créer la session de paiement'}`);
+            }
+        } catch (err) {
+            console.error('Erreur Stripe Checkout:', err);
+        }
+    };
+
     const isCourseUnlocked = (item) => {
         if (!item) return true;
         if (user?.role === 'admin') return true;
+        const itemId = item._id || item.id;
+        if (user?.unlockedCourses?.includes(itemId)) return true;
+        if (item.isPremium) return false;
+
         if (item.level === 'Débutant') return true;
         const userLevel = user?.programmingLevel || 'Débutant';
         if (userLevel === 'Expérimenté') return true;
         if (userLevel === 'Amateur' && item.level === 'Intermédiaire') return true;
-        const itemId = item._id || item.id;
         if (user?.unlockedCourses?.includes(itemId)) return true;
 
         let targetLevelToCheck = '';
@@ -424,18 +452,33 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                     >
                                                         {!unlocked && (
                                                             <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
-                                                                <Lock size={40} className="text-gray-400 mb-3 drop-shadow-lg" />
-                                                                <span className="text-sm font-bold text-gray-300 drop-shadow-md px-4 text-center mb-4">Niveau {course.level} Verrouillé</span>
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setSelectedLockedCourse(course);
-                                                                        setIsTestModalOpen(true);
-                                                                    }}
-                                                                    className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5"
-                                                                >
-                                                                    Passer le test
-                                                                </button>
+                                                                {course.isPremium ? (
+                                                                    <>
+                                                                        <Lock size={40} className="text-yellow-400 mb-3 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" />
+                                                                        <span className="text-sm font-bold text-yellow-300 drop-shadow-md px-4 text-center mb-4 uppercase tracking-wider">Premium</span>
+                                                                        <button
+                                                                            onClick={(e) => handlePremiumCheckout(e, course.id || course._id)}
+                                                                            className="px-5 py-2.5 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-white text-xs font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-yellow-500/30 transform hover:-translate-y-0.5"
+                                                                        >
+                                                                            Débloquer (1€)
+                                                                        </button>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <Lock size={40} className="text-gray-400 mb-3 drop-shadow-lg" />
+                                                                        <span className="text-sm font-bold text-gray-300 drop-shadow-md px-4 text-center mb-4">Niveau {course.level} Verrouillé</span>
+                                                                        <button
+                                                                            onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setSelectedLockedCourse(course);
+                                                                                setIsTestModalOpen(true);
+                                                                            }}
+                                                                            className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5"
+                                                                        >
+                                                                            Passer le test
+                                                                        </button>
+                                                                    </>
+                                                                )}
                                                             </div>
                                                         )}
 

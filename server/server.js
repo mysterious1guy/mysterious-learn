@@ -42,6 +42,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Route spéciale Stripe Webhook (doit préserver le corps brut)
+app.post('/api/payment/webhook', express.raw({ type: 'application/json' }), require('./controllers/paymentController').webhook);
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -60,6 +63,7 @@ app.use('/api/course-knowledge', require('./routes/courseKnowledgeRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/seed', require('./routes/seedRoutes')); // Temporary route to force update of database
+app.use('/api/payment', require('./routes/paymentRoutes'));
 
 // 4. Gestion des fichiers statiques
 const rootDir = path.resolve(__dirname, '..');
