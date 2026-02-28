@@ -334,9 +334,9 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="px-6 lg:px-12"
+                        className="w-full"
                     >
-                        <div className="flex flex-col items-center justify-center gap-3 mb-8 text-center">
+                        <div className="flex flex-col items-center justify-center gap-3 mb-8 text-center px-6 lg:px-12">
                             <h2 className="text-xl md:text-2xl brand-font-secondary text-transparent bg-clip-text bg-gradient-to-r from-slate-800 to-slate-500 dark:from-white dark:to-white/40 uppercase tracking-[0.2em] font-black">{category.category}</h2>
                             <div className="h-px w-32 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
                         </div>
