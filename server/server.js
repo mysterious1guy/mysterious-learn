@@ -59,6 +59,7 @@ app.use('/api/site-config', require('./routes/siteConfigRoutes'));
 app.use('/api/course-knowledge', require('./routes/courseKnowledgeRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
+app.use('/api/seed', require('./routes/seedRoutes')); // Temporary route to force update of database
 
 // 4. Gestion des fichiers statiques
 const rootDir = path.resolve(__dirname, '..');
