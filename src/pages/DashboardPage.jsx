@@ -118,18 +118,17 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
         if (user?.unlockedCourses?.includes(itemId)) return true;
         if (item.isPremium) return false;
 
-        // Unified level check (French from onboarding or English from profile)
-        const userLevelRaw = user?.programmingLevel || user?.onboardingProfile?.startingLevel || 'beginner';
-        const userLevel = userLevelRaw.toLowerCase();
+        // Unified level check
+        const userLevel = (user?.programmingLevel || user?.onboardingProfile?.startingLevel || 'Débutant');
 
         // Débutant / beginner -> can access Débutant
         if (item.level === 'Débutant') return true;
 
-        // Expérimenté / advanced / expert -> can access everything
-        if (userLevel === 'expérimenté' || userLevel === 'advanced' || userLevel === 'expert') return true;
+        // Avancé -> can access everything
+        if (userLevel === 'Avancé') return true;
 
         // Amateur / intermediate -> can access Intermédiaire
-        if ((userLevel === 'amateur' || userLevel === 'intermediate') && item.level === 'Intermédiaire') return true;
+        if (userLevel === 'Intermédiaire' && item.level === 'Intermédiaire') return true;
 
         // Final check based on prerequisites
         let targetLevelToCheck = '';

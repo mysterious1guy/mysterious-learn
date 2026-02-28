@@ -201,17 +201,17 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                             </div>
                                             <span className="text-2xl ml-4">🐣</span>
                                         </button>
-                                        <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Amateur' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Amateur' ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-blue-300'}`}>
+                                        <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Intermédiaire' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Intermédiaire' ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-blue-300'}`}>
                                             <div className="flex flex-col text-left">
-                                                <span className={`font-bold ${formData.startingLevel === 'Amateur' ? 'text-blue-700' : 'text-slate-700'}`}>Amateur</span>
-                                                <span className="text-xs text-slate-500 mt-1">J'ai quelques bases</span>
+                                                <span className={`font-bold ${formData.startingLevel === 'Intermédiaire' ? 'text-blue-700' : 'text-slate-700'}`}>Intermédiaire</span>
+                                                <span className="text-xs text-slate-500 mt-1">J'ai déjà quelques bases solides</span>
                                             </div>
                                             <span className="text-2xl ml-4">🚀</span>
                                         </button>
-                                        <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Expérimenté' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Expérimenté' ? 'border-orange-500 bg-orange-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-orange-300'}`}>
+                                        <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Avancé' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Avancé' ? 'border-orange-500 bg-orange-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-orange-300'}`}>
                                             <div className="flex flex-col text-left">
-                                                <span className={`font-bold ${formData.startingLevel === 'Expérimenté' ? 'text-orange-700' : 'text-slate-700'}`}>Expérimenté</span>
-                                                <span className="text-xs text-slate-500 mt-1">Je code déjà en autonomie</span>
+                                                <span className={`font-bold ${formData.startingLevel === 'Avancé' ? 'text-orange-700' : 'text-slate-700'}`}>Avancé</span>
+                                                <span className="text-xs text-slate-500 mt-1">Je code déjà en autonomie complète</span>
                                             </div>
                                             <span className="text-2xl ml-4">💻</span>
                                         </button>

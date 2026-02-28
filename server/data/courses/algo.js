@@ -50,11 +50,11 @@ const algoCourses = [
         ]
     },
     {
-        id: "algo-niveau-moyen",
-        title: "Algorithmique - Niveau Moyen",
+        id: "algo-niveau-intermediaire",
+        title: "Algorithmique - Niveau Intermédiaire",
         description: "Donnez du cerveau à vos algorithmes via les structures de contrôle (Conditions et Boucles).",
         category: "Théorie",
-        level: "Moyen",
+        level: "Intermédiaire",
         duration: "15 heures",
         image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
         rating: 4.8,
@@ -100,11 +100,11 @@ const algoCourses = [
         ]
     },
     {
-        id: "algo-niveau-interm-diaire",
-        title: "Algorithmique - Niveau Intermédiaire",
+        id: "algo-niveau-avance",
+        title: "Algorithmique - Niveau Avancé",
         description: "Modularité et Tableaux. Apprenez à organiser votre pensée et à gérer des listes.",
         category: "Théorie",
-        level: "Intermédiaire",
+        level: "Avancé",
         duration: "20 heures",
         image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
         rating: 4.8,

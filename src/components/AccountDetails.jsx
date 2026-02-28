@@ -28,7 +28,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     language: user?.language || 'fr',
     notifications: user?.notifications || true,
     privacy: user?.privacy || 'public',
-    programmingLevel: user?.programmingLevel || 'beginner'
+    programmingLevel: user?.programmingLevel || 'Débutant'
   });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -253,7 +253,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       language: user?.language || 'fr',
       notifications: user?.notifications || true,
       privacy: user?.privacy || 'public',
-      programmingLevel: user?.programmingLevel || 'beginner'
+      programmingLevel: user?.programmingLevel || 'Débutant'
     });
     setIsEditing(false);
   };
@@ -476,21 +476,18 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 onChange={(e) => setEditForm({ ...editForm, programmingLevel: e.target.value })}
                 className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
               >
-                <option value="beginner">Débutant</option>
-                <option value="intermediate">Intermédiaire</option>
-                <option value="advanced">Avancé</option>
-                <option value="expert">Expert</option>
+                <option value="Débutant">Débutant</option>
+                <option value="Intermédiaire">Intermédiaire</option>
+                <option value="Avancé">Avancé</option>
               </select>
             ) : (
               <div className="flex items-center gap-2">
                 <p className="text-slate-900 dark:text-white uppercase tracking-wider font-black text-sm">
-                  {editForm.programmingLevel === 'beginner' ? 'Débutant' :
-                    editForm.programmingLevel === 'intermediate' ? 'Intermédiaire' :
-                      editForm.programmingLevel === 'advanced' ? 'Avancé' : 'Expert'}
+                  {editForm.programmingLevel === 'Débutant' ? 'Débutant' :
+                    editForm.programmingLevel === 'Intermédiaire' ? 'Intermédiaire' : 'Avancé'}
                 </p>
-                <span className={`w-2 h-2 rounded-full ${editForm.programmingLevel === 'beginner' ? 'bg-blue-400' :
-                  editForm.programmingLevel === 'intermediate' ? 'bg-yellow-400' :
-                    editForm.programmingLevel === 'advanced' ? 'bg-purple-400' : 'bg-emerald-400'
+                <span className={`w-2 h-2 rounded-full ${editForm.programmingLevel === 'Débutant' ? 'bg-blue-400' :
+                  editForm.programmingLevel === 'Intermédiaire' ? 'bg-yellow-400' : 'bg-purple-400'
                   }`}></span>
               </div>
             )}
@@ -605,7 +602,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           </AnimatePresence>
 
           <button
-            onClick={() => navigate('/2fa-setup')}
+            onClick={() => navigate('/two-factor-setup')}
             className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
           >
             <div className="flex items-center gap-3">
