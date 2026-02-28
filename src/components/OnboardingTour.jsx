@@ -20,10 +20,11 @@ const OnboardingTour = ({ user, onFinish, onSkip, targetCourseId }) => {
             content: (
                 <div className="p-1">
                     <h3 className="text-lg font-bold text-amber-500 mb-2 uppercase tracking-wide">Le Classement</h3>
-                    <p className="text-slate-700 text-sm font-medium">Clique ici plus tard pour voir ton classement. Tu commences avec 0 XP. Relève des défis pour grimper au sommet !</p>
+                    <p className="text-slate-700 text-sm font-medium">Clique ici pour voir ton classement actuel. Tu commences avec 0 XP. Relève des défis pour grimper au sommet !</p>
                 </div>
             ),
             disableBeacon: true,
+            spotlightClicks: true,
         },
         {
             target: '#tour-projects',
