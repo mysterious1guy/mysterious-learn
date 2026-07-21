@@ -1,4 +1,15 @@
 User-agent: *
-Allow: /
+Allow: /$
+Allow: /auth
+Allow: /privacy
+Allow: /terms
+Disallow: /dashboard
+Disallow: /account
+Disallow: /admin
+Disallow: /leaderboard
+Disallow: /projects
+Disallow: /course/
+Disallow: /two-factor-setup
+Disallow: /onboarding
 
-Sitemap: https://mysterious-classroom-free-courses.onrender.com/sitemap.xml
+Sitemap: https://mysterious-classroom.com/sitemap.xml
