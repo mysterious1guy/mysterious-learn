@@ -12,6 +12,11 @@ async function seedCourses(closeConnection = true) {
     if (isConnected || mongoose.connection.readyState === 1) {
       // Connexion réussie - utiliser MongoDB
       console.log('🗑️ Collection courses vidée');
+      try {
+        await Course.collection.dropIndexes();
+      } catch (e) {
+        // Ignorer si les index n'existent pas encore
+      }
 
       // S'assurer que chaque cours a son identifiant métier 'id' et ses chapitres conformes
       const coursesToInsert = coursesData.map(c => ({

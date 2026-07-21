@@ -17,6 +17,12 @@ connectDB().then(async () => {
     const count = await Course.countDocuments();
     if (count !== 50) {
       console.log(`⚙️ Base de données désynchronisée (${count} cours trouvés, 50 obligatoires). Lancement de l'auto-seeding...`);
+      try {
+        await Course.collection.dropIndexes();
+        console.log('🧹 Index de la collection Course supprimés avec succès pour réinitialisation');
+      } catch (indexError) {
+        console.log('⚠️ Erreur/Avertissement lors de la suppression des index Course:', indexError.message);
+      }
       await Course.deleteMany({}); // Purger l'existant
       await seedCourses(false);
     }
