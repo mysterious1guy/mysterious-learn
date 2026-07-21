@@ -12,4 +12,4 @@ Disallow: /course/
 Disallow: /two-factor-setup
 Disallow: /onboarding
 
-Sitemap: https://mysterious-classroom.com/sitemap.xml
+Sitemap: https://mysterious-classroom-free-courses.onrender.com/sitemap.xml
