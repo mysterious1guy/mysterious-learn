@@ -19,7 +19,7 @@ const courseSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['Programmation', 'Web', 'Data', 'Théorie', 'Mobile', 'DevOps']
+    enum: ['Programmation', 'Web', 'Data', 'Théorie', 'Mobile', 'DevOps', 'DevOps & SI']
   },
   level: {
     type: String,
