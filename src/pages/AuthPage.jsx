@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle, ArrowRight, ShieldCheck, FileText, X } from 'lucide-react';
 import CyberPet from '../CyberPet';
 
 const AuthPage = ({ user, setUser, API_URL, setToast }) => {
@@ -16,6 +16,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [agreedToPolicy, setAgreedToPolicy] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [activeModal, setActiveModal] = useState(null); // 'policy', 'terms', or null
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const [emailError, setEmailError] = useState('');
     const [emailExists, setEmailExists] = useState(false);
@@ -346,15 +347,51 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                 )}
 
                                                 {authMode === 'signup' && (
-                                                    <div className="flex flex-col gap-2">
-                                                        <label className="flex items-center gap-3 cursor-pointer group">
-                                                            <input type="checkbox" checked={agreedToPolicy} onChange={(e) => setAgreedToPolicy(e.target.checked)} className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500" />
-                                                            <span className="text-xs text-slate-500 group-hover:text-slate-700 transition-colors">Politique de confidentialité</span>
-                                                        </label>
-                                                        <label className="flex items-center gap-3 cursor-pointer group">
-                                                            <input type="checkbox" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500" />
-                                                            <span className="text-xs text-slate-500 group-hover:text-slate-700 transition-colors">Conditions d'utilisation</span>
-                                                        </label>
+                                                    <div className="flex flex-col gap-2.5 pt-1">
+                                                        <div className="flex items-center gap-3">
+                                                            <input
+                                                                type="checkbox"
+                                                                id="policy-check"
+                                                                checked={agreedToPolicy}
+                                                                onChange={(e) => setAgreedToPolicy(e.target.checked)}
+                                                                className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                            />
+                                                            <div className="text-xs text-slate-500 flex-1">
+                                                                J'accepte la{' '}
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        setActiveModal('policy');
+                                                                    }}
+                                                                    className="text-blue-600 font-semibold hover:underline cursor-pointer"
+                                                                >
+                                                                    politique de confidentialité
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            <input
+                                                                type="checkbox"
+                                                                id="terms-check"
+                                                                checked={agreedToTerms}
+                                                                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                                                                className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                            />
+                                                            <div className="text-xs text-slate-500 flex-1">
+                                                                J'accepte les{' '}
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        setActiveModal('terms');
+                                                                    }}
+                                                                    className="text-blue-600 font-semibold hover:underline cursor-pointer"
+                                                                >
+                                                                    conditions d'utilisation
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 )}
 
@@ -520,6 +557,156 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                     )}
                 </div>
             </motion.div>
+
+            {/* Modal Politique de confidentialité & Conditions d'utilisation */}
+            <AnimatePresence>
+                {activeModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md"
+                        onClick={() => setActiveModal(null)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.95, y: 20 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 relative overflow-hidden text-left"
+                        >
+                            {/* Header */}
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2.5 bg-blue-50 text-blue-600 rounded-2xl">
+                                        {activeModal === 'policy' ? <ShieldCheck size={24} /> : <FileText size={24} />}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-lg font-bold text-slate-800">
+                                            {activeModal === 'policy' ? 'Politique de Confidentialité' : 'Conditions d\'Utilisation'}
+                                        </h3>
+                                        <p className="text-xs text-slate-500 font-medium">Mysterious Classroom</p>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveModal(null)}
+                                    className="p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            {/* Body Content */}
+                            <div className="overflow-y-auto pr-2 space-y-4 text-sm text-slate-600 leading-relaxed flex-1 custom-scrollbar">
+                                {activeModal === 'policy' ? (
+                                    <>
+                                        <section className="space-y-1.5">
+                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                                🛡️ 1. Collecte des données
+                                            </h4>
+                                            <p className="text-xs text-slate-600">
+                                                Sur <strong>Mysterious Classroom</strong>, nous recueillons uniquement les informations essentielles pour créer votre espace d'apprentissage : prénom, nom, adresse email et votre niveau initial.
+                                            </p>
+                                        </section>
+
+                                        <section className="space-y-1.5">
+                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                                🎯 2. Utilisation des données
+                                            </h4>
+                                            <p className="text-xs text-slate-600">
+                                                Vos données sont utilisées exclusivement pour :
+                                            </p>
+                                            <ul className="list-disc pl-5 space-y-1 text-xs text-slate-500">
+                                                <li>Sauvegarder votre progression dans les cours et exercices.</li>
+                                                <li>Calculer votre score XP, vos streaks et vos badges de réussite.</li>
+                                                <li>Adapter les recommandations et l'assistance de notre IA pédagogique.</li>
+                                            </ul>
+                                        </section>
+
+                                        <section className="space-y-1.5">
+                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                                🔒 3. Sécurité & Confidentialité
+                                            </h4>
+                                            <p className="text-xs text-slate-600">
+                                                Vos mots de passe sont chiffrés avec <code>bcrypt</code> (12 rounds). Nous ne revendons ni ne partageons <strong>jamais</strong> vos données personnelles à des tiers.
+                                            </p>
+                                        </section>
+
+                                        <section className="space-y-1.5">
+                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                                ⚙️ 4. Vos Droits
+                                            </h4>
+                                            <p className="text-xs text-slate-600">
+                                                Vous disposez d'un droit d'accès, d'exportation et de suppression définitive de votre compte à tout moment depuis les paramètres de votre profil.
+                                            </p>
+                                        </section>
+                                    </>
+                                ) : (
+                                    <>
+                                        <section className="space-y-1.5">
+                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                                📚 1. Accès à la plateforme
+                                            </h4>
+                                            <p className="text-xs text-slate-600">
+                                                <strong>Mysterious Classroom</strong> met à votre disposition un accès libre aux parcours de formation, quiz et environnements d'apprentissage interactifs.
+                                            </p>
+                                        </section>
+
+                                        <section className="space-y-1.5">
+                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                                🤝 2. Engagements de l'utilisateur
+                                            </h4>
+                                            <p className="text-xs text-slate-600">
+                                                En créant un compte, vous vous engagez à :
+                                            </p>
+                                            <ul className="list-disc pl-5 space-y-1 text-xs text-slate-500">
+                                                <li>Fournir des informations exactes lors de votre inscription.</li>
+                                                <li>Préserver la confidentialité de vos identifiants.</li>
+                                                <li>Respecter la communauté et faire une utilisation loyale des ressources.</li>
+                                            </ul>
+                                        </section>
+
+                                        <section className="space-y-1.5">
+                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                                💡 3. Propriété Intellectuelle
+                                            </h4>
+                                            <p className="text-xs text-slate-600">
+                                                Les cours, exercices, illustrations et mascottes sont la propriété exclusive de Mysterious Classroom.
+                                            </p>
+                                        </section>
+
+                                        <section className="space-y-1.5">
+                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                                ⚡ 4. Évolution du service
+                                            </h4>
+                                            <p className="text-xs text-slate-600">
+                                                Des mises à jour régulières peuvent enrichir ou ajuster le contenu des cours pour garantir la meilleure qualité d'apprentissage.
+                                            </p>
+                                        </section>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Footer Action */}
+                            <div className="pt-4 mt-4 border-t border-slate-100 flex gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (activeModal === 'policy') setAgreedToPolicy(true);
+                                        if (activeModal === 'terms') setAgreedToTerms(true);
+                                        setActiveModal(null);
+                                    }}
+                                    className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 text-sm"
+                                >
+                                    <CheckCircle size={18} />
+                                    J'ai lu et j'accepte
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
