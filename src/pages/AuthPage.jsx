@@ -364,7 +364,101 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                     </p>
                                                 )}
 
-                                                {authError && <p className="text-red-500 text-sm text-center font-bold bg-red-500/10 py-2 rounded-xl border border-red-500/20">{authError}</p>}
+                                                 {authMode === 'signin' && (
+                                                     <div className="text-right -mt-2 mb-2">
+                                                         <button
+                                                             type="button"
+                                                             onClick={async () => {
+                                                                 if (!formData.email) {
+                                                                     setAuthError('Veuillez saisir votre adresse email pour réinitialiser le mot de passe.');
+                                                                     return;
+                                                                 }
+                                                                 setIsLoading(true);
+                                                                 setAuthError('');
+                                                                 try {
+                                                                     const res = await fetch(`${API_URL}/auth/forgot-password`, {
+                                                                         method: 'POST',
+                                                                         headers: { 'Content-Type': 'application/json' },
+                                                                         body: JSON.stringify({ email: formData.email }),
+                                                                     });
+                                                                     const data = await res.json();
+                                                                     if (res.ok) {
+                                                                         setToast({ message: 'Email de réinitialisation envoyé ! Consultez votre boîte mail.', type: 'success' });
+                                                                     } else {
+                                                                         setAuthError(data.message || 'Erreur lors de l\'envoi');
+                                                                     }
+                                                                 } catch (err) {
+                                                                     setAuthError('Erreur réseau');
+                                                                 } finally {
+                                                                     setIsLoading(false);
+                                                                 }
+                                                             }}
+                                                             className="text-xs text-blue-600 hover:underline font-semibold"
+                                                         >
+                                                             Mot de passe oublié ?
+                                                         </button>
+                                                     </div>
+                                                 )}
+
+                                                 {authError && (
+                                                     <div className="space-y-2">
+                                                         <p className="text-red-500 text-sm text-center font-bold bg-red-500/10 py-2.5 px-4 rounded-xl border border-red-500/20">
+                                                             {authError}
+                                                         </p>
+                                                         {authError.includes("existe déjà") && (
+                                                             <button
+                                                                 type="button"
+                                                                 onClick={() => {
+                                                                     setAuthMode('signin');
+                                                                     setAuthError('');
+                                                                 }}
+                                                                 className="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
+                                                             >
+                                                                 <ArrowRight size={14} /> Se connecter directement avec cet email
+                                                             </button>
+                                                         )}
+                                                         {authError.includes("lié à Google") && (
+                                                             <div className="flex flex-col gap-2 pt-1">
+                                                                 <button
+                                                                     type="button"
+                                                                     onClick={handleGoogleLogin}
+                                                                     className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
+                                                                 >
+                                                                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-4 h-4" />
+                                                                     Se connecter avec Google
+                                                                 </button>
+                                                                 <button
+                                                                     type="button"
+                                                                     onClick={async () => {
+                                                                         if (!formData.email) return;
+                                                                         setIsLoading(true);
+                                                                         try {
+                                                                             const res = await fetch(`${API_URL}/auth/forgot-password`, {
+                                                                                 method: 'POST',
+                                                                                 headers: { 'Content-Type': 'application/json' },
+                                                                                 body: JSON.stringify({ email: formData.email }),
+                                                                             });
+                                                                             const data = await res.json();
+                                                                             if (res.ok) {
+                                                                                 setToast({ message: 'Email envoyé ! Suivez le lien pour créer un mot de passe local.', type: 'success' });
+                                                                                 setAuthError('');
+                                                                             } else {
+                                                                                 setToast({ message: data.message || 'Erreur', type: 'error' });
+                                                                             }
+                                                                         } catch (err) {
+                                                                             setToast({ message: 'Erreur réseau', type: 'error' });
+                                                                         } finally {
+                                                                             setIsLoading(false);
+                                                                         }
+                                                                     }}
+                                                                     className="text-xs text-blue-600 font-semibold hover:underline text-center py-1"
+                                                                 >
+                                                                     🔑 Définir un mot de passe local pour ce compte
+                                                                 </button>
+                                                             </div>
+                                                         )}
+                                                     </div>
+                                                 )}
 
                                                 {authMode === 'signin' ? (
                                                     <button
