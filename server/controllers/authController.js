@@ -640,9 +640,13 @@ const updateProfile = async (req, res) => {
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: 'L\'adresse email est requise' });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'Aucun utilisateur avec cet email' });
+      return res.status(404).json({ message: 'Aucun utilisateur trouvé avec cet email' });
     }
 
     const resetToken = crypto.randomBytes(32).toString('hex');
@@ -650,18 +654,29 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordExpire = Date.now() + 3600000;
     await user.save();
 
-    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+    const clientUrl = process.env.CLIENT_URL || (process.env.NODE_ENV === 'production'
+      ? 'https://mysterious-classroom-free-courses.onrender.com'
+      : 'http://localhost:5173');
+
+    const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
     const html = getPasswordResetEmail(user.firstName || user.name, resetUrl);
 
-    await sendEmail({
-      to: user.email,
-      subject: 'Réinitialisation de ton mot de passe',
-      html
-    });
-    res.json({ message: 'Email envoyé' });
+    try {
+      await sendEmail({
+        to: user.email,
+        subject: 'Réinitialisation de ton mot de passe',
+        html
+      });
+      res.json({ message: 'Email de réinitialisation envoyé avec succès !' });
+    } catch (emailErr) {
+      console.error('❌ Échec envoi email réinitialisation:', emailErr);
+      return res.status(500).json({
+        message: emailErr.message || 'Erreur lors de l\'envoi de l\'email. Vérifiez la configuration du serveur d\'email.'
+      });
+    }
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Erreur serveur' });
+    console.error('Erreur forgotPassword:', err);
+    res.status(500).json({ message: 'Erreur serveur lors de la demande de réinitialisation' });
   }
 };
 
