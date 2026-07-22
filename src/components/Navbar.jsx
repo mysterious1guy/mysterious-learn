@@ -11,7 +11,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
   const isCoursePage = location.pathname.startsWith('/course/') || location.pathname.startsWith('/chapter/');
   return (
     <nav className="sticky top-0 w-full p-2 sm:p-4 border-b border-slate-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl z-[100] transition-colors duration-300 shadow-sm">
-      <div className="max-w-6xl mx-auto flex justify-between items-center">
+      <div className="w-full flex justify-between items-center px-2 sm:px-6">
         <div className="flex items-center gap-2 sm:gap-4">
           <button onClick={onMenuClick} className="lg:hidden p-2 hover:bg-slate-100 dark:hover:bg-gray-800 rounded-lg transition shrink-0 text-slate-600 dark:text-gray-300">
             <Menu size={20} />
