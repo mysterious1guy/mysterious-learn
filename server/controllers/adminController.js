@@ -26,14 +26,9 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
-    // Protection Admin
-    if (req.params.id === req.user._id.toString()) {
-      return res.status(403).json({ message: 'Vous ne pouvez pas supprimer votre propre compte administrateur' });
-    }
-
-    const isPrimaryAdmin = targetUser.email === 'mouhamedfall@esp.sn' || targetUser.adminTier === 'owner';
-    if (targetUser.role === 'admin' || isPrimaryAdmin) {
-      return res.status(403).json({ message: 'Impossible de supprimer un compte administrateur principal' });
+    // Protection Intégrale Super Admin Principal (mouhamedfall@esp.sn) et Administrateurs
+    if (targetUser.email === 'mouhamedfall@esp.sn' || targetUser.adminTier === 'owner' || targetUser.role === 'admin' || req.params.id === req.user._id.toString()) {
+      return res.status(403).json({ message: 'Le compte Super Admin principal (mouhamedfall@esp.sn) et les administrateurs ne peuvent pas être supprimés.' });
     }
 
     await User.findByIdAndDelete(req.params.id);

@@ -70,8 +70,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
   // Fonction de suppression de compte
   const handleDeleteAccount = async () => {
-    if (user?.role === 'admin') {
-      setToast({ message: "Les comptes administrateurs ne peuvent pas être supprimés.", type: 'error' });
+    if (user?.role === 'admin' || user?.email === 'mouhamedfall@esp.sn' || user?.adminTier === 'owner') {
+      setToast({ message: "Le compte Super Admin principal (mouhamedfall@esp.sn) et les comptes administrateurs ne peuvent pas être supprimés.", type: 'error' });
       return;
     }
 

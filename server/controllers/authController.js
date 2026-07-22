@@ -755,6 +755,10 @@ const deleteAccount = async (req, res) => {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
 
+    if (user.email === 'mouhamedfall@esp.sn' || user.role === 'admin' || user.adminTier === 'owner') {
+      return res.status(403).json({ message: 'Le compte Super Admin principal (mouhamedfall@esp.sn) est protégé et ne peut pas être supprimé.' });
+    }
+
     const { email, firstName, name } = user;
 
     await User.findByIdAndDelete(req.user._id);

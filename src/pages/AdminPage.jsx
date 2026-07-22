@@ -6,7 +6,7 @@ import {
   BarChart3, UserPlus, UserMinus, Camera, Upload, AlertTriangle, TrendingUp,
   Activity, LayoutDashboard, Database, Shield, LogOut, Search, Filter,
   CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone, Save,
-  Sparkles, Bot, Globe, User
+  Sparkles, Bot, Globe, User, ShieldCheck, Lock
 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { formatTimeAgo } from '../utils/dateUtils';
@@ -192,6 +192,11 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   };
 
   const handleUpdateRole = async (userId, newRole) => {
+    const target = users.find(u => u._id === userId);
+    if (target?.email === 'mouhamedfall@esp.sn' || target?.adminTier === 'owner') {
+      setToast({ message: "Le compte Super Admin principal (mouhamedfall@esp.sn) est protégé et son rôle ne peut pas être modifié.", type: 'error' });
+      return;
+    }
     try {
       const res = await fetch(`${API_URL}/admin/users/${userId}/role`, {
         method: 'PUT',
@@ -214,20 +219,17 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   };
 
   const handleDeleteUser = async (id) => {
+    const target = users.find(u => u._id === id);
+    if (target?.email === 'mouhamedfall@esp.sn' || target?.adminTier === 'owner' || target?.role === 'admin') {
+      setToast({ message: "Le compte Super Admin principal (mouhamedfall@esp.sn) et les administrateurs ne peuvent pas être supprimés.", type: 'error' });
+      return;
+    }
     setConfirmModal({
       isOpen: true,
       title: "Supprimer l'utilisateur",
       message: "Voulez-vous vraiment supprimer cet utilisateur ? Toutes ses données seront perdues.",
       onConfirm: async () => {
         try {
-          const target = users.find(u => u._id === id);
-          const isSuperAdmin = user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn';
-          if (target?.role === 'admin' && !isSuperAdmin) {
-            setToast({ message: 'Opération interdite aux modérateurs.', type: 'error' });
-            setConfirmModal({ ...confirmModal, isOpen: false });
-            return;
-          }
-
           const res = await fetch(`${API_URL}/admin/users/${id}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${user.token}` }
@@ -235,6 +237,9 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
           if (res.ok) {
             setUsers(users.filter(u => u._id !== id));
             setConfirmModal({ ...confirmModal, isOpen: false });
+          } else {
+            const data = await res.json();
+            setToast({ message: data.message || 'Erreur suppression', type: 'error' });
           }
         } catch (err) {
           setToast({ message: 'Erreur suppression', type: 'error' });
@@ -612,19 +617,25 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                           </td>
                           <td className="px-8 py-6">
                             <div className="flex justify-center">
-                              <select
-                                value={u.role}
-                                onChange={(e) => handleUpdateRole(u._id, e.target.value)}
-                                disabled={(u._id === user.id && !(user.adminTier === 'owner' || user.email === 'mouhamedfall@esp.sn')) || (!['owner'].includes(user.adminTier) && user.email !== 'mouhamedfall@esp.sn' && (u.role === 'admin' || u.email === 'mouhamedfall@esp.sn'))}
-                                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all cursor-pointer outline-none appearance-none text-center min-w-[100px]
-                                  ${u.role === 'admin'
-                                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.1)]'
-                                    : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
-                                  } ${(!['owner'].includes(user?.adminTier) && user?.email !== 'mouhamedfall@esp.sn' && u.role === 'admin') ? 'opacity-50 cursor-not-allowed' : ''}`}
-                              >
-                                <option value="user">USER</option>
-                                <option value="admin">ADMIN</option>
-                              </select>
+                              {u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner' ? (
+                                <span className="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-amber-500/20 border border-amber-500/50 text-amber-500 flex items-center justify-center gap-1 shadow-sm" title="Super Admin Principal Protégé">
+                                  👑 SUPER ADMIN
+                                </span>
+                              ) : (
+                                <select
+                                  value={u.role}
+                                  onChange={(e) => handleUpdateRole(u._id, e.target.value)}
+                                  disabled={u.email === 'mouhamedfall@esp.sn' || (u._id === user.id && !(user.adminTier === 'owner' || user.email === 'mouhamedfall@esp.sn'))}
+                                  className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all cursor-pointer outline-none appearance-none text-center min-w-[100px]
+                                    ${u.role === 'admin'
+                                      ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.1)]'
+                                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
+                                    }`}
+                                >
+                                  <option value="user">USER</option>
+                                  <option value="admin">ADMIN</option>
+                                </select>
+                              )}
                             </div>
                           </td>
                           <td className="px-8 py-6">
@@ -652,14 +663,21 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                             </div>
                           </td>
                           <td className="px-8 py-6 text-right">
-                            <button
-                              onClick={() => handleDeleteUser(u._id)}
-                              disabled={!(user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn') && (u.role === 'admin' || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner')}
-                              className={`p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl transition-all shadow-sm dark:shadow-none 
-                                ${!(user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn') && (u.role === 'admin' || u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner') ? 'opacity-20 cursor-not-allowed' : 'text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-red-500/30 dark:hover:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/5'}`}
-                            >
-                              <Trash2 size={16} />
-                            </button>
+                            {u.email === 'mouhamedfall@esp.sn' || u.adminTier === 'owner' || u.role === 'admin' ? (
+                              <div className="flex justify-end">
+                                <div className="p-2.5 bg-slate-100 dark:bg-slate-800/80 text-amber-500 rounded-xl flex items-center justify-center border border-amber-500/30 shadow-sm opacity-80 cursor-not-allowed" title="Compte Administrateur Protégé - Non supprimable">
+                                  <ShieldCheck size={16} />
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => handleDeleteUser(u._id)}
+                                className="p-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl transition-all shadow-sm text-slate-400 hover:text-red-600 dark:hover:text-red-500 hover:border-red-500/30 dark:hover:border-red-500/30 hover:bg-red-50 dark:hover:bg-red-500/5"
+                                title="Supprimer l'utilisateur"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))}
