@@ -222,7 +222,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
             >
                 <div className="bg-white/90 backdrop-blur-2xl border border-blue-500/20 p-8 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(59,130,246,0.15)]">
                     <div className="flex justify-center mb-6">
-                        <CyberPet isPasswordFocused={isPasswordFocused} onSecret={petSecret} user={user} />
+                        <CyberPet isPasswordFocused={isPasswordFocused || showPassword} onSecret={petSecret} user={user} />
                     </div>
 
                     <h2 className="text-3xl brand-font text-slate-800 text-center mb-8 tracking-tight">
