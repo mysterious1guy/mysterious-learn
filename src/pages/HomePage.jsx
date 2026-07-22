@@ -123,9 +123,24 @@ const HomePage = ({ API_URL }) => {
                                 </motion.span>
                             </h1>
 
-                            <p className="text-slate-400 text-lg md:text-2xl max-w-2xl mx-auto font-medium leading-relaxed">
-                                L'éducation technologique repensée. Apprenez gratuitement avec une plateforme interactive et immersive.
+                            <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed">
+                                <strong className="text-slate-800">MYSTERIOUS CLASSROOM</strong> est une plateforme d'apprentissage en ligne 100% gratuite dédiée à la formation aux métiers du numérique et de la programmation.
                             </p>
+
+                            {/* Section Objectif de l'Application (Requise pour la validation Google OAuth) */}
+                            <div className="max-w-3xl mx-auto mt-6 p-6 md:p-8 bg-blue-50/90 backdrop-blur-md rounded-3xl border border-blue-200/80 shadow-md text-left space-y-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2.5 bg-blue-600 text-white rounded-2xl">
+                                        <Sparkles size={22} />
+                                    </div>
+                                    <h2 className="text-lg md:text-xl font-black text-slate-800 tracking-tight">
+                                        Objectif de l'application MYSTERIOUS CLASSROOM
+                                    </h2>
+                                </div>
+                                <p className="text-slate-700 text-sm md:text-base leading-relaxed font-medium">
+                                    <strong>MYSTERIOUS CLASSROOM</strong> a pour objectif de démocratiser l'enseignement de l'informatique en offrant un accès libre et gratuit à des cours interactifs de haut niveau (Algorithmique, Python, Langage C, C++, JavaScript, React, DevOps). L'application permet à chaque apprenant d'évaluer ses compétences, d'exécuter du code, de suivre sa progression et d'obtenir des certifications.
+                                </p>
+                            </div>
                         </motion.div>
 
                         <motion.div
