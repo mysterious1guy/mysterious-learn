@@ -202,35 +202,35 @@ const HomePage = ({ API_URL }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
                         {/* Level 1 */}
-                        <div className="bg-white  border border-slate-200  rounded-[2rem] p-8 cyber-card group shadow-2xl relative overflow-hidden glass-panel">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full" />
-                            <div className="w-16 h-16 bg-blue-500/10 text-blue-600  rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                        <div className="bg-white border border-slate-200/90 rounded-[2.5rem] p-8 group hover:border-blue-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-36 h-36 bg-blue-500/10 blur-3xl rounded-full" />
+                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-md">
                                 <span className="text-3xl">🐣</span>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900  mb-3">Niveau Débutant</h3>
-                            <p className="text-slate-600  leading-relaxed font-medium">
+                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Niveau Débutant</h3>
+                            <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
                                 Les fondations pures. Apprenez la logique algorithmique, la syntaxe de base et les concepts clés sans aucune abstraction. 100% pratique.
                             </p>
                         </div>
                         {/* Level 2 */}
-                        <div className="bg-white  border border-slate-200  rounded-[2rem] p-8 cyber-card group shadow-2xl relative overflow-hidden glass-panel">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full" />
-                            <div className="w-16 h-16 bg-purple-500/10 text-purple-600  rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-500 group-hover:text-white transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                        <div className="bg-white border border-slate-200/90 rounded-[2.5rem] p-8 group hover:border-purple-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-purple-500/10 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-36 h-36 bg-purple-500/10 blur-3xl rounded-full" />
+                            <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all shadow-md">
                                 <span className="text-3xl">🚀</span>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900  mb-3">Intermédiaire</h3>
-                            <p className="text-slate-600  leading-relaxed font-medium">
+                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Intermédiaire</h3>
+                            <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
                                 L'architecture et la rigueur. Structure de données avancée, programmation orientée objet, gestion mémoire et création de projets complets.
                             </p>
                         </div>
                         {/* Level 3 */}
-                        <div className="bg-white  border border-slate-200  rounded-[2rem] p-8 cyber-card group shadow-2xl relative overflow-hidden glass-panel">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-3xl rounded-full" />
-                            <div className="w-16 h-16 bg-orange-500/10 text-orange-600  rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-[0_0_15px_rgba(249,115,22,0.2)]">
+                        <div className="bg-white border border-slate-200/90 rounded-[2.5rem] p-8 group hover:border-orange-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-36 h-36 bg-orange-500/10 blur-3xl rounded-full" />
+                            <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-orange-600 group-hover:text-white transition-all shadow-md">
                                 <span className="text-3xl">💻</span>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900  mb-3">Expertise Avancée</h3>
-                            <p className="text-slate-600  leading-relaxed font-medium">
+                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Expertise Avancée</h3>
+                            <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
                                 Conçu pour l'ingénierie. Algorithmes complexes, sécurité, performance système et architectures backend/frontend professionnelles.
                             </p>
                         </div>
