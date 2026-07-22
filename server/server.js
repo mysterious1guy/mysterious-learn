@@ -32,9 +32,45 @@ connectDB().then(async () => {
 });
 
 const app = express();
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 
 // Configuration pour Render/Proxy
 app.set('trust proxy', 1);
+
+// --- SÉCURITÉ DE L'API ---
+// 1. Protection des en-têtes HTTP (anti-clickjacking, anti-XSS de base, etc.)
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false
+}));
+
+// 2. Assainissement des requêtes pour bloquer les injections NoSQL (ex: requêtes contenant {$gt: ""})
+app.use(mongoSanitize());
+
+// 3. Limiteur de requêtes global sur l'API (Protection DDoS)
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 250, // Limite chaque adresse IP à 250 requêtes par 15 min
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Trop de requêtes de votre part. Veuillez patienter 15 minutes avant de réessayer.' }
+});
+app.use('/api/', apiLimiter);
+
+// 4. Limiteur ultra-strict pour l'authentification (Anti-Brute Force)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // Limite à 20 tentatives de connexion / inscription par 15 min
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Sécurité : Trop de tentatives de connexion. Veuillez réessayer dans 15 minutes.' }
+});
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/resend-verification', authLimiter);
+app.use('/api/auth/forgot-password', authLimiter);
 
 // Middlewares
 app.use(cors({

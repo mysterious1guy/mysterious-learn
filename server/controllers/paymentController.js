@@ -1,10 +1,20 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+let stripe = null;
+if (stripeSecretKey) {
+    stripe = require('stripe')(stripeSecretKey);
+} else {
+    console.warn("⚠️  Avertissement: STRIPE_SECRET_KEY n'est pas configuré. Les paiements ne fonctionneront pas.");
+}
 const User = require('../models/User');
 
 exports.createCheckoutSession = async (req, res) => {
     try {
         const { courseId } = req.body;
         const userId = req.user.id; // From authMiddleware (protect)
+
+        if (!stripe) {
+            return res.status(500).json({ message: "Le service de paiement Stripe n'est pas configuré sur ce serveur." });
+        }
 
         if (courseId !== 'network-fondamentaux-reseaux') {
             return res.status(400).json({ message: 'Seul le cours Base Réseaux est actuellement disponible à l\'achat.' });
@@ -44,6 +54,9 @@ exports.createCheckoutSession = async (req, res) => {
 };
 
 exports.webhook = async (req, res) => {
+    if (!stripe) {
+        return res.status(500).json({ message: "Le service de paiement Stripe n'est pas configuré sur ce serveur." });
+    }
     const sig = req.headers['stripe-signature'];
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 

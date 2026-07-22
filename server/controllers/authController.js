@@ -640,15 +640,7 @@ const updateProfile = async (req, res) => {
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res.status(400).json({
-        message: 'Un compte existe déjà avec cet email'
-      });
-    }
-
-    const user = existingUser || await User.findOne({ email });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'Aucun utilisateur avec cet email' });
     }

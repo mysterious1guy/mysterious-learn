@@ -2,6 +2,7 @@ const User = require('../models/User');
 const TwoFactorAuth = require('../models/TwoFactorAuth');
 const smsService = require('../services/smsService');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 // @desc    Activer la 2FA pour un utilisateur
 // @route   POST /api/2fa/enable
@@ -125,8 +126,8 @@ const disableTwoFactor = async (req, res) => {
     const userId = req.user._id;
 
     // Vérifier le mot de passe
-    const user = await User.findById(userId);
-    const isPasswordValid = await user.comparePassword(password);
+    const user = await User.findById(userId).select('+password');
+    const isPasswordValid = await bcrypt.compare(password, user.password || '');
     
     if (!isPasswordValid) {
       return res.status(400).json({ 
@@ -249,8 +250,8 @@ const regenerateBackupCodes = async (req, res) => {
     const userId = req.user._id;
 
     // Vérifier le mot de passe
-    const user = await User.findById(userId);
-    const isPasswordValid = await user.comparePassword(password);
+    const user = await User.findById(userId).select('+password');
+    const isPasswordValid = await bcrypt.compare(password, user.password || '');
     
     if (!isPasswordValid) {
       return res.status(400).json({ 
