@@ -150,7 +150,13 @@ const HomePage = ({ API_URL }) => {
                             transition={{ duration: 0.8 }}
                             className="space-y-6 flex flex-col items-center"
                         >
-                            <MysteriousGeometricLogo className="w-32 h-32 md:w-40 md:h-40 mb-2 drop-shadow-2xl" />
+                            <motion.div
+                                whileHover={{ scale: 1.1, rotate: 5 }}
+                                whileTap={{ scale: 0.95, rotate: -5 }}
+                                className="cursor-pointer"
+                            >
+                                <MysteriousGeometricLogo className="w-32 h-32 md:w-40 md:h-40 mb-2 drop-shadow-2xl" />
+                            </motion.div>
                             <h1 className="flex flex-col items-center">
                                 <span className="text-5xl sm:text-7xl md:text-9xl lg:text-[10rem] font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 leading-[0.85] tracking-tight">
                                     {t('home.title_part1') || "MYSTERIOUS"}
