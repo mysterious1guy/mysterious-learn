@@ -277,8 +277,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   const tabs = [
     { id: 'profile', label: 'Profil', icon: User },
     { id: 'security', label: 'Sécurité', icon: Shield },
-    { id: 'preferences', label: 'Préférences', icon: Settings },
-    { id: 'activity', label: 'Activité', icon: TrendingUp }
+    { id: 'preferences', label: 'Préférences', icon: Settings }
   ];
 
   const renderTabButton = (tab) => {
@@ -748,40 +747,9 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     </div>
   );
 
-  const renderActivityTab = () => (
-    <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-8 shadow-sm dark:shadow-none">
-        <h4 className="text-lg font-bold text-slate-800 dark:text-white uppercase tracking-tight mb-6">Activités récentes</h4>
-        <div className="space-y-4 text-center py-12">
-          <div className="w-16 h-16 bg-slate-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 grayscale opacity-50">
-            <TrendingUp size={32} className="text-slate-400 dark:text-gray-600" />
-          </div>
-          <p className="text-slate-500 dark:text-gray-500 font-medium">Aucune activité enregistrée pour le moment.</p>
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="max-w-4xl mx-auto p-6">
-      {/* Onglets */}
-      <div className="flex bg-slate-100 dark:bg-gray-900/50 rounded-2xl p-1 mb-8 border border-slate-200 dark:border-gray-800 overflow-x-auto no-scrollbar">
-        {tabs.map((tab) => renderTabButton(tab))}
-      </div>
-
-      {/* Contenu de l'onglet */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.2 }}
-        >
           {activeTab === 'profile' && renderProfileTab()}
           {activeTab === 'security' && renderSecurityTab()}
           {activeTab === 'preferences' && renderPreferencesTab()}
-          {activeTab === 'activity' && renderActivityTab()}
         </motion.div>
       </AnimatePresence>
 
