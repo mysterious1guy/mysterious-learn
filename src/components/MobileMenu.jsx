@@ -54,14 +54,14 @@ const MobileMenu = ({ isOpen, onClose, user, onLogout }) => {
                                 onClick={onClose}
                                 className="text-white hover:text-blue-400 flex items-center gap-2"
                             >
-                                <Home size={18} /> Tableau de bord
+                                <Home size={18} /> {t('dashboard_title') || 'Tableau de bord'}
                             </Link>
                             <Link
                                 to="/account"
                                 onClick={onClose}
                                 className="text-white hover:text-blue-400 flex items-center gap-2"
                             >
-                                <User size={18} /> Mon compte
+                                <User size={18} /> {t('account_title') || 'Mon compte'}
                             </Link>
                             <Link
                                 to="/projects"
@@ -81,7 +81,7 @@ const MobileMenu = ({ isOpen, onClose, user, onLogout }) => {
                                 onClick={handleLogout}
                                 className="text-white hover:text-red-400 text-left flex items-center gap-2"
                             >
-                                <LogOut size={18} /> Déconnexion
+                                <LogOut size={18} /> {t('logout') || 'Déconnexion'}
                             </button>
                         </nav>
                     </motion.div>

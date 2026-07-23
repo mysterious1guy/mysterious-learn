@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { Github, Twitter, Linkedin, Mail, Heart, Code, Sparkles } from 'lucide-react';
 import AnimatedLogo from './AnimatedLogo';
 import { API_URL } from '../config';
+import { useLanguage } from '../context/LanguageContext';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [config, setConfig] = useState(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchConfig = async () => {
@@ -41,7 +43,7 @@ const Footer = () => {
     ],
     creatorAvatar: 'MF',
     technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'TailwindCSS', 'Framer Motion', 'JWT', 'Twilio'],
-    footerText: "Plateforme d'apprentissage innovante créée avec passion pour l'éducation technologique et le partage des connaissances."
+    footerText: t('footer.innovative_platform') || "Plateforme d'apprentissage innovante créée avec passion pour l'éducation technologique et le partage des connaissances."
   };
 
   const c = config || defaultConfig;
@@ -95,7 +97,7 @@ const Footer = () => {
           >
             <h4 className="text-lg font-semibold text-white flex items-center gap-2">
               <Code size={18} className="text-blue-400" />
-              Créateur
+              {t('footer.creator') || 'Créateur'}
             </h4>
 
             <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-4 space-y-3">
@@ -143,7 +145,7 @@ const Footer = () => {
           >
             <h4 className="text-lg font-semibold text-white flex items-center gap-2">
               <Sparkles size={18} className="text-purple-400" />
-              Technologies
+              {t('footer.technologies') || 'Technologies'}
             </h4>
 
             <div className="grid grid-cols-2 gap-2">
@@ -170,7 +172,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
               <p className="text-gray-400 text-sm">
-                © {currentYear} {c.siteName}. Plateforme créée par {c.creatorName}.
+                © {currentYear} {c.siteName}. {t('footer.platform_created_by') || 'Plateforme créée par'} {c.creatorName}.
               </p>
               <p className="text-gray-500 text-xs mt-1">
                 {c.creatorName} • {c.creatorTitle} • 18 ans
@@ -178,7 +180,7 @@ const Footer = () => {
             </div>
 
             <div className="flex items-center gap-4 text-gray-500 text-xs">
-              <span>Fait avec passion et l'aide de l'IA</span>
+              <span>{t('footer.made_with_passion') || "Fait avec passion et l'aide de l'IA"}</span>
               <span>•</span>
               <span>Full-Stack Developer</span>
             </div>

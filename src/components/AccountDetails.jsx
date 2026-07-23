@@ -742,47 +742,24 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       <div className="mt-8 flex flex-wrap gap-4">
         <button
           onClick={onLogout}
-          className="px-6 py-3 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition flex items-center gap-2"
+          className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-bold transition"
         >
-          <LogOut size={18} />
-          Déconnexion
+          <LogOut size={18} /> {t('account.logout') || 'Déconnexion'}
         </button>
 
         <button
-          onClick={() => {
-            const data = {
-              user: {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                password: "[Masqué pour votre sécurité - Haché en base de données]",
-                joinedAt: user.joinedAt,
-              },
-              progressions,
-              favorites
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `mysterious-classroom-data.json`;
-            link.click();
-            URL.revokeObjectURL(url);
-            setToast({ message: 'Données exportées !', type: 'success' });
-          }}
-          className="px-6 py-3 bg-gray-700/50 text-gray-300 rounded-xl hover:bg-gray-700 transition flex items-center gap-2"
+          onClick={handleExportData} 
+          disabled={exportingData} 
+          className="flex items-center gap-2 px-6 py-3 bg-slate-400 hover:bg-slate-500 text-white rounded-xl font-bold transition disabled:opacity-50"
         >
-          <Download size={18} />
-          Exporter mes données
+          <Download size={18} /> {exportingData ? t('account.exporting') || 'Export en cours...' : t('account.export_data') || 'Exporter mes données'}
         </button>
 
         <button
-          onClick={handleDeleteAccount}
-          disabled={isLoading}
-          className="px-6 py-3 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => setShowDeleteConfirm(true)} 
+          className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-bold transition"
         >
-          <Trash2 size={18} />
-          {isLoading ? 'Suppression...' : 'Supprimer mon compte'}
+          <Trash2 size={18} /> {t('account.delete_account') || 'Supprimer mon compte'}
         </button>
       </div>
 
