@@ -226,6 +226,22 @@ export const translations = {
             ai_title: "Ton Mentor IA",
             ai_desc: "Un doute ? Un bug ? Cliquez ici à tout moment pour parler à votre assistant personnel. Il veille sur vous !"
         },
+        placementTest: {
+            eval_title: "Évaluation de Niveau",
+            eval_desc_prefix: "Tu as choisi le niveau",
+            eval_desc_body: "Prouve tes compétences via ce test technique rapide. Une seule erreur et tu seras redirigé vers le niveau Débutant.",
+            start_exam: "Démarrer l'Examen",
+            choose_beginner: "Finalement, je préfère le niveau Débutant",
+            access_denied: "Accès Refusé",
+            failed_desc_prefix: "Tes réponses ne semblent pas encore correspondre au niveau",
+            failed_desc_body: "Il est préférable de commencer par les bases pour progresser sereinement.",
+            start_beginner: "Commencer en tant que Débutant",
+            success_title: "Niveau Validé 🎉",
+            success_desc_prefix: "Tu as brillamment réussi l'examen technique.",
+            success_desc_body: "Le niveau",
+            success_unlocked: "t'est désormais débloqué.",
+            finalize_signup: "Finaliser l'Inscription"
+        },
         announcements: {
             title: "Annonces",
             no_announcements: "Aucune nouvelle annonce",
@@ -628,6 +644,22 @@ export const translations = {
             account_desc: "Access your settings, secure your account (2FA), and update your preferences here.",
             ai_title: "Your AI Mentor",
             ai_desc: "Any doubt or bug? Click here anytime to talk to your personal assistant. He's watching over you!"
+        },
+        placementTest: {
+            eval_title: "Level Assessment",
+            eval_desc_prefix: "You selected the",
+            eval_desc_body: "level. Prove your skills through this quick technical test. A single mistake will place you in the Beginner level.",
+            start_exam: "Start Exam",
+            choose_beginner: "Actually, I prefer starting as Beginner",
+            access_denied: "Access Denied",
+            failed_desc_prefix: "Your answers do not seem to match the",
+            failed_desc_body: "It is best to start from the basics to progress with confidence.",
+            start_beginner: "Start as Beginner",
+            success_title: "Level Passed 🎉",
+            success_desc_prefix: "You passed the technical examination with flying colors.",
+            success_desc_body: "The level",
+            success_unlocked: "is now unlocked for you.",
+            finalize_signup: "Complete Registration"
         },
         accountPage: {
             back_to_dashboard: "Back to dashboard"
