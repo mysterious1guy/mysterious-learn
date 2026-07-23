@@ -19,14 +19,12 @@ const User = require('./models/User');
 connectDB().then(async () => {
   try {
     const superAdmin = await User.findOne({ email: 'mouhamedfall@esp.sn' });
-    if (superAdmin) {
+    if (superAdmin && (superAdmin.firstName !== 'Mouhamed' || superAdmin.lastName !== 'FALL')) {
       superAdmin.firstName = 'Mouhamed';
       superAdmin.lastName = 'FALL';
       superAdmin.name = 'Mouhamed FALL';
-      superAdmin.completedQuests = [];
-      superAdmin.unlockedCourses = [];
       await superAdmin.save();
-      console.log('✅ Profil Super Admin mouhamedfall@esp.sn nettoyé avec succès !');
+      console.log('✅ Profil Super Admin mouhamedfall@esp.sn ajusté avec succès !');
     }
 
     const count = await Course.countDocuments();
