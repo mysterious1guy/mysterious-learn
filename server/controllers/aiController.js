@@ -185,8 +185,18 @@ const aiChat = async (req, res) => {
         let responseText = null;
 
         // Phase 0: Check for Gemini API key if present in environment
-        const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+        let geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
         if (geminiKey) {
+            geminiKey = geminiKey.trim().replace(/^["']|["']$/g, '');
+
+            const historyText = (history && Array.isArray(history)) 
+                ? history.slice(-6).map(h => `${(h.role === 'assistant' || h.role === 'model') ? 'Assistant' : 'Élève'}: ${h.text || h.content || ''}`).join('\n')
+                : '';
+
+            const userPromptText = historyText.length > 0 
+                ? `[HISTORIQUE CONVERSATION RÉCENTE]\n${historyText}\n\n[NOUVELLE QUESTION DE L'ÉLÈVE]\n${message}`
+                : message;
+
             const geminiEndpoints = [
                 { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', name: 'gemini-2.0-flash' },
                 { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash (v1)' },
@@ -203,11 +213,7 @@ const aiChat = async (req, res) => {
                     const geminiPayload = {
                         system_instruction: { parts: [{ text: systemInstruction }] },
                         contents: [
-                            ...(history && Array.isArray(history) ? history.slice(-6).map(h => ({
-                                role: (h.role === 'assistant' || h.role === 'model') ? 'model' : 'user',
-                                parts: [{ text: h.text || h.content || '' }]
-                            })) : []),
-                            { role: 'user', parts: [{ text: message }] }
+                            { role: 'user', parts: [{ text: userPromptText }] }
                         ]
                     };
 
@@ -244,10 +250,15 @@ const aiChat = async (req, res) => {
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 12000);
 
+                const pollinationsMessages = [
+                    { role: "system", content: systemInstruction },
+                    { role: "user", content: message }
+                ];
+
                 const resApi = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages }), // Standard payload without model property
+                    body: JSON.stringify({ messages: pollinationsMessages }),
                     signal: controller.signal
                 });
                 clearTimeout(timeout);
