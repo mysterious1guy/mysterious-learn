@@ -458,11 +458,14 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
             ) : (
               <div className="flex items-center gap-2">
                 <p className="text-slate-900 dark:text-white uppercase tracking-wider font-black text-sm">
-                  {editForm.programmingLevel === 'Débutant' ? 'Débutant' :
-                    editForm.programmingLevel === 'Intermédiaire' ? 'Intermédiaire' : 'Avancé'}
+                  {(editForm.programmingLevel === 'Débutant' || editForm.programmingLevel === 'beginner' || editForm.programmingLevel === 'Beginner')
+                    ? (t('profile_fields.level_beginner') || 'Débutant')
+                    : (editForm.programmingLevel === 'Intermédiaire' || editForm.programmingLevel === 'intermediate' || editForm.programmingLevel === 'Intermediate')
+                      ? (t('profile_fields.level_intermediate') || 'Intermédiaire')
+                      : (t('profile_fields.level_advanced') || 'Avancé')}
                 </p>
-                <span className={`w-2 h-2 rounded-full ${editForm.programmingLevel === 'Débutant' ? 'bg-blue-400' :
-                  editForm.programmingLevel === 'Intermédiaire' ? 'bg-yellow-400' : 'bg-purple-400'
+                <span className={`w-2 h-2 rounded-full ${(editForm.programmingLevel === 'Débutant' || editForm.programmingLevel === 'beginner' || editForm.programmingLevel === 'Beginner') ? 'bg-blue-400' :
+                  (editForm.programmingLevel === 'Intermédiaire' || editForm.programmingLevel === 'intermediate' || editForm.programmingLevel === 'Intermediate') ? 'bg-yellow-400' : 'bg-purple-400'
                   }`}></span>
               </div>
             )}
