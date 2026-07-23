@@ -140,10 +140,31 @@ const HomePage = ({ API_URL }) => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-500/30 text-slate-900">
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-500/30 text-slate-900 relative overflow-hidden">
+            {/* Animated Background Mouse Parallax Blobs & Glow */}
+            <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+                <div
+                    className="absolute -top-40 -left-40 w-[650px] h-[650px] bg-blue-400/20 rounded-full blur-[140px] transition-transform duration-300 ease-out"
+                    style={{
+                        transform: `translate3d(${mousePosition.x * 40}px, ${mousePosition.y * 40}px, 0)`
+                    }}
+                />
+                <div
+                    className="absolute top-1/3 -right-40 w-[700px] h-[700px] bg-purple-400/20 rounded-full blur-[160px] transition-transform duration-300 ease-out"
+                    style={{
+                        transform: `translate3d(${mousePosition.x * -50}px, ${mousePosition.y * -50}px, 0)`
+                    }}
+                />
+                <div
+                    className="absolute bottom-10 left-1/3 w-[600px] h-[600px] bg-indigo-400/15 rounded-full blur-[130px] transition-transform duration-300 ease-out"
+                    style={{
+                        transform: `translate3d(${mousePosition.x * 30}px, ${mousePosition.y * 30}px, 0)`
+                    }}
+                />
+            </div>
 
             {/* Hero Section */}
-            <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 px-4 md:px-6 overflow-hidden">
+            <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 px-4 md:px-6 overflow-hidden z-10">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center space-y-10">
                         {/* Logo animé */}
