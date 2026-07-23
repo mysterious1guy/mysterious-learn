@@ -179,11 +179,6 @@ const HomePage = ({ API_URL }) => {
                                 </p>
                                 <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Actifs</p>
                             </div>
-                            <div className="w-px h-12 bg-slate-300 hidden md:block" />
-                            <div className="text-center group">
-                                <p className="text-4xl font-black text-slate-900 group-hover:text-pink-400 transition-colors">{totalCoursesCount}</p>
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">Cours gratuits</p>
-                            </div>
                         </motion.div>
                     </div>
                 </div>
