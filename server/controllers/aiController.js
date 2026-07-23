@@ -190,21 +190,23 @@ const aiChat = async (req, res) => {
             try {
                 console.log(`📡 [AI RELAY] Appel Google Gemini API...`);
                 const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 8000);
+                const timeout = setTimeout(() => controller.abort(), 10000);
+
+                const geminiPayload = {
+                    system_instruction: { parts: [{ text: systemInstruction }] },
+                    contents: [
+                        ...(history && Array.isArray(history) ? history.slice(-6).map(h => ({
+                            role: (h.role === 'assistant' || h.role === 'model') ? 'model' : 'user',
+                            parts: [{ text: h.text || h.content || '' }]
+                        })) : []),
+                        { role: 'user', parts: [{ text: message }] }
+                    ]
+                };
 
                 const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        systemInstruction: { parts: [{ text: systemInstruction }] },
-                        contents: [
-                            ...(history && Array.isArray(history) ? history.slice(-6).map(h => ({
-                                role: (h.role === 'assistant' || h.role === 'model') ? 'model' : 'user',
-                                parts: [{ text: h.text || h.content || '' }]
-                            })) : []),
-                            { role: 'user', parts: [{ text: message }] }
-                        ]
-                    }),
+                    body: JSON.stringify(geminiPayload),
                     signal: controller.signal
                 });
                 clearTimeout(timeout);
@@ -216,6 +218,9 @@ const aiChat = async (req, res) => {
                         responseText = text;
                         console.log(`✅ [AI RELAY] Gemini API a répondu avec succès.`);
                     }
+                } else {
+                    const errText = await geminiRes.text();
+                    console.warn(`⚠️ [AI RELAY] Gemini API HTTP ${geminiRes.status}: ${errText}`);
                 }
             } catch (e) {
                 console.warn(`⚠️ [AI RELAY] Gemini API failed: ${e.message}`);
