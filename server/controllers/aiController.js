@@ -182,22 +182,56 @@ const aiChat = async (req, res) => {
         console.log(`📡 [AI RELAY] Traitement de la requête IA pour: ${user.email}`);
 
         let responseText = null;
-        const modelsToTry = ['openai', 'mistral', 'qwen', 'llama', 'deepseek'];
 
-        // Phase 1: Try POST to text.pollinations.ai across fallback models
-        for (const model of modelsToTry) {
+        // Phase 0: Check for Gemini API key if present in environment
+        const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+        if (geminiKey) {
             try {
+                console.log(`📡 [AI RELAY] Appel Google Gemini API...`);
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 8000);
+
+                const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        systemInstruction: { parts: [{ text: systemInstruction }] },
+                        contents: [
+                            ...(history && Array.isArray(history) ? history.slice(-6).map(h => ({
+                                role: (h.role === 'assistant' || h.role === 'model') ? 'model' : 'user',
+                                parts: [{ text: h.text || h.content || '' }]
+                            })) : []),
+                            { role: 'user', parts: [{ text: message }] }
+                        ]
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeout);
+
+                if (geminiRes.ok) {
+                    const geminiData = await geminiRes.json();
+                    const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text && text.trim()) {
+                        responseText = text;
+                        console.log(`✅ [AI RELAY] Gemini API a répondu avec succès.`);
+                    }
+                }
+            } catch (e) {
+                console.warn(`⚠️ [AI RELAY] Gemini API failed: ${e.message}`);
+            }
+        }
+
+        // Phase 1: Anonymous Pollinations POST (NO model parameter to prevent 402 Payment Required)
+        if (!responseText) {
+            try {
+                console.log(`📡 [AI RELAY] Appel Pollinations Anonymous POST...`);
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 9000);
 
                 const resApi = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        messages,
-                        model,
-                        jsonMode: false
-                    }),
+                    body: JSON.stringify({ messages }), // Standard payload without model property
                     signal: controller.signal
                 });
                 clearTimeout(timeout);
@@ -206,21 +240,20 @@ const aiChat = async (req, res) => {
                     const txt = await resApi.text();
                     if (txt && txt.trim().length > 0 && !txt.includes('PAYMENT_REQUIRED') && !txt.includes('402 Payment')) {
                         responseText = txt;
-                        console.log(`✅ [AI RELAY] Modèle '${model}' a répondu avec succès.`);
-                        break;
+                        console.log(`✅ [AI RELAY] Pollinations Anonymous POST a répondu avec succès.`);
                     }
                 }
             } catch (e) {
-                console.warn(`⚠️ [AI RELAY] Tentative modèle '${model}' échouée: ${e.message}`);
+                console.warn(`⚠️ [AI RELAY] Pollinations POST échoué: ${e.message}`);
             }
         }
 
-        // Phase 2: GET fallback if POST model array failed
+        // Phase 2: Anonymous Pollinations GET (NO ?model= parameter)
         if (!responseText) {
             try {
-                console.log(`📡 [AI RELAY] Fallback vers GET Pollinations...`);
-                const simplePrompt = `Tu es Mysterious Copilot, assistant cyber. Élève: ${user.name}. Question: ${message}`;
-                const getUrl = `https://text.pollinations.ai/${encodeURIComponent(simplePrompt)}?model=mistral`;
+                console.log(`📡 [AI RELAY] Fallback vers Pollinations Anonymous GET...`);
+                const cleanPrompt = `Tu es Mysterious Copilot (Assistant Mysterious Classroom). Élève: ${user.name}. Question: ${message}`;
+                const getUrl = `https://text.pollinations.ai/${encodeURIComponent(cleanPrompt)}`;
                 
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 8000);
@@ -231,6 +264,7 @@ const aiChat = async (req, res) => {
                     const getTxt = await getRes.text();
                     if (getTxt && getTxt.trim().length > 0 && !getTxt.includes('PAYMENT_REQUIRED')) {
                         responseText = getTxt;
+                        console.log(`✅ [AI RELAY] Pollinations Anonymous GET a répondu avec succès.`);
                     }
                 }
             } catch (e) {
@@ -238,17 +272,37 @@ const aiChat = async (req, res) => {
             }
         }
 
-        // Phase 3: Offline Graceful Fallback if external API unreachable
+        // Phase 3: Intelligent Platform Helper (Si les API distantes sont inatteignables)
         if (!responseText) {
-            console.warn(`⚠️ [AI RELAY] Tous les relais distants ont échoué. Mode Réponse Secours activé.`);
-            responseText = `Bonjour Agent **${user.firstName || user.name}** ! 
+            console.warn(`⚠️ [AI RELAY] Relais externes indisponibles. Mode Assistant Local Intelligent activé.`);
+            const lowerMsg = message.toLowerCase();
 
-Le Cœur de l'Oracle subit une micro-maintenance réseau avec nos serveurs externes, mais mes protocoles locaux restent opérationnels.
+            if (lowerMsg.includes('classement') || lowerMsg.includes('leaderboard') || lowerMsg.includes('rang') || lowerMsg.includes('points') || lowerMsg.includes('xp')) {
+                responseText = `Agent **${user.firstName || user.name}**, pour consulter le **Classement (Hall of Fame)** :
 
-En quoi puis-je t'aider sur ton parcours en Cybersécurité et Développement aujourd'hui ? Tu peux me poser tes questions sur :
-• Les concepts de sécurité Web (XSS, SQLi, CSRF)
-• La ligne de commande Linux & scripts Bash
-• Vos projets et challenges CTF actuels`;
+1. Regarde la barre de navigation supérieure de Mysterious Classroom.
+2. Clique sur l'onglet **🏆 Classement**.
+3. Tu y trouveras le rang de tous les agents, leurs points d'expérience (XP) et les badges débloqués !`;
+            } else if (lowerMsg.includes('projet') || lowerMsg.includes('ctf') || lowerMsg.includes('mission')) {
+                responseText = `Pour accéder aux **Projets & Challenges CTF** :
+
+1. Clique sur l'onglet **📁 Projets** dans la barre de navigation en haut.
+2. Sélectionne le projet ou le challenge de ton niveau.
+3. Résous la mission pour gagner de l'XP et grimper au classement !`;
+            } else if (lowerMsg.includes('profil') || lowerMsg.includes('compte') || lowerMsg.includes('2fa') || lowerMsg.includes('mot de passe')) {
+                responseText = `Pour gérer ton **Profil & Sécurité** :
+
+1. Clique sur ton avatar / nom en haut à droite.
+2. Choisis **Mon Profil**.
+3. Tu pourras y activer l'authentification à 2 facteurs (A2F) et exporter ton Dossier Agent !`;
+            } else {
+                responseText = `Bonjour Agent **${user.firstName || user.name}** ! 
+
+L'Oracle fonctionne actuellement en mode local. Tu peux me poser des questions sur :
+• Le **Classement** et la progression XP
+• Les **Projets & CTF**
+• La sécurité Web & Linux`;
+            }
         }
 
         // Cleaning JSON / raw wrappers
