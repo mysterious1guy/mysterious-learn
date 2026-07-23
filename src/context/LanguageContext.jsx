@@ -337,7 +337,9 @@ export const translations = {
             creator: "Créateur",
             technologies: "Technologies",
             made_with_passion: "Fait avec passion et l'aide de l'IA",
-            platform_created_by: "Plateforme créée par"
+            platform_created_by: "Plateforme créée par",
+            age_label: "18 ans",
+            fullstack_role: "Développeur Full-Stack"
         },
         authPage: {
             verification: "Vérification",
@@ -733,7 +735,9 @@ export const translations = {
             creator: "Creator",
             technologies: "Technologies",
             made_with_passion: "Made with passion and AI assistance",
-            platform_created_by: "Platform created by"
+            platform_created_by: "Platform created by",
+            age_label: "18 years old",
+            fullstack_role: "Full-Stack Developer"
         },
         authPage: {
             verification: "Verification",

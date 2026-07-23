@@ -35,18 +35,24 @@ const Footer = () => {
   const defaultConfig = {
     siteName: 'Mysterious Classroom',
     creatorName: 'Mouhamed FALL',
-    creatorTitle: 'Étudiant en informatique',
+    creatorTitle: t('footer_extended.creator_title') || 'Étudiant en 1ère année — ESP Dakar',
     creatorBio: [
-      'Première année - École Supérieure Polytechnique de Dakar (ESP)',
-      "Passionné d'informatique depuis la 5ème",
-      '18 ans, développeur full-stack'
+      t('footer_extended.bio_1') || 'Je crois en un monde où la technologie est accessible à tous.',
+      t('footer_extended.bio_2') || 'Mysterious Classroom est ma contribution pour rendre l\'apprentissage du code gratuit, fun et interactif.',
+      t('footer_extended.bio_3') || 'Étudiant passionné par la transmission du savoir.'
     ],
     creatorAvatar: 'MF',
     technologies: ['React', 'Node.js', 'MongoDB', 'Express', 'TailwindCSS', 'Framer Motion', 'JWT', 'Twilio'],
-    footerText: t('footer.innovative_platform') || "Plateforme d'apprentissage innovante créée avec passion pour l'éducation technologique et le partage des connaissances."
+    footerText: t('footer.innovative_platform') || t('footer_extended.innovative_platform') || "Plateforme d'apprentissage innovante créée avec passion pour l'éducation technologique et le partage des connaissances."
   };
 
   const c = config || defaultConfig;
+
+  const bioLines = [
+    t('footer_extended.bio_1') || c.creatorBio[0],
+    t('footer_extended.bio_2') || c.creatorBio[1],
+    t('footer_extended.bio_3') || c.creatorBio[2]
+  ];
 
   return (
     <footer className="relative bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent border-t border-gray-800">
@@ -69,11 +75,11 @@ const Footer = () => {
             </div>
 
             <p className="text-gray-400 text-sm leading-relaxed">
-              {c.footerText}
+              {t('footer.innovative_platform') || c.footerText}
             </p>
 
             <div className="flex gap-3">
-              {socialLinks.map((social, index) => (
+              {socialLinks.map((social) => (
                 <motion.a
                   key={social.label}
                   href={social.href}
@@ -97,7 +103,7 @@ const Footer = () => {
           >
             <h4 className="text-lg font-semibold text-white flex items-center gap-2">
               <Code size={18} className="text-blue-400" />
-              {t('footer.creator') || 'Créateur'}
+              {t('footer.creator') || t('footer_extended.creator') || 'Créateur'}
             </h4>
 
             <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-4 space-y-3">
@@ -119,17 +125,17 @@ const Footer = () => {
                 </div>
                 <div>
                   <h5 className="text-white font-medium">{c.creatorName}</h5>
-                  <p className="text-gray-400 text-sm">{t('footer.creator_title') || c.creatorTitle}</p>
+                  <p className="text-gray-400 text-sm">{t('footer_extended.creator_title') || t('footer.creator_title') || c.creatorTitle}</p>
                 </div>
               </div>
 
               <div className="space-y-2 text-sm text-gray-400">
-                {(t('footer.bio_1') ? [t('footer.bio_1'), t('footer.bio_2'), t('footer.bio_3')] : c.creatorBio).map((line, i) => (
+                {bioLines.map((line, i) => (
                   <p key={i} className="flex items-center gap-2">
-                    {i === 0 && <Sparkles size={14} className="text-yellow-400" />}
-                    {i === 1 && <Heart size={14} className="text-red-400" />}
-                    {i === 2 && <Code size={14} className="text-green-400" />}
-                    {line}
+                    {i === 0 && <Sparkles size={14} className="text-yellow-400 shrink-0" />}
+                    {i === 1 && <Heart size={14} className="text-red-400 shrink-0" />}
+                    {i === 2 && <Code size={14} className="text-green-400 shrink-0" />}
+                    <span>{line}</span>
                   </p>
                 ))}
               </div>
@@ -145,11 +151,11 @@ const Footer = () => {
           >
             <h4 className="text-lg font-semibold text-white flex items-center gap-2">
               <Sparkles size={18} className="text-purple-400" />
-              {t('footer.technologies') || 'Technologies'}
+              {t('footer.technologies') || t('footer_extended.technologies') || 'Technologies'}
             </h4>
 
             <div className="grid grid-cols-2 gap-2">
-              {c.technologies.map((tech, index) => (
+              {c.technologies.map((tech) => (
                 <motion.div
                   key={tech}
                   className="bg-gray-800/30 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
@@ -175,14 +181,14 @@ const Footer = () => {
                 © {currentYear} {c.siteName}. {t('footer.platform_created_by') || 'Plateforme créée par'} {c.creatorName}.
               </p>
               <p className="text-gray-500 text-xs mt-1">
-                {c.creatorName} • {t('footer.creator_title') || c.creatorTitle} • 18 ans
+                {c.creatorName} • {t('footer_extended.creator_title') || t('footer.creator_title') || c.creatorTitle} • {t('footer.age_label') || "18 ans"}
               </p>
             </div>
 
             <div className="flex items-center gap-4 text-gray-500 text-xs">
               <span>{t('footer.made_with_passion') || "Fait avec passion et l'aide de l'IA"}</span>
               <span>•</span>
-              <span>Full-Stack Developer</span>
+              <span>{t('footer.fullstack_role') || "Développeur Full-Stack"}</span>
             </div>
           </div>
         </motion.div>
