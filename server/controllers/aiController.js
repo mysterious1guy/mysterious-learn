@@ -321,6 +321,8 @@ const aiChat = async (req, res) => {
 1. Regarde la barre de navigation supérieure.
 2. Clique sur l'onglet **🏆 Classement**.
 3. Tu y trouveras le rang des élèves, leurs points d'expérience (XP) et les badges débloqués !`;
+            } else if (lowerMsg.includes('cours') || lowerMsg.includes('module') || lowerMsg.includes('formation') || lowerMsg.includes('programme') || lowerMsg.includes('apprendre') || lowerMsg.includes('disponible')) {
+                responseText = `Les parcours interactifs sur **Mysterious Classroom** sont axés sur la **Cybersécurité & le Hacking Éthique** (Sécurité Web, XSS, SQLi, CSRF, Linux & Scripts Bash, Réseaux). Retrouve tous tes modules directement sur ton **Tableau de bord** !`;
             } else if (lowerMsg.includes('projet') || lowerMsg.includes('ctf') || lowerMsg.includes('mission')) {
                 responseText = `Pour accéder aux **Projets & Challenges CTF** :
 
