@@ -192,9 +192,12 @@ const getUserStats = async (req, res) => {
       ...dateFilter
     }).sort({ loginTime: -1 });
 
+    const activeSessionsCount = await UserActivity.countDocuments({ userId, logoutTime: null });
+
     // Calculer les statistiques
     const stats = {
       totalSessions: activities.length,
+      activeSessions: Math.max(1, activeSessionsCount),
       totalTime: activities.reduce((sum, act) => sum + (act.duration || 0), 0),
       averageSessionTime: activities.length > 0 ?
         Math.round(activities.reduce((sum, act) => sum + (act.duration || 0), 0) / activities.length) : 0,

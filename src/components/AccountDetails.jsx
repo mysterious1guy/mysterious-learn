@@ -636,7 +636,9 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               </div>
               <div className="text-left">
                 <p className="text-base font-black text-slate-900 dark:text-white">Sessions actives</p>
-                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">1 session active (Cet appareil)</p>
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  {userStats.activeSessions || 1} session{(userStats.activeSessions || 1) > 1 ? 's' : ''} active{(userStats.activeSessions || 1) > 1 ? 's' : ''} (Cet appareil)
+                </p>
               </div>
             </div>
             <ChevronRight className="text-slate-400 dark:text-slate-400" size={20} />
