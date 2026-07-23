@@ -349,7 +349,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                 {showTour && (
                     <OnboardingTour
                         onFinish={handleOnboardingFinish}
-                        onSkip={() => setShowTour(false)}
+                        onSkip={handleOnboardingFinish}
                         stepIndex={tourStep}
                         onStepChange={handleTourStepChange}
                     />
