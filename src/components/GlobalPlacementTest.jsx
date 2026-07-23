@@ -12,18 +12,18 @@ const GlobalPlacementTest = ({ level, onPass, onFail }) => {
         'Intermédiaire': [
             {
                 question: language === 'en'
-                    ? "What is the key difference between 'let' and 'var' in modern JavaScript?"
-                    : "Quelle est la différence fondamentale entre 'let' et 'var' en JavaScript moderne ?",
+                    ? "What is the primary function of a network firewall?"
+                    : "Quelle est la fonction principale d'un pare-feu (firewall) réseau ?",
                 options: language === 'en' ? [
-                    "Var is for numbers, Let is for text",
-                    "Let has block scope {}, Var has function scope",
-                    "Let is slower than Var",
-                    "Var is required to call APIs"
+                    "To compress network data",
+                    "To filter incoming and outgoing traffic based on security rules",
+                    "To generate passwords for users",
+                    "To route emails to the correct inbox"
                 ] : [
-                    "Var est pour les nombres, Let pour les textes",
-                    "Let a une portée de bloc {}, Var a une portée de fonction",
-                    "Let est plus lent que Var",
-                    "Var est obligatoire pour utiliser des API"
+                    "Compresser les données réseau",
+                    "Filtrer le trafic entrant et sortant selon des règles de sécurité",
+                    "Générer des mots de passe pour les utilisateurs",
+                    "Aiguiller les emails vers la bonne boîte"
                 ],
                 answer: 1
             },
@@ -46,70 +46,120 @@ const GlobalPlacementTest = ({ level, onPass, onFail }) => {
             },
             {
                 question: language === 'en'
-                    ? "Which command sends your local Git commits to a remote repository?"
-                    : "Quelle commande Git permet d'envoyer vos commits vers un serveur distant ?",
-                options: ["git pull", "git status", "git push", "git commit -m"],
+                    ? "In Linux, what is the 'chmod' command used for?"
+                    : "Sous Linux, à quoi sert la commande 'chmod' ?",
+                options: language === 'en' ? [
+                    "Checking the system memory",
+                    "Downloading files from the internet",
+                    "Changing file or directory access permissions",
+                    "Killing unresponsive processes"
+                ] : [
+                    "Vérifier la mémoire du système",
+                    "Télécharger des fichiers sur internet",
+                    "Modifier les permissions d'accès d'un fichier ou répertoire",
+                    "Arrêter des processus bloqués"
+                ],
                 answer: 2
             },
             {
                 question: language === 'en'
-                    ? "What does the expression '!(true && false)' evaluate to?"
-                    : "En logique informatique, que vaut l'expression '!(true && false)' ?",
-                options: ["true", "false", "undefined", "null"],
+                    ? "What is the primary goal of a Phishing attack?"
+                    : "Quel est le but principal d'une attaque de type Phishing (Hameçonnage) ?",
+                options: language === 'en' ? [
+                    "To deceive a victim into revealing confidential information",
+                    "To completely crash a remote server",
+                    "To format the victim's hard drive",
+                    "To intercept unencrypted Wi-Fi traffic"
+                ] : [
+                    "Tromper une victime pour lui faire révéler des informations confidentielles",
+                    "Faire planter complètement un serveur distant",
+                    "Formater le disque dur de la victime",
+                    "Intercepter du trafic Wi-Fi non chiffré"
+                ],
                 answer: 0
             },
             {
                 question: language === 'en'
                     ? "Which Linux terminal command displays the current working directory?"
                     : "Quelle commande du terminal Linux permet d'afficher le répertoire courant ?",
-                options: ["ls", "cd", "pwd", "chmod"],
+                options: ["ls", "cd", "pwd", "grep"],
                 answer: 2
             }
         ],
         'Avancé': [
             {
                 question: language === 'en'
-                    ? "In React, which hook is primarily used for handling side effects and lifecycle?"
-                    : "Dans React, quel hook est principalement utilisé pour gérer les effets de bord (side effects) ?",
-                options: ["useState", "useContext", "useEffect", "useReducer"],
+                    ? "What is an SQL Injection (SQLi) vulnerability?"
+                    : "Qu'est-ce qu'une vulnérabilité d'Injection SQL (SQLi) ?",
+                options: language === 'en' ? [
+                    "Using a VPN to bypass server blocks",
+                    "Cracking passwords using a dictionary list",
+                    "Inserting malicious code into a database query to manipulate it",
+                    "Overloading the database with too many connections"
+                ] : [
+                    "Utiliser un VPN pour contourner des blocages serveurs",
+                    "Craquer des mots de passe avec une liste dictionnaire",
+                    "Insérer du code malveillant dans une requête de base de données pour la manipuler",
+                    "Surcharger la base de données avec trop de connexions"
+                ],
                 answer: 2
             },
             {
                 question: language === 'en'
-                    ? "What is a 'Closure' in JavaScript?"
-                    : "Qu'est-ce qu'une 'Closure' (Fermeture) en JavaScript ?",
+                    ? "What is the key difference between Symmetric and Asymmetric encryption?"
+                    : "Quelle est la différence fondamentale entre le chiffrement Symétrique et Asymétrique ?",
                 options: language === 'en' ? [
-                    "Closing a browser tab programmatically",
-                    "A function bound to its surrounding lexical environment",
-                    "A minified JSON payload",
-                    "The break statement of a for loop"
+                    "Symmetric is used only for text, Asymmetric for files",
+                    "Asymmetric uses a key pair (public/private), symmetric uses a single key",
+                    "Symmetric is unbreakable, Asymmetric can be cracked",
+                    "Asymmetric requires an internet connection, Symmetric does not"
                 ] : [
-                    "La fermeture d'une fenêtre de navigateur",
-                    "Une fonction qui conserve l'accès aux variables de son environnement lexical",
-                    "Un fichier JSON compressé",
-                    "La fin d'une instruction break"
+                    "Le symétrique ne chiffre que le texte, l'asymétrique chiffre les fichiers",
+                    "L'asymétrique utilise une paire de clés (publique/privée), le symétrique utilise une clé unique",
+                    "Le symétrique est inviolable, l'asymétrique peut être craqué",
+                    "L'asymétrique nécessite une connexion internet, le symétrique non"
                 ],
                 answer: 1
             },
             {
                 question: language === 'en'
-                    ? "What is the time complexity of binary search on a sorted array?"
-                    : "Quelle est la complexité temporelle d'une recherche binaire dans un tableau trié ?",
-                options: ["O(1)", "O(n)", "O(log n)", "O(n²)"],
+                    ? "In penetration testing, what is a Reverse Shell?"
+                    : "En test d'intrusion (pentest), qu'est-ce qu'un 'Reverse Shell' ?",
+                options: language === 'en' ? [
+                    "A shell interface that reads commands from right to left",
+                    "A security mechanism that blocks incoming shells",
+                    "A connection initiated from the target machine back to the attacker's machine",
+                    "An encrypted tunnel used by administrators to manage servers"
+                ] : [
+                    "Une interface shell qui lit les commandes de droite à gauche",
+                    "Un mécanisme de sécurité bloquant les terminaux distants",
+                    "Une connexion initiée par la machine cible vers l'ordinateur de l'attaquant",
+                    "Un tunnel chiffré utilisé par les administrateurs serveurs"
+                ],
                 answer: 2
             },
             {
                 question: language === 'en'
-                    ? "Which of the following database engines is document-oriented (NoSQL)?"
-                    : "Laquelle de ces bases de données est de type NoSQL (orientée documents) ?",
-                options: ["MySQL", "PostgreSQL", "Oracle DB", "MongoDB"],
-                answer: 3
+                    ? "Which of the following describes a 'Buffer Overflow'?"
+                    : "Laquelle de ces définitions décrit un 'Débordement de Tampon' (Buffer Overflow) ?",
+                options: language === 'en' ? [
+                    "When a user opens too many tabs in their browser",
+                    "Writing more data to a block of memory than it is allocated to hold",
+                    "A database failing because it ran out of disk space",
+                    "Sending too many HTTP requests to a web server (DDoS)"
+                ] : [
+                    "Quand un utilisateur ouvre trop d'onglets dans son navigateur",
+                    "L'écriture de plus de données dans un bloc de mémoire que ce qui lui est alloué",
+                    "Une base de données qui plante par manque d'espace disque",
+                    "L'envoi de trop de requêtes HTTP vers un serveur web (DDoS)"
+                ],
+                answer: 1
             },
             {
                 question: language === 'en'
                     ? "What type of web attack occurs when malicious scripts are injected into trusted websites?"
                     : "Quelle attaque web consiste à injecter des scripts malveillants exécutés par d'autres utilisateurs ?",
-                options: ["SQL Injection", "Cross-Site Scripting (XSS)", "DDoS", "Buffer Overflow"],
+                options: ["SQL Injection", "Cross-Site Scripting (XSS)", "CSRF", "Man-in-the-Middle"],
                 answer: 1
             }
         ]
