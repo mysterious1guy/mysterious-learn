@@ -184,91 +184,37 @@ const aiChat = async (req, res) => {
 
         let responseText = null;
 
-        // Phase 0: Check for Gemini API key if present in environment
-        let geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-        if (geminiKey) {
-            geminiKey = geminiKey.trim().replace(/^["']|["']$/g, '');
+        // Phase 0: EXCLUSIVE DEEPSEEK ENGINE (DeepSeek-V3 & DeepSeek-R1)
+        const deepseekModels = [
+            { name: 'deepseek-v3', param: 'deepseek' },
+            { name: 'deepseek-r1', param: 'deepseek-r1' }
+        ];
 
-            const historyText = (history && Array.isArray(history)) 
-                ? history.slice(-4).map(h => `${(h.role === 'assistant' || h.role === 'model') ? 'Assistant' : 'Élève'}: ${h.text || h.content || ''}`).join('\n')
-                : '';
+        for (const ds of deepseekModels) {
+            try {
+                console.log(`📡 [AI RELAY] Appel Exclusif DeepSeek (${ds.name})...`);
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 12000);
 
-            const combinedUserPrompt = `[CONSIGNE SYSTÈME ASSISTANT]\n${systemInstruction}\n\n${historyText ? `[HISTORIQUE CONVERSATION]\n${historyText}\n\n` : ''}[QUESTION ÉLÈVE]\n${message}`;
+                const fullPrompt = `[CONSIGNE SYSTEME ASSISTANT MYSTERIOUS COPILOT]\n${systemInstruction}\n\n[PROFIL ELEVE: ${user.name}]\n[QUESTION ELEVE]: ${message}`;
+                const getUrl = `https://text.pollinations.ai/${encodeURIComponent(fullPrompt.slice(0, 350))}?model=${ds.param}&seed=${Math.floor(Math.random() * 100000)}`;
 
-            const geminiEndpoints = [
-                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', name: 'gemini-2.0-flash' },
-                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent', name: 'gemini-1.5-flash-latest' },
-                { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash (v1)' },
-                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent', name: 'gemini-2.0-flash-lite' }
-            ];
+                const dsRes = await fetch(getUrl, { signal: controller.signal });
+                clearTimeout(timeout);
 
-            for (const ep of geminiEndpoints) {
-                try {
-                    console.log(`📡 [AI RELAY] Appel Google Gemini API (${ep.name})...`);
-                    const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 10000);
-
-                    const geminiPayload = {
-                        contents: [
-                            { role: 'user', parts: [{ text: combinedUserPrompt }] }
-                        ]
-                    };
-
-                    const geminiRes = await fetch(`${ep.url}?key=${geminiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(geminiPayload),
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeout);
-
-                    if (geminiRes.ok) {
-                        const geminiData = await geminiRes.json();
-                        const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-                        if (text && text.trim()) {
-                            responseText = text;
-                            console.log(`✅ [AI RELAY] Gemini API (${ep.name}) a répondu avec succès.`);
-                            break;
-                        }
-                    } else {
-                        const errText = await geminiRes.text();
-                        console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) HTTP ${geminiRes.status}: ${errText.slice(0, 150)}`);
+                if (dsRes.ok) {
+                    const dsTxt = await dsRes.text();
+                    if (dsTxt && dsTxt.trim().length > 0 && !dsTxt.includes('PAYMENT_REQUIRED') && !dsTxt.includes('402 Payment')) {
+                        responseText = dsTxt;
+                        console.log(`✅ [AI RELAY] DeepSeek (${ds.name}) a répondu avec succès.`);
+                        break;
                     }
-                } catch (e) {
-                    console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) failed: ${e.message}`);
+                } else {
+                    const errText = await dsRes.text();
+                    console.warn(`⚠️ [AI RELAY] DeepSeek (${ds.name}) HTTP ${dsRes.status}: ${errText.slice(0, 150)}`);
                 }
-            }
-        }
-
-        // Phase 1: Free DeepSeek Relay (DeepSeek-V3 & DeepSeek-R1 via Pollinations)
-        if (!responseText) {
-            const deepseekModels = ['deepseek', 'deepseek-r1'];
-            for (const modelName of deepseekModels) {
-                try {
-                    console.log(`📡 [AI RELAY] Appel DeepSeek Gratuit (${modelName})...`);
-                    const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 10000);
-
-                    const safePrompt = `[CONSIGNE SYSTÈME]\n${systemInstruction}\n\n[ÉLÈVE ${user.name}]\n${message}`;
-                    const getUrl = `https://text.pollinations.ai/${encodeURIComponent(safePrompt.slice(0, 300))}?model=${modelName}`;
-
-                    const dsRes = await fetch(getUrl, { signal: controller.signal });
-                    clearTimeout(timeout);
-
-                    if (dsRes.ok) {
-                        const dsTxt = await dsRes.text();
-                        if (dsTxt && dsTxt.trim().length > 0 && !dsTxt.includes('PAYMENT_REQUIRED') && !dsTxt.includes('402 Payment')) {
-                            responseText = dsTxt;
-                            console.log(`✅ [AI RELAY] DeepSeek Gratuit (${modelName}) a répondu avec succès.`);
-                            break;
-                        }
-                    } else {
-                        const errText = await dsRes.text();
-                        console.warn(`⚠️ [AI RELAY] DeepSeek (${modelName}) HTTP ${dsRes.status}: ${errText.slice(0, 150)}`);
-                    }
-                } catch (e) {
-                    console.warn(`⚠️ [AI RELAY] DeepSeek (${modelName}) failed: ${e.message}`);
-                }
+            } catch (e) {
+                console.warn(`⚠️ [AI RELAY] DeepSeek (${ds.name}) failed: ${e.message}`);
             }
         }
 
