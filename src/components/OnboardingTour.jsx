@@ -75,7 +75,7 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
                 </div>
             ),
             disableBeacon: true,
-            placement: isMobile ? 'top' : 'left',
+            placement: isMobile ? 'top' : 'top-end',
         }
     ];
 
@@ -123,11 +123,11 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
             }}
             styles={{
                 options: {
-                    arrowColor: '#ffffff',
-                    backgroundColor: '#ffffff',
-                    overlayColor: 'rgba(0, 0, 0, 0.75)',
-                    primaryColor: '#3b82f6',
-                    textColor: '#1e293b',
+                    arrowColor: '#0f172a',
+                    backgroundColor: '#0f172a',
+                    overlayColor: 'rgba(0, 0, 0, 0.85)',
+                    primaryColor: '#10b981',
+                    textColor: '#f8fafc',
                     width: isMobile ? '90%' : 400,
                     zIndex: 10000,
                 },
@@ -138,7 +138,7 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
                     maxWidth: '100%',
                 },
                 buttonNext: {
-                    backgroundColor: '#3b82f6',
+                    backgroundColor: '#10b981',
                     borderRadius: '9999px',
                     padding: isMobile ? '8px 16px' : '10px 24px',
                     fontWeight: '900',
@@ -147,7 +147,7 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
                     letterSpacing: '0.1em',
                 },
                 buttonBack: {
-                    color: '#64748b',
+                    color: '#94a3b8',
                     fontWeight: '700',
                     fontSize: '12px',
                     textTransform: 'uppercase',

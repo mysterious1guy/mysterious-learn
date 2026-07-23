@@ -123,13 +123,13 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 className={`w-full max-w-md relative z-10 ${showPlacementTest ? 'blur-md pointer-events-none' : ''}`}
             >
-                <div className="bg-slate-900/90 border border-slate-800 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+                <div className="bg-slate-950/90 border border-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.1)] backdrop-blur-2xl p-8 rounded-3xl relative overflow-hidden">
                     <div className="flex justify-center mb-6">
                         <CyberPet isPasswordFocused={isPasswordFocused} user={user} />
                     </div>
 
                     <h2 className="text-2xl font-black text-white text-center mb-1 tracking-tight uppercase flex items-center justify-center gap-2">
-                        <Sparkles size={22} className="text-blue-500" />
+                        <Sparkles size={22} className="text-emerald-500" />
                         {t('onboardingFlow.title') || "Finalisation"}
                     </h2>
                     <p className="text-slate-400 text-center text-xs font-semibold mb-6">
@@ -140,8 +140,8 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                         <AnimatePresence mode="wait">
                             {step === 1 && (
                                 <motion.div key="step1" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-5">
-                                    <div className="text-center p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl mb-4">
-                                        <p className="text-xs text-blue-300 font-medium leading-relaxed" dangerouslySetInnerHTML={{ __html: (t('onboardingFlow.google_pwd_info') || "Bienvenue ! Comme tu es connecté via Google, définis un mot de passe pour pouvoir te connecter directement avec <strong class=\"text-blue-400 font-bold\">{email}</strong> la prochaine fois.").replace('{email}', user.email) }} />
+                                    <div className="text-center p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl mb-4">
+                                        <p className="text-xs text-emerald-300 font-medium leading-relaxed" dangerouslySetInnerHTML={{ __html: (t('onboardingFlow.google_pwd_info') || "Bienvenue ! Comme tu es connecté via Google, définis un mot de passe pour pouvoir te connecter directement avec <strong class=\"text-emerald-400 font-bold\">{email}</strong> la prochaine fois.").replace('{email}', user.email) }} />
                                     </div>
                                     <div className="relative">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
@@ -152,7 +152,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                             onFocus={() => setIsPasswordFocused(true)}
                                             onBlur={() => setIsPasswordFocused(false)}
-                                            className="w-full pl-11 pr-12 py-3.5 bg-slate-950/80 border border-slate-800 rounded-2xl text-white placeholder:text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                                            className="w-full pl-11 pr-12 py-3.5 bg-slate-950/80 border border-slate-800 rounded-2xl text-white placeholder:text-slate-500 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
                                             required
                                         />
                                         <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
@@ -169,7 +169,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                             onFocus={() => setIsPasswordFocused(true)}
                                             onBlur={() => setIsPasswordFocused(false)}
-                                            className="w-full pl-11 pr-12 py-3.5 bg-slate-950/80 border border-slate-800 rounded-2xl text-white placeholder:text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                                            className="w-full pl-11 pr-12 py-3.5 bg-slate-950/80 border border-slate-800 rounded-2xl text-white placeholder:text-slate-500 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
                                             required
                                         />
                                     </div>
@@ -192,7 +192,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                             setStep(2);
                                         }}
                                         disabled={!passwordsMatch || !formData.password || formData.password.length < 6}
-                                        className={`w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 ${(!passwordsMatch || !formData.password || formData.password.length < 6) ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
+                                        className={`w-full py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 ${(!passwordsMatch || !formData.password || formData.password.length < 6) ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
                                     >
                                         {t('onboardingFlow.continue') || "Continuer"} <ArrowRight size={18} />
                                     </button>
@@ -211,17 +211,17 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                                     key={goal}
                                                     type="button"
                                                     onClick={() => setFormData({ ...formData, goal })}
-                                                    className={`p-3.5 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between ${isSelected ? 'border-blue-500 bg-blue-600/20 text-white shadow-lg shadow-blue-500/20 scale-[1.01]' : 'border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800/80 hover:border-slate-700'}`}
+                                                    className={`p-3.5 rounded-2xl border text-left font-semibold text-sm transition-all flex items-center justify-between ${isSelected ? 'border-emerald-500 bg-emerald-600/20 text-white shadow-lg shadow-emerald-500/20 scale-[1.01]' : 'border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800/80 hover:border-slate-700'}`}
                                                 >
                                                     <span>{goal}</span>
-                                                    {isSelected && <CheckCircle2 size={18} className="text-blue-400" />}
+                                                    {isSelected && <CheckCircle2 size={18} className="text-emerald-400" />}
                                                 </button>
                                             )
                                         })}
                                     </div>
                                     <div className="flex gap-3 mt-4 pt-4 border-t border-slate-800">
                                         <button type="button" onClick={() => setStep(1)} className="px-5 py-3 font-bold text-xs uppercase tracking-wider text-slate-400 hover:text-white transition">{t('onboardingFlow.back') || "Retour"}</button>
-                                        <button type="button" onClick={() => setStep(3)} disabled={!formData.goal} className={`flex-1 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 transition shadow-lg shadow-blue-600/30 ${!formData.goal ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}>{t('onboardingFlow.next') || "Suivant"} <ArrowRight size={18} /></button>
+                                        <button type="button" onClick={() => setStep(3)} disabled={!formData.goal} className={`flex-1 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-600/30 ${!formData.goal ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}>{t('onboardingFlow.next') || "Suivant"} <ArrowRight size={18} /></button>
                                     </div>
                                 </motion.div>
                             )}
@@ -237,7 +237,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                             </div>
                                             <span className="text-2xl ml-4">🐣</span>
                                         </button>
-                                        <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Intermédiaire' })} className={`p-4 justify-between items-center rounded-2xl border flex transition-all ${formData.startingLevel === 'Intermédiaire' ? 'border-blue-500 bg-blue-600/20 text-white shadow-lg shadow-blue-500/20 scale-[1.01]' : 'border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800/80 hover:border-slate-700'}`}>
+                                        <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Intermédiaire' })} className={`p-4 justify-between items-center rounded-2xl border flex transition-all ${formData.startingLevel === 'Intermédiaire' ? 'border-emerald-500 bg-emerald-600/20 text-white shadow-lg shadow-emerald-500/20 scale-[1.01]' : 'border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800/80 hover:border-slate-700'}`}>
                                             <div className="flex flex-col text-left">
                                                 <span className="font-black text-white">{t('onboardingFlow.level_inter_title') || "Intermédiaire"}</span>
                                                 <span className="text-xs text-slate-400 mt-0.5">{t('onboardingFlow.level_inter_desc') || "J'ai déjà quelques bases solides"}</span>
@@ -257,7 +257,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
 
                                     <div className="flex gap-3 mt-4 pt-4 border-t border-slate-800">
                                         <button type="button" onClick={() => setStep(2)} className="px-5 py-3 font-bold text-xs uppercase tracking-wider text-slate-400 hover:text-white transition">{t('onboardingFlow.back') || "Retour"}</button>
-                                        <button type="submit" disabled={!formData.startingLevel || isLoading} className={`flex-1 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 transition shadow-lg shadow-blue-600/30 ${!formData.startingLevel || isLoading ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02]'}`}>
+                                        <button type="submit" disabled={!formData.startingLevel || isLoading} className={`flex-1 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-600/30 ${!formData.startingLevel || isLoading ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02]'}`}>
                                             {isLoading ? (t('onboardingFlow.creating') || 'Création...') : (t('onboardingFlow.validate_create') || 'Valider & Créer 🎉')}
                                         </button>
                                     </div>
