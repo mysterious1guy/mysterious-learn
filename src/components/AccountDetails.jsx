@@ -398,7 +398,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('account.first_name') || 'Prénom'}</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('profile_fields.first_name') || 'Prénom'}</label>
               {isEditing ? (
                 <input
                   type="text"
@@ -411,7 +411,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               )}
             </div>
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('account.last_name') || 'Nom'}</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('profile_fields.last_name') || 'Nom'}</label>
               {isEditing ? (
                 <input
                   type="text"
@@ -426,7 +426,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('account.email') || 'Adresse Email'}</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('profile_fields.email') || 'Adresse Email'}</label>
             <div className="relative flex items-center">
               <input
                 type="email"
@@ -436,7 +436,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 className="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-300 font-medium cursor-not-allowed opacity-90 select-none"
               />
               <span className="absolute right-3 inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-lg border border-emerald-500/20">
-                <CheckCircle size={14} /> {t('account.verified') || 'Vérifié'}
+                <CheckCircle size={14} /> {t('profile_fields.verified') || 'Vérifié'}
               </span>
             </div>
           </div>
@@ -444,16 +444,16 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('account.level') || "Niveau d'expertise"}</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('profile_fields.level') || "Niveau d'expertise"}</label>
             {isEditing ? (
               <select
                 value={editForm.programmingLevel}
                 onChange={(e) => setEditForm({ ...editForm, programmingLevel: e.target.value })}
                 className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
               >
-                <option value="Débutant">{t('account.level_beginner') || 'Débutant'}</option>
-                <option value="Intermédiaire">{t('account.level_intermediate') || 'Intermédiaire'}</option>
-                <option value="Avancé">{t('account.level_advanced') || 'Avancé'}</option>
+                <option value="Débutant">{t('profile_fields.level_beginner') || 'Débutant'}</option>
+                <option value="Intermédiaire">{t('profile_fields.level_intermediate') || 'Intermédiaire'}</option>
+                <option value="Avancé">{t('profile_fields.level_advanced') || 'Avancé'}</option>
               </select>
             ) : (
               <div className="flex items-center gap-2">
@@ -508,7 +508,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     <div className="space-y-6">
       <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
         <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-6 flex items-center gap-2">
-          <Shield size={22} className="text-blue-600" /> Sécurité du compte
+          <Shield size={22} className="text-blue-600" /> {t('profile_fields.security_tab') || 'Sécurité du compte'}
         </h4>
         <div className="space-y-4">
           <button
@@ -520,7 +520,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 <Lock size={20} />
               </div>
               <div className="text-left">
-                <p className="text-base font-black text-slate-900 dark:text-white">Changer le mot de passe</p>
+                <p className="text-base font-black text-slate-900 dark:text-white">{t('profile_fields.change_password') || 'Changer le mot de passe'}</p>
                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sécurité renforcée</p>
               </div>
             </div>
@@ -537,11 +537,11 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               >
                 <form onSubmit={handleChangePassword} className="p-6 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-5 mt-3 shadow-inner">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Mot de passe actuel</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.current_password') || 'Mot de passe actuel'}</label>
                     <input
                       type="password"
                       required
-                      placeholder="Entrez votre mot de passe actuel"
+                      placeholder={t('profile_fields.current_password') || 'Entrez votre mot de passe actuel'}
                       value={passwordForm.currentPassword}
                       onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
                       className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
@@ -549,22 +549,22 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Nouveau mot de passe</label>
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.new_password') || 'Nouveau mot de passe'}</label>
                       <input
                         type="password"
                         required
-                        placeholder="Au moins 6 caractères"
+                        placeholder={t('profile_fields.new_password') || 'Au moins 6 caractères'}
                         value={passwordForm.newPassword}
                         onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
                         className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Confirmer le nouveau</label>
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.confirm_password') || 'Confirmer le nouveau'}</label>
                       <input
                         type="password"
                         required
-                        placeholder="Répétez le nouveau mot de passe"
+                        placeholder={t('profile_fields.confirm_password') || 'Répétez le nouveau mot de passe'}
                         value={passwordForm.confirmPassword}
                         onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
                         className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
@@ -576,7 +576,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                     disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
                     className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/20 hover:shadow-lg disabled:opacity-50"
                   >
-                    {isLoading ? 'Mise à jour en cours...' : 'Mettre à jour le mot de passe'}
+                    {isLoading ? t('profile_fields.updating') || 'Mise à jour en cours...' : t('profile_fields.update_password') || 'Mettre à jour le mot de passe'}
                   </button>
                 </form>
               </motion.div>
@@ -592,11 +592,11 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 <Shield size={20} />
               </div>
               <div className="text-left">
-                <p className="text-base font-black text-slate-900 dark:text-white">Authentification à deux facteurs</p>
+                <p className="text-base font-black text-slate-900 dark:text-white">{t('profile_fields.two_factor') || 'Authentification à deux facteurs'}</p>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className={`w-2 h-2 rounded-full ${user.twoFactorEnabled ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
                   <p className={`text-xs ${user.twoFactorEnabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} font-bold`}>
-                    {user.twoFactorEnabled ? 'Activée' : 'Service 2FA prêt (Mode test dispo)'}
+                    {user.twoFactorEnabled ? t('profile_fields.two_factor_enabled') || 'Activée' : t('profile_fields.two_factor_ready') || 'Service 2FA prêt (Mode test dispo)'}
                   </p>
                 </div>
               </div>
@@ -610,9 +610,9 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 <Globe size={20} />
               </div>
               <div className="text-left">
-                <p className="text-base font-black text-slate-900 dark:text-white">Sessions actives</p>
+                <p className="text-base font-black text-slate-900 dark:text-white">{t('profile_fields.active_sessions') || 'Sessions actives'}</p>
                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  {userStats.activeSessions || 1} session{(userStats.activeSessions || 1) > 1 ? 's' : ''} active{(userStats.activeSessions || 1) > 1 ? 's' : ''} (Cet appareil)
+                  {userStats.activeSessions || 1} {t('profile_fields.session_active') || 'session(s) active(s) (Cet appareil)'}
                 </p>
               </div>
             </div>
@@ -627,7 +627,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     <div className="space-y-6">
       <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-[2.5rem] p-8 shadow-sm dark:shadow-none space-y-8">
         <h4 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white uppercase tracking-tight">
-          <Settings size={20} className="text-blue-500" /> {t('account.preferences') || 'Préférences du Compte'}
+          <Settings size={20} className="text-blue-500" /> {t('profile_fields.preferences') || 'Préférences du Compte'}
         </h4>
 
         <div className="space-y-6">
@@ -655,8 +655,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
             className="flex items-center justify-between p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50 cursor-pointer hover:border-blue-500/30 transition-colors"
           >
             <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-800 dark:text-white">{t('account.notifications') || 'Notifications par email'}</p>
-              <p className="text-xs text-slate-500 dark:text-gray-400">{t('account.notifications_desc') || 'Recevoir des emails de notification importants.'}</p>
+              <p className="text-sm font-bold text-slate-800 dark:text-white">{t('profile_fields.notifications') || 'Notifications par email'}</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile_fields.notifications_desc') || 'Recevoir des emails de notification importants.'}</p>
             </div>
             <div className={`w-12 h-6 rounded-full relative transition-all ${(user?.preferences?.notifications ?? true) ? 'bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'bg-gray-700'}`}>
               <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${(user?.preferences?.notifications ?? true) ? 'right-1' : 'left-1'}`} />
@@ -665,8 +665,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
           <div className="p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-800 dark:text-white">{t('account.language') || "Langue de l'interface"}</p>
-              <p className="text-xs text-slate-500 dark:text-gray-400">{t('account.language_desc') || "Choisir la langue d'affichage globale du site (Français / English)."}</p>
+              <p className="text-sm font-bold text-slate-800 dark:text-white">{t('profile_fields.language') || "Langue de l'interface"}</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile_fields.language_desc') || "Choisir la langue d'affichage globale du site (Français / English)."}</p>
             </div>
             <select
               value={user?.preferences?.language || localStorage.getItem('language') || 'fr'}
@@ -700,8 +700,8 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
           <div className="p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50">
             <div className="space-y-1 mb-4">
-              <p className="text-sm font-bold text-slate-800 dark:text-white">{t('account.theme') || 'Thème Dynamique'}</p>
-              <p className="text-xs text-slate-500 dark:text-gray-400">{t('account.theme_desc') || "Gérer l'apparence visuelle pour plus de confort."}</p>
+              <p className="text-sm font-bold text-slate-800 dark:text-white">{t('profile_fields.theme') || 'Thème Dynamique'}</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile_fields.theme_desc') || "Gérer l'apparence visuelle pour plus de confort."}</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <button
@@ -717,7 +717,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 }}
                 className={`py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-widest ${theme === 'light' ? 'bg-white dark:bg-gray-700 text-slate-900 dark:text-white border-2 border-blue-500 shadow-md' : 'bg-slate-200 dark:bg-gray-900/50 text-slate-600 dark:text-gray-400 border border-slate-300 dark:border-gray-800 hover:bg-slate-300 dark:hover:bg-gray-800'}`}
               >
-                {t('account.theme_light') || 'Clair'} ☀️
+                {t('profile_fields.theme_light') || 'Clair'} ☀️
               </button>
               <button
                 onClick={async () => {
@@ -732,7 +732,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 }}
                 className={`py-3 rounded-xl text-xs font-bold transition-all uppercase tracking-widest ${theme === 'dark' ? 'bg-white dark:bg-gray-700 text-slate-900 dark:text-white border-2 border-blue-500 shadow-md' : 'bg-slate-200 dark:bg-gray-900/50 text-slate-600 dark:text-gray-400 border border-slate-300 dark:border-gray-800 hover:bg-slate-300 dark:hover:bg-gray-800'}`}
               >
-                {t('account.theme_dark') || 'Sombre'} 🌙
+                {t('profile_fields.theme_dark') || 'Sombre'} 🌙
               </button>
             </div>
           </div>

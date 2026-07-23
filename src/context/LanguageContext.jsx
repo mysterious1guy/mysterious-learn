@@ -505,7 +505,7 @@ export const translations = {
             architect_quote: "I believe in a world where technology must be understood to be secured. Mysterious Classroom is the arena I built to forge the next generation of cyber experts.",
             intercept_tag: "TRANSMISSION INTERCEPTED",
             intercept_title: "The System is currently deploying",
-            intercept_desc: "I am currently injecting the new training scenarios (CTF) into the matrix. The platform is evolving. Prepare for imminent new missions.",
+            intercept_desc: "I am currently injecting new training scenarios (CTF) into the matrix. The platform is evolving. Prepare for upcoming missions.",
             intercept_status: "Compiling missions in progress...",
             topic_sys_name: "Shell & Linux",
             topic_sys_tag: "System",
@@ -615,38 +615,6 @@ export const translations = {
             made_with_passion: "Made with passion and AI assistance",
             platform_created_by: "Platform created by"
         },
-        home: {
-            established_connection: "Secure Connection Established",
-            title_part1: "MYSTERIOUS",
-            title_part2: "CLASSROOM",
-            subtitle: "Initializing the first investigation and CTF-based learning platform. No boring theory, just virtual servers to analyze, code to audit, and flags to capture.",
-            btn_create_agent: "Create Agent Profile",
-            btn_read_briefing: "Read Briefing",
-            stats_registered: "Registered Agents",
-            stats_active: "Operational Agents",
-            stats_status: "Server Status",
-            stats_online: "Online",
-            mechanics_tag: "TRAINING PROTOCOL",
-            mechanics_title: "Learn by Investigation (CTF)",
-            mechanics_desc: "Forget multiple choice questions. Here, you face simulated real systems. Find clues, discover vulnerabilities, and prove your expertise.",
-            step1_title: "Analyze Scenario",
-            step1_desc: "A virtual company was hacked. Read the mission briefing, study the architecture, and analyze the provided logs.",
-            step2_title: "Find Vulnerability",
-            step2_desc: "Use your logic, programming, or networking skills to exploit the flaw (XSS, Injection, misconfiguration).",
-            step3_title: "Capture the FLAG",
-            step3_desc: "Once the system is compromised, retrieve a special string (e.g., FLAG{h4ck3d}). Validate it to earn XP.",
-            clearance_title: "Clearance Levels",
-            clearance_desc: "Missions are classified by Clearance Level. Gain experience to unlock access to the most critical operations.",
-            architect_tag: "SYSTEM ARCHITECT",
-            architect_quote: "I believe in a world where technology must be understood to be secured. Mysterious Classroom is the arena I built to forge the next generation of cyber experts.",
-            intercept_tag: "TRANSMISSION INTERCEPTED",
-            intercept_title: "System is deploying",
-            intercept_desc: "[INFO] I am currently injecting new training scenarios (CTF) into the matrix. The platform is evolving. Prepare for upcoming missions.",
-            intercept_status: "Compiling missions..."
-        },
-        accountPage: {
-            back_to_dashboard: "Back to dashboard"
-        },
         authPage: {
             verification: "Verification",
             signin: "Sign In",
@@ -691,7 +659,7 @@ export const translations = {
             rights_title: "⚙️ 4. Your Rights",
             rights_desc: "You have the right to access, export, and permanently delete your account at any time from your profile settings."
         },
-        footer: {
+        footer_extended: {
             creator: "Creator",
             technologies: "Technologies",
             innovative_platform: "Innovative learning platform created with passion for tech education and knowledge sharing.",
@@ -703,7 +671,12 @@ export const translations = {
         },
         copilot: {
             welcome: "Hello",
-            ready: "Ready to learn the logic of algorithms?"
+            ready: "Ready to learn the logic of algorithms?",
+            ask_placeholder: "Ask me a question about the code...",
+            thinking: "I am thinking...",
+            no_token: "No authentication token found. Please log in.",
+            error: "An error occurred.",
+            try_again: "Try again"
         }
     }
 };

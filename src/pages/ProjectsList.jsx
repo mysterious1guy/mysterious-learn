@@ -135,7 +135,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                 {t('projectsList.hero_title1') || "Quêtes"} <span className="text-yellow-300">{t('projectsList.hero_title2') || "& Projets de Code"}</span>
                             </h1>
                             <p className="text-lg text-blue-100 mb-8 leading-relaxed font-medium">
-                                {t('projectsList.hero_desc') || "Débloquez vos compétences d'ingénieur. Nos équipes préparent de nouveaux défis pratiques et interactifs."}
+                                {t('projectsList.hero_desc') || "Débloquez vos compétences d'ingénieur. Je prépare de nouveaux défis pratiques et interactifs."}
                             </p>
 
                             <div className="flex flex-wrap gap-6">

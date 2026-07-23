@@ -93,13 +93,13 @@ const HomePage = ({ API_URL }) => {
     ];
 
     return (
-        <div className="min-h-screen bg-transparent font-sans selection:bg-blue-500/30 text-slate-900 relative overflow-hidden">
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-500/30 text-slate-900 relative overflow-hidden">
             
             {/* Dynamic Mouse Tracking Background */}
             <div 
-                className="pointer-events-none fixed inset-0 z-0 opacity-40 mix-blend-multiply transition-opacity duration-300"
+                className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-100"
                 style={{
-                    background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.1), transparent 80%)`
+                    background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.15), transparent 80%)`
                 }}
             />
 
@@ -317,8 +317,8 @@ const HomePage = ({ API_URL }) => {
                             {t('home.intercept_title') || 'Le Système est en cours de déploiement'}
                         </h2>
 
-                        <p className="text-slate-400 text-base md:text-xl max-w-3xl mx-auto leading-relaxed font-mono">
-                            <span className="text-red-500">[INFO]</span> {t('home.intercept_desc') || "J'injecte actuellement les nouveaux scénarios d'entraînement (CTF) dans la matrice. La plateforme évolue. Préparez-vous pour de nouvelles missions imminentes."}
+                        <p className="text-slate-400 text-base md:text-xl max-w-3xl mx-auto leading-relaxed font-medium">
+                            <span className="text-red-500 font-bold">[INFO]</span> {t('home.intercept_desc') || "J'injecte actuellement les nouveaux scénarios d'entraînement (CTF) dans la matrice. La plateforme évolue. Préparez-vous pour de nouvelles missions imminentes."}
                         </p>
 
                         <div className="pt-4 flex flex-wrap items-center justify-center gap-6">

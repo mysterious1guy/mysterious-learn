@@ -100,6 +100,18 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
         try {
             // Use the API_URL for AI chat
+            const historyPayload = messages
+                // Exclude the very first hardcoded initialization greeting to save tokens
+                .filter((m, idx) => !(idx === 0 && m.role === 'system'))
+                .map(m => ({
+                    role: m.role === 'system' ? 'assistant' : m.role,
+                    text: m.content
+                }));
+            
+            if (language === 'en') {
+                historyPayload.unshift({ role: 'system', text: 'You are Mysterious Copilot. The user has selected English. You MUST reply ONLY in English.' });
+            }
+
             const response = await fetch(`${API_URL}/ai/chat`, {
                 method: 'POST',
                 headers: {
@@ -107,21 +119,15 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     'Authorization': `Bearer ${user?.token || localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                    message: language === 'en' ? `${userMsg}\n[IMPORTANT: Please respond in English]` : userMsg,
-                    history: messages
-                        // Exclude the very first hardcoded initialization greeting to save tokens
-                        .filter((m, idx) => !(idx === 0 && m.role === 'system'))
-                        .map(m => ({
-                            role: m.role === 'system' ? 'assistant' : m.role,
-                            text: m.content
-                        }))
+                    message: userMsg,
+                    history: historyPayload
                 })
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || data.error || `Erreur serveur : ${response.status}`);
+                throw new Error(data.message || data.error || `${t('copilot.error') || 'Erreur serveur'} : ${response.status}`);
             }
 
             const aiResponse = data.response || "Désolé, j'ai eu un trou de mémoire.";
@@ -343,7 +349,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                     Oracle Mentor
                                 </span>
                                 <span className="text-[10px] text-blue-400 font-bold opacity-60">
-                                    Système de Logique Avancé
+                                    {t('copilot.advanced_logic') || 'Système de Logique Avancé'}
                                 </span>
                             </div>
                         </div>
@@ -409,7 +415,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                                 <div className="flex items-center gap-2 mb-3 opacity-60">
                                                     {msg.type === 'suggestion' ? <Sparkles size={12} className="text-amber-400" /> : <Terminal size={12} className="text-blue-400" />}
                                                     <span className="text-[10px] font-black font-mono tracking-widest uppercase">
-                                                        {msg.type === 'suggestion' ? 'Suggestion' : 'Assistant'}
+                                                        {msg.type === 'suggestion' ? 'Suggestion' : t('copilot.assistant') || 'Assistant'}
                                                     </span>
                                                 </div>
                                             )}
@@ -454,7 +460,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Pose ta question au mentor..."
+                                placeholder={t('copilot.ask_placeholder') || "Pose ta question au mentor..."}
                                 className="w-full bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 rounded-2xl py-4 pl-5 pr-14 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all font-medium text-sm shadow-2xl relative z-10"
                             />
                             <button
@@ -467,11 +473,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                         </form>
                         <div className="mt-4 flex justify-center gap-4">
                             <button className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5">
-                                <Maximize2 size={10} /> Mode Focus
+                                <Maximize2 size={10} /> {t('copilot.focus_mode') || 'Mode Focus'}
                             </button>
                             <span className="text-[10px] text-slate-700">|</span>
                             <button className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5">
-                                <Terminal size={10} /> Aide
+                                <Terminal size={10} /> {t('copilot.help') || 'Aide'}
                             </button>
                         </div>
                     </div>
