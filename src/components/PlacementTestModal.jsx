@@ -25,15 +25,15 @@ const PlacementTestModal = ({ isOpen, onClose, course, onUnlock }) => {
         const isAvance = courseNameStr.includes('Avancé');
 
         const genericInter = [
-            { question: "Quelle est la complexité temporelle moyenne d'un algorithme de tri rapide (QuickSort) ?", options: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"], answer: 1 },
-            { question: "Que signifie le concept d'encapsulation en programmation orientée objet ?", options: ["Rendre le code plus rapide à l'exécution", "Cacher les détails d'implémentation et restreindre l'accès", "Permettre à une classe d'avoir plusieurs parents", "Déployer le code sur un registre"], answer: 1 },
-            { question: "Parmi ces structures de données, laquelle fonctionne sur le principe LIFO (Last In, First Out) ?", options: ["File (Queue)", "Liste chaînée", "Pile (Stack)", "Arbre binaire de recherche"], answer: 2 }
+            { question: "En C, que fait l'opérateur '&' appliqué devant une variable (&valeur) ?", options: ["Il multiplie la valeur par deux", "Il retourne l'adresse mémoire RAM de la variable", "Il libère la mémoire de la variable", "Il convertit la variable en chaîne de caractères"], answer: 1 },
+            { question: "Quelle fonction de la bibliothèque standard <stdlib.h> permet de réserver de la mémoire sur le Tas (Heap) ?", options: ["printf()", "malloc()", "scanf()", "free()"], answer: 1 },
+            { question: "Que se passe-t-il si vous allouez de la mémoire avec malloc() sans appeler free() à la fin ?", options: ["Une fuite mémoire (Memory Leak)", "Le processeur s'arrête immédiatement", "Le code se recompile automatiquement", "La variable devient globale"], answer: 0 }
         ];
 
         const genericAvance = [
-            { question: "Quel est le problème principal lié à l'utilisation répétée de références croisées ou circulaires dans les langages utilisant le comptage de références ?", options: ["La surcharge du cache CPU", "L'impossibilité absolue de compiler", "Les fuites de mémoire (Memory Leaks)", "La corruption du disque (Disk Swap)"], answer: 2 },
-            { question: "Dans le contexte des bases de données de production, que garantit la propriété 'Atomicité' (dans le théorème ACID) ?", options: ["Les données sont chiffrées de bout en bout", "Une transaction s'exécute entièrement ou pas du tout", "Les temps de réponse sont prédictifs", "Les données sont répliquées en temps réel"], answer: 1 },
-            { question: "Quelle structure de données est mathématiquement la plus optimale pour implémenter un dictionnaire (clé-valeur) avec un accès en temps constant O(1) en moyenne ?", options: ["Arbre binaire de recherche équilibré", "Table de hachage (Hash Table)", "Liste doublement chaînée", "Graphe orienté acyclique"], answer: 1 }
+            { question: "Si 'int *ptr' pointe sur un tableau d'entiers, à quoi équivaut la notation *(ptr + i) ?", options: ["ptr[i]", "&ptr[i]", "i * sizeof(ptr)", "ptr + i"], answer: 0 },
+            { question: "Comment accède-t-on au membre 'age' d'une structure via un pointeur 'struct Etudiant *p' ?", options: ["p.age", "p->age", "*p.age", "p&age"], answer: 1 },
+            { question: "Quel est le rôle du caractère '\0' dans une chaîne de caractères en C ?", options: ["Indiquer la fin de la chaîne en mémoire", "Afficher un espace dans la console", "Représenter le chiffre zéro", "Effacer le tampon de saisie"], answer: 0 }
         ];
 
         return isAvance ? genericAvance : genericInter;

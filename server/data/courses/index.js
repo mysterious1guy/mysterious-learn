@@ -1,35 +1,8 @@
-const orientationCourse = require("./orientation");
-const gitCourses = require("./git");
-const networkCourses = require("./network");
-const algoCourses = require("./algo");
 const cCourses = require("./c");
-const pythonCourses = require("./python");
-const cppCourses = require("./cpp");
-const htmlCourses = require("./html");
-const cssCourses = require("./css");
-const bashCourses = require("./bash");
-const jsCourses = require("./js");
-const phpCourses = require("./php");
-const mongodbCourses = require("./mongodb");
-const mysqlCourses = require("./mysql");
-const reactCourses = require("./react");
 
+// Table rase : Mysterious Classroom se concentre à 100% sur le Masterclass d'Exception du Langage C.
 const allCourses = [
-    ...orientationCourse,
-    ...gitCourses,
-    ...networkCourses,
-    ...algoCourses,
-    ...cCourses,
-    ...pythonCourses,
-    ...cppCourses,
-    ...htmlCourses,
-    ...cssCourses,
-    ...bashCourses,
-    ...jsCourses,
-    ...phpCourses,
-    ...mongodbCourses,
-    ...mysqlCourses,
-    ...reactCourses
+    ...cCourses
 ];
 
 module.exports = allCourses;

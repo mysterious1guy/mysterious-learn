@@ -199,8 +199,8 @@ const HomePage = ({ API_URL }) => {
                         <h2 className="text-4xl md:text-5xl font-black text-slate-900  max-w-3xl leading-tight">
                             L'Excellence par la Maîtrise des Fondamentaux
                         </h2>
-                        <p className="mt-6 text-xl text-slate-600  max-w-2xl font-medium">
-                            Nous fuyons la surabondance. Mysterious Classroom se concentre fièrement sur 12 piliers technologiques essentiels, forgés à travers 3 niveaux d'expertise stricts.
+                        <p className="mt-6 text-xl text-slate-600 max-w-2xl font-medium">
+                            Table rase sur le superflu. Mysterious Classroom se consacre à 100% à la maîtrise absolue du <b>Langage C</b>, la pierre angulaire de l'informatique moderne et des systèmes d'exploitation.
                         </p>
                     </div>
 
@@ -209,54 +209,52 @@ const HomePage = ({ API_URL }) => {
                         <div className="bg-white border border-slate-200/90 rounded-[2.5rem] p-8 group hover:border-blue-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-blue-500/10 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-36 h-36 bg-blue-500/10 blur-3xl rounded-full" />
                             <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-md">
-                                <span className="text-3xl">🐣</span>
+                                <span className="text-3xl">⚙️</span>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Niveau Débutant</h3>
+                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">1. Compilation & RAM</h3>
                             <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
-                                Les fondations pures. Apprenez la logique algorithmique, la syntaxe de base et les concepts clés sans aucune abstraction. 100% pratique.
+                                Les fondations pures. Chaîne de compilation GCC, gestion des octets, types stricts, préprocesseur et entrées/sorties standard.
                             </p>
                         </div>
                         {/* Level 2 */}
                         <div className="bg-white border border-slate-200/90 rounded-[2.5rem] p-8 group hover:border-purple-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-purple-500/10 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-36 h-36 bg-purple-500/10 blur-3xl rounded-full" />
                             <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all shadow-md">
-                                <span className="text-3xl">🚀</span>
+                                <span className="text-3xl">📍</span>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Intermédiaire</h3>
+                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">2. Pointeurs & Références</h3>
                             <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
-                                L'architecture et la rigueur. Structure de données avancée, programmation orientée objet, gestion mémoire et création de projets complets.
+                                Adressage mémoire direct, arithmétique de pointeurs, déréférencement, passage par référence et chaînes de caractères.
                             </p>
                         </div>
                         {/* Level 3 */}
                         <div className="bg-white border border-slate-200/90 rounded-[2.5rem] p-8 group hover:border-orange-500/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-orange-500/10 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-36 h-36 bg-orange-500/10 blur-3xl rounded-full" />
                             <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-orange-600 group-hover:text-white transition-all shadow-md">
-                                <span className="text-3xl">💻</span>
+                                <span className="text-3xl">🧠</span>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Expertise Avancée</h3>
+                            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">3. Allocation & Systèmes</h3>
                             <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
-                                Conçu pour l'ingénierie. Algorithmes complexes, sécurité, performance système et architectures backend/frontend professionnelles.
+                                Gestion du Tas (Heap) avec `malloc` / `free`, structures de données complexes, listes chaînées et entrées/sorties fichiers.
                             </p>
                         </div>
                     </div>
 
-                    <div className="bg-white  border border-slate-200  rounded-[3rem] p-10 md:p-16 text-center shadow-2xl overflow-hidden relative">
+                    <div className="bg-white border border-slate-200 rounded-[3rem] p-10 md:p-16 text-center shadow-2xl overflow-hidden relative">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-blue-500/5 blur-[100px] pointer-events-none" />
-                        <h3 className="text-3xl font-black text-slate-900  mb-8 relative z-10">Les 12 Piliers de l'Apprentissage</h3>
+                        <h3 className="text-3xl font-black text-slate-900 mb-8 relative z-10">Les Piliers du C Masterclass</h3>
                         <div className="flex flex-wrap justify-center gap-4 relative z-10">
                             {[
-                                { name: 'Algorithmique', icon: '🧠' },
-                                { name: 'Langage C', icon: '⚙️' },
-                                { name: 'C++', icon: '🚀' },
-                                { name: 'Python', icon: '🐍' },
-                                { name: 'Bash Scripts', icon: '🐧' },
-                                { name: 'HTML5', icon: '🌐' },
-                                { name: 'CSS3', icon: '🎨' },
-                                { name: 'JavaScript', icon: '⚡' },
-                                { name: 'PHP', icon: '🐘' },
-                                { name: 'MySQL', icon: '🐬' },
-                                { name: 'MongoDB', icon: '🍃' },
-                                { name: 'ReactJS', icon: '⚛️' }
+                                { name: 'Compilateur GCC', icon: '⚙️' },
+                                { name: 'Gestion RAM & Octets', icon: '💻' },
+                                { name: 'Pointeurs & Adresses', icon: '🎯' },
+                                { name: 'Passage par Référence', icon: '🔄' },
+                                { name: 'Arithmétique Mémoire', icon: '📐' },
+                                { name: 'Chaînes char*', icon: '🔤' },
+                                { name: 'Allocation Malloc/Free', icon: '🧪' },
+                                { name: 'Structures & Typedef', icon: '📦' },
+                                { name: 'Listes Chaînées', icon: '🔗' },
+                                { name: 'Fichiers & I/O', icon: '📁' }
                             ].map(tech => (
                                 <span key={tech.name} className="flex items-center gap-2 px-6 py-3 bg-slate-50  border border-slate-200  rounded-xl text-slate-700  font-bold hover:text-blue-600 :text-white hover:border-blue-500 transition-colors shadow-lg shadow-black/5 ">
                                     <span className="text-xl">{tech.icon}</span>

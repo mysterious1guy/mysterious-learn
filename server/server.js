@@ -12,11 +12,13 @@ const connectDB = require('./config/db');
 const Course = require('./models/Course');
 const seedCourses = require('./seedCourses');
 
+const coursesData = require('./data/courses/index');
+
 connectDB().then(async () => {
   try {
     const count = await Course.countDocuments();
-    if (count !== 50) {
-      console.log(`⚙️ Base de données désynchronisée (${count} cours trouvés, 50 obligatoires). Lancement de l'auto-seeding...`);
+    if (count !== coursesData.length) {
+      console.log(`⚙️ Base de données désynchronisée (${count} cours trouvés, ${coursesData.length} obligatoires). Lancement de la table rase et de l'auto-seeding...`);
       try {
         await Course.collection.dropIndexes();
         console.log('🧹 Index de la collection Course supprimés avec succès pour réinitialisation');

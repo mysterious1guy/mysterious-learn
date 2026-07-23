@@ -10,8 +10,9 @@ async function seedCourses(closeConnection = true) {
     const isConnected = await connectDB();
 
     if (isConnected || mongoose.connection.readyState === 1) {
-      // Connexion réussie - utiliser MongoDB
-      console.log('🗑️ Collection courses vidée');
+      // Connexion réussie - Table rase totale sur MongoDB
+      console.log('🗑️ Table rase : suppression de tous les anciens cours...');
+      await Course.deleteMany({});
       try {
         await Course.collection.dropIndexes();
       } catch (e) {

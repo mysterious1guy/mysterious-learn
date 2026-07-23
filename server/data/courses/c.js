@@ -1,201 +1,201 @@
 const cCourses = [
     {
-        id: "c-niveau-d-butant",
-        title: "Langage C - Niveau Débutant",
-        description: "Maîtrisez la base de l'informatique moderne. Comprenez la compilation et la gestion physique de la mémoire.",
-        category: "Programmation",
+        id: "c-fondations-compilation",
+        title: "Langage C - 1. Fondations & Compilation System",
+        description: "Plongez au cœur du processeur et de la mémoire RAM. Comprenez la chaîne de compilation GCC, le système de types stricts et les E/S standard.",
+        category: "Programmation C",
         level: "Débutant",
-        duration: "35 heures",
+        duration: "40 heures",
         image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
-        rating: 4.8,
+        rating: 5.0,
         language: "c",
         isFree: true,
-        tags: ["c", "compilation", "débutant"],
+        tags: ["c", "compilation", "gcc", "ram", "types"],
         chapters: [
             {
-                title: "1. Vision Globale : Le langage système",
-                description: "Le C est partout (Windows, Linux, Tesla).",
+                title: "1. Architecture ordinateur & Philosophie du C",
+                description: "Le langage proche du matériel par excellence.",
                 order: 1,
-                content: "Le C est un langage compilé, proche du processeur. Pas de magie ici : chaque octet doit être géré avec rigueur.",
-                objectives: ["Comprendre le rôle du C"]
+                content: "Le C a été créé par Dennis Ritchie aux laboratoires Bell pour écrire le système d'exploitation UNIX. Contrairement aux langages interprétés, le C s'exécute directement sur le processeur (CPU) et communique en direct avec la mémoire vive (RAM). Comprendre le C, c'est comprendre comment fonctionne un ordinateur moderne.",
+                objectives: ["Comprendre le rôle du langage C dans l'informatique système", "Visualiser l'interaction entre le CPU et la RAM"]
             },
             {
-                title: "2. Concept : Types & Variables statiques",
-                description: "Réserver des cases mémoire précisément.",
+                title: "2. La Chaîne de Compilation GCC (Étape par Étape)",
+                description: "Du fichier source `.c` au binaire exécutable.",
                 order: 2,
-                content: "Contrairement au JS, vous devez dire à l'avance si c'est un `int` (4 octets) ou un `char` (1 octet). Le compilateur GCC fera le reste.",
-                objectives: ["Déclarer et compiler un programme"]
+                content: "La transformation d'un fichier `.c` en exécutable comporte 4 étapes fondamentales :\n1. Préprocesseur (`gcc -E`) : Remplace les `#include` et `#define`.\n2. Compilateur (`gcc -S`) : Traduit le C en code Assembleur.\n3. Assembleur (`gcc -c`) : Traduit l'assembleur en fichier objet binaire (`.o`).\n4. Éditeur de Liens / Linker (`gcc`) : Assemble les fichiers objets et bibliothèques en un binaire final.",
+                objectives: ["Maîtriser les drapeaux de compilation GCC (`-Wall -Wextra -std=c11`)", "Résoudre les erreurs de compilation et de linkage"]
             },
             {
-                title: "3. Exemple Concret : Hello World & Printf",
-                description: "Votre première sortie standard.",
+                title: "3. Types Primitifs, Octets & Modificateurs",
+                description: "Allouer la taille mémoire exacte.",
                 order: 3,
-                content: "#include <stdio.h>\\nint main() { printf(\"Salut!\"); return 0; }. Apprenez le rôle des fichiers headers (h).",
-                objectives: ["Écrire un code C valide"]
+                content: "En C, chaque variable réserve un nombre fixe d'octets en RAM :\n- `char` : 1 octet (de -128 à 127 ou caractère ASCII)\n- `short` : 2 octets\n- `int` : 4 octets (32 bits)\n- `long` / `long long` : 4 à 8 octets\n- `float` : 4 octets (nombres réels)\n- `double` : 8 octets (haute précision)\nUtilisez les modificateurs `unsigned` pour doubler la portée positive et `const` pour créer des constantes immuables.",
+                objectives: ["Calculer la taille mémoire exacte avec `sizeof()`", "Choisir le type optimal pour chaque donnée"]
             },
             {
-                title: "4. Cas Pratique : Calcul de périmètre",
-                description: "Saisie clavier via scanf.",
+                title: "4. Entrées / Sorties Standard (Printf & Scanf)",
+                description: "Interagir avec le terminal Linux / MS-DOS.",
                 order: 4,
-                content: "Utilisez `scanf(\"%d\", &rayon)` pour récupérer une valeur. Comprenez l'importance du symbole '&' (adresse).",
-                objectives: ["Utiliser les entrées/sorties"]
+                content: "La bibliothèque `<stdio.h>` fournit les fonctions de base :\n- `printf(\"Format %d\", valeur)` : Affiche des données formatées sur `stdout`.\n- `scanf(\"%d\", &variable)` : Lit une saisie sur `stdin`. Remarquez le symbole `&` qui transmet l'adresse mémoire de la variable pour que `scanf` puisse la modifier !",
+                objectives: ["Utiliser les spécificateurs de format (`%d`, `%f`, `%c`, `%s`, `%p`)", "Gérer les tampons de saisie clavier"]
             },
             {
-                title: "5. Exercice : Convertisseur de température",
-                description: "Logique mathématique simple.",
+                title: "5. Projet Pratique : Calculateur de Métriques & Binaire",
+                description: "Construire un convertisseur complet en C.",
                 order: 5,
-                content: "Écrivez un programme qui convertit les Celsius en Fahrenheit via la formule standard. Compilez-le sans erreur.",
-                objectives: ["Maîtriser le workflow d'un fichier .c"]
+                content: "Écrivez un programme complet qui prend les dimensions d'un système, calcule sa consommation en RAM, affiche les adresses mémoire des variables et effectue des conversions d'unités avec une précision optimale.",
+                objectives: ["Écrire un fichier main.c propre et fonctionnel", "Compiler et exécuter sans le moindre avertissement"]
             }
         ]
     },
     {
-        id: "c-niveau-moyen",
-        title: "Langage C - Niveau Moyen",
-        description: "Contrôlez le flux et les collections. Maîtrisez les structures de décision et les tableaux contigus.",
-        category: "Programmation",
+        id: "c-flux-fonctions-modularite",
+        title: "Langage C - 2. Contrôle de Flux, Fonctions & Modularité",
+        description: "Structurez votre code avec des boucles performantes, créez des fonctions réutilisables et découpez votre projet en fichiers headers `.h`.",
+        category: "Programmation C",
         level: "Intermédiaire",
-        duration: "50 heures",
+        duration: "45 heures",
         image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
-        rating: 4.9,
+        rating: 5.0,
         language: "c",
         isFree: true,
-        tags: ["c", "logic", "moyen"],
+        tags: ["c", "boucles", "fonctions", "modularite", "headers"],
         chapters: [
             {
-                title: "1. Vision Globale : La logique binaire",
-                description: "Prendre des décisions au plus bas niveau.",
+                title: "1. Contrôle de Flux : Embranchements & Conditions",
+                description: "Prendre des décisions éclairées au niveau microprocesseur.",
                 order: 1,
-                content: "En C, les conditions sont le socle du contrôle. Maîtrisez les opérateurs logiques pour diriger le processeur.",
-                objectives: ["Maîtriser le flux d'exécution"]
+                content: "Apprenez la mécanique des conditions en C (`if`, `else if`, `else`). Découvrez l'instruction `switch(variable)` idéale pour créer des menus interactifs rapides grâce aux tables de saut générées par le compilateur.",
+                objectives: ["Implémenter des choix logiques complexes", "Utiliser l'opérateur ternaire `condition ? valeur1 : valeur2`"]
             },
             {
-                title: "2. Concept : If, Else & Switch",
-                description: "Les embranchements.",
+                title: "2. Boucles d'Itération & Optimisation",
+                description: "Répéter des blocs d'instructions sans perte de vitesse.",
                 order: 2,
-                content: "Apprenez à structurer vos choix logiques. Le `switch` est idéal pour les menus de console complexes.",
-                objectives: ["Implémenter des algorithmes de décision"]
+                content: "Explorez les trois structures de boucles du C :\n- `while(condition)` : Répète tant que la condition est vraie.\n- `do { ... } while(condition)` : Exécute au moins une fois le bloc.\n- `for(init; condition; incrément)` : La boucle par excellence pour parcourir des collections.",
+                objectives: ["Contrôler le flux avec `break` et `continue`", "Éviter les boucles infinies et les dépassements"]
             },
             {
-                title: "3. Exemple Concret : Boucles d'affichage",
-                description: "Automatiser avec For et While.",
+                title: "3. Fonctions & Modèle d'Empilement (Call Stack)",
+                description: "Découper votre logique en modules autonomes.",
                 order: 3,
-                content: "Affichez une table de multiplication en utilisant une boucle imbriquée. Comprenez l'incrémentation en C.",
-                objectives: ["Répéter des tâches efficacement"]
+                content: "Une fonction C possède un prototype `type_retour nom(parametres)`. Lors de l'appel d'une fonction, ses variables locales sont empilées dans la Stack (Pile d'exécution) puis dépilées à la fin de la fonction.",
+                objectives: ["Déclarer les prototypes de fonctions", "Comprendre la portée des variables (locales vs statiques)"]
             },
             {
-                title: "4. Cas Pratique : Gestion de notes",
-                description: "Les Tableaux (Arrays).",
+                title: "4. Modularité Professionnelle : Fichiers `.h` et `.c`",
+                description: "Organiser un grand projet C comme un ingénieur.",
                 order: 4,
-                content: "Stockez 10 notes dans un tableau `int notes[10]`. Calculez la moyenne en parcourant le tableau avec une boucle.",
-                objectives: ["Gérer des listes de données contigües"]
+                content: "Séparez votre projet en plusieurs fichiers :\n- `.h` (Header) : Contient les prototypes et constantes (#ifndef MACRO_H ... #endif).\n- `.c` (Source) : Contient le code des fonctions.\nCela permet la compilation séparée et accélère les builds de projets géants.",
+                objectives: ["Créer des bibliothèques de fonctions C réutilisables", "Gérer les Include Guards pour éviter les inclusions multiples"]
             },
             {
-                title: "5. Exercice : Tri à bulles",
-                description: "Votre premier algorithme de tri.",
+                title: "5. Tableaux Unidimensionnels & Bidimensionnels",
+                description: "Stocker des séquences de données contiguës.",
                 order: 5,
-                content: "Ordonnez une liste de nombres du plus petit au plus grand par des échanges successifs. Indice : C'est le tri le plus simple au monde.",
-                objectives: ["Implémenter un algorithme de tri"]
+                content: "Un tableau `int tab[100]` réserve 100 entiers côte à côte en mémoire. Apprenez à initialiser, parcourir et manipuler des matrices 2D `int matrice[4][4]` pour modéliser des jeux ou des données scientifiques.",
+                objectives: ["Parcourir des tableaux sans sortir des limites", "Transmettre un tableau en paramètre de fonction"]
             }
         ]
     },
     {
-        id: "c-niveau-interm-diaire",
-        title: "Langage C - Niveau Intermédiaire",
-        description: "Le Saint Graal : les Pointeurs. Gérez la mémoire vive directement.",
-        category: "Programmation",
-        level: "Intermédiaire",
-        duration: "50 heures",
-        image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
-        rating: 4.9,
-        language: "c",
-        isFree: true,
-        tags: ["c", "pointers", "intermédiaire"],
-        chapters: [
-            {
-                title: "1. Vision Globale : L'adressage RAM",
-                description: "La vérité sur les variables.",
-                order: 1,
-                content: "Une variable n'est qu'une adresse dans la barrette RAM. Un pointeur est une variable qui stocke cette adresse.",
-                objectives: ["Démystifier la mémoire vive"]
-            },
-            {
-                title: "2. Concept : Pointeurs & Déréférencement",
-                description: "Accéder à la donnée par son adresse.",
-                order: 2,
-                content: "Utilisez `*ptr` pour modifier la valeur pointée. C'est le passage par référence, indispensable pour les performances.",
-                objectives: ["Manipuler les pointeurs"]
-            },
-            {
-                title: "3. Exemple Concret : Swap par pointeur",
-                description: "Échanger deux variables efficacement.",
-                order: 3,
-                content: "Créez une fonction `void echange(int *a, int *b)` qui inverse les valeurs sans utiliser de variable globale.",
-                objectives: ["Utiliser les pointeurs en fonction"]
-            },
-            {
-                title: "4. Cas Pratique : Arithmétique de pointeurs",
-                description: "Voyager dans la RAM.",
-                order: 4,
-                content: "Parcourez un tableau en utilisant `ptr++` au lieu de `tab[i]`. Découvrez la puissance brute de l'accès direct.",
-                objectives: ["Naviguer dans les adresses mémoire"]
-            },
-            {
-                title: "5. Exercice : Inverser une chaîne",
-                description: "Manipulation de Strings (Pointeurs de char).",
-                order: 5,
-                content: "En C, un String est un tableau de caractères fini par '\\0'. Inversez l'ordre des lettres en utilisant des pointeurs.",
-                objectives: ["Maîtriser les chaînes de bas niveau"]
-            }
-        ]
-    },
-    {
-        id: "c-niveau-expert",
-        title: "Langage C - Niveau Expert",
-        description: "Allocation dynamique et Structures. Maîtrisez le tas (Heap) et les systèmes complexes.",
-        category: "Programmation",
+        id: "c-pointeurs-ram-chaines",
+        title: "Langage C - 3. Pointeurs, Arithmétique & Chaînes de Caractères",
+        description: "Démystifiez le concept le plus puissant du C : l'accès direct aux adresses mémoire RAM, le passage par référence et la manipulation des chaînes.",
+        category: "Programmation C",
         level: "Avancé",
+        duration: "55 heures",
+        image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
+        rating: 5.0,
+        language: "c",
+        isFree: true,
+        tags: ["c", "pointeurs", "ram", "references", "string"],
+        chapters: [
+            {
+                title: "1. Qu'est-ce qu'un Pointeur en C ?",
+                description: "Manipuler les adresses physiques de la barrette RAM.",
+                order: 1,
+                content: "Chaque case mémoire de votre ordinateur possède une adresse binaire/hexadécimale. Un pointeur est simplement une variable dont la valeur est l'adresse mémoire d'une autre variable.\n- `&x` : Récupère l'adresse de `x`.\n- `int *ptr = &x;` : Stocke l'adresse de `x` dans `ptr`.\n- `*ptr` : Déréférence le pointeur pour lire/modifier le contenu de `x`.",
+                objectives: ["Comprendre l'opérateur d'adresse `&` et de déréférencement `*`", "Initialiser les pointeurs à `NULL` par sécurité"]
+            },
+            {
+                title: "2. Passage de Paramètres par Référence (Pointeurs)",
+                description: "Permettre aux fonctions de modifier des variables externes.",
+                order: 2,
+                content: "En C, les arguments sont transmis par copie. Pour qu'une fonction modifie une variable du `main()`, il faut passer l'adresse de cette variable. Exemple classique : la fonction `swap(int *a, int *b)`.",
+                objectives: ["Écrire des fonctions de modification directe", "Retourner plusieurs résultats via des pointeurs"]
+            },
+            {
+                title: "3. Arithmétique des Pointeurs & Équivalence avec les Tableaux",
+                description: "Naviguer à grande vitesse dans la mémoire.",
+                order: 3,
+                content: "En C, le nom d'un tableau est un pointeur constant vers son premier élément ! La notation `tab[i]` est exactement équivalente à `*(tab + i)`. Lorsque vous faites `ptr++`, le compilateur avance de la taille du type pointé (ex: 4 octets pour un `int`).",
+                objectives: ["Parcourir des collections via l'arithmétique de pointeurs", "Optimiser les boucles de traitement haute performance"]
+            },
+            {
+                title: "4. Les Chaînes de Caractères (`char *` et `\0`)",
+                description: "Comprendre comment le C traite le texte.",
+                order: 4,
+                content: "En C, il n'existe pas de type 'String' natif. Une chaîne est un tableau de `char` se terminant obligatoirement par le caractère nul `'\\0'`. Explorez les fonctions standard de `<string.h>` (`strlen`, `strcpy`, `strcmp`, `strcat`).",
+                objectives: ["Manipuler les tableaux de caractères et pointeurs `char*`", "Recoder manuellement les fonctions standard de manipulation de texte"]
+            },
+            {
+                title: "5. Projet Pratique : Algorithme de Recherche & Tri par Pointeurs",
+                description: "Construire un moteur de traitement de texte rapide.",
+                order: 5,
+                content: "Implémentez un algorithme d'inversion de chaîne, de comptage de mots et de tri de tableau en utilisant exclusivement l'arithmétique de pointeurs sans crochets `[]`.",
+                objectives: ["Prouver sa maîtrise totale de l'adressage mémoire", "Écrire un code C pur, rapide et sécurisé"]
+            }
+        ]
+    },
+    {
+        id: "c-allocation-dynamique-structures",
+        title: "Langage C - 4. Allocation Dynamique, Structures & System",
+        description: "Gérez le Tas (Heap) avec malloc/free, créez vos propres types structurés (Struct) et construisez des structures de données dynamiques.",
+        category: "Programmation C",
+        level: "Expert",
         duration: "60 heures",
         image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
         rating: 5.0,
         language: "c",
         isFree: true,
-        tags: ["c", "malloc", "expert"],
+        tags: ["c", "malloc", "heap", "struct", "linked-list"],
         chapters: [
             {
-                title: "1. Vision Globale : Le Tas (Heap)",
-                description: "Gérer la mémoire à la volée.",
+                title: "1. Mémoire Tas (Heap) vs Pile (Stack)",
+                description: "La gestion dynamique des ressources système.",
                 order: 1,
-                content: "Le tas permet d'allouer de la mémoire pendant l'exécution, pas seulement au démarrage. C'est crucial pour les grandes applications.",
-                objectives: ["Comprendre l'allocation dynamique"]
+                content: "Contrairement à la Stack dont la taille est limitée et fixe, la Heap (le Tas) vous permet de réserver de grands espaces mémoire pendant l'exécution du programme. C'est indispensable pour gérer des données dont la taille n'est pas connue à la compilation.",
+                objectives: ["Distinguer les zones mémoire Stack et Heap", "Comprendre la durée de vie des allocations dynamiques"]
             },
             {
-                title: "2. Concept : Malloc, Calloc & Free",
-                description: "Louer et rendre la mémoire.",
+                title: "2. Les Fonctions Malloc, Calloc, Realloc & Free",
+                description: "Réserver et libérer la mémoire à l'octet près.",
                 order: 2,
-                content: "Utilisez `malloc` pour réserver de l'espace. **N'oubliez jamais `free()`** pour éviter les fuites mémoire (Memory Leaks).",
-                objectives: ["Allouer proprement la mémoire"]
+                content: "Utilisez les fonctions de `<stdlib.h>` :\n- `malloc(taille)` : Alloue de la mémoire brute en octets.\n- `calloc(n, taille)` : Alloue et réinitialise tous les octets à zéro.\n- `realloc(ptr, nouvelle_taille)` : Redimensionne un bloc mémoire existant.\n- `free(ptr)` : Libère impérativement la mémoire louée pour éviter les fuites mémoire (Memory Leaks).",
+                objectives: ["Vérifier le retour de `malloc` contre `NULL`", "Traquer et éliminer les fuites mémoire avec Valgrind"]
             },
             {
-                title: "3. Exemple Concret : Tableau dynamique",
-                description: "Un tableau qui s'adapte.",
+                title: "3. Structures de Données Personnalisées (`struct` & `typedef`)",
+                description: "Créer des objets métier complexes.",
                 order: 3,
-                content: "Demandez à l'utilisateur combien de notes il veut saisir, et allouez exactement la place nécessaire via `malloc`.",
-                objectives: ["Optimiser l'usage des ressources"]
+                content: "Combinez plusieurs variables dans un type personnalisé avec `struct`. Utilisez `typedef struct { ... } NomType;` pour simplifier les déclarations. Pour accéder aux membres d'une structure via un pointeur, utilisez l'opérateur flèche `ptr->membre`.",
+                objectives: ["Modéliser des entités complexes en C", "Manipuler des structures par référence"]
             },
             {
-                title: "4. Cas Pratique : Structures (Struct) & Flèches",
-                description: "Créer ses propres types.",
+                title: "4. Structures Dynamiques : Listes Chaînées Simples",
+                description: "Le sommet de l'ingénierie C.",
                 order: 4,
-                content: "Regroupez des données (ex: Nom, Age, Note) dans une `struct Etudiant`. Accédez aux membres via l'opérateur flèche `->` sur un pointeur.",
-                objectives: ["Modéliser des données complexes"]
+                content: "Une Liste Chaînée est composée de nœuds (`Node`) contenant une donnée et un pointeur `next` vers le nœud suivant. Contrairement aux tableaux, une liste chaînée peut grandir ou rétrécir en mémoire à tout moment sans réallocation globale.",
+                objectives: ["Créer, insérer et supprimer des nœuds dans une liste chaînée", "Libérer correctement l'intégralité d'une liste chaînée"]
             },
             {
-                title: "5. Exercice : Liste Chaînée simple",
-                description: "Le sommet de l'algorithmique C.",
+                title: "5. Fichiers & E/S Système (`FILE*`)",
+                description: "Sauvegarder et charger des données sur le disque.",
                 order: 5,
-                content: "Créez une structure qui possède un pointeur vers son successeur. Reliez plusieurs éléments ensemble dynamiquement.",
-                objectives: ["Construire une structure de données dynamique"]
+                content: "Apprenez à manipuler les fichiers du disque avec `<stdio.h>` :\n- `fopen(\"data.txt\", \"r\")` : Ouvre un fichier.\n- `fprintf()` / `fscanf()` : Écrits et lits du texte formaté.\n- `fwrite()` / `fread()` : Gestion des fichiers binaires ultra-rapide.\n- `fclose(fichier)` : Ferme et sauvegarde les flux.",
+                objectives: ["Créer un système d'archivage permanent de données", "Gérer la persistance de structures complexes"]
             }
         ]
     }
