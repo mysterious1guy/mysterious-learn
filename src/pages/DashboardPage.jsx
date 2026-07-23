@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft, HelpCircle } from 'lucide-react';
+import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft, HelpCircle, Sparkles } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
 import OnboardingTour from '../components/OnboardingTour';
 
