@@ -7,11 +7,13 @@ import {
   Settings, TrendingUp, X, Star
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import { formatTimeAgo } from '../utils/dateUtils';
 import { useCookies } from '../hooks/useCookies';
 
 const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites, onToggleFavorite, API_URL, setToast }) => {
   const { theme, setTheme } = useTheme();
+  const { setLanguage } = useLanguage();
   const { removeUserCookie, removeCookie } = useCookies();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
@@ -670,12 +672,13 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           <div className="p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <p className="text-sm font-bold text-slate-800 dark:text-white">Langue de l'interface</p>
-              <p className="text-xs text-slate-500 dark:text-gray-400">Choisir la langue d'affichage du site.</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">Choisir la langue d'affichage globale du site (Français / English).</p>
             </div>
             <select
-              value={user?.preferences?.language || 'fr'}
+              value={user?.preferences?.language || localStorage.getItem('language') || 'fr'}
               onChange={async (e) => {
                 const val = e.target.value;
+                setLanguage(val);
                 try {
                   const res = await fetch(`${API_URL}/auth/profile`, {
                     method: 'PUT',
@@ -688,17 +691,16 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                   if (res.ok) {
                     const updated = await res.json();
                     onUpdateUser(updated);
-                    setToast({ message: 'Langue mise à jour', type: 'success' });
+                    setToast({ message: val === 'en' ? 'Language switched to English!' : 'Langue modifiée en Français !', type: 'success' });
                   }
                 } catch (err) {
                   console.error(err);
                 }
               }}
-              className="px-4 py-2 bg-gray-900 border border-gray-700 rounded-xl text-sm font-bold text-white focus:border-blue-500 outline-none transition-colors"
+              className="px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm font-bold text-white focus:border-blue-500 outline-none transition-all shadow-sm cursor-pointer"
             >
               <option value="fr">Français 🇫🇷</option>
               <option value="en">English 🇬🇧</option>
-              <option value="es">Español 🇪🇸</option>
             </select>
           </div>
 

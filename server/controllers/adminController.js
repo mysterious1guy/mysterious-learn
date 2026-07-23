@@ -52,11 +52,11 @@ const sendEmailToUsers = async (req, res) => {
     if (recipients === 'specific' && specificEmail) {
       users = [{ email: specificEmail }];
     } else if (recipients === 'verified') {
-      users = await User.find({ isEmailVerified: true });
+      users = await User.find({ isEmailVerified: true, 'preferences.notifications': { $ne: false } });
     } else if (recipients === 'unverified') {
-      users = await User.find({ isEmailVerified: false });
+      users = await User.find({ isEmailVerified: false, 'preferences.notifications': { $ne: false } });
     } else {
-      users = await User.find({});
+      users = await User.find({ 'preferences.notifications': { $ne: false } });
     }
 
     const results = await Promise.allSettled(
@@ -104,7 +104,7 @@ const sendNotificationToUsers = async (req, res) => {
     });
 
     if (shouldSendEmail) {
-      const users = await User.find({ isEmailVerified: true });
+      const users = await User.find({ isEmailVerified: true, 'preferences.notifications': { $ne: false } });
       // On utilise le template marketing pour les annonces
       const htmlContent = getMarketingEmail(title, message);
 
