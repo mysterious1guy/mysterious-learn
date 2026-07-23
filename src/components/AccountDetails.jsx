@@ -40,6 +40,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteStep, setDeleteStep] = useState(1);
+  const [exportingData, setExportingData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [userStats, setUserStats] = useState({
     totalSessions: 0,
@@ -118,6 +119,32 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       setToast({ message: 'Erreur réseau', type: 'error' });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleExportData = async () => {
+    setExportingData(true);
+    try {
+      const exportObj = {
+        profile: user,
+        stats: userStats,
+        progressions: progressions,
+        favorites: favorites
+      };
+      const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mysterious_data_${user?.firstName || 'agent'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setToast({ message: t('account.export_success') || 'Données exportées avec succès', type: 'success' });
+    } catch (error) {
+      setToast({ message: t('account.export_error') || 'Erreur lors de l\\'exportation', type: 'error' });
+    } finally {
+      setExportingData(false);
     }
   };
 
@@ -756,7 +783,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         </button>
 
         <button
-          onClick={() => setShowDeleteConfirm(true)} 
+          onClick={() => setShowDeleteModal(true)} 
           className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-bold transition"
         >
           <Trash2 size={18} /> {t('account.delete_account') || 'Supprimer mon compte'}
