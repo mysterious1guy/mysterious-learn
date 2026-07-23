@@ -169,65 +169,94 @@ const HomePage = ({ API_URL }) => {
                             <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mt-10" dangerouslySetInnerHTML={{ __html: t('home.hero_desc') || "L'arène d'entraînement ultime pour <strong class=\"text-slate-900\">apprendre la cybersécurité</strong>, maîtriser l'investigation numérique et résoudre des scénarios CTF concrets." }}>
                             </p>
 
-                            {/* Section Objectif de l'Application - Design Plein Écran Sécurisé */}
-                            <div className="max-w-6xl w-full mx-auto mt-16 bg-slate-900 border border-slate-800 rounded-[2.5rem] overflow-hidden relative shadow-2xl group min-h-[420px] md:min-h-[500px]">
-                                {/* Background Images & Fallback Gradients */}
-                                {objectives.map((obj, idx) => (
-                                    <div 
-                                        key={`bg-${idx}`}
-                                        className={`absolute inset-0 transition-opacity duration-1000 bg-slate-900 ${activeSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-                                    >
-                                        <img 
-                                            src={obj.image} 
-                                            alt={obj.title} 
-                                            className="w-full h-full object-cover opacity-30 transform scale-105 group-hover:scale-100 transition-transform duration-[10s] ease-out"
-                                            onError={(e) => { e.target.style.display = 'none'; }}
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-slate-900/50"></div>
+                            {/* Section Objectif de l'Application - Design Studio Ultra Clair & Interactif */}
+                            <div className="max-w-6xl w-full mx-auto mt-16 p-4 md:p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden text-left">
+                                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                                    
+                                    {/* Left Column: Sharp & Vibrant Showcase Image */}
+                                    <div className="lg:col-span-5 relative h-72 sm:h-80 md:h-[420px] rounded-3xl overflow-hidden shadow-xl border border-slate-200 dark:border-slate-800 group">
+                                        {objectives.map((obj, idx) => (
+                                            <div 
+                                                key={`img-${idx}`}
+                                                className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${activeSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                                            >
+                                                <img 
+                                                    src={obj.image} 
+                                                    alt={obj.title} 
+                                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                                                <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between z-20">
+                                                    <span className="px-3 py-1 bg-blue-600/90 backdrop-blur-md text-white text-xs font-black uppercase tracking-wider rounded-full shadow-lg">
+                                                        {obj.num} / 04
+                                                    </span>
+                                                    <span className="text-xs font-bold text-white/80 uppercase tracking-widest backdrop-blur-md px-3 py-1 bg-black/40 rounded-full">
+                                                        MYSTERIOUS CTF
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
 
-                                {/* Content overlay */}
-                                <div className="absolute inset-0 z-20 flex flex-col justify-between p-8 md:p-12">
-                                    <div className="flex items-center gap-3">
-                                        <div className="p-3 bg-blue-600/80 backdrop-blur-md rounded-xl shadow-lg">
-                                            <Sparkles size={24} className="text-white" />
+                                    {/* Right Column: Active Content & Step Cards */}
+                                    <div className="lg:col-span-7 flex flex-col justify-between space-y-6 md:p-4">
+                                        {/* Header Tag */}
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-200 dark:border-blue-800/50">
+                                                <Sparkles size={20} />
+                                            </div>
+                                            <h2 className="text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-[0.3em]">
+                                                {t('home.objective_title') || "OBJECTIF DE LA PLATEFORME"}
+                                            </h2>
                                         </div>
-                                        <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
-                                            {t('home.objective_title') || "Objectif de la plateforme"}
-                                        </h2>
-                                    </div>
 
-                                    <div className="flex flex-col md:flex-row gap-8 items-end justify-between mt-auto">
-                                        {/* Active Slide Text */}
-                                        <div className="max-w-2xl text-left">
+                                        {/* Active Slide Text Content */}
+                                        <div className="min-h-[160px] flex flex-col justify-center">
                                             <motion.div
                                                 key={activeSlide}
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -20 }}
-                                                transition={{ duration: 0.5 }}
+                                                initial={{ opacity: 0, x: 20 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                transition={{ duration: 0.4 }}
+                                                className="space-y-3"
                                             >
-                                                <span className="text-5xl md:text-7xl font-black text-white/20 font-mono tracking-tighter block mb-2">{objectives[activeSlide].num}</span>
-                                                <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">{objectives[activeSlide].title}</h3>
-                                                <p className="text-slate-200 text-lg md:text-xl font-medium leading-relaxed">
+                                                <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
+                                                    {objectives[activeSlide].title}
+                                                </h3>
+                                                <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg font-medium leading-relaxed">
                                                     {objectives[activeSlide].desc}
                                                 </p>
                                             </motion.div>
                                         </div>
 
-                                        {/* Pagination Controls */}
-                                        <div className="flex gap-3">
-                                            {objectives.map((_, idx) => (
-                                                <button
-                                                    key={`btn-${idx}`}
-                                                    onClick={() => setActiveSlide(idx)}
-                                                    className={`h-2 rounded-full transition-all duration-500 ${activeSlide === idx ? 'w-12 bg-blue-500' : 'w-4 bg-white/30 hover:bg-white/50'}`}
-                                                    aria-label={`Aller au point ${idx + 1}`}
-                                                />
-                                            ))}
+                                        {/* Interactive Objective Selector Tabs */}
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            {objectives.map((obj, idx) => {
+                                                const isActive = activeSlide === idx;
+                                                return (
+                                                    <button
+                                                        key={`tab-${idx}`}
+                                                        onClick={() => setActiveSlide(idx)}
+                                                        className={`p-3 rounded-2xl text-left transition-all duration-300 relative overflow-hidden border ${
+                                                            isActive 
+                                                                ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/25 scale-[1.02]' 
+                                                                : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                                        }`}
+                                                    >
+                                                        <span className={`text-xs font-mono font-black block ${isActive ? 'text-blue-200' : 'text-slate-400'}`}>
+                                                            {obj.num}
+                                                        </span>
+                                                        <span className="text-xs font-bold truncate block mt-0.5">
+                                                            {obj.title.split(' ')[0]}...
+                                                        </span>
+                                                        {isActive && (
+                                                            <div className="absolute bottom-0 left-0 h-1 bg-white animate-pulse w-full"></div>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </motion.div>
