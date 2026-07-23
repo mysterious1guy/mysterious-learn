@@ -417,7 +417,12 @@ export const translations = {
         },
         copilot: {
             welcome: "Bonjour",
-            ready: "Prêt à apprendre la logique des algorithmes ?"
+            ready: "Prêt à plonger dans l'investigation numérique et le hacking éthique ?",
+            ask_placeholder: "Pose ta question au mentor...",
+            thinking: "Je réfléchis...",
+            no_token: "Aucun jeton d'authentification. Veuillez vous connecter.",
+            error: "Une erreur est survenue.",
+            try_again: "Réessayer"
         }
     },
     en: {
@@ -835,8 +840,8 @@ export const translations = {
         },
         copilot: {
             welcome: "Hello",
-            ready: "Ready to learn the logic of algorithms?",
-            ask_placeholder: "Ask me a question about the code...",
+            ready: "Ready to dive into digital forensics and ethical hacking?",
+            ask_placeholder: "Ask the mentor a question...",
             thinking: "I am thinking...",
             no_token: "No authentication token found. Please log in.",
             error: "An error occurred.",

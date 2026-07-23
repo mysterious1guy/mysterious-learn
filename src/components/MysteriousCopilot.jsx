@@ -243,9 +243,15 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
                             // Check for list items
                             const isListItem = line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*');
+                            
+                            // Remove the leading character if it's a list item to avoid double bullets/dashes
+                            let cleanLine = line;
+                            if (isListItem) {
+                                cleanLine = line.trim().substring(1).trim();
+                            }
 
                             // Check for bold text
-                            const boldParsed = line.split(/(\*\*.*?\*\*)/g).map((seg, sIdx) => {
+                            const boldParsed = cleanLine.split(/(\*\*.*?\*\*)/g).map((seg, sIdx) => {
                                 if (seg.startsWith('**') && seg.endsWith('**')) {
                                     return <strong key={sIdx} className="text-blue-400 font-bold">{seg.slice(2, -2)}</strong>;
                                 }
