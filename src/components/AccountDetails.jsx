@@ -131,11 +131,53 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         progressions: progressions,
         favorites: favorites
       };
-      const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+
+      const dateStr = new Date().toLocaleString();
+      const txtContent = `
+=========================================================
+          DOSSIER CLASSIFIÉ : AGENT ${user?.firstName?.toUpperCase() || 'INCONNU'}
+=========================================================
+Généré le : ${dateStr}
+Niveau d'accréditation : ${user?.adminTier?.toUpperCase() || 'STANDARD'}
+Statut : ACTIF
+ID Agent : ${user?._id || 'N/A'}
+---------------------------------------------------------
+
+[ INFORMATIONS PERSONNELLES ]
+- Nom de code : ${user?.name || 'Inconnu'}
+- Email : ${user?.email || 'Inconnu'}
+- Rôle : ${user?.role || 'Utilisateur'}
+- Spécialité : ${user?.programmingLevel || 'Débutant'}
+- Date d'enrôlement : ${user?.joinedAt ? new Date(user.joinedAt).toLocaleDateString() : 'Inconnue'}
+
+[ STATISTIQUES DE MISSION ]
+- Expérience (XP) : ${user?.xp || 0}
+- Connexions consécutives (Streak) : ${user?.streak || 0} jours
+- Temps total en opération : ${userStats?.totalTime || 0} minutes
+- Modules terminés : ${(user?.completedModules || []).length}
+- Quêtes accomplies : ${(user?.completedQuests || []).length}
+- Cours consultés : ${userStats?.coursesViewed || 0}
+
+[ OBJECTIF D'OPÉRATION ]
+- Objectif principal : ${user?.onboardingProfile?.goal || 'Non défini'}
+
+[ PROGRESSION ET MISSIONS ]
+${Object.keys(progressions || {}).length > 0 
+  ? Object.entries(progressions).map(([courseId, data]) => `- ${courseId} : ${data.progress}% complété`).join('\n') 
+  : '- Aucune mission en cours'}
+
+[ DONNÉES BRUTES (SAUVEGARDE SYSTÈME) ]
+${JSON.stringify(exportObj, null, 2)}
+=========================================================
+        FIN DE TRANSMISSION - SUPPRIMER APRÈS LECTURE
+=========================================================
+`;
+
+      const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `mysterious_data_${user?.firstName || 'agent'}.json`;
+      a.download = `Dossier_Agent_${user?.firstName || 'Inconnu'}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
