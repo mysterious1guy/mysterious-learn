@@ -590,6 +590,13 @@ const updateProfile = async (req, res) => {
       if (uiPreferences.onboardingStep !== undefined) user.uiPreferences.onboardingStep = uiPreferences.onboardingStep;
       if (uiPreferences.lastAnnouncementSeen !== undefined) user.uiPreferences.lastAnnouncementSeen = uiPreferences.lastAnnouncementSeen;
       if (uiPreferences.interventionLevel !== undefined) user.uiPreferences.interventionLevel = uiPreferences.interventionLevel;
+      if (uiPreferences.tourStep !== undefined) user.uiPreferences.tourStep = uiPreferences.tourStep;
+    }
+    
+    // Support the flattened key if sent by frontend
+    if (req.body['uiPreferences.tourStep'] !== undefined) {
+        if (!user.uiPreferences) user.uiPreferences = {};
+        user.uiPreferences.tourStep = req.body['uiPreferences.tourStep'];
     }
 
     // Set new password (e.g., from Google Onboarding)

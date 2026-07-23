@@ -167,6 +167,7 @@ const userSchema = new mongoose.Schema(
     uiPreferences: {
       showMurmurs: { type: Boolean, default: true },
       onboardingStep: { type: Number, default: 0 },
+      tourStep: { type: Number, default: 0 },
       lastAnnouncementSeen: { type: String, default: null },
       interventionLevel: { type: String, enum: ['low', 'normal', 'high'], default: 'normal' }
     },
