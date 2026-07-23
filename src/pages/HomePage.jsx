@@ -169,20 +169,21 @@ const HomePage = ({ API_URL }) => {
                             <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mt-10" dangerouslySetInnerHTML={{ __html: t('home.hero_desc') || "L'arène d'entraînement ultime pour <strong class=\"text-slate-900\">apprendre la cybersécurité</strong>, maîtriser l'investigation numérique et résoudre des scénarios CTF concrets." }}>
                             </p>
 
-                            {/* Section Objectif de l'Application - Nouveau design Plein Écran */}
-                            <div className="max-w-6xl mx-auto mt-16 rounded-[2.5rem] overflow-hidden relative shadow-2xl group min-h-[400px] md:min-h-[500px]">
-                                {/* Background Images */}
+                            {/* Section Objectif de l'Application - Design Plein Écran Sécurisé */}
+                            <div className="max-w-6xl w-full mx-auto mt-16 bg-slate-900 border border-slate-800 rounded-[2.5rem] overflow-hidden relative shadow-2xl group min-h-[420px] md:min-h-[500px]">
+                                {/* Background Images & Fallback Gradients */}
                                 {objectives.map((obj, idx) => (
                                     <div 
                                         key={`bg-${idx}`}
-                                        className={`absolute inset-0 transition-opacity duration-1000 ${activeSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                                        className={`absolute inset-0 transition-opacity duration-1000 bg-slate-900 ${activeSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                                     >
                                         <img 
                                             src={obj.image} 
                                             alt={obj.title} 
-                                            className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-[10s] ease-out"
+                                            className="w-full h-full object-cover opacity-30 transform scale-105 group-hover:scale-100 transition-transform duration-[10s] ease-out"
+                                            onError={(e) => { e.target.style.display = 'none'; }}
                                         />
-                                        <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-[2px]"></div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-slate-900/50"></div>
                                     </div>
                                 ))}
 
