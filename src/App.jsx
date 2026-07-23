@@ -23,6 +23,7 @@ import AdminPage from './pages/AdminPage';
 import TwoFactorSetupPage from './pages/TwoFactorSetupPage';
 import Leaderboard from './pages/Leaderboard';
 import ProjectsList from './pages/ProjectsList';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 
 // Hooks et composants
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -234,6 +235,8 @@ function App() {
                   } />
                   {/* Route Admin Login */}
                   <Route path="/admin/login" element={<AdminLoginPage setToast={setToast} />} />
+                  {/* Route Réinitialisation du mot de passe (depuis le lien email) */}
+                  <Route path="/reset-password/:token" element={<ResetPasswordPage API_URL={API_URL} setToast={setToast} />} />
                 </Route>
 
                 <Route element={<MainLayout user={user} progressions={progressions} onLogout={handleLogout} onSearch={setSearchQuery} />}>

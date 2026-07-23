@@ -203,6 +203,21 @@ export const translations = {
             end_announcements: "Fin des annonces",
             got_it: "J'AI COMPRIS"
         },
+        resetPasswordPage: {
+            title: "Réinitialisation du mot de passe",
+            subtitle: "Choisissez votre nouveau mot de passe sécurisé",
+            new_password: "Nouveau mot de passe",
+            confirm_password: "Confirmer le mot de passe",
+            submit_btn: "RÉINITIALISER LE MOT DE PASSE",
+            submitting: "Mise à jour en cours...",
+            success_title: "Mot de passe modifié avec succès !",
+            success_desc: "Votre mot de passe a été mis à jour en base de données. Vous pouvez maintenant vous connecter.",
+            go_to_login: "SE CONNECTER",
+            passwords_mismatch: "Les mots de passe ne correspondent pas.",
+            password_too_short: "Le mot de passe doit contenir au moins 6 caractères.",
+            invalid_token: "Lien invalide ou expiré.",
+            request_new_link: "Demander un nouveau lien"
+        },
         accountPage: {
             back_to_dashboard: "Retour au tableau de bord"
         },
@@ -568,6 +583,21 @@ export const translations = {
             no_announcements: "No new announcements",
             end_announcements: "End of announcements",
             got_it: "GOT IT"
+        },
+        resetPasswordPage: {
+            title: "Reset Password",
+            subtitle: "Choose your new secure password",
+            new_password: "New Password",
+            confirm_password: "Confirm Password",
+            submit_btn: "RESET PASSWORD",
+            submitting: "Updating password...",
+            success_title: "Password updated successfully!",
+            success_desc: "Your password has been updated in the database. You can now log in.",
+            go_to_login: "LOG IN",
+            passwords_mismatch: "Passwords do not match.",
+            password_too_short: "Password must be at least 6 characters long.",
+            invalid_token: "Invalid or expired link.",
+            request_new_link: "Request a new link"
         },
         accountPage: {
             back_to_dashboard: "Back to dashboard"
