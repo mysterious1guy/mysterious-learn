@@ -240,21 +240,22 @@ const HomePage = ({ API_URL }) => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.1 }}
-                                className="bg-white border border-slate-200 rounded-3xl p-8 hover:border-blue-400 hover:shadow-xl transition-all duration-300 group flex flex-col items-center text-center relative overflow-hidden"
+                                className="bg-white border border-slate-200/80 rounded-[2.5rem] p-8 md:p-10 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group flex flex-col items-center text-center relative overflow-hidden"
                             >
-                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 ${topic.bgIcon}`}>
+                                <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-100 group-hover:bg-blue-500 transition-colors duration-500"></div>
+                                <div className={`w-20 h-20 rounded-[1.5rem] flex items-center justify-center mb-8 transition-transform duration-500 group-hover:-translate-y-2 shadow-inner ${topic.bgIcon}`}>
                                     {topic.icon}
                                 </div>
-                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider mb-4 border ${topic.color} bg-slate-50`}>
+                                <span className={`px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest mb-5 border ${topic.color} bg-white shadow-sm`}>
                                     {topic.tag}
                                 </span>
-                                <h3 className="text-xl font-black text-slate-900 mb-3">{topic.name}</h3>
-                                <p className="text-slate-500 text-sm font-medium leading-relaxed mb-6 flex-1">
+                                <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">{topic.name}</h3>
+                                <p className="text-slate-600 text-base font-medium leading-relaxed mb-8 flex-1">
                                     {topic.desc}
                                 </p>
-                                <div className="w-full pt-4 border-t border-slate-100 flex items-center justify-between mt-auto">
-                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('home.mission_prep') || "Mission en préparation"}</span>
-                                    <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                                <div className="w-full pt-5 border-t border-slate-100 flex items-center justify-between mt-auto">
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('home.mission_prep') || "Modules en préparation"}</span>
+                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
                                 </div>
                             </motion.div>
                         ))}
