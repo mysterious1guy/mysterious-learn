@@ -211,7 +211,7 @@ export const LanguageProvider = ({ children }) => {
             if (result && result[k] !== undefined) {
                 result = result[k];
             } else {
-                return key;
+                return undefined;
             }
         }
         if (typeof result === 'object' && result !== null) {
@@ -219,7 +219,7 @@ export const LanguageProvider = ({ children }) => {
             if (translations[language] && typeof translations[language][titleKey] === 'string') {
                 return translations[language][titleKey];
             }
-            return key;
+            return undefined;
         }
         return result;
     };

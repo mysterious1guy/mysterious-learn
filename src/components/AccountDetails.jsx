@@ -13,7 +13,7 @@ import { useCookies } from '../hooks/useCookies';
 
 const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites, onToggleFavorite, API_URL, setToast }) => {
   const { theme, setTheme } = useTheme();
-  const { setLanguage } = useLanguage();
+  const { t, setLanguage } = useLanguage();
   const { removeUserCookie, removeCookie } = useCookies();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
