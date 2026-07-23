@@ -307,21 +307,7 @@ const aiChat = async (req, res) => {
             console.warn(`⚠️ [AI RELAY] Mode Assistant Local Intelligent activé.`);
             const lowerMsg = message.toLowerCase().trim();
 
-            if (lowerMsg.includes('comment tu vas') || lowerMsg.includes('ca va') || lowerMsg.includes('ça va') || lowerMsg.includes('comment vas') || lowerMsg.includes('alors')) {
-                responseText = `Je vais très bien, Agent **${user.firstName || user.name}** ! Prêt à relever de nouveaux défis sur Mysterious Classroom aujourd'hui ? Que souhaites-tu explorer ?`;
-            } else if (lowerMsg.includes('salut') || lowerMsg.includes('coucou') || lowerMsg.includes('hello') || lowerMsg.includes('bonjour') || lowerMsg.includes('yoo') || lowerMsg.includes('yo')) {
-                responseText = `Bonjour Agent **${user.firstName || user.name}** ! Je suis ton mentor Mysterious Copilot. En quoi puis-je t'aider aujourd'hui ?`;
-            } else if (lowerMsg.includes('qui es tu') || lowerMsg.includes('qui es-tu') || lowerMsg.includes('tes qui') || lowerMsg.includes('t\'es qui') || lowerMsg.includes('tu est ki')) {
-                responseText = `Je suis **Mysterious Copilot**, l'IA et Mentor Officiel de Mysterious Classroom. Mon rôle est de te guider dans ton apprentissage de la Cybersécurité et du Hacking Éthique !`;
-            } else if (lowerMsg.includes('fondateur') || lowerMsg.includes('créateur') || lowerMsg.includes('createur') || lowerMsg.includes('qui a fait') || lowerMsg.includes('mouhamed fall') || lowerMsg.includes('boss')) {
-                responseText = `La plateforme **Mysterious Classroom** a été conçue et développée par **Mouhamed FALL**, passionné d'investigation numérique, de cybersécurité et de développement web ! 🚀`;
-            } else if (lowerMsg.includes('classement') || lowerMsg.includes('leaderboard') || lowerMsg.includes('rang') || lowerMsg.includes('points') || lowerMsg.includes('xp')) {
-                responseText = `Agent **${user.firstName || user.name}**, pour consulter le **Classement (Hall of Fame)** :
-
-1. Regarde la barre de navigation supérieure.
-2. Clique sur l'onglet **🏆 Classement**.
-3. Tu y trouveras le rang des élèves, leurs points d'expérience (XP) et les badges débloqués !`;
-            } else if (lowerMsg.includes('cours') || lowerMsg.includes('module') || lowerMsg.includes('formation') || lowerMsg.includes('programme') || lowerMsg.includes('apprendre') || lowerMsg.includes('disponible')) {
+            if (lowerMsg.includes('cours') || lowerMsg.includes('module') || lowerMsg.includes('formation') || lowerMsg.includes('programme') || lowerMsg.includes('apprendre') || lowerMsg.includes('disponible') || lowerMsg.includes('dispo')) {
                 responseText = `Les parcours interactifs sur **Mysterious Classroom** sont axés sur la **Cybersécurité & le Hacking Éthique** (Sécurité Web, XSS, SQLi, CSRF, Linux & Scripts Bash, Réseaux). Retrouve tous tes modules directement sur ton **Tableau de bord** !`;
             } else if (lowerMsg.includes('projet') || lowerMsg.includes('ctf') || lowerMsg.includes('mission')) {
                 responseText = `Pour accéder aux **Projets & Challenges CTF** :
@@ -329,6 +315,16 @@ const aiChat = async (req, res) => {
 1. Clique sur l'onglet **📁 Projets** dans la barre supérieure.
 2. Choisis un challenge de ton niveau.
 3. Résous la mission pour accumuler des points XP !`;
+            } else if (lowerMsg.includes('classement') || lowerMsg.includes('leaderboard') || lowerMsg.includes('rang') || lowerMsg.includes('points') || lowerMsg.includes('xp')) {
+                responseText = `Agent **${user.firstName || user.name}**, pour consulter le **Classement (Hall of Fame)** :
+
+1. Regarde la barre de navigation supérieure.
+2. Clique sur l'onglet **🏆 Classement**.
+3. Tu y trouveras le rang des élèves, leurs points d'expérience (XP) et les badges débloqués !`;
+            } else if (lowerMsg.includes('fondateur') || lowerMsg.includes('créateur') || lowerMsg.includes('createur') || lowerMsg.includes('qui a fait') || lowerMsg.includes('mouhamed fall') || lowerMsg.includes('boss')) {
+                responseText = `La plateforme **Mysterious Classroom** a été conçue et développée par **Mouhamed FALL**, passionné d'investigation numérique, de cybersécurité et de développement web ! 🚀`;
+            } else if (lowerMsg.includes('qui es tu') || lowerMsg.includes('qui es-tu') || lowerMsg.includes('tes qui') || lowerMsg.includes('t\'es qui') || lowerMsg.includes('tu est ki')) {
+                responseText = `Je suis **Mysterious Copilot**, l'IA et Mentor Officiel de Mysterious Classroom. Mon rôle est de te guider dans ton apprentissage de la Cybersécurité et du Hacking Éthique !`;
             } else if (lowerMsg.includes('profil') || lowerMsg.includes('compte') || lowerMsg.includes('2fa') || lowerMsg.includes('mot de passe')) {
                 responseText = `Pour gérer ton **Profil & Sécurité** :
 
@@ -337,6 +333,10 @@ const aiChat = async (req, res) => {
 3. Tu pourras y configurer la 2FA (A2F) et télécharger ton Dossier Agent !`;
             } else if (isAdmin && (lowerMsg.includes('mail') || lowerMsg.includes('email') || lowerMsg.includes('annonce') || lowerMsg.includes('notification') || lowerMsg.includes('utilisateur'))) {
                 responseText = `Bonjour Boss **Mouhamed** ! Je suis prêt pour tes commandes d'administration. Que souhaites-tu effectuer ? (envoi d'email, publication d'annonce ou gestion des utilisateurs).`;
+            } else if (lowerMsg.includes('comment tu vas') || lowerMsg.includes('ca va') || lowerMsg.includes('ça va') || lowerMsg.includes('comment vas') || lowerMsg.includes('alors')) {
+                responseText = `Je vais très bien, Agent **${user.firstName || user.name}** ! Prêt à relever de nouveaux défis sur Mysterious Classroom aujourd'hui ? Que souhaites-tu explorer ?`;
+            } else if (lowerMsg.includes('salut') || lowerMsg.includes('coucou') || lowerMsg.includes('hello') || lowerMsg.includes('bonjour') || lowerMsg.includes('yoo') || lowerMsg.includes('yo')) {
+                responseText = `Bonjour Agent **${user.firstName || user.name}** ! Je suis ton mentor Mysterious Copilot. En quoi puis-je t'aider aujourd'hui ?`;
             } else {
                 responseText = `Reçu Agent **${user.firstName || user.name}** ! 
 
