@@ -142,7 +142,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       URL.revokeObjectURL(url);
       setToast({ message: t('account.export_success') || 'Données exportées avec succès', type: 'success' });
     } catch (error) {
-      setToast({ message: t('account.export_error') || 'Erreur lors de l\\'exportation', type: 'error' });
+      setToast({ message: t('account.export_error') || "Erreur lors de l'exportation", type: 'error' });
     } finally {
       setExportingData(false);
     }
