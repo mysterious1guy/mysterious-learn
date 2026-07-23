@@ -18,23 +18,41 @@ const HomePage = ({ API_URL }) => {
     const [stats, setStats] = useState({ totalUsers: 0, activeUsers: 0 });
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [config, setConfig] = useState(null);
-    const scrollRef = useRef(null);
+    const [activeSlide, setActiveSlide] = useState(0);
+
+    const objectives = [
+        {
+            num: "01",
+            title: t('home.obj1_title') || "Apprentissage Ludique",
+            desc: t('home.obj1_desc') || "Ici, pas de théorie ennuyeuse ! Vous apprenez la programmation et la cybersécurité comme dans un jeu vidéo, en résolvant des missions concrètes.",
+            image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1200"
+        },
+        {
+            num: "02",
+            title: t('home.obj2_title') || "Penser comme un Hacker",
+            desc: t('home.obj2_desc') || "Découvrez comment les pirates pensent pour mieux vous protéger. Apprenez à trouver les failles avant qu'elles ne soient exploitées.",
+            image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200"
+        },
+        {
+            num: "03",
+            title: t('home.obj3_title') || "Gagner de l'Expérience",
+            desc: t('home.obj3_desc') || "Chaque mission réussie vous donne des points (XP). Débloquez de nouveaux niveaux et affrontez des défis plus complexes.",
+            image: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=1200"
+        },
+        {
+            num: "04",
+            title: t('home.obj4_title') || "Une IA pour vous Guider",
+            desc: t('home.obj4_desc') || "Bloqué sur un problème ? Oracle Mentor, notre IA intelligente, est là pour vous donner des indices précis sans faire le travail à votre place.",
+            image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=1200"
+        }
+    ];
 
     useEffect(() => {
         const timer = setInterval(() => {
-            if (scrollRef.current) {
-                const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-                // If we reached the end, scroll back to start
-                if (scrollLeft + clientWidth >= scrollWidth - 10) {
-                    scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-                } else {
-                    // Scroll by approx one card width
-                    scrollRef.current.scrollBy({ left: 340, behavior: 'smooth' });
-                }
-            }
-        }, 4000);
+            setActiveSlide((prev) => (prev + 1) % objectives.length);
+        }, 5000);
         return () => clearInterval(timer);
-    }, []);
+    }, [objectives.length]);
 
     // Mouse Tracking for dynamic glowing background effect
     useEffect(() => {
@@ -151,51 +169,63 @@ const HomePage = ({ API_URL }) => {
                             <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mt-10" dangerouslySetInnerHTML={{ __html: t('home.hero_desc') || "L'arène d'entraînement ultime pour <strong class=\"text-slate-900\">apprendre la cybersécurité</strong>, maîtriser l'investigation numérique et résoudre des scénarios CTF concrets." }}>
                             </p>
 
-                            {/* Section Objectif de l'Application - Nouveau design avec image et scroll */}
-                            <div className="max-w-6xl mx-auto mt-16 p-3 bg-white/60 backdrop-blur-3xl rounded-[2.5rem] border border-slate-200/50 shadow-2xl text-left flex flex-col lg:flex-row gap-6 overflow-hidden">
-                                {/* Image Illustrative (Informatique/Hack) */}
-                                <div className="w-full lg:w-5/12 h-64 lg:h-auto rounded-[2rem] overflow-hidden relative shadow-inner group">
-                                    <img 
-                                        src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1000" 
-                                        alt="Cybersecurity & Coding" 
-                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent opacity-90"></div>
-                                    <div className="absolute bottom-6 left-6 right-6">
-                                        <div className="flex items-center gap-3 mb-2">
-                                            <div className="p-2.5 bg-blue-600 rounded-xl shadow-lg shadow-blue-500/30">
-                                                <Sparkles size={22} className="text-white" />
-                                            </div>
-                                            <h2 className="text-xl md:text-2xl font-black text-white tracking-tight leading-tight">
-                                                {t('home.objective_title') || "Objectif de la plateforme"}
-                                            </h2>
-                                        </div>
+                            {/* Section Objectif de l'Application - Nouveau design Plein Écran */}
+                            <div className="max-w-6xl mx-auto mt-16 rounded-[2.5rem] overflow-hidden relative shadow-2xl group min-h-[400px] md:min-h-[500px]">
+                                {/* Background Images */}
+                                {objectives.map((obj, idx) => (
+                                    <div 
+                                        key={`bg-${idx}`}
+                                        className={`absolute inset-0 transition-opacity duration-1000 ${activeSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                                    >
+                                        <img 
+                                            src={obj.image} 
+                                            alt={obj.title} 
+                                            className="w-full h-full object-cover transform scale-105 group-hover:scale-100 transition-transform duration-[10s] ease-out"
+                                        />
+                                        <div className="absolute inset-0 bg-slate-900/70 backdrop-blur-[2px]"></div>
                                     </div>
-                                </div>
+                                ))}
 
-                                {/* Slider des Objectifs */}
-                                <div className="w-full lg:w-7/12 p-4 md:p-8 flex flex-col justify-center">
-                                    <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium mb-8" dangerouslySetInnerHTML={{ __html: t('home.objective_desc') || "<strong>MYSTERIOUS CLASSROOM</strong> est une plateforme de simulation immersive..." }}>
-                                    </p>
-                                    
-                                    <div ref={scrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 pt-2 custom-horizontal-scrollbar">
-                                        {[
-                                            { num: "01", title: t('home.obj1_title'), desc: t('home.obj1_desc'), bgClass: "bg-blue-500/10", textClass: "text-blue-500/30", hoverClass: "group-hover:bg-blue-500/20" },
-                                            { num: "02", title: t('home.obj2_title'), desc: t('home.obj2_desc'), bgClass: "bg-purple-500/10", textClass: "text-purple-500/30", hoverClass: "group-hover:bg-purple-500/20" },
-                                            { num: "03", title: t('home.obj3_title'), desc: t('home.obj3_desc'), bgClass: "bg-emerald-500/10", textClass: "text-emerald-500/30", hoverClass: "group-hover:bg-emerald-500/20" },
-                                            { num: "04", title: t('home.obj4_title'), desc: t('home.obj4_desc'), bgClass: "bg-orange-500/10", textClass: "text-orange-500/30", hoverClass: "group-hover:bg-orange-500/20" }
-                                        ].map((obj, idx) => (
-                                            <div key={idx} className="min-w-[85%] sm:min-w-[280px] md:min-w-[320px] snap-center bg-white border border-slate-200 rounded-[2rem] p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-                                                <div className={`absolute -right-4 -top-4 w-32 h-32 ${obj.bgClass} rounded-full blur-3xl ${obj.hoverClass} transition-colors duration-500`}></div>
-                                                <div className="flex flex-col gap-2 mb-4 relative z-10">
-                                                    <span className={`text-5xl font-black ${obj.textClass} font-mono tracking-tighter`}>{obj.num}</span>
-                                                    <h3 className="text-lg md:text-xl font-bold text-slate-800 leading-tight mt-2">{obj.title}</h3>
-                                                </div>
-                                                <p className="text-slate-600 text-sm md:text-base font-medium relative z-10 leading-relaxed">
-                                                    {obj.desc}
+                                {/* Content overlay */}
+                                <div className="absolute inset-0 z-20 flex flex-col justify-between p-8 md:p-12">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-3 bg-blue-600/80 backdrop-blur-md rounded-xl shadow-lg">
+                                            <Sparkles size={24} className="text-white" />
+                                        </div>
+                                        <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+                                            {t('home.objective_title') || "Objectif de la plateforme"}
+                                        </h2>
+                                    </div>
+
+                                    <div className="flex flex-col md:flex-row gap-8 items-end justify-between mt-auto">
+                                        {/* Active Slide Text */}
+                                        <div className="max-w-2xl text-left">
+                                            <motion.div
+                                                key={activeSlide}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ duration: 0.5 }}
+                                            >
+                                                <span className="text-5xl md:text-7xl font-black text-white/20 font-mono tracking-tighter block mb-2">{objectives[activeSlide].num}</span>
+                                                <h3 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-4">{objectives[activeSlide].title}</h3>
+                                                <p className="text-slate-200 text-lg md:text-xl font-medium leading-relaxed">
+                                                    {objectives[activeSlide].desc}
                                                 </p>
-                                            </div>
-                                        ))}
+                                            </motion.div>
+                                        </div>
+
+                                        {/* Pagination Controls */}
+                                        <div className="flex gap-3">
+                                            {objectives.map((_, idx) => (
+                                                <button
+                                                    key={`btn-${idx}`}
+                                                    onClick={() => setActiveSlide(idx)}
+                                                    className={`h-2 rounded-full transition-all duration-500 ${activeSlide === idx ? 'w-12 bg-blue-500' : 'w-4 bg-white/30 hover:bg-white/50'}`}
+                                                    aria-label={`Aller au point ${idx + 1}`}
+                                                />
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

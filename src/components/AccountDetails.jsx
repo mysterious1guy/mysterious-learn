@@ -13,7 +13,7 @@ import { useCookies } from '../hooks/useCookies';
 
 const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites, onToggleFavorite, API_URL, setToast }) => {
   const { theme, setTheme } = useTheme();
-  const { t, setLanguage } = useLanguage();
+  const { language, t, setLanguage } = useLanguage();
   const { removeUserCookie, removeCookie } = useCookies();
   const [activeTab, setActiveTab] = useState('profile');
   const [isEditing, setIsEditing] = useState(false);
@@ -330,9 +330,9 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       <div className="flex items-center gap-6">
         <div className="relative">
           <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-3xl font-bold text-white overflow-hidden">
-            {user?.avatar ? (
+            {(user?.avatar || user?.picture) ? (
               <img
-                src={user.avatar}
+                src={user.avatar || user.picture}
                 alt="Profile"
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -361,7 +361,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         <div className="flex-1">
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">{user?.firstName} {user?.lastName}</h3>
           <p className="text-slate-500 dark:text-gray-400">{user?.email}</p>
-          <p className="text-xs text-slate-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-bold">{t('account.member_since') || 'Membre depuis'} {new Date(user?.createdAt || Date.now()).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</p>
+          <p className="text-xs text-slate-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-bold">{t('account.member_since') || 'Membre depuis'} {new Date(user?.createdAt || Date.now()).toLocaleDateString(language === 'en' ? 'en-US' : 'fr-FR', { month: 'long', year: 'numeric' })}</p>
         </div>
       </div>
 
@@ -475,30 +475,30 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-6 shadow-sm dark:shadow-none">
           <div className="flex items-center gap-2 mb-2">
             <Star className="text-blue-500 dark:text-blue-400" size={20} />
-            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">Favoris</span>
+            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">{t('account.favorites') || 'Favoris'}</span>
           </div>
           <p className="text-2xl font-black text-slate-900 dark:text-white">{favorites?.length || 0}</p>
         </div>
         <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-6 shadow-sm dark:shadow-none">
           <div className="flex items-center gap-2 mb-2">
             <BookOpen className="text-green-500 dark:text-green-400" size={20} />
-            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">En cours</span>
+            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">{t('account.in_progress') || 'En cours'}</span>
           </div>
           <p className="text-2xl font-black text-slate-900 dark:text-white">{Object.keys(progressions || {}).length}</p>
         </div>
         <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-6 shadow-sm dark:shadow-none">
           <div className="flex items-center gap-2 mb-2">
             <Target className="text-purple-500 dark:text-purple-400" size={20} />
-            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">Série</span>
+            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">{t('account.streak') || 'Série'}</span>
           </div>
-          <p className="text-2xl font-black text-slate-900 dark:text-white">{userStats.streak || 0} jours</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white">{userStats.streak || 0} {t('account.days') || 'jours'}</p>
         </div>
         <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-6 shadow-sm dark:shadow-none">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="text-orange-500 dark:text-orange-400" size={20} />
-            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">Temps</span>
+            <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-widest">{t('account.time') || 'Temps'}</span>
           </div>
-          <p className="text-2xl font-black text-slate-900 dark:text-white">{userStats.totalTime || 0}m</p>
+          <p className="text-2xl font-black text-slate-900 dark:text-white">{userStats.totalTime || 0}{t('account.minutes_short') || 'm'}</p>
         </div>
       </div>
     </div>
@@ -782,12 +782,14 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           <Download size={18} /> {exportingData ? t('account.exporting') || 'Export en cours...' : t('account.export_data') || 'Exporter mes données'}
         </button>
 
-        <button
-          onClick={() => setShowDeleteModal(true)} 
-          className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-bold transition"
-        >
-          <Trash2 size={18} /> {t('account.delete_account') || 'Supprimer mon compte'}
-        </button>
+        {user?.role !== 'admin' && user?.adminTier !== 'owner' && user?.email !== 'mouhamedfall@esp.sn' && (
+          <button
+            onClick={() => setShowDeleteModal(true)} 
+            className="flex items-center gap-2 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl font-bold transition"
+          >
+            <Trash2 size={18} /> {t('account.delete_account') || 'Supprimer mon compte'}
+          </button>
+        )}
       </div>
 
       {/* Modal de confirmation de suppression */}
