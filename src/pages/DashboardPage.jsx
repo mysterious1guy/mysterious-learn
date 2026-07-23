@@ -4,8 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft, HelpCircle, Sparkles } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
 import OnboardingTour from '../components/OnboardingTour';
+import { useLanguage } from '../context/LanguageContext';
 
 const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, progressions = {}, API_URL }) => {
+    const { t } = useLanguage();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [courses, setCourses] = useState([]);
@@ -368,7 +370,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         <div className="mx-auto w-24 h-24 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30">
                             <BookOpen size={48} className="text-white drop-shadow-md" />
                         </div>
-                        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tighter">Accès Autorisé</h2>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tighter">{t('dashboard.access_authorized') || 'Accès Autorisé'}</h2>
                         <p className="text-slate-600 dark:text-gray-400 mb-8 font-medium">
                             Tes compétences ont été validées. Tu as débloqué : <br />
                             <strong className="text-blue-500 dark:text-blue-400 mt-3 block text-xl bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20">{recentlyUnlocked.title || recentlyUnlocked.name}</strong>
@@ -380,7 +382,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                             }}
                             className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-blue-500/25 transform hover:-translate-y-1"
                         >
-                            Démarrer maintenant
+                            {t('dashboard.start_now') || 'Démarrer maintenant'}
                         </button>
                     </motion.div>
                 </div>
@@ -401,14 +403,14 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                     <div className="relative group cursor-default mb-6">
                         <div className="flex items-center gap-2 mb-4 justify-center opacity-40">
                             <div className="w-8 h-px bg-blue-500" />
-                            <span className="text-[10px] font-black font-mono tracking-[0.3em] text-blue-400 uppercase">Système d'Apprentissage</span>
+                            <span className="text-[10px] font-black font-mono tracking-[0.3em] text-blue-400 uppercase">{t('dashboard.learning_system') || "Système d'Apprentissage"}</span>
                             <div className="w-8 h-px bg-blue-500" />
                         </div>
                         <motion.h1
                             className="text-center font-black tracking-tighter leading-none flex flex-col items-center"
                         >
                             <span className="block text-5xl md:text-8xl text-slate-900 dark:text-white mb-2 opacity-100">
-                                BIENVENUE,
+                                {t('dashboard.welcome_user') || 'BIENVENUE,'}
                             </span>
                             <span className="inline-block text-4xl md:text-7xl bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 bg-clip-text text-transparent drop-shadow-sm pb-4 tracking-tighter">
                                 {user?.firstName?.toUpperCase() || 'AGENT'}
@@ -421,8 +423,8 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                             transition={{ delay: 0.3 }}
                             className="text-base md:text-lg text-slate-500 dark:text-slate-400 font-medium max-w-2xl mx-auto mt-6 leading-relaxed italic"
                         >
-                            "La maîtrise n'est pas une destination, mais une quête perpétuelle." <br />
-                            Prêt à continuer ton ascension vers l'élite ?
+                            "{t('dashboard.quote') || 'La maîtrise n\'est pas une destination, mais une quête perpétuelle.'}" <br />
+                            {t('dashboard.ready') || "Prêt à continuer ton ascension vers l'élite ?"}
                         </motion.p>
                     </div>
 
@@ -441,9 +443,9 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto">
                             <Sparkles size={32} />
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900 dark:text-white">Nouveaux Modules en Préparation</h3>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white">{t('dashboard.new_modules_title') || 'Nouveaux Modules en Préparation'}</h3>
                         <p className="text-slate-600 dark:text-slate-400 max-w-lg mx-auto font-medium leading-relaxed">
-                            La plateforme Mysterious Classroom prépare son nouvel écosystème de cours interactifs. L'infrastructure est prête et les futurs modules arriveront très bientôt !
+                            {t('dashboard.new_modules_desc') || "La plateforme Mysterious Classroom prépare son nouvel écosystème de cours interactifs. L'infrastructure est prête et les futurs modules arriveront très bientôt !"}
                         </p>
                     </div>
                 )}
@@ -513,7 +515,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                                             }}
                                                                             className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5"
                                                                         >
-                                                                            Passer le test
+                                                                            {t('dashboard.take_test') || 'Passer le test'}
                                                                         </button>
                                                                     </>
                                                                 )}
