@@ -438,6 +438,17 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
 
             {/* Categories */}
             <div className="space-y-12">
+                {finalCategories.length === 0 && (
+                    <div className="max-w-4xl mx-auto my-8 p-10 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] text-center space-y-6 shadow-xl">
+                        <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto">
+                            <Sparkles size={32} />
+                        </div>
+                        <h3 className="text-2xl font-black text-slate-900 dark:text-white">Nouveaux Modules en Préparation</h3>
+                        <p className="text-slate-600 dark:text-slate-400 max-w-lg mx-auto font-medium leading-relaxed">
+                            La plateforme Mysterious Classroom prépare son nouvel écosystème de cours interactifs. L'infrastructure est prête et les futurs modules arriveront très bientôt !
+                        </p>
+                    </div>
+                )}
                 {finalCategories.map((category, index) => (
                     <motion.div
                         key={category.id}
