@@ -12,7 +12,7 @@ export const translations = {
         monitor: "Moniteur",
         logout: "Déconnexion",
         projects: "Projets",
-        leaderboard: "Classement",
+        nav_leaderboard: "Classement",
         nav: {
             login: "SE CONNECTER",
             register: "S'INSCRIRE"
@@ -170,8 +170,6 @@ export const translations = {
             btn_create_agent: "CRÉER UN DOSSIER D'AGENT",
             stats_registered: "Agents Inscrits",
             stats_active: "Opérationnels",
-            operations_arsenal: "OPÉRATIONS & ARSENAL",
-            explore_vectors: "Explorez les Vecteurs d'Attaque",
             operations_arsenal: "COMPÉTENCES CLÉS",
             explore_vectors: "Ce que vous allez apprendre",
             vectors_desc: "Découvrez les différents domaines qui vous permettront de maîtriser l'informatique et d'apprendre à la protéger efficacement.",
@@ -357,7 +355,7 @@ export const translations = {
         monitor: "Monitor",
         logout: "Logout",
         projects: "Projects",
-        leaderboard: "Leaderboard",
+        nav_leaderboard: "Leaderboard",
         nav: {
             login: "LOG IN",
             register: "SIGN UP"

@@ -57,7 +57,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                 className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/leaderboard' ? 'bg-amber-500/10 text-amber-500 ring-1 ring-amber-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-amber-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
               >
                 <Trophy size={18} />
-                {t('leaderboard')}
+                {t('nav_leaderboard')}
                 <span className="absolute -top-1 -right-1 flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>

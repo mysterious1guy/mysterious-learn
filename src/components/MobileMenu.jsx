@@ -75,7 +75,7 @@ const MobileMenu = ({ isOpen, onClose, user, onLogout }) => {
                                 onClick={onClose}
                                 className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400 font-bold flex items-center gap-2"
                             >
-                                <Trophy size={18} className="text-amber-400" /> {t('leaderboard')}
+                                <Trophy size={18} className="text-amber-400" /> {t('nav_leaderboard')}
                             </Link>
                             <button
                                 onClick={handleLogout}
