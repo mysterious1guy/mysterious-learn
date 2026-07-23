@@ -126,18 +126,53 @@ const HomePage = ({ API_URL }) => {
                             <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mt-10" dangerouslySetInnerHTML={{ __html: t('home.hero_desc') || "L'arène d'entraînement ultime pour <strong class=\"text-slate-900\">apprendre la cybersécurité</strong>, maîtriser l'investigation numérique et résoudre des scénarios CTF concrets." }}>
                             </p>
 
-                            {/* Section Objectif de l'Application */}
-                            <div className="max-w-3xl mx-auto mt-8 p-6 md:p-8 bg-white/70 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-lg text-left space-y-3">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2.5 bg-blue-600 text-white rounded-2xl shadow-md">
-                                        <Sparkles size={22} />
+                            {/* Section Objectif de l'Application - Nouveau design avec image et scroll */}
+                            <div className="max-w-6xl mx-auto mt-16 p-3 bg-white/60 backdrop-blur-3xl rounded-[2.5rem] border border-slate-200/50 shadow-2xl text-left flex flex-col lg:flex-row gap-6 overflow-hidden">
+                                {/* Image Illustrative (Informatique/Hack) */}
+                                <div className="w-full lg:w-5/12 h-64 lg:h-auto rounded-[2rem] overflow-hidden relative shadow-inner group">
+                                    <img 
+                                        src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1000" 
+                                        alt="Cybersecurity & Coding" 
+                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent opacity-90"></div>
+                                    <div className="absolute bottom-6 left-6 right-6">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <div className="p-2.5 bg-blue-600 rounded-xl shadow-lg shadow-blue-500/30">
+                                                <Sparkles size={22} className="text-white" />
+                                            </div>
+                                            <h2 className="text-xl md:text-2xl font-black text-white tracking-tight leading-tight">
+                                                {t('home.objective_title') || "Objectif de la plateforme"}
+                                            </h2>
+                                        </div>
                                     </div>
-                                    <h2 className="text-lg md:text-xl font-black text-slate-900 tracking-tight">
-                                        {t('home.objective_title') || "Objectif de la plateforme MYSTERIOUS CLASSROOM"}
-                                    </h2>
                                 </div>
-                                <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: t('home.objective_desc') || "<strong>MYSTERIOUS CLASSROOM</strong> est une plateforme de simulation immersive (CTF). Ma vocation est de vous plonger dans des environnements virtuels où chaque mission consiste à auditer du code, exploiter des vulnérabilités, sécuriser des serveurs et capturer des \"Flags\" pour forger votre expertise cyber." }}>
-                                </p>
+
+                                {/* Slider des Objectifs */}
+                                <div className="w-full lg:w-7/12 p-4 md:p-8 flex flex-col justify-center">
+                                    <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium mb-8" dangerouslySetInnerHTML={{ __html: t('home.objective_desc') || "<strong>MYSTERIOUS CLASSROOM</strong> est une plateforme de simulation immersive..." }}>
+                                    </p>
+                                    
+                                    <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 pt-2 custom-horizontal-scrollbar">
+                                        {[
+                                            { num: "01", title: t('home.obj1_title'), desc: t('home.obj1_desc'), bgClass: "bg-blue-500/10", textClass: "text-blue-500/30", hoverClass: "group-hover:bg-blue-500/20" },
+                                            { num: "02", title: t('home.obj2_title'), desc: t('home.obj2_desc'), bgClass: "bg-purple-500/10", textClass: "text-purple-500/30", hoverClass: "group-hover:bg-purple-500/20" },
+                                            { num: "03", title: t('home.obj3_title'), desc: t('home.obj3_desc'), bgClass: "bg-emerald-500/10", textClass: "text-emerald-500/30", hoverClass: "group-hover:bg-emerald-500/20" },
+                                            { num: "04", title: t('home.obj4_title'), desc: t('home.obj4_desc'), bgClass: "bg-orange-500/10", textClass: "text-orange-500/30", hoverClass: "group-hover:bg-orange-500/20" }
+                                        ].map((obj, idx) => (
+                                            <div key={idx} className="min-w-[85%] sm:min-w-[280px] md:min-w-[320px] snap-center bg-white border border-slate-200 rounded-[2rem] p-6 md:p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+                                                <div className={`absolute -right-4 -top-4 w-32 h-32 ${obj.bgClass} rounded-full blur-3xl ${obj.hoverClass} transition-colors duration-500`}></div>
+                                                <div className="flex flex-col gap-2 mb-4 relative z-10">
+                                                    <span className={`text-5xl font-black ${obj.textClass} font-mono tracking-tighter`}>{obj.num}</span>
+                                                    <h3 className="text-lg md:text-xl font-bold text-slate-800 leading-tight mt-2">{obj.title}</h3>
+                                                </div>
+                                                <p className="text-slate-600 text-sm md:text-base font-medium relative z-10 leading-relaxed">
+                                                    {obj.desc}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         </motion.div>
 
