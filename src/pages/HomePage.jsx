@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
-import { Zap, ArrowRight, ShieldAlert, Sparkles, Heart, Github, Linkedin, Mail, Terminal, Lock, Globe, Cpu, AlertTriangle } from 'lucide-react';
+import { Zap, ArrowRight, ShieldAlert, Sparkles, Heart, Github, Linkedin, Mail, Terminal, Lock, Globe, Cpu, AlertTriangle, Shield, Bot, Trophy } from 'lucide-react';
 import MysteriousGeometricLogo from '../MysteriousGeometricLogo';
 
 const HomePage = ({ API_URL }) => {
@@ -22,25 +22,37 @@ const HomePage = ({ API_URL }) => {
 
     const objectives = [
         {
-            num: "01",
+            id: "practice",
+            label: t('home.tab_practice') || "Pratique",
+            badge: "PRATIQUE & CODE",
+            icon: Terminal,
             title: t('home.obj1_title') || "Apprentissage Ludique",
             desc: t('home.obj1_desc') || "Ici, pas de théorie ennuyeuse ! Vous apprenez la programmation et la cybersécurité comme dans un jeu vidéo, en résolvant des missions concrètes.",
             image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=1200"
         },
         {
-            num: "02",
+            id: "security",
+            label: t('home.tab_security') || "Hacking",
+            badge: "SÉCURITÉ & DEFENSE",
+            icon: Shield,
             title: t('home.obj2_title') || "Penser comme un Hacker",
             desc: t('home.obj2_desc') || "Découvrez comment les pirates pensent pour mieux vous protéger. Apprenez à trouver les failles avant qu'elles ne soient exploitées.",
             image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200"
         },
         {
-            num: "03",
+            id: "xp",
+            label: t('home.tab_xp') || "Niveaux XP",
+            badge: "XP & PROGRESSION",
+            icon: Trophy,
             title: t('home.obj3_title') || "Gagner de l'Expérience",
             desc: t('home.obj3_desc') || "Chaque mission réussie vous donne des points (XP). Débloquez de nouveaux niveaux et affrontez des défis plus complexes.",
             image: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=1200"
         },
         {
-            num: "04",
+            id: "ai",
+            label: t('home.tab_ai') || "IA Oracle",
+            badge: "IA MENTOR",
+            icon: Bot,
             title: t('home.obj4_title') || "Une IA pour vous Guider",
             desc: t('home.obj4_desc') || "Bloqué sur un problème ? Oracle Mentor, notre IA intelligente, est là pour vous donner des indices précis sans faire le travail à votre place.",
             image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=1200"
@@ -187,10 +199,11 @@ const HomePage = ({ API_URL }) => {
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
                                                 <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between z-20">
-                                                    <span className="px-3 py-1 bg-blue-600/90 backdrop-blur-md text-white text-xs font-black uppercase tracking-wider rounded-full shadow-lg">
-                                                        {obj.num} / 04
+                                                    <span className="px-3 py-1.5 bg-blue-600/90 backdrop-blur-md text-white text-xs font-black uppercase tracking-wider rounded-full shadow-lg flex items-center gap-2">
+                                                        {(() => { const Icon = obj.icon; return <Icon size={14} />; })()}
+                                                        {obj.badge}
                                                     </span>
-                                                    <span className="text-xs font-bold text-white/80 uppercase tracking-widest backdrop-blur-md px-3 py-1 bg-black/40 rounded-full">
+                                                    <span className="text-xs font-bold text-white/80 uppercase tracking-widest backdrop-blur-md px-3 py-1 bg-black/40 rounded-full hidden sm:inline-block">
                                                         MYSTERIOUS CTF
                                                     </span>
                                                 </div>
@@ -232,21 +245,22 @@ const HomePage = ({ API_URL }) => {
                                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                                             {objectives.map((obj, idx) => {
                                                 const isActive = activeSlide === idx;
+                                                const IconComp = obj.icon;
                                                 return (
                                                     <button
-                                                        key={`tab-${idx}`}
+                                                        key={`tab-${obj.id}`}
                                                         onClick={() => setActiveSlide(idx)}
-                                                        className={`p-3 rounded-2xl text-left transition-all duration-300 relative overflow-hidden border ${
+                                                        className={`p-3 rounded-2xl text-left transition-all duration-300 relative overflow-hidden border flex items-center gap-2.5 ${
                                                             isActive 
                                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/25 scale-[1.02]' 
                                                                 : 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-800'
                                                         }`}
                                                     >
-                                                        <span className={`text-xs font-mono font-black block ${isActive ? 'text-blue-200' : 'text-slate-400'}`}>
-                                                            {obj.num}
-                                                        </span>
-                                                        <span className="text-xs font-bold truncate block mt-0.5">
-                                                            {obj.title.split(' ')[0]}...
+                                                        <div className={`p-1.5 rounded-xl shrink-0 ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200/60 dark:bg-slate-700/60 text-slate-600 dark:text-slate-300'}`}>
+                                                            <IconComp size={14} />
+                                                        </div>
+                                                        <span className="text-xs font-black tracking-tight truncate block">
+                                                            {obj.label}
                                                         </span>
                                                         {isActive && (
                                                             <div className="absolute bottom-0 left-0 h-1 bg-white animate-pulse w-full"></div>

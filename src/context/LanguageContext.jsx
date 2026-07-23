@@ -191,7 +191,11 @@ export const translations = {
             topic_crypto_desc: "Apprenez à coder des messages secrets et à comprendre comment vos mots de passe sont protégés.",
             topic_rev_name: "Démontage de Logiciels",
             topic_rev_tag: "Analyse Informatique",
-            topic_rev_desc: "Démontez des programmes pour comprendre exactement comment ils ont été fabriqués à l'intérieur."
+            topic_rev_desc: "Démontez des programmes pour comprendre exactement comment ils ont été fabriqués à l'intérieur.",
+            tab_practice: "Pratique",
+            tab_security: "Hacking",
+            tab_xp: "Niveaux XP",
+            tab_ai: "IA Oracle"
         },
         announcements: {
             title: "Annonces",
@@ -553,7 +557,11 @@ export const translations = {
             topic_crypto_desc: "Learn to code secret messages and understand how your passwords are protected.",
             topic_rev_name: "Software Disassembly",
             topic_rev_tag: "Computer Analysis",
-            topic_rev_desc: "Take apart programs to understand exactly how they were built inside."
+            topic_rev_desc: "Take apart programs to understand exactly how they were built inside.",
+            tab_practice: "Practice",
+            tab_security: "Hacking",
+            tab_xp: "XP Levels",
+            tab_ai: "AI Oracle"
         },
         announcements: {
             title: "Announcements",
