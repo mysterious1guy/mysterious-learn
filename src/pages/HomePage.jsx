@@ -342,6 +342,39 @@ const HomePage = ({ API_URL }) => {
                 </div>
             </section>
 
+            {/* TRANSMISSION INTERCEPTEE - CONSTRUCTION BANNER */}
+            <section className="py-20 px-4 md:px-6 bg-[#050B14] relative overflow-hidden border-t border-red-900/30 z-10">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-red-600/10 blur-[120px] rounded-full -mr-20 -mt-20 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-600/10 blur-[120px] rounded-full -ml-20 -mb-20 pointer-events-none" />
+
+                <div className="max-w-5xl mx-auto relative z-10">
+                    <div className="bg-slate-900/60 backdrop-blur-xl border border-red-500/20 rounded-3xl p-10 md:p-14 text-center space-y-8 shadow-2xl relative overflow-hidden">
+                        
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-orange-500 to-red-600" />
+
+                        <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-red-950/50 border border-red-500/40 text-red-400 rounded-full text-xs md:text-sm font-mono uppercase tracking-widest">
+                            <AlertTriangle size={16} className="animate-pulse" />
+                            {t('home.intercept_tag') || 'TRANSMISSION INTERCEPTÉE'}
+                        </div>
+
+                        <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-white">
+                            {t('home.intercept_title') || 'Le Système est en cours de déploiement'}
+                        </h2>
+
+                        <p className="text-slate-400 text-base md:text-xl max-w-3xl mx-auto leading-relaxed font-mono">
+                            <span className="text-red-500">[INFO]</span> {t('home.intercept_desc') || "J'injecte actuellement les nouveaux scénarios d'entraînement (CTF) dans la matrice. La plateforme évolue. Préparez-vous pour de nouvelles missions imminentes."}
+                        </p>
+
+                        <div className="pt-4 flex flex-wrap items-center justify-center gap-6">
+                            <div className="inline-flex items-center gap-3 px-5 py-3 bg-slate-950 border border-slate-800 text-slate-400 rounded-xl text-xs font-mono tracking-wider">
+                                <span className="w-3 h-3 rounded-full bg-amber-500 animate-ping" />
+                                {t('home.intercept_status') || 'Compilation des missions en cours...'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
     );
 };

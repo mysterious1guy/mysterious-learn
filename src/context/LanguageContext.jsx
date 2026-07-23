@@ -133,7 +133,7 @@ export const translations = {
             architect_quote: "Je crois en un monde où la technologie doit être comprise pour être sécurisée. Mysterious Classroom est l'arène que j'ai bâtie pour forger la prochaine génération d'experts cyber.",
             intercept_tag: "TRANSMISSION INTERCEPTÉE",
             intercept_title: "Le Système est en cours de déploiement",
-            intercept_desc: "[INFO] Nos ingénieurs injectent actuellement les nouveaux scénarios d'entraînement (CTF) dans la matrice. La plateforme évolue. Préparez-vous pour de nouvelles missions imminentes.",
+            intercept_desc: "[INFO] J'injecte actuellement les nouveaux scénarios d'entraînement (CTF) dans la matrice. La plateforme évolue. Préparez-vous pour de nouvelles missions imminentes.",
             intercept_status: "Compilation des missions en cours..."
         }
     },
@@ -267,7 +267,7 @@ export const translations = {
             architect_quote: "I believe in a world where technology must be understood to be secured. Mysterious Classroom is the arena I built to forge the next generation of cyber experts.",
             intercept_tag: "TRANSMISSION INTERCEPTED",
             intercept_title: "System is deploying",
-            intercept_desc: "[INFO] Our engineers are currently injecting new training scenarios (CTF) into the matrix. The platform is evolving. Prepare for upcoming missions.",
+            intercept_desc: "[INFO] I am currently injecting new training scenarios (CTF) into the matrix. The platform is evolving. Prepare for upcoming missions.",
             intercept_status: "Compiling missions..."
         }
     }
