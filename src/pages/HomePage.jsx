@@ -381,9 +381,9 @@ const HomePage = ({ API_URL }) => {
                         </p>
 
                         <div className="pt-4 flex flex-wrap items-center justify-center gap-6">
-                            <div className="inline-flex items-center gap-3 px-5 py-3 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 rounded-2xl text-xs md:text-sm font-black tracking-wider">
-                                <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
-                                🟢 Serveurs & Fondations API Opérationnels (v1.0.0)
+                            <div className="inline-flex items-center gap-3 px-5 py-3 bg-blue-500/20 border border-blue-500/30 text-blue-300 rounded-2xl text-xs md:text-sm font-black tracking-wider">
+                                <span className="w-3 h-3 rounded-full bg-blue-400 animate-pulse" />
+                                ✨ Le site est actuellement en cours d'amélioration
                             </div>
                         </div>
                     </div>
