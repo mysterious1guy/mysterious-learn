@@ -135,6 +135,9 @@ export const translations = {
             intercept_title: "Le Système est en cours de déploiement",
             intercept_desc: "[INFO] J'injecte actuellement les nouveaux scénarios d'entraînement (CTF) dans la matrice. La plateforme évolue. Préparez-vous pour de nouvelles missions imminentes.",
             intercept_status: "Compilation des missions en cours..."
+        },
+        accountPage: {
+            back_to_dashboard: "Retour au tableau de bord"
         }
     },
     en: {
@@ -269,6 +272,9 @@ export const translations = {
             intercept_title: "System is deploying",
             intercept_desc: "[INFO] I am currently injecting new training scenarios (CTF) into the matrix. The platform is evolving. Prepare for upcoming missions.",
             intercept_status: "Compiling missions..."
+        },
+        accountPage: {
+            back_to_dashboard: "Back to dashboard"
         }
     }
 };

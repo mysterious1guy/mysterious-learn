@@ -2,9 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import AccountDetails from '../components/AccountDetails';
+import { useLanguage } from '../context/LanguageContext';
 
 const AccountPage = ({ user, onUpdateUser, onLogout, progressions, favorites, onToggleFavorite, API_URL, setToast }) => {
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300 pt-6">
@@ -19,7 +21,7 @@ const AccountPage = ({ user, onUpdateUser, onLogout, progressions, favorites, on
                         className="flex items-center gap-2 text-gray-400 hover:text-white transition group"
                     >
                         <ArrowLeft size={20} className="group-hover:-translate-x-1 transition" />
-                        Retour au tableau de bord
+                        {t('accountPage.back_to_dashboard') || "Retour au tableau de bord"}
                     </button>
                 </motion.div>
 
