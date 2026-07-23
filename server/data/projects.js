@@ -1,133 +1,47 @@
 const projects = [
-    // --- ALGORITHMIQUE ---
     {
-        _id: "proj_algo_1",
-        title: "Le Labyrinthe du Destin",
-        description: "Sortez d'un labyrinthe généré aléatoirement via le backtracking.",
-        language: "Algorithmique",
-        level: "Intermédiaire",
-        difficulty: "Moyen",
-        xpReward: 800,
-        requirements: ["Matrices", "Backtracking"],
-        objectives: ["Recursion", "Spatial Search"]
-    },
-    // --- JAVASCRIPT ---
-    {
-        _id: "proj_js_1",
-        title: "Calculatrice de Particules",
-        description: "Un moteur physique simple en JS pur pour simuler des collisions.",
-        language: "JavaScript",
-        level: "Moyen",
-        difficulty: "Moyen",
-        xpReward: 600,
-        requirements: ["Canvas API", "Math.sin/cos"],
-        objectives: ["Logic Animations", "Vector Math"]
-    },
-    {
-        _id: "proj_js_2",
-        title: "Blockchain Minimaliste",
-        description: "Implémentez une chaîne de blocs avec hachage SHA-256.",
-        language: "JavaScript",
-        level: "Expert",
-        difficulty: "Difficile",
-        xpReward: 1500,
-        requirements: ["Crypto API", "Classes"],
-        objectives: ["Data Integrity", "Hashing"]
-    },
-    // --- PYTHON ---
-    {
-        _id: "proj_python_1",
-        title: "CyberPet Evolution",
-        description: "Un assistant virtuel évolutif avec persistance JSON.",
-        language: "Python",
+        _id: "proj_c_1",
+        title: "Quête 1 : Le Calculateur Binaire & Métriques RAM",
+        description: "Écrivez un programme C système qui analyse l'occupation mémoire des types stricts (char, int, float, double) et effectue des conversions binaires.",
+        language: "C",
         level: "Débutant",
         difficulty: "Facile",
-        xpReward: 400,
-        requirements: ["JSON", "Classes"],
-        objectives: ["OOP", "File I/O"]
+        xpReward: 500,
+        requirements: ["printf", "scanf", "sizeof", "GCC"],
+        objectives: ["Mesurer les octets réels en RAM", "Gérer les entrées/sorties formatées sans avertissement"]
     },
     {
-        _id: "proj_python_2",
-        title: "Scraper de Bourse",
-        description: "Extrayez les cours des actions en temps réel.",
-        language: "Python",
+        _id: "proj_c_2",
+        title: "Quête 2 : Le Déchiffreur de Texte par Pointeurs",
+        description: "Implémentez un algorithme de cryptage/déchiffrement de texte Vigenère en utilisant exclusivement des pointeurs char* sans crochets [].",
+        language: "C",
         level: "Intermédiaire",
         difficulty: "Moyen",
         xpReward: 900,
-        requirements: ["BeautifulSoup", "Requests"],
-        objectives: ["Data Extraction", "Regex"]
+        requirements: ["Pointeurs char*", "Déréférencement *", "Arithmétique de pointeurs"],
+        objectives: ["Parcourir les adresses RAM avec ptr++", "Modifier des chaînes en mémoire vive"]
     },
-    // --- LANGAGE C ---
     {
-        _id: "proj_c_1",
-        title: "Shell Interne",
-        description: "Créez votre propre interpréteur de commandes simple.",
+        _id: "proj_c_3",
+        title: "Quête 3 : Le Gestionnaire Malloc & Chasseur de Fuites",
+        description: "Créez un tableau dynamique de structures d'étudiants loué sur le Tas (Heap). Libérez chaque octet avec free() et validez avec Valgrind.",
         language: "C",
-        level: "Intermédiaire",
+        level: "Avancé",
         difficulty: "Difficile",
-        xpReward: 1200,
-        requirements: ["fork()", "exec()", "wait()"],
-        objectives: ["Process Management", "System Calls"]
+        xpReward: 1400,
+        requirements: ["malloc()", "calloc()", "free()", "struct"],
+        objectives: ["Allouer la mémoire dynamique sans crash", "Garantir zéro fuite mémoire"]
     },
-    // --- C++ ---
     {
-        _id: "proj_cpp_1",
-        title: "Moteur de Rendu 3D (Software)",
-        description: "Affichez un cube en rotation sans utiliser de bibliothèque graphique.",
-        language: "C++",
+        _id: "proj_c_4",
+        title: "Quête 4 : Le Moteur de Base de Données & Listes Chaînées",
+        description: "Construisez une base de données en mémoire basée sur une liste chaînée simple avec sauvegarde et chargement automatique dans un fichier binaire (FILE*).",
+        language: "C",
         level: "Expert",
         difficulty: "Extrême",
-        xpReward: 2500,
-        requirements: ["Matrices 4x4", "STL"],
-        objectives: ["Linear Algebra", "Optimization"]
-    },
-    // --- HTML / CSS ---
-    {
-        _id: "proj_html_css_1",
-        title: "Portfolio Cyberpunk",
-        description: "Une page perso avec effets de glitch et néons uniquement en CSS.",
-        language: "CSS",
-        level: "Moyen",
-        difficulty: "Moyen",
-        xpReward: 500,
-        requirements: ["Keyframes", "Clip-path"],
-        objectives: ["UI/UX Design", "Animations"]
-    },
-    // --- BASH ---
-    {
-        _id: "proj_bash_1",
-        title: "Garde du Corps (Sentry)",
-        description: "Un script qui surveille les tentatives de connexion SSH et ban les IP.",
-        language: "Bash",
-        level: "Intermédiaire",
-        difficulty: "Moyen",
-        xpReward: 700,
-        requirements: ["Grep", "Iptables", "AWK"],
-        objectives: ["Security", "Log Analysis"]
-    },
-    // --- PHP / MYSQL ---
-    {
-        _id: "proj_web_backend_1",
-        title: "E-Commerce de l'Espace",
-        description: "Boutique complète avec panier et gestion de stock en MySQL.",
-        language: "PHP",
-        level: "Intermédiaire",
-        difficulty: "Difficile",
-        xpReward: 1100,
-        requirements: ["PDO", "SQL Joins", "Sessions"],
-        objectives: ["Database Design", "Backend Logic"]
-    },
-    // --- REACT / MONGODB ---
-    {
-        _id: "proj_fullstack_1",
-        title: "Réseau Social Mystérieux",
-        description: "Feed en temps réel, amis et messages cryptés.",
-        language: "React",
-        level: "Expert",
-        difficulty: "Difficile",
-        xpReward: 1800,
-        requirements: ["Express", "MongoDB", "Auth"],
-        objectives: ["Fullstack Dev", "State Management"]
+        xpReward: 2000,
+        requirements: ["Listes chaînées", "Pointeurs de structures", "fopen/fwrite/fread"],
+        objectives: ["Construire une structure de données dynamique", "Gérer la persistance fichier binaire"]
     }
 ];
 

@@ -120,39 +120,39 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                 <div className="max-w-6xl mx-auto space-y-12">
 
                     {/* Hero Section Projects */}
-                    <div className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-indigo-900 to-slate-900 p-10 lg:p-16 text-white border border-indigo-500/20 shadow-2xl">
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 blur-[100px] rounded-full -mr-20 -mt-20"></div>
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/20 blur-[80px] rounded-full -ml-10 -mb-10"></div>
+                    <div className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-blue-600 to-indigo-700 p-10 lg:p-16 text-white border border-blue-400/30 shadow-2xl">
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 blur-[100px] rounded-full -mr-20 -mt-20"></div>
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400/20 blur-[80px] rounded-full -ml-10 -mb-10"></div>
 
                         <div className="relative z-10 max-w-2xl">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 mb-6">
-                                <Code size={16} className="text-indigo-300" />
-                                <span className="text-sm font-bold text-indigo-100 tracking-wide">LABORATOIRE PRATIQUE</span>
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/20 mb-6">
+                                <Code size={16} className="text-yellow-300" />
+                                <span className="text-sm font-black text-white tracking-wide uppercase">LABORATOIRE C INTERACTIF</span>
                             </div>
                             <h1 className="text-4xl lg:text-6xl font-black mb-6 leading-tight tracking-tight">
-                                Projets <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Finaux</span>
+                                Quêtes <span className="text-yellow-300">d'Ingénierie C</span>
                             </h1>
-                            <p className="text-lg text-indigo-100/80 mb-8 leading-relaxed font-medium">
-                                Construisez de véritables applications pour valider vos acquis. Ces projets complets remplacent les exercices basiques par des défis d'ingénierie réels.
+                            <p className="text-lg text-blue-100 mb-8 leading-relaxed font-medium">
+                                Débloquez vos compétences d'ingénieur. Relevez des défis de code C réels et validez votre maîtrise du système, des pointeurs et de la mémoire RAM.
                             </p>
 
                             <div className="flex flex-wrap gap-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
-                                        <Briefcase size={24} className="text-indigo-400" />
+                                    <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-md">
+                                        <Briefcase size={24} className="text-white" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-white/50 uppercase">Projets Dispos</p>
-                                        <p className="text-xl font-black">{projects.length}</p>
+                                        <p className="text-xs font-bold text-blue-200 uppercase tracking-wider">Quêtes C Disponibles</p>
+                                        <p className="text-2xl font-black text-white">{projects.length}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center border border-green-500/30">
-                                        <Award size={24} className="text-green-400" />
+                                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/30 flex items-center justify-center border border-emerald-400/40 backdrop-blur-md">
+                                        <Award size={24} className="text-emerald-300" />
                                     </div>
                                     <div>
-                                        <p className="text-sm font-bold text-white/50 uppercase">Validés</p>
-                                        <p className="text-xl font-black">{user?.completedQuests?.length || 0}</p>
+                                        <p className="text-xs font-bold text-blue-200 uppercase tracking-wider">Quêtes Accomplies</p>
+                                        <p className="text-2xl font-black text-white">{user?.completedQuests?.length || 0}</p>
                                     </div>
                                 </div>
                             </div>
@@ -162,7 +162,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                     {/* Listing */}
                     <div className="space-y-6">
                         <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-2xl font-black text-slate-800 dark:text-white">Défis Disponibles</h2>
+                            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Quêtes C Disponibles</h2>
                         </div>
 
                         {loading ? (

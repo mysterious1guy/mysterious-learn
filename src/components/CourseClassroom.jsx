@@ -39,10 +39,10 @@ const CourseClassroom = ({ courseTitle, courseDescription, onEnter }) => {
                             Réseau Neuronal Global
                         </div>
                         <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-6 drop-shadow-[0_0_20px_rgba(255,255,255,0.2)] uppercase italic">
-                            {courseTitle || "L'Art de l'Algorithmique"}
+                            {courseTitle || "Masterclass Langage C"}
                         </h1>
                         <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                            {courseDescription || "Plonge dans les fondations du code. Oublie les langages éphémères, apprends la pure logique machine."}
+                            {courseDescription || "L'Arène du Jeu d'Ingénierie C. Entrez dans la salle de jeux et débloquez chaque niveau étape par étape."}
                         </p>
                     </motion.div>
                 </div>

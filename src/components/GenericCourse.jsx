@@ -76,8 +76,8 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
 
             return (
                 <div className="space-y-6">
-                    {intro && <p className="text-lg text-slate-300 leading-relaxed mb-6 italic border-l-2 border-blue-500/30 pl-4">{intro}</p>}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {intro && <p className="text-lg text-slate-700 leading-relaxed mb-6 italic border-l-4 border-blue-500 pl-4 py-2 bg-blue-50/50 rounded-r-xl">{intro}</p>}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         {items.map((item, idx) => {
                             const [title, ...descParts] = item.text.split(':');
                             const description = descParts.join(':').trim();
@@ -88,20 +88,20 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: idx * 0.1 }}
-                                    className="bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-5 hover:bg-slate-800 transition-all group shadow-xl relative overflow-hidden"
+                                    className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 group shadow-md hover:shadow-xl relative overflow-hidden"
                                 >
-                                    <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity">
                                         {getIcon(title)}
                                     </div>
                                     <div className="flex items-center gap-3 mb-3">
-                                        <div className="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-tighter border border-blue-500/20">
+                                        <div className="bg-blue-50 text-blue-600 px-3 py-1 rounded-lg text-xs font-black uppercase tracking-wider border border-blue-200">
                                             {item.marker}
                                         </div>
-                                        <h4 className="font-black text-white group-hover:text-blue-400 transition-colors leading-tight">
+                                        <h4 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors text-base leading-snug">
                                             {title}
                                         </h4>
                                     </div>
-                                    <p className="text-sm text-slate-400 leading-relaxed font-medium">
+                                    <p className="text-sm text-slate-600 leading-relaxed font-medium">
                                         {description || ""}
                                     </p>
                                 </motion.div>
@@ -112,33 +112,33 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
             );
         }
 
-        return <div className="whitespace-pre-line leading-relaxed text-slate-200 text-lg bg-slate-800/30 p-6 rounded-2xl border border-slate-800">{content}</div>;
+        return <div className="whitespace-pre-line leading-relaxed text-slate-800 text-lg bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">{content}</div>;
     };
 
     if (!course || lessons.length === 0) return (
-        <div className="flex flex-col items-center justify-center p-12 text-white">
-            <h2 className="text-xl">Ce cours ne contient pas encore de chapitres.</h2>
-            <button onClick={onClose} className="mt-4 px-4 py-2 bg-blue-600 rounded">Retour</button>
+        <div className="flex flex-col items-center justify-center p-12 text-slate-900 bg-slate-50">
+            <h2 className="text-xl font-bold">Ce cours ne contient pas encore de chapitres.</h2>
+            <button onClick={onClose} className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold">Retour</button>
         </div>
     );
 
     return (
-        <div className="flex flex-col md:flex-row h-screen bg-gray-900 text-white overflow-hidden">
-            {/* Sidebar de navigation - Masquée sur petit mobile ou rétractable ? Pour l'instant on garde scroll horizontal sur mobile ou sidebar fixe */}
-            <div className="w-full md:w-80 bg-gray-950 border-b md:border-b-0 md:border-r border-gray-800 flex flex-col shrink-0">
-                <div className="p-4 border-b border-gray-800 flex items-center gap-3">
+        <div className="flex flex-col md:flex-row h-screen bg-slate-50 text-slate-900 overflow-hidden">
+            {/* Sidebar de navigation */}
+            <div className="w-full md:w-80 bg-white border-b md:border-b-0 md:border-r border-slate-200 flex flex-col shrink-0 shadow-sm">
+                <div className="p-5 border-b border-slate-200 flex items-center gap-3">
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-800 rounded-lg transition text-white/80 hover:text-white"
+                        className="p-2 hover:bg-slate-100 rounded-xl transition text-slate-600 hover:text-slate-900"
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <h1 className="font-bold truncate">{course.title || course.name}</h1>
+                    <h1 className="font-black text-slate-900 truncate tracking-tight">{course.title || course.name}</h1>
                 </div>
 
-                <div className="flex-1 overflow-y-auto md:overflow-y-auto p-2 md:p-4 space-y-4 md:space-y-4 flex flex-row md:flex-col gap-2 md:gap-1 scrollbar-hide">
+                <div className="flex-1 overflow-y-auto p-4 space-y-2 flex flex-row md:flex-col gap-2 md:gap-1 scrollbar-hide">
                     <div className="hidden md:block mb-2">
-                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Programme</h3>
+                        <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest px-2 mb-3">Programme du jeu C</h3>
                     </div>
                     {lessons.map((lesson, idx) => {
                         const lessonId = lesson._id || lesson.id || lesson.title;
@@ -164,18 +164,18 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
                                         setShowSolutionFor(null);
                                     }
                                 }}
-                                className={`shrink-0 md:w-full text-left p-2 md:p-3 rounded-xl flex items-center gap-3 transition min-w-[120px] md:min-w-0 ${isActive ? 'bg-blue-600/20 text-blue-400 border border-blue-600/50 ring-1 ring-blue-500/20 shadow-lg shadow-blue-500/10' : isLocked ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-gray-900 text-white/60 hover:text-white border border-transparent'}`}
+                                className={`shrink-0 md:w-full text-left p-3 rounded-xl flex items-center gap-3 transition min-w-[140px] md:min-w-0 font-bold ${isActive ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : isLocked ? 'opacity-40 cursor-not-allowed grayscale bg-slate-100 text-slate-400' : 'hover:bg-slate-100 text-slate-700 border border-transparent'}`}
                             >
                                 {isLessonCompleted(lessonId) ? (
-                                    <CheckCircle size={16} className="text-green-500 shrink-0" />
+                                    <CheckCircle size={18} className="text-green-500 shrink-0" />
                                 ) : isLocked ? (
-                                    <Lock size={16} className="text-gray-500 shrink-0" />
+                                    <Lock size={18} className="text-slate-400 shrink-0" />
                                 ) : (
-                                    <div className={`w-5 h-5 rounded-full border text-[10px] flex items-center justify-center shrink-0 ${isActive ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-700 bg-gray-900 text-gray-400'}`}>
+                                    <div className={`w-6 h-6 rounded-lg text-xs flex items-center justify-center shrink-0 font-black ${isActive ? 'bg-white text-blue-600' : 'bg-slate-100 text-slate-600'}`}>
                                         {idx + 1}
                                     </div>
                                 )}
-                                <span className={`text-xs md:text-sm font-bold truncate ${isLocked ? 'text-gray-500' : ''}`}>{lesson.title}</span>
+                                <span className={`text-xs md:text-sm font-bold truncate ${isLocked ? 'text-slate-400' : ''}`}>{lesson.title}</span>
                             </button>
                         )
                     })}
@@ -183,40 +183,40 @@ const GenericCourse = ({ course, onClose, user, completedLessons = [], onLessonC
             </div>
 
             {/* Zone de contenu principal */}
-            <div className="flex-1 flex flex-col min-w-0 bg-gray-900 relative">
+            <div className="flex-1 flex flex-col min-w-0 bg-slate-50 relative">
                 {/* Header du contenu */}
-                <header className="h-16 border-b border-gray-800 flex items-center justify-between px-6 bg-gray-900/50 backdrop-blur-sm z-10 shrink-0">
-                    <h2 className="text-xl font-bold truncate">{activeLesson ? activeLesson.title : 'Sélectionnez une leçon'}</h2>
+                <header className="h-16 border-b border-slate-200 flex items-center justify-between px-6 bg-white/80 backdrop-blur-md z-10 shrink-0 shadow-sm">
+                    <h2 className="text-lg font-black text-slate-900 truncate">{activeLesson ? activeLesson.title : 'Sélectionnez un niveau'}</h2>
                     <div className="flex items-center gap-4">
-                        <div className="text-sm text-white/80 whitespace-nowrap">
-                            Progression: {Math.round((completedLessons.length / lessons.length) * 100)}%
+                        <div className="text-xs font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-200 whitespace-nowrap">
+                            Progression : {Math.round((completedLessons.length / lessons.length) * 100)}%
                         </div>
                     </div>
                 </header>
 
                 {/* Contenu défilable */}
-                <main className="flex-1 overflow-y-auto p-8 max-w-4xl mx-auto w-full">
+                <main className="flex-1 overflow-y-auto p-6 md:p-10 max-w-4xl mx-auto w-full">
                     {activeLesson ? (
                         <motion.div
                             key={activeLesson.title}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3 }}
                             className="space-y-8 pb-20"
                         >
-                            <div className="prose prose-invert max-w-none">
-                                <h1 className="text-3xl font-black mb-4">{activeLesson.title}</h1>
-                                <p className="lead text-xl text-blue-300 mb-8 border-l-4 border-blue-500 pl-4 py-1 bg-blue-900/10 rounded-r-lg">
+                            <div className="prose prose-slate max-w-none">
+                                <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">{activeLesson.title}</h1>
+                                <p className="lead text-lg md:text-xl text-blue-900 mb-8 border-l-4 border-blue-600 pl-5 py-2 bg-blue-50/80 rounded-r-2xl font-medium">
                                     {activeLesson.description}
                                 </p>
 
                                 {/* Objectifs */}
                                 {activeLesson.objectives && activeLesson.objectives.length > 0 && (
-                                    <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700 mb-8">
-                                        <h3 className="flex items-center gap-2 text-white font-bold mb-4 mt-0">
-                                            <Target size={20} className="text-purple-400" /> Objectifs de la leçon
+                                    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-md mb-8">
+                                        <h3 className="flex items-center gap-2 text-slate-900 font-black text-lg mb-4 mt-0">
+                                            <Target size={20} className="text-purple-600" /> Objectifs de cette étape
                                         </h3>
-                                        <ul className="list-disc pl-5 mt-0 space-y-2 text-slate-300">
+                                        <ul className="list-disc pl-5 mt-0 space-y-2 text-slate-700 font-medium">
                                             {activeLesson.objectives.map((obj, i) => (
                                                 <li key={i}>{obj}</li>
                                             ))}
