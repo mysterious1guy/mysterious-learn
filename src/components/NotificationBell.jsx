@@ -8,6 +8,7 @@ const NotificationBell = ({ user, API_URL }) => {
     const [notifications, setNotifications] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const [proactiveNotif, setProactiveNotif] = useState(null);
+    const [pendingProactive, setPendingProactive] = useState(null);
     const dropdownRef = useRef(null);
 
     const fetchNotifications = async () => {
@@ -27,7 +28,7 @@ const NotificationBell = ({ user, API_URL }) => {
                     const latest = data[0];
                     const lastSeenId = localStorage.getItem('mysterious_last_seen_notif');
                     if (lastSeenId !== latest._id) {
-                        setProactiveNotif(latest);
+                        setPendingProactive(latest);
                         localStorage.setItem('mysterious_last_seen_notif', latest._id);
                     }
                 }
@@ -46,6 +47,18 @@ const NotificationBell = ({ user, API_URL }) => {
         }, 120000);
         return () => clearInterval(interval);
     }, [API_URL, user?.token]);
+
+    // Show proactive announcement only after the onboarding tour is completed
+    useEffect(() => {
+        if (pendingProactive && user?.seenGuides?.includes('main_onboarding')) {
+            // Slight delay to ensure the tour has completely unmounted and faded out
+            const timer = setTimeout(() => {
+                setProactiveNotif(pendingProactive);
+                setPendingProactive(null);
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [pendingProactive, user?.seenGuides]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {

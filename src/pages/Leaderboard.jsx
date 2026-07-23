@@ -4,7 +4,7 @@ import { Trophy, Medal, Star, Flame, Loader2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const Leaderboard = ({ user, API_URL, setToast }) => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [leaders, setLeaders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -119,7 +119,7 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
                                         <Star size={14} /> {t('leaderboard.lvl') || "Niv"} {getLevel(user.xp)}
                                     </span>
                                     <span className="flex items-center gap-1 text-orange-400 font-medium">
-                                        <Flame size={14} /> {user.streak || 0}j
+                                        <Flame size={14} /> {user.streak || 0}{language === 'en' ? 'd' : 'j'}
                                     </span>
                                 </div>
                             </div>
