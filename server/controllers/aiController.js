@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const GlobalKnowledge = require('../models/GlobalKnowledge');
 const CourseKnowledge = require('../models/CourseKnowledge');
 
