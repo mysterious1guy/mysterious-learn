@@ -308,7 +308,13 @@ const aiChat = async (req, res) => {
             const lowerMsg = message.toLowerCase().trim();
 
             if (lowerMsg.includes('cours') || lowerMsg.includes('module') || lowerMsg.includes('formation') || lowerMsg.includes('programme') || lowerMsg.includes('apprendre') || lowerMsg.includes('disponible') || lowerMsg.includes('dispo')) {
-                responseText = `Les parcours interactifs sur **Mysterious Classroom** sont axés sur la **Cybersécurité & le Hacking Éthique** (Sécurité Web, XSS, SQLi, CSRF, Linux & Scripts Bash, Réseaux). Retrouve tous tes modules directement sur ton **Tableau de bord** !`;
+                responseText = `Voici les modules de formation actuellement disponibles sur **Mysterious Classroom** :
+
+• 🛡️ **Sécurité Web & Injection** (XSS, SQLi, CSRF)
+• 🐧 **Administration Linux & Hacking Terminal** (Commandes, Bash, Privilèges)
+• 🌐 **Analyse Réseau & Web Recon** (Port Scanning, Footprinting)
+
+Tu peux les explorer directement depuis ton **Tableau de bord** !`;
             } else if (lowerMsg.includes('projet') || lowerMsg.includes('ctf') || lowerMsg.includes('mission')) {
                 responseText = `Pour accéder aux **Projets & Challenges CTF** :
 
@@ -333,9 +339,11 @@ const aiChat = async (req, res) => {
 3. Tu pourras y configurer la 2FA (A2F) et télécharger ton Dossier Agent !`;
             } else if (isAdmin && (lowerMsg.includes('mail') || lowerMsg.includes('email') || lowerMsg.includes('annonce') || lowerMsg.includes('notification') || lowerMsg.includes('utilisateur'))) {
                 responseText = `Bonjour Boss **Mouhamed** ! Je suis prêt pour tes commandes d'administration. Que souhaites-tu effectuer ? (envoi d'email, publication d'annonce ou gestion des utilisateurs).`;
+            } else if (lowerMsg.includes('repond') || lowerMsg.includes('répond') || lowerMsg.includes('comprends pas') || lowerMsg.includes('wesh')) {
+                responseText = `Je suis là et à ton écoute Agent **${user.firstName || user.name}** ! Pose-moi directement ta question sur les **cours**, les **challenges CTF**, la **sécurité web (XSS, SQLi)** ou la **plateforme** !`;
             } else if (lowerMsg.includes('comment tu vas') || lowerMsg.includes('ca va') || lowerMsg.includes('ça va') || lowerMsg.includes('comment vas') || lowerMsg.includes('alors')) {
                 responseText = `Je vais très bien, Agent **${user.firstName || user.name}** ! Prêt à relever de nouveaux défis sur Mysterious Classroom aujourd'hui ? Que souhaites-tu explorer ?`;
-            } else if (lowerMsg.includes('salut') || lowerMsg.includes('coucou') || lowerMsg.includes('hello') || lowerMsg.includes('bonjour') || lowerMsg.includes('yoo') || lowerMsg.includes('yo')) {
+            } else if (lowerMsg.includes('salut') || lowerMsg.includes('coucou') || lowerMsg.includes('hello') || lowerMsg.includes('bonjour') || lowerMsg.includes('yo')) {
                 responseText = `Bonjour Agent **${user.firstName || user.name}** ! Je suis ton mentor Mysterious Copilot. En quoi puis-je t'aider aujourd'hui ?`;
             } else {
                 responseText = `Reçu Agent **${user.firstName || user.name}** ! 
