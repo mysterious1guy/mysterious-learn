@@ -196,10 +196,10 @@ const aiChat = async (req, res) => {
             const combinedUserPrompt = `[CONSIGNE SYSTÈME ASSISTANT]\n${systemInstruction}\n\n${historyText ? `[HISTORIQUE CONVERSATION]\n${historyText}\n\n` : ''}[QUESTION ÉLÈVE]\n${message}`;
 
             const geminiEndpoints = [
-                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash' },
                 { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', name: 'gemini-2.0-flash' },
-                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent', name: 'gemini-2.0-flash-lite' },
-                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent', name: 'gemini-1.5-pro' }
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent', name: 'gemini-1.5-flash-latest' },
+                { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash (v1)' },
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent', name: 'gemini-2.0-flash-lite' }
             ];
 
             for (const ep of geminiEndpoints) {
@@ -248,8 +248,7 @@ const aiChat = async (req, res) => {
                 const timeout = setTimeout(() => controller.abort(), 10000);
 
                 const pollinationsMessages = [
-                    { role: "system", content: systemInstruction },
-                    { role: "user", content: message }
+                    { role: "user", content: `Tu es Mysterious Copilot, assistant cyber et mentor de ${user.name}.\n\nQuestion de l'élève: ${message}` }
                 ];
 
                 const resApi = await fetch('https://text.pollinations.ai/', {
@@ -312,8 +311,10 @@ const aiChat = async (req, res) => {
                 responseText = `Je vais très bien, Agent **${user.firstName || user.name}** ! Prêt à relever de nouveaux défis sur Mysterious Classroom aujourd'hui ? Que souhaites-tu explorer ?`;
             } else if (lowerMsg.includes('salut') || lowerMsg.includes('coucou') || lowerMsg.includes('hello') || lowerMsg.includes('bonjour') || lowerMsg.includes('yoo') || lowerMsg.includes('yo')) {
                 responseText = `Bonjour Agent **${user.firstName || user.name}** ! Je suis ton mentor Mysterious Copilot. En quoi puis-je t'aider aujourd'hui ?`;
-            } else if (lowerMsg.includes('qui es tu') || lowerMsg.includes('qui es-tu') || lowerMsg.includes('tes qui') || lowerMsg.includes('t\'es qui')) {
-                responseText = `Je suis **Mysterious Copilot**, l'Intelligence Artificielle et le Mentor Pédagogique Officiel de Mysterious Classroom. Mon rôle est de te guider dans ton apprentissage de la Cybersécurité et du Hacking Éthique !`;
+            } else if (lowerMsg.includes('qui es tu') || lowerMsg.includes('qui es-tu') || lowerMsg.includes('tes qui') || lowerMsg.includes('t\'es qui') || lowerMsg.includes('tu est ki')) {
+                responseText = `Je suis **Mysterious Copilot**, l'IA et Mentor Officiel de Mysterious Classroom. Mon rôle est de te guider dans ton apprentissage de la Cybersécurité et du Hacking Éthique !`;
+            } else if (lowerMsg.includes('fondateur') || lowerMsg.includes('créateur') || lowerMsg.includes('createur') || lowerMsg.includes('qui a fait') || lowerMsg.includes('mouhamed fall') || lowerMsg.includes('boss')) {
+                responseText = `La plateforme **Mysterious Classroom** a été conçue et développée par **Mouhamed FALL**, passionné d'investigation numérique, de cybersécurité et de développement web ! 🚀`;
             } else if (lowerMsg.includes('classement') || lowerMsg.includes('leaderboard') || lowerMsg.includes('rang') || lowerMsg.includes('points') || lowerMsg.includes('xp')) {
                 responseText = `Agent **${user.firstName || user.name}**, pour consulter le **Classement (Hall of Fame)** :
 
