@@ -307,7 +307,13 @@ const aiChat = async (req, res) => {
             console.warn(`⚠️ [AI RELAY] Mode Assistant Local Intelligent activé.`);
             const lowerMsg = message.toLowerCase().trim();
 
-            if (lowerMsg.includes('cours') || lowerMsg.includes('module') || lowerMsg.includes('formation') || lowerMsg.includes('programme') || lowerMsg.includes('apprendre') || lowerMsg.includes('disponible') || lowerMsg.includes('dispo')) {
+            if (lowerMsg.includes('ctf signifie') || lowerMsg.includes('signifie quoi') || lowerMsg.includes('définition ctf') || lowerMsg.includes('definition ctf') || lowerMsg.includes('c quoi ctf') || lowerMsg.includes('c\'est quoi ctf')) {
+                responseText = `Le **CTF (Capture The Flag)** est un jeu de hacking éthique ! 🚩
+
+Le principe : tu dois exploiter une vulnérabilité (dans un site web, un serveur ou un binaire) pour trouver un texte secret caché appelé **« Flag »** (exemple: \`MYSTERIOUS{hacked_xss_2026}\`).
+
+En soumettant le Flag sur la plateforme, tu prouves que tu as réussi la mission et tu gagnes des points XP !`;
+            } else if (lowerMsg.includes('cours') || lowerMsg.includes('module') || lowerMsg.includes('formation') || lowerMsg.includes('programme') || lowerMsg.includes('apprendre') || lowerMsg.includes('disponible') || lowerMsg.includes('dispo')) {
                 responseText = `Voici les modules de formation actuellement disponibles sur **Mysterious Classroom** :
 
 • 🛡️ **Sécurité Web & Injection** (XSS, SQLi, CSRF)
@@ -339,6 +345,14 @@ Tu peux les explorer directement depuis ton **Tableau de bord** !`;
 3. Tu pourras y configurer la 2FA (A2F) et télécharger ton Dossier Agent !`;
             } else if (isAdmin && (lowerMsg.includes('mail') || lowerMsg.includes('email') || lowerMsg.includes('annonce') || lowerMsg.includes('notification') || lowerMsg.includes('utilisateur'))) {
                 responseText = `Bonjour Boss **Mouhamed** ! Je suis prêt pour tes commandes d'administration. Que souhaites-tu effectuer ? (envoi d'email, publication d'annonce ou gestion des utilisateurs).`;
+            } else if (lowerMsg.includes('arrete') || lowerMsg.includes('arrête') || lowerMsg.includes('repete') || lowerMsg.includes('répète') || lowerMsg.includes('meme reponse') || lowerMsg.includes('même réponse')) {
+                responseText = `Bien reçu Agent **${user.firstName || user.name}** ! 
+
+Actuellement, je fonctionne avec la base de connaissances locale. Pour débloquer la génération IA illimitée et totalement libre, il suffit d'ajouter une clé API Google Gemini dans les paramètres de Render. 
+
+En attendant, pose-moi une question sur un sujet précis (XSS, SQLi, Linux, CTF) !`;
+            } else if (lowerMsg.includes('how are you') || lowerMsg.includes('how are u')) {
+                responseText = `I'm doing great, Agent **${user.firstName || user.name}**! Ready to master cybersecurity on Mysterious Classroom today? How can I help you?`;
             } else if (lowerMsg.includes('repond') || lowerMsg.includes('répond') || lowerMsg.includes('comprends pas') || lowerMsg.includes('wesh')) {
                 responseText = `Je suis là et à ton écoute Agent **${user.firstName || user.name}** ! Pose-moi directement ta question sur les **cours**, les **challenges CTF**, la **sécurité web (XSS, SQLi)** ou la **plateforme** !`;
             } else if (lowerMsg.includes('comment tu vas') || lowerMsg.includes('ca va') || lowerMsg.includes('ça va') || lowerMsg.includes('comment vas') || lowerMsg.includes('alors')) {
