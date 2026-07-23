@@ -329,17 +329,28 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       {/* Photo de profil */}
       <div className="flex items-center gap-6">
         <div className="relative">
-          <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-3xl font-bold text-white overflow-hidden">
+          <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-3xl font-bold text-white overflow-hidden relative select-none">
             {(user?.avatar || user?.picture) ? (
-              <img
-                src={user.avatar || user.picture}
-                alt="Profile"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || 'U')}+${encodeURIComponent(user.lastName || '')}&background=8B5CF6&color=fff&size=256`;
-                }}
-              />
+              <>
+                <img
+                  src={user.avatar || user.picture}
+                  alt="Profile"
+                  className="w-full h-full object-cover select-none pointer-events-none"
+                  draggable="false"
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || 'U')}+${encodeURIComponent(user.lastName || '')}&background=8B5CF6&color=fff&size=256`;
+                  }}
+                />
+                {/* Shield Overlay preventing right click / save image */}
+                <div 
+                  className="absolute inset-0 bg-transparent select-none z-10"
+                  onContextMenu={(e) => e.preventDefault()}
+                  onDragStart={(e) => e.preventDefault()}
+                />
+              </>
             ) : (
               `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`
             )}

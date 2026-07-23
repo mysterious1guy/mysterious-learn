@@ -96,15 +96,25 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                   </span>
                 </div>
                 {(user.avatar || user.picture) ? (
-                  <img
-                    src={user.avatar || user.picture}
-                    alt="Avatar"
-                    className="w-9 h-9 rounded-full object-cover border-2 border-blue-500 shadow-lg shadow-blue-500/20"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || user.name?.split(' ')[0] || 'U')}+${encodeURIComponent(user.lastName || user.name?.split(' ').slice(1).join(' ') || '')}&background=2563EB&color=fff`;
-                    }}
-                  />
+                  <div className="relative w-9 h-9 rounded-full overflow-hidden border-2 border-blue-500 shadow-lg shadow-blue-500/20 select-none">
+                    <img
+                      src={user.avatar || user.picture}
+                      alt="Avatar"
+                      className="w-full h-full object-cover select-none pointer-events-none"
+                      draggable="false"
+                      onContextMenu={(e) => e.preventDefault()}
+                      onDragStart={(e) => e.preventDefault()}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName || user.name?.split(' ')[0] || 'U')}+${encodeURIComponent(user.lastName || user.name?.split(' ').slice(1).join(' ') || '')}&background=2563EB&color=fff`;
+                      }}
+                    />
+                    <div 
+                      className="absolute inset-0 bg-transparent select-none z-10"
+                      onContextMenu={(e) => e.preventDefault()}
+                      onDragStart={(e) => e.preventDefault()}
+                    />
+                  </div>
                 ) : (
                   <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-purple-700 rounded-full flex items-center justify-center text-sm font-black text-white shadow-lg border-2 border-slate-800">
                     {(user.firstName || user.name?.split(' ')[0])?.charAt(0) || 'U'}{(user.lastName || user.name?.split(' ').slice(1).join(' '))?.charAt(0) || ''}
