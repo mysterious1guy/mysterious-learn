@@ -348,10 +348,8 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
             <AnimatePresence>
                 {showTour && (
                     <OnboardingTour
-                        user={user}
                         onFinish={handleOnboardingFinish}
                         onSkip={() => setShowTour(false)}
-                        targetCourseId={suggestedCourseId}
                         stepIndex={tourStep}
                         onStepChange={handleTourStepChange}
                     />

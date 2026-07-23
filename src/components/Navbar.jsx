@@ -32,6 +32,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
           {user && (
             <>
               <Link
+                id="tour-dashboard"
                 to="/dashboard"
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/dashboard' ? 'bg-blue-500/10 text-blue-500 ring-1 ring-blue-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
               >
@@ -82,6 +83,7 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
               )}
 
               <Link
+                id="tour-account"
                 to="/account"
                 className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-gray-800 px-3 py-2 rounded-lg transition"
               >
