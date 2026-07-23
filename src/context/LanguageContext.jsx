@@ -208,11 +208,18 @@ export const LanguageProvider = ({ children }) => {
         const keys = key.split('.');
         let result = translations[language];
         for (const k of keys) {
-            if (result && result[k]) {
+            if (result && result[k] !== undefined) {
                 result = result[k];
             } else {
                 return key;
             }
+        }
+        if (typeof result === 'object' && result !== null) {
+            const titleKey = `${key}_title`;
+            if (translations[language] && typeof translations[language][titleKey] === 'string') {
+                return translations[language][titleKey];
+            }
+            return key;
         }
         return result;
     };
