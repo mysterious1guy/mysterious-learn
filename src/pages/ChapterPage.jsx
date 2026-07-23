@@ -6,8 +6,10 @@ import InteractiveModule from '../components/InteractiveModule';
 import Confetti from 'react-confetti';
 import ComingSoon from '../components/ComingSoon';
 import { coursesData } from '../courses/data.jsx';
+import { useLanguage } from '../context/LanguageContext';
 
 const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions }) => {
+    const { t } = useLanguage();
     const { courseId, chapterIndex } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
@@ -60,7 +62,7 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
         }
 
         if (!unlocked) {
-            if (setToast) setToast({ message: "Vous devez terminer le niveau précédent pour accéder à ce cours.", type: 'warning' });
+            if (setToast) setToast({ message: t('course.level_locked_warning') || "Vous devez terminer le niveau précédent pour accéder à ce cours.", type: 'warning' });
             navigate('/dashboard', { replace: true });
         }
     }, [course, user, progressions, navigate, setToast]);
@@ -76,13 +78,13 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
             }
         } catch (error) {
             console.error('Erreur:', error);
-            setToast({ message: 'Erreur réseau', type: 'error' });
+            setToast({ message: t('course.network_error') || 'Erreur réseau', type: 'error' });
         } finally {
             setLoading(false);
         }
     };
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center text-white bg-slate-950">Chargement...</div>;
+    if (loading) return <div className="min-h-screen flex items-center justify-center text-white bg-slate-950">{t('chapter.loading') || 'Chargement...'}</div>;
     if (!course) return (
         <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
             <ComingSoon />
@@ -94,8 +96,8 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
         return (
             <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
                 <ComingSoon
-                    title="Chapitre en construction"
-                    message="Désolé ! Ce chapitre n'est pas encore interactif. Nos équipes travaillent pour le rendre disponible très bientôt."
+                    title={t('chapter.in_construction') || "Chapitre en construction"}
+                    message={t('chapter.not_interactive') || "Désolé ! Ce chapitre n'est pas encore interactif. Nos équipes travaillent pour le rendre disponible très bientôt."}
                 />
             </div>
         );
@@ -127,6 +129,7 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
                 if (fetchProgressions) fetchProgressions();
             } catch (e) {
                 console.error("Impossible de sauvegarder la progression", e);
+                setToast && setToast({ message: t('chapter.save_error') || "Impossible de sauvegarder la progression", type: 'error' });
             }
         }
     };
@@ -157,7 +160,7 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
                             onClick={handleModuleComplete}
                             className="px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-500 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-amber-500/20 transition-all shadow-[0_0_10px_rgba(245,158,11,0.1)] flex items-center gap-2"
                         >
-                            <ChevronRight size={12} /> Passer l'étape
+                            <ChevronRight size={12} /> {t('chapter.skip_step') || "Passer l'étape"}
                         </button>
                     )}
                     <div className="flex items-center gap-3 w-32 md:w-48">
@@ -184,7 +187,7 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
                             transition={{ duration: 0.3 }}
                         >
                             <div className="mb-8 font-medium text-blue-400 text-sm tracking-wider uppercase">
-                                Étape {currentModuleIndex + 1}
+                                {t('chapter.step') || "Étape"} {currentModuleIndex + 1}
                             </div>
                             <InteractiveModule
                                 moduleData={currentModule}
@@ -201,16 +204,16 @@ const ChapterPage = ({ user, API_URL, setToast, fetchProgressions, progressions 
                             <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-amber-600 rounded-full flex items-center justify-center mx-auto shadow-xl shadow-yellow-500/20 mb-6">
                                 <Trophy className="w-10 h-10 text-white" />
                             </div>
-                            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Chapitre Terminé !</h2>
+                            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{t('chapter.completed_title') || "Chapitre Terminé !"}</h2>
                             <p className="text-slate-600 text-lg max-w-md mx-auto font-medium">
-                                Quel talent ! Tu as débloqué de nouvelles connaissances indispensables. Prêt(e) pour le prochain défi ?
+                                {t('chapter.completed_desc') || "Quel talent ! Tu as débloqué de nouvelles connaissances indispensables. Prêt(e) pour le prochain défi ?"}
                             </p>
 
                             <button
                                 onClick={() => navigate(`/course/${courseId}`)}
                                 className="mt-8 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center mx-auto gap-2 group transform hover:-translate-y-1"
                             >
-                                Retour au plan du cours <ArrowLeft className="group-hover:-translate-x-1 transition-transform" />
+                                {t('chapter.back_to_course') || "Retour au plan du cours"} <ArrowLeft className="group-hover:-translate-x-1 transition-transform" />
                             </button>
                         </motion.div>
                     )}

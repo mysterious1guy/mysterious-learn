@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Briefcase, Code, Award, CheckCircle, Trophy, Medal, Star, Flame, Loader2, ArrowRight, Lock, Plus, Calendar, X } from 'lucide-react';
 import AIAssistant from '../components/AIAssistant';
+import { useLanguage } from '../context/LanguageContext';
 
 const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
+    const { t } = useLanguage();
     const [projects, setProjects] = useState([]);
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
         const fetchProjects = async () => {
             try {
                 const token = user?.token || localStorage.getItem('token');
-                if (!token) throw new Error('Non authentifié');
+                if (!token) throw new Error(t('projectsList.auth_error') || 'Non authentifié');
 
                 // Standardiser les appels avec fetch (plus fiable pour les headers d'auth)
                 const [projectsRes, coursesRes] = await Promise.all([
@@ -25,7 +27,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
 
                 if (!projectsRes.ok || !coursesRes.ok) {
                     const errData = await projectsRes.json().catch(() => ({}));
-                    throw new Error(errData.message || 'Erreur lors du chargement des données');
+                    throw new Error(errData.message || t('projectsList.load_error') || 'Erreur lors du chargement des données');
                 }
 
                 const projectsData = await projectsRes.json();
@@ -35,7 +37,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                 setCourses(coursesData);
             } catch (err) {
                 console.error('❌ ProjectsList Error:', err);
-                setError(`Impossible de charger les projets : ${err.message} (URL: ${API_URL}/projects)`);
+                setError(`${t('projectsList.load_failed') || 'Impossible de charger les projets :'} ${err.message} (URL: ${API_URL}/projects)`);
             } finally {
                 setLoading(false);
             }
@@ -81,11 +83,11 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.message || 'Erreur lors de la soumission');
+                throw new Error(errData.message || t('projectsList.submit_error') || 'Erreur lors de la soumission');
             }
 
             const data = await response.json();
-            setToast({ message: data.message || `Projet validé ! +${data.xpGained} XP`, type: 'success' });
+            setToast({ message: data.message || (t('projectsList.project_validated') || 'Projet validé ! +{xp} XP').replace('{xp}', data.xpGained), type: 'success' });
 
             // Mettre à jour l'utilisateur localement
             setUser(prev => ({
@@ -97,7 +99,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
             setActiveProject(null);
         } catch (err) {
             console.error(err);
-            setToast({ message: err.message || 'Erreur lors de la soumission', type: 'error' });
+            setToast({ message: err.message || t('projectsList.submit_error') || 'Erreur lors de la soumission', type: 'error' });
         } finally {
             setSubmitting(false);
         }
@@ -127,13 +129,13 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                         <div className="relative z-10 max-w-2xl">
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/20 mb-6">
                                 <Code size={16} className="text-yellow-300" />
-                                <span className="text-sm font-black text-white tracking-wide uppercase">LABORATOIRE DE PROJETS</span>
+                                <span className="text-sm font-black text-white tracking-wide uppercase">{t('projectsList.lab_title') || "LABORATOIRE DE PROJETS"}</span>
                             </div>
                             <h1 className="text-4xl lg:text-6xl font-black mb-6 leading-tight tracking-tight">
-                                Quêtes <span className="text-yellow-300">& Projets de Code</span>
+                                {t('projectsList.hero_title1') || "Quêtes"} <span className="text-yellow-300">{t('projectsList.hero_title2') || "& Projets de Code"}</span>
                             </h1>
                             <p className="text-lg text-blue-100 mb-8 leading-relaxed font-medium">
-                                Débloquez vos compétences d'ingénieur. Nos équipes préparent de nouveaux défis pratiques et interactifs.
+                                {t('projectsList.hero_desc') || "Débloquez vos compétences d'ingénieur. Nos équipes préparent de nouveaux défis pratiques et interactifs."}
                             </p>
 
                             <div className="flex flex-wrap gap-6">
@@ -142,7 +144,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                         <Briefcase size={24} className="text-white" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-blue-200 uppercase tracking-wider">Projets Disponibles</p>
+                                        <p className="text-xs font-bold text-blue-200 uppercase tracking-wider">{t('projectsList.available') || "Projets Disponibles"}</p>
                                         <p className="text-2xl font-black text-white">{projects.length}</p>
                                     </div>
                                 </div>
@@ -151,7 +153,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                         <Award size={24} className="text-emerald-300" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-blue-200 uppercase tracking-wider">Projets Accomplis</p>
+                                        <p className="text-xs font-bold text-blue-200 uppercase tracking-wider">{t('projectsList.completed') || "Projets Accomplis"}</p>
                                         <p className="text-2xl font-black text-white">{user?.completedQuests?.length || 0}</p>
                                     </div>
                                 </div>
@@ -162,7 +164,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                     {/* Listing */}
                     <div className="space-y-6">
                         <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Défis & Quêtes</h2>
+                            <h2 className="text-3xl font-black text-slate-900 tracking-tight">{t('projectsList.quests_title') || "Défis & Quêtes"}</h2>
                         </div>
 
                         {loading ? (
@@ -178,9 +180,9 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                 <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center mx-auto">
                                     <Code size={32} />
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 dark:text-white">Nouveaux Projets en Préparation</h3>
+                                <h3 className="text-2xl font-black text-slate-900 dark:text-white">{t('projectsList.wip_title') || "Nouveaux Projets en Préparation"}</h3>
                                 <p className="text-slate-600 dark:text-slate-400 max-w-lg mx-auto font-medium leading-relaxed">
-                                    ✨ Le site est actuellement en cours d'amélioration. La plateforme Mysterious Classroom prépare son tout nouvel écosystème de projets et défis pratiques !
+                                    {t('projectsList.wip_desc') || "✨ Le site est actuellement en cours d'amélioration. La plateforme Mysterious Classroom prépare son tout nouvel écosystème de projets et défis pratiques !"}
                                 </p>
                             </div>
                         ) : (
@@ -226,7 +228,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
 
                                                 <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Langage:</span>
+                                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('projectsList.language') || "Langage:"}</span>
                                                         <span className="text-sm font-black text-indigo-600 dark:text-indigo-400">{project.language}</span>
                                                     </div>
                                                     <div className="flex items-center gap-1 text-amber-500 font-black">
@@ -239,7 +241,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                                     <div className="absolute inset-0 bg-slate-100/40 dark:bg-slate-950/40 backdrop-blur-[2px] z-10 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                                                         <div className="bg-white dark:bg-slate-800 text-slate-900 dark:text-white px-4 py-2 rounded-xl font-bold text-sm shadow-xl flex items-center gap-2 max-w-[80%] text-center">
                                                             <Lock size={16} className="text-slate-400 shrink-0" />
-                                                            <span>Validez "{project.language} - Avancé" pour débloquer.</span>
+                                                            <span>{(t('projectsList.unlock_req') || 'Validez "{lang} - Avancé" pour débloquer.').replace('{lang}', project.language)}</span>
                                                         </div>
                                                     </div>
                                                 )}
@@ -285,7 +287,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
 
                             <div className="p-8 space-y-8">
                                 <div>
-                                    <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-3">Contexte</h3>
+                                    <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-3">{t('projectsList.context') || "Contexte"}</h3>
                                     <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                                         {activeProject.description}
                                     </p>
@@ -293,11 +295,11 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/50">
-                                        <p className="text-xs font-bold uppercase text-slate-400 mb-1">Niveau Cible</p>
+                                        <p className="text-xs font-bold uppercase text-slate-400 mb-1">{t('projectsList.target_level') || "Niveau Cible"}</p>
                                         <p className="text-slate-800 dark:text-white font-bold">{activeProject.level}</p>
                                     </div>
                                     <div className="bg-amber-50 dark:bg-amber-500/10 p-4 rounded-2xl border border-amber-100 dark:border-amber-500/20">
-                                        <p className="text-xs font-bold uppercase text-amber-600/70 dark:text-amber-500/70 mb-1">Récompense XP</p>
+                                        <p className="text-xs font-bold uppercase text-amber-600/70 dark:text-amber-500/70 mb-1">{t('projectsList.xp_reward') || "Récompense XP"}</p>
                                         <p className="text-amber-600 dark:text-amber-400 font-black text-lg">+{activeProject.xpReward} XP</p>
                                     </div>
                                 </div>
@@ -305,7 +307,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                 <div>
                                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                                         <CheckCircle size={20} className="text-green-500" />
-                                        Cahier des charges
+                                        {t('projectsList.requirements') || "Cahier des charges"}
                                     </h3>
                                     <ul className="space-y-3">
                                         {activeProject.requirements?.map((req, i) => (
@@ -322,7 +324,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                 <div>
                                     <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
                                         <Award size={20} className="text-blue-500" />
-                                        Objectifs pédagogiques
+                                        {t('projectsList.objectives') || "Objectifs pédagogiques"}
                                     </h3>
                                     <div className="flex flex-wrap gap-2">
                                         {activeProject.objectives?.map((obj, i) => (
@@ -337,7 +339,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                     {isCompleted(activeProject._id) ? (
                                         <div className="w-full py-4 bg-green-500/10 text-green-600 dark:text-green-400 font-bold rounded-2xl border border-green-500/20 text-center flex items-center justify-center gap-2">
                                             <CheckCircle size={20} />
-                                            Projet déjà validé
+                                            {t('projectsList.already_validated') || "Projet déjà validé"}
                                         </div>
                                     ) : (
                                         <button
@@ -349,14 +351,14 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                                 <Loader2 className="animate-spin" size={20} />
                                             ) : (
                                                 <>
-                                                    Valider ce projet
+                                                    {t('projectsList.validate_btn') || "Valider ce projet"}
                                                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                                                 </>
                                             )}
                                         </button>
                                     )}
                                     <p className="text-xs text-center text-slate-400 mt-4 leading-relaxed max-w-sm mx-auto">
-                                        En validant, vous certifiez avoir réalisé ce projet en autonomie en respectant le cahier des charges expresse.
+                                        {t('projectsList.certify_msg') || "En validant, vous certifiez avoir réalisé ce projet en autonomie en respectant le cahier des charges expresse."}
                                     </p>
                                 </div>
                             </div>

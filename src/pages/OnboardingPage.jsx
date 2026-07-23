@@ -4,8 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Lock, Eye, EyeOff } from 'lucide-react';
 import CyberPet from '../CyberPet';
 import GlobalPlacementTest from '../components/GlobalPlacementTest';
+import { useLanguage } from '../context/LanguageContext';
 
 const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
+    const { t } = useLanguage();
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
@@ -75,17 +77,17 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
             if (response.ok) {
                 setUser({ ...user, ...data, token: user.token });
                 setToast({
-                    message: forcedLevel ? `On t'a mis en Débutant pour commencer sereinement !` : "Bienvenue sur l'interface !",
+                    message: forcedLevel ? (t('onboardingFlow.forced_beginner') || "On t'a mis en Débutant pour commencer sereinement !") : (t('onboardingFlow.welcome_interface') || "Bienvenue sur l'interface !"),
                     type: forcedLevel ? 'info' : 'success'
                 });
                 navigate('/dashboard');
             } else {
-                setError(data.message || "Erreur lors de la sauvegarde.");
+                setError(data.message || t('onboardingFlow.save_error') || "Erreur lors de la sauvegarde.");
                 setIsLoading(false);
                 setShowPlacementTest(false);
             }
         } catch (err) {
-            setError("Erreur réseau");
+            setError(t('onboardingFlow.network_error') || "Erreur réseau");
             setIsLoading(false);
             setShowPlacementTest(false);
         }
@@ -124,10 +126,10 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                     </div>
 
                     <h2 className="text-3xl brand-font text-slate-800 text-center mb-2 tracking-tight">
-                        Finalisation
+                        {t('onboardingFlow.title') || "Finalisation"}
                     </h2>
                     <p className="text-slate-500 text-center text-sm font-medium mb-8">
-                        Configurez votre accès local
+                        {t('onboardingFlow.subtitle') || "Configurez votre accès local"}
                     </p>
 
                     <form onSubmit={step === 3 ? handleOnboardingSubmit : (e) => { e.preventDefault(); setStep(step + 1) }} className="space-y-4">
@@ -135,13 +137,13 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                             {step === 1 && (
                                 <motion.div key="step1" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-6">
                                     <div className="text-center p-4 bg-blue-50/50 rounded-2xl border border-blue-100 mb-4">
-                                        <p className="text-sm text-slate-600 font-medium">Bienvenue ! Comme tu es connecté via Google, définis un mot de passe pour pouvoir te connecter directement avec <strong className="text-blue-600">{user.email}</strong> la prochaine fois.</p>
+                                        <p className="text-sm text-slate-600 font-medium" dangerouslySetInnerHTML={{ __html: (t('onboardingFlow.google_pwd_info') || "Bienvenue ! Comme tu es connecté via Google, définis un mot de passe pour pouvoir te connecter directement avec <strong class=\"text-blue-600\">{email}</strong> la prochaine fois.").replace('{email}', user.email) }} />
                                     </div>
                                     <div className="relative">
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                         <input
                                             type={showPassword ? 'text' : 'password'}
-                                            placeholder="Mot de passe"
+                                            placeholder={t('onboardingFlow.pwd_placeholder') || "Mot de passe"}
                                             value={formData.password}
                                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                             onFocus={() => setIsPasswordFocused(true)}
@@ -158,7 +160,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                         <input
                                             type={showPassword ? 'text' : 'password'}
-                                            placeholder="Confirmer le mot de passe"
+                                            placeholder={t('onboardingFlow.confirm_pwd_placeholder') || "Confirmer le mot de passe"}
                                             value={formData.confirmPassword}
                                             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                             onFocus={() => setIsPasswordFocused(true)}
@@ -170,7 +172,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
 
                                     {!passwordsMatch && formData.confirmPassword && (
                                         <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest pl-2 animate-pulse">
-                                            Les mots de passe ne correspondent pas
+                                            {t('onboardingFlow.pwd_mismatch') || "Les mots de passe ne correspondent pas"}
                                         </p>
                                     )}
 
@@ -178,7 +180,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                         type="button"
                                         onClick={() => {
                                             if (!formData.password || formData.password.length < 6 || !passwordsMatch) {
-                                                setError("Veuillez remplir un mot de passe valide.");
+                                                setError(t('onboardingFlow.invalid_pwd') || "Veuillez remplir un mot de passe valide.");
                                                 return;
                                             }
                                             setError('');
@@ -187,55 +189,58 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                         disabled={!passwordsMatch || !formData.password || formData.password.length < 6}
                                         className={`w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 group ${(!passwordsMatch || !formData.password || formData.password.length < 6) ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
                                     >
-                                        Continuer <ArrowRight size={18} />
+                                        {t('onboardingFlow.continue') || "Continuer"} <ArrowRight size={18} />
                                     </button>
                                 </motion.div>
                             )}
 
                             {step === 2 && (
                                 <motion.div key="step2" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-4">
-                                    <h3 className="text-xl font-bold text-center text-slate-800">Quel est ton objectif principal ?</h3>
+                                    <h3 className="text-xl font-bold text-center text-slate-800">{t('onboardingFlow.goal_question') || "Quel est ton objectif principal ?"}</h3>
                                     <div className="grid grid-cols-1 gap-3">
-                                        {['Découvrir le code', 'Créer des sites web', 'Devenir développeur', 'Passer des examens'].map(goal => (
-                                            <button
-                                                key={goal}
-                                                type="button"
-                                                onClick={() => setFormData({ ...formData, goal })}
-                                                className={`p-4 rounded-xl border text-left font-semibold transition-all ${formData.goal === goal ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-md' : 'border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-blue-300'}`}
-                                            >
-                                                {goal}
-                                            </button>
-                                        ))}
+                                        {[{ key: 'goal_1', def: 'Découvrir le code' }, { key: 'goal_2', def: 'Créer des sites web' }, { key: 'goal_3', def: 'Devenir développeur' }, { key: 'goal_4', def: 'Passer des examens' }].map(g => {
+                                            const goal = t(`onboardingFlow.${g.key}`) || g.def;
+                                            return (
+                                                <button
+                                                    key={goal}
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, goal })}
+                                                    className={`p-4 rounded-xl border text-left font-semibold transition-all ${formData.goal === goal ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-md' : 'border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-blue-300'}`}
+                                                >
+                                                    {goal}
+                                                </button>
+                                            )
+                                        })}
                                     </div>
                                     <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
-                                        <button type="button" onClick={() => setStep(1)} className="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition">Retour</button>
-                                        <button type="button" onClick={() => setStep(3)} disabled={!formData.goal} className={`flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition ${!formData.goal ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700 hover:shadow-lg'}`}>Suivant <ArrowRight size={18} /></button>
+                                        <button type="button" onClick={() => setStep(1)} className="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition">{t('onboardingFlow.back') || "Retour"}</button>
+                                        <button type="button" onClick={() => setStep(3)} disabled={!formData.goal} className={`flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition ${!formData.goal ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700 hover:shadow-lg'}`}>{t('onboardingFlow.next') || "Suivant"} <ArrowRight size={18} /></button>
                                     </div>
                                 </motion.div>
                             )}
 
                             {step === 3 && (
                                 <motion.div key="step3" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }} className="space-y-4">
-                                    <h3 className="text-xl font-bold text-center text-slate-800">Quel est ton niveau actuel ?</h3>
+                                    <h3 className="text-xl font-bold text-center text-slate-800">{t('onboardingFlow.level_question') || "Quel est ton niveau actuel ?"}</h3>
                                     <div className="grid grid-cols-1 gap-3">
                                         <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Débutant' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Débutant' ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-purple-300'}`}>
                                             <div className="flex flex-col text-left">
-                                                <span className={`font-bold ${formData.startingLevel === 'Débutant' ? 'text-purple-700' : 'text-slate-700'}`}>Total Débutant</span>
-                                                <span className="text-xs text-slate-500 mt-1">Je n'ai jamais codé de ma vie</span>
+                                                <span className={`font-bold ${formData.startingLevel === 'Débutant' ? 'text-purple-700' : 'text-slate-700'}`}>{t('onboardingFlow.level_beginner_title') || "Total Débutant"}</span>
+                                                <span className="text-xs text-slate-500 mt-1">{t('onboardingFlow.level_beginner_desc') || "Je n'ai jamais codé de ma vie"}</span>
                                             </div>
                                             <span className="text-2xl ml-4">🐣</span>
                                         </button>
                                         <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Intermédiaire' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Intermédiaire' ? 'border-blue-500 bg-blue-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-blue-300'}`}>
                                             <div className="flex flex-col text-left">
-                                                <span className={`font-bold ${formData.startingLevel === 'Intermédiaire' ? 'text-blue-700' : 'text-slate-700'}`}>Intermédiaire</span>
-                                                <span className="text-xs text-slate-500 mt-1">J'ai déjà quelques bases solides</span>
+                                                <span className={`font-bold ${formData.startingLevel === 'Intermédiaire' ? 'text-blue-700' : 'text-slate-700'}`}>{t('onboardingFlow.level_inter_title') || "Intermédiaire"}</span>
+                                                <span className="text-xs text-slate-500 mt-1">{t('onboardingFlow.level_inter_desc') || "J'ai déjà quelques bases solides"}</span>
                                             </div>
                                             <span className="text-2xl ml-4">🚀</span>
                                         </button>
                                         <button type="button" onClick={() => setFormData({ ...formData, startingLevel: 'Avancé' })} className={`p-4 justify-between items-center rounded-xl border flex transition-all ${formData.startingLevel === 'Avancé' ? 'border-orange-500 bg-orange-50 shadow-md' : 'border-slate-200 hover:bg-slate-50 hover:border-orange-300'}`}>
                                             <div className="flex flex-col text-left">
-                                                <span className={`font-bold ${formData.startingLevel === 'Avancé' ? 'text-orange-700' : 'text-slate-700'}`}>Avancé</span>
-                                                <span className="text-xs text-slate-500 mt-1">Je code déjà en autonomie complète</span>
+                                                <span className={`font-bold ${formData.startingLevel === 'Avancé' ? 'text-orange-700' : 'text-slate-700'}`}>{t('onboardingFlow.level_adv_title') || "Avancé"}</span>
+                                                <span className="text-xs text-slate-500 mt-1">{t('onboardingFlow.level_adv_desc') || "Je code déjà en autonomie complète"}</span>
                                             </div>
                                             <span className="text-2xl ml-4">💻</span>
                                         </button>
@@ -244,9 +249,9 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                     {error && <p className="text-red-500 text-sm text-center font-bold bg-red-500/10 py-2 rounded-xl border border-red-500/20">{error}</p>}
 
                                     <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
-                                        <button type="button" onClick={() => setStep(2)} className="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition">Retour</button>
+                                        <button type="button" onClick={() => setStep(2)} className="px-6 py-3 font-bold text-slate-500 hover:text-slate-800 transition">{t('onboardingFlow.back') || "Retour"}</button>
                                         <button type="submit" disabled={!formData.startingLevel || isLoading} className={`flex-1 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition ${!formData.startingLevel || isLoading ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:from-blue-500 hover:to-purple-500 hover:shadow-lg hover:scale-105'}`}>
-                                            {isLoading ? 'Création...' : 'Valider & Créer 🎉'}
+                                            {isLoading ? (t('onboardingFlow.creating') || 'Création...') : (t('onboardingFlow.validate_create') || 'Valider & Créer 🎉')}
                                         </button>
                                     </div>
                                 </motion.div>

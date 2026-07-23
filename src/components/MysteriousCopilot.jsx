@@ -43,7 +43,7 @@ const TerminalBlock = ({ code, lang }) => {
 };
 
 const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     
     const [messages, setMessages] = useState([
         { role: 'system', content: `${t('copilot.welcome') || 'Bonjour'} ${safeGetUserName(user, 'Voyageur')}. ${t('copilot.ready') || 'Prêt à apprendre la logique des algorithmes ?'}` }
@@ -107,7 +107,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     'Authorization': `Bearer ${user?.token || localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                    message: userMsg,
+                    message: language === 'en' ? `${userMsg}\n[IMPORTANT: Please respond in English]` : userMsg,
                     history: messages
                         // Exclude the very first hardcoded initialization greeting to save tokens
                         .filter((m, idx) => !(idx === 0 && m.role === 'system'))

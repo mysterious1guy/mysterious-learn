@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
-import { Zap, ArrowRight, ShieldAlert, Sparkles, Heart, Github, Linkedin, Mail, Terminal, AlertTriangle } from 'lucide-react';
-import AnimatedLogo from '../components/AnimatedLogo';
+import { Zap, ArrowRight, ShieldAlert, Sparkles, Heart, Github, Linkedin, Mail, Terminal, Lock, Globe, Cpu, AlertTriangle } from 'lucide-react';
 
 const HomePage = ({ API_URL }) => {
     const navigate = useNavigate();
@@ -19,11 +18,11 @@ const HomePage = ({ API_URL }) => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [config, setConfig] = useState(null);
 
+    // Mouse Tracking for dynamic glowing background effect
     useEffect(() => {
         const handleMouseMove = (e) => {
-            const { clientX, clientY } = e;
-            const x = (clientX / window.innerWidth - 0.5) * 2;
-            const y = (clientY / window.innerHeight - 0.5) * 2;
+            const x = e.clientX;
+            const y = e.clientY;
             setMousePosition({ x, y });
         };
         window.addEventListener('mousemove', handleMouseMove);
@@ -60,96 +59,84 @@ const HomePage = ({ API_URL }) => {
 
     const cyberTopics = [
         {
-            name: "Shell & Linux",
-            tag: "Système",
-            color: "from-slate-600 to-slate-800",
-            bgLight: "bg-slate-50",
-            textColor: "text-slate-700",
-            borderColor: "border-slate-200",
-            image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=600&q=80",
-            desc: "Maîtrisez les environnements UNIX, analysez les logs systèmes et manipulez le shell Bash en profondeur."
+            name: t('home.topic_sys_name') || "Shell & Linux",
+            tag: t('home.topic_sys_tag') || "Système",
+            color: "text-slate-700",
+            bgIcon: "bg-slate-100",
+            icon: <Terminal size={32} className="text-slate-800" />,
+            desc: t('home.topic_sys_desc') || "Maîtrisez les environnements UNIX, analysez les logs systèmes et manipulez le shell Bash en profondeur."
         },
         {
-            name: "Exploitation Web",
-            tag: "Réseau & Web",
-            color: "from-blue-600 to-indigo-700",
-            bgLight: "bg-blue-50",
-            textColor: "text-blue-600",
-            borderColor: "border-blue-200",
-            image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=80",
-            desc: "Simulez des attaques (XSS, SQLi, LFI) sur nos serveurs isolés et apprenez à colmater les brèches."
+            name: t('home.topic_web_name') || "Exploitation Web",
+            tag: t('home.topic_web_tag') || "Réseau & Web",
+            color: "text-blue-600",
+            bgIcon: "bg-blue-100",
+            icon: <Globe size={32} className="text-blue-600" />,
+            desc: t('home.topic_web_desc') || "Simulez des attaques (XSS, SQLi, LFI) sur nos serveurs isolés et apprenez à colmater les brèches."
         },
         {
-            name: "Cryptographie",
-            tag: "Logique & Maths",
-            color: "from-purple-600 to-fuchsia-700",
-            bgLight: "bg-purple-50",
-            textColor: "text-purple-600",
-            borderColor: "border-purple-200",
-            image: "https://images.unsplash.com/photo-1510511459019-5efa37024687?w=600&q=80",
-            desc: "Déchiffrez des messages encodés, étudiez la cryptographie moderne et la théorie des nombres."
+            name: t('home.topic_crypto_name') || "Cryptographie",
+            tag: t('home.topic_crypto_tag') || "Logique & Maths",
+            color: "text-purple-600",
+            bgIcon: "bg-purple-100",
+            icon: <Lock size={32} className="text-purple-600" />,
+            desc: t('home.topic_crypto_desc') || "Déchiffrez des messages encodés, étudiez la cryptographie moderne et la théorie des nombres."
         },
         {
-            name: "Reverse Engineering",
-            tag: "Analyse Binaire",
-            color: "from-emerald-600 to-teal-700",
-            bgLight: "bg-emerald-50",
-            textColor: "text-emerald-600",
-            borderColor: "border-emerald-200",
-            image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&q=80",
-            desc: "Désassemblez des exécutables, analysez la mémoire et découvrez comment les programmes fonctionnent sous le capot."
+            name: t('home.topic_rev_name') || "Reverse Engineering",
+            tag: t('home.topic_rev_tag') || "Analyse Binaire",
+            color: "text-emerald-600",
+            bgIcon: "bg-emerald-100",
+            icon: <Cpu size={32} className="text-emerald-600" />,
+            desc: t('home.topic_rev_desc') || "Désassemblez des exécutables, analysez la mémoire et découvrez comment les programmes fonctionnent sous le capot."
         }
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-500/30 text-slate-900">
+        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-500/30 text-slate-900 relative overflow-hidden">
+            
+            {/* Dynamic Mouse Tracking Background */}
+            <div 
+                className="pointer-events-none fixed inset-0 z-0 opacity-40 mix-blend-multiply transition-opacity duration-300"
+                style={{
+                    background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.1), transparent 80%)`
+                }}
+            />
 
             {/* Hero Section */}
-            <section className="relative pt-16 pb-20 md:pt-24 md:pb-28 px-4 md:px-6 overflow-hidden">
+            <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 px-4 md:px-6 z-10">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center space-y-10">
-                        {/* Logo animé */}
-                        <motion.div
-                            style={{ x: mousePosition.x * -1, y: mousePosition.y * -1 }}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 1, ease: "easeOut" }}
-                            className="flex justify-center"
-                        >
-                            <AnimatedLogo size="xlarge" />
-                        </motion.div>
-
+                    <div className="text-center space-y-12">
+                        
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
+                            transition={{ duration: 0.8 }}
                             className="space-y-6"
                         >
                             <h1 className="flex flex-col items-center">
-                                <span className="text-5xl sm:text-7xl md:text-9xl lg:text-[10rem] brand-font text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 leading-[0.85]">
+                                <span className="text-5xl sm:text-7xl md:text-9xl lg:text-[10rem] font-black text-transparent bg-clip-text bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 leading-[0.85] tracking-tight">
                                     {t('home.title_part1') || "MYSTERIOUS"}
                                 </span>
-                                <span className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl brand-font text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mt-2 md:mt-4 leading-[0.85]">
+                                <span className="text-4xl sm:text-5xl md:text-8xl lg:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mt-2 md:mt-4 leading-[0.85] tracking-tight">
                                     {t('home.title_part2') || "CLASSROOM"}
                                 </span>
                             </h1>
 
-                            <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed">
-                                L'arène d'entraînement ultime pour <strong className="text-slate-900">apprendre la cybersécurité</strong>, maîtriser l'investigation numérique et résoudre des scénarios CTF concrets.
+                            <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mt-10" dangerouslySetInnerHTML={{ __html: t('home.hero_desc') || "L'arène d'entraînement ultime pour <strong class=\"text-slate-900\">apprendre la cybersécurité</strong>, maîtriser l'investigation numérique et résoudre des scénarios CTF concrets." }}>
                             </p>
 
                             {/* Section Objectif de l'Application */}
-                            <div className="max-w-3xl mx-auto mt-6 p-6 md:p-8 bg-white backdrop-blur-md rounded-3xl border border-slate-200 shadow-xl text-left space-y-3">
+                            <div className="max-w-3xl mx-auto mt-8 p-6 md:p-8 bg-white/70 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-lg text-left space-y-3">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2.5 bg-blue-600 text-white rounded-2xl shadow-md">
                                         <Sparkles size={22} />
                                     </div>
                                     <h2 className="text-lg md:text-xl font-black text-slate-900 tracking-tight">
-                                        Objectif de la plateforme MYSTERIOUS CLASSROOM
+                                        {t('home.objective_title') || "Objectif de la plateforme MYSTERIOUS CLASSROOM"}
                                     </h2>
                                 </div>
-                                <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium">
-                                    <strong>MYSTERIOUS CLASSROOM</strong> est une plateforme de simulation immersive (CTF). Notre vocation est de vous plonger dans des environnements virtuels où chaque mission consiste à auditer du code, exploiter des vulnérabilités, sécuriser des serveurs et capturer des "Flags" pour forger votre expertise cyber.
+                                <p className="text-slate-600 text-sm md:text-base leading-relaxed font-medium" dangerouslySetInnerHTML={{ __html: t('home.objective_desc') || "<strong>MYSTERIOUS CLASSROOM</strong> est une plateforme de simulation immersive (CTF). Ma vocation est de vous plonger dans des environnements virtuels où chaque mission consiste à auditer du code, exploiter des vulnérabilités, sécuriser des serveurs et capturer des \"Flags\" pour forger votre expertise cyber." }}>
                                 </p>
                             </div>
                         </motion.div>
@@ -157,12 +144,12 @@ const HomePage = ({ API_URL }) => {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.8, delay: 0.4 }}
-                            className="flex flex-wrap justify-center gap-6"
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="flex flex-wrap justify-center gap-6 mt-12"
                         >
                             <button
                                 onClick={() => navigate('/auth')}
-                                className="px-8 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg md:text-xl rounded-2xl shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 group"
+                                className="px-8 py-5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-lg md:text-xl rounded-2xl shadow-2xl shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center gap-3 group"
                             >
                                 <Zap size={22} className="group-hover:text-yellow-400 transition-colors" />
                                 {t('home.btn_create_agent') || "CRÉER UN DOSSIER D'AGENT"}
@@ -174,21 +161,21 @@ const HomePage = ({ API_URL }) => {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.6 }}
-                            className="flex justify-center gap-8 md:gap-16 pt-6"
+                            transition={{ duration: 0.8, delay: 0.4 }}
+                            className="flex justify-center gap-8 md:gap-16 pt-10"
                         >
                             <div className="text-center group">
-                                <p className="text-4xl font-black text-slate-900 group-hover:text-blue-600 transition-colors">
+                                <p className="text-4xl md:text-5xl font-black text-slate-900 group-hover:text-blue-600 transition-colors">
                                     {(12840 + (stats.totalUsers || 0)).toLocaleString('fr-FR')}+
                                 </p>
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">{t('home.stats_registered') || "Agents Inscrits"}</p>
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-2">{t('home.stats_registered') || "Agents Inscrits"}</p>
                             </div>
-                            <div className="w-px h-12 bg-slate-300 hidden md:block" />
+                            <div className="w-px h-16 bg-slate-200 hidden md:block" />
                             <div className="text-center group">
-                                <p className="text-4xl font-black text-slate-900 group-hover:text-purple-600 transition-colors">
+                                <p className="text-4xl md:text-5xl font-black text-slate-900 group-hover:text-purple-600 transition-colors">
                                     {(1420 + (stats.activeUsers || 0)).toLocaleString('fr-FR')}+
                                 </p>
-                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-1">{t('home.stats_active') || "Opérationnels"}</p>
+                                <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-2">{t('home.stats_active') || "Opérationnels"}</p>
                             </div>
                         </motion.div>
                     </div>
@@ -196,54 +183,43 @@ const HomePage = ({ API_URL }) => {
             </section>
 
             {/* Topics Gallery Showcase Section */}
-            <section className="py-24 bg-white border-y border-slate-200 relative overflow-hidden">
+            <section className="py-24 bg-white/50 backdrop-blur-md border-t border-slate-200/50 relative z-10">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16 space-y-4">
                         <div className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-xs font-black tracking-widest uppercase mx-auto w-max border border-blue-200">
-                            <ShieldAlert size={16} /> OPÉRATIONS & ARSENAL
+                            <ShieldAlert size={16} /> {t('home.operations_arsenal') || "OPÉRATIONS & ARSENAL"}
                         </div>
-                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tight">
-                            Explorez les Vecteurs d'Attaque
+                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+                            {t('home.explore_vectors') || "Explorez les Vecteurs d'Attaque"}
                         </h2>
                         <p className="text-lg text-slate-600 max-w-2xl mx-auto font-medium">
-                            Chaque discipline est une arme essentielle pour comprendre, attaquer et défendre les systèmes informatiques critiques.
+                            {t('home.vectors_desc') || "Chaque discipline est une arme essentielle pour comprendre, attaquer et défendre les systèmes informatiques critiques."}
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {cyberTopics.map((topic, idx) => (
                             <motion.div
                                 key={topic.name}
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ delay: idx * 0.08 }}
-                                className="bg-slate-50 border border-slate-200 rounded-3xl overflow-hidden hover:border-blue-500/50 hover:shadow-2xl transition-all duration-300 group flex flex-col"
+                                transition={{ delay: idx * 0.1 }}
+                                className="bg-white border border-slate-200 rounded-3xl p-8 hover:border-blue-400 hover:shadow-xl transition-all duration-300 group flex flex-col items-center text-center relative overflow-hidden"
                             >
-                                <div className="h-48 overflow-hidden relative">
-                                    <img
-                                        src={topic.image}
-                                        alt={topic.name}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
-                                    <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                        <span className={`px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-wider ${topic.textColor}`}>
-                                            {topic.tag}
-                                        </span>
-                                    </div>
+                                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-300 group-hover:scale-110 ${topic.bgIcon}`}>
+                                    {topic.icon}
                                 </div>
-                                <div className="p-6 flex-1 flex flex-col justify-between">
-                                    <div>
-                                        <h3 className="text-2xl font-black text-slate-900 mb-2">{topic.name}</h3>
-                                        <p className="text-slate-600 text-sm font-medium leading-relaxed mb-4">
-                                            {topic.desc}
-                                        </p>
-                                    </div>
-                                    <div className="pt-4 border-t border-slate-200/80 flex items-center justify-between">
-                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Mission en préparation</span>
-                                        <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                                    </div>
+                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider mb-4 border ${topic.color} bg-slate-50`}>
+                                    {topic.tag}
+                                </span>
+                                <h3 className="text-xl font-black text-slate-900 mb-3">{topic.name}</h3>
+                                <p className="text-slate-500 text-sm font-medium leading-relaxed mb-6 flex-1">
+                                    {topic.desc}
+                                </p>
+                                <div className="w-full pt-4 border-t border-slate-100 flex items-center justify-between mt-auto">
+                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('home.mission_prep') || "Mission en préparation"}</span>
+                                    <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
                                 </div>
                             </motion.div>
                         ))}
@@ -252,7 +228,7 @@ const HomePage = ({ API_URL }) => {
             </section>
 
             {/* Creator Section */}
-            <section className="py-24 relative overflow-hidden bg-slate-50">
+            <section className="py-24 relative overflow-hidden bg-slate-50 z-10 border-t border-slate-200/50">
                 <div className="max-w-4xl mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
@@ -302,7 +278,7 @@ const HomePage = ({ API_URL }) => {
                                 <div key={i} className="p-6 bg-slate-50 rounded-2xl border border-slate-200 group hover:border-blue-500/30 transition-colors">
                                     <item.icon size={24} className="mx-auto mb-3 text-blue-600 group-hover:scale-110 transition-transform" />
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</p>
-                                    <p className="text-slate-900 font-bold">{item.value}</p>
+                                    <p className="text-slate-900 font-bold mt-1">{item.value}</p>
                                 </div>
                             ))}
                         </div>
@@ -354,7 +330,6 @@ const HomePage = ({ API_URL }) => {
                     </div>
                 </div>
             </section>
-
         </div>
     );
 };

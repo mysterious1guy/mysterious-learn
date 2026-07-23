@@ -169,7 +169,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         uiPreferences: { ...user.uiPreferences, tourStep: 0 }
                     });
                     window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                        detail: { text: "Félicitations pour avoir complété ton initiation. L'aventure commence vraiment maintenant." }
+                        detail: { text: t('dashboard.tour_completed') || "Félicitations pour avoir complété ton initiation. L'aventure commence vraiment maintenant." }
                     }));
                 }
             } catch (err) {
@@ -372,7 +372,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         </div>
                         <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tighter">{t('dashboard.access_authorized') || 'Accès Autorisé'}</h2>
                         <p className="text-slate-600 dark:text-gray-400 mb-8 font-medium">
-                            Tes compétences ont été validées. Tu as débloqué : <br />
+                            {t('dashboard.skills_validated') || 'Tes compétences ont été validées. Tu as débloqué :'} <br />
                             <strong className="text-blue-500 dark:text-blue-400 mt-3 block text-xl bg-blue-500/10 p-4 rounded-2xl border border-blue-500/20">{recentlyUnlocked.title || recentlyUnlocked.name}</strong>
                         </p>
                         <button
@@ -459,7 +459,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                     >
                         <div className="flex flex-col items-center justify-center gap-3 mb-8 text-center px-6 lg:px-12">
                             <h2 className={`text-xl md:text-2xl brand-font-secondary text-transparent bg-clip-text bg-gradient-to-r ${category.colorClass || 'from-slate-800 to-slate-500 dark:from-white dark:to-white/40'} uppercase tracking-[0.2em] font-black`}>
-                                {category.category}
+                                {t(`dashboard.category_${category.id}`) || category.category}
                             </h2>
                             <div className={`h-px w-32 bg-gradient-to-r from-transparent via-current to-transparent opacity-50 text-transparent bg-clip-text ${category.colorClass || 'from-blue-500'}`} />
                         </div>
@@ -500,13 +500,13 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                                             onClick={(e) => handlePremiumCheckout(e, course.id || course._id)}
                                                                             className="px-5 py-2.5 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-white text-xs font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-yellow-500/30 transform hover:-translate-y-0.5"
                                                                         >
-                                                                            Débloquer (1€)
+                                                                            {t('dashboard.unlock_premium') || 'Débloquer'} (1€)
                                                                         </button>
                                                                     </>
                                                                 ) : (
                                                                     <>
                                                                         <Lock size={40} className="text-gray-400 mb-3 drop-shadow-lg" />
-                                                                        <span className="text-sm font-bold text-gray-300 drop-shadow-md px-4 text-center mb-4">Niveau {course.level} Verrouillé</span>
+                                                                        <span className="text-sm font-bold text-gray-300 drop-shadow-md px-4 text-center mb-4">{t('dashboard.level') || 'Niveau'} {course.level} {t('dashboard.locked') || 'Verrouillé'}</span>
                                                                         <button
                                                                             onClick={(e) => {
                                                                                 e.stopPropagation();
@@ -561,7 +561,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                             {progressions[course._id || course.id] ? (
                                                                 <div className="space-y-2 pt-2">
                                                                     <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-blue-400">
-                                                                        <span>Progression</span>
+                                                                        <span>{t('dashboard.progress') || 'Progression'}</span>
                                                                         <span>{progressions[course._id || course.id].progress}%</span>
                                                                     </div>
                                                                     <div className="h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
@@ -573,7 +573,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                                                 </div>
                                                             ) : (
                                                                 <button className="w-full py-3 rounded-xl bg-blue-50 dark:bg-white/5 text-blue-600 dark:text-blue-400 text-xs font-black uppercase tracking-widest border border-blue-100 dark:border-white/5 hover:bg-blue-600 hover:text-white hover:border-blue-500 transition-all duration-300 flex items-center justify-center gap-2">
-                                                                    Commencer <ChevronRight size={14} />
+                                                                    {t('dashboard.start_course') || 'Commencer'} <ChevronRight size={14} />
                                                                 </button>
                                                             )}
                                                         </div>

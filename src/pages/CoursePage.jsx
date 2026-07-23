@@ -5,8 +5,10 @@ import GenericCourse from '../components/GenericCourse';
 import ComingSoon from '../components/ComingSoon';
 import VideoPlayer from '../components/VideoPlayer';
 import { coursesData } from '../courses/data.jsx';
+import { useLanguage } from '../context/LanguageContext';
 
 const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }) => {
+    const { t } = useLanguage();
     const { courseId } = useParams();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
@@ -55,7 +57,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
         }
 
         if (!unlocked) {
-            if (setToast) setToast({ message: "Vous devez terminer le niveau précédent pour accéder à ce cours.", type: 'warning' });
+            if (setToast) setToast({ message: t('course.level_locked_warning') || "Vous devez terminer le niveau précédent pour accéder à ce cours.", type: 'warning' });
             navigate('/dashboard', { replace: true });
         }
     }, [course, user, progressions, navigate, setToast, normalizedCourseId]);
@@ -79,7 +81,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
             }
         } catch (error) {
             console.error('Erreur:', error);
-            setToast({ message: 'Erreur de chargement', type: 'error' });
+            setToast({ message: t('course.loading_error') || 'Erreur de chargement', type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -96,7 +98,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <div className="text-white">Chargement du cours...</div>
+                <div className="text-white">{t('course.loading_course') || 'Chargement du cours...'}</div>
             </div>
         );
     }
@@ -105,8 +107,8 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
         return (
             <div className="min-h-screen bg-slate-50 dark:bg-[#020617] flex items-center justify-center">
                 <ComingSoon
-                    title="Cours introuvable"
-                    message="Oups ! Ce cours n'existe pas ou a été retiré."
+                    title={t('course.not_found_title') || "Cours introuvable"}
+                    message={t('course.not_found_message') || "Oups ! Ce cours n'existe pas ou a été retiré."}
                 />
             </div>
         );
@@ -117,7 +119,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
             try {
                 const token = user?.token || localStorage.getItem('token');
                 if (!token) {
-                    setToast({ message: 'Session expirée. Reconnecte-toi.', type: 'error' });
+                    setToast({ message: t('course.session_expired') || 'Session expirée. Reconnecte-toi.', type: 'error' });
                     return;
                 }
 
@@ -134,15 +136,15 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
                 });
 
                 if (response.ok) {
-                    setToast({ message: 'Leçon validée ! Bravo 🚀', type: 'success' });
+                    setToast({ message: t('course.lesson_validated') || 'Leçon validée ! Bravo 🚀', type: 'success' });
                     if (fetchProgressions) fetchProgressions(); // Refresh UI
                 } else {
                     const data = await response.json();
-                    setToast({ message: data.message || 'Erreur lors de la validation', type: 'error' });
+                    setToast({ message: data.message || t('course.validation_error') || 'Erreur lors de la validation', type: 'error' });
                 }
             } catch (error) {
                 console.error('Error validating lesson:', error);
-                setToast({ message: 'Erreur réseau', type: 'error' });
+                setToast({ message: t('course.network_error') || 'Erreur réseau', type: 'error' });
             }
         };
 
@@ -186,7 +188,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
                     className="flex items-center gap-2 text-gray-500 hover:text-blue-600 mb-8 transition group"
                 >
                     <ArrowLeft size={20} className="group-hover:-translate-x-1 transition" />
-                    Retour aux cours
+                    {t('course.back_to_courses') || 'Retour aux cours'}
                 </button>
 
                 {/* Course Header */}
@@ -212,7 +214,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
                                 <div className="flex flex-wrap gap-6 text-sm">
                                     <div className="flex items-center gap-2 text-slate-500">
                                         <Users size={16} />
-                                        <span>{(course.students || 0).toLocaleString()} étudiants</span>
+                                        <span>{(course.students || 0).toLocaleString()} {t('course.students') || 'étudiants'}</span>
                                     </div>
                                     <div className="flex items-center gap-2 text-slate-500">
                                         <Star size={16} className="text-yellow-400 fill-yellow-400" />
@@ -224,7 +226,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
                             {course.motivationVideo && (
                                 <VideoPlayer
                                     videoId={course.motivationVideo}
-                                    title={`Motivation - ${course.title}`}
+                                    title={`${t('course.motivation') || 'Motivation'} - ${course.title}`}
                                     courseId={course._id || course.id}
                                     chapterId="motivation"
                                     API_URL={API_URL}
@@ -237,7 +239,7 @@ const CoursePage = ({ user, API_URL, setToast, fetchProgressions, progressions }
                                     className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-2xl font-black shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all flex items-center justify-center gap-3 w-full md:w-auto transform hover:-translate-y-1"
                                 >
                                     <PlayCircle size={24} />
-                                    DÉMARRER LA CARTE DU COURS
+                                    {t('course.start_course_map') || 'DÉMARRER LA CARTE DU COURS'}
                                 </button>
                             </div>
                         </div>

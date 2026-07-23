@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Medal, Star, Flame, Loader2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const Leaderboard = ({ user, API_URL, setToast }) => {
+    const { t } = useLanguage();
     const [leaders, setLeaders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -11,7 +13,7 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
         const fetchLeaderboard = async () => {
             try {
                 const token = user?.token || localStorage.getItem('token');
-                if (!token) throw new Error('Non authentifié');
+                if (!token) throw new Error(t('leaderboard.auth_error') || 'Non authentifié');
 
                 const response = await fetch(`${API_URL}/users/leaderboard`, {
                     headers: { Authorization: `Bearer ${token}` }
@@ -19,14 +21,14 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
 
                 if (!response.ok) {
                     const errData = await response.json().catch(() => ({}));
-                    throw new Error(errData.message || 'Erreur lors du chargement du classement');
+                    throw new Error(errData.message || t('leaderboard.load_error') || 'Erreur lors du chargement du classement');
                 }
 
                 const data = await response.json();
                 setLeaders(data);
             } catch (err) {
                 console.error('❌ Leaderboard Error:', err);
-                setError(`Impossible de charger le classement : ${err.message} (URL: ${API_URL}/users/leaderboard)`);
+                setError(`${t('leaderboard.load_failed') || 'Impossible de charger le classement :'} ${err.message} (URL: ${API_URL}/users/leaderboard)`);
             } finally {
                 setLoading(false);
             }
@@ -54,8 +56,8 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
                 <div className="inline-flex items-center justify-center p-4 bg-yellow-500/10 rounded-full mb-4 ring-1 ring-yellow-500/30">
                     <Trophy className="w-12 h-12 text-yellow-500" />
                 </div>
-                <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter">Temple de la <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Renommée</span></h1>
-                <p className="text-gray-400 max-w-lg mx-auto">Découvre les meilleurs aventuriers de Mysterious Classroom. Gagne de l'XP en complétant des cours pour grimper dans le classement !</p>
+                <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter">{t('leaderboard.title1') || "Temple de la"} <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{t('leaderboard.title2') || "Renommée"}</span></h1>
+                <p className="text-gray-400 max-w-lg mx-auto">{t('leaderboard.desc') || "Découvre les meilleurs aventuriers de Mysterious Classroom. Gagne de l'XP en complétant des cours pour grimper dans le classement !"}</p>
             </motion.div>
 
             {loading ? (
@@ -110,11 +112,11 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
 
                             <div className="ml-4 md:ml-6 flex-1 min-w-0">
                                 <h3 className="text-lg md:text-xl font-bold truncate">
-                                    {user.firstName ? `${user.firstName} ${user.lastName || ''}` : (user.name || 'Aventurier')}
+                                    {user.firstName ? `${user.firstName} ${user.lastName || ''}` : (user.name || t('leaderboard.adventurer') || 'Aventurier')}
                                 </h3>
                                 <div className="flex items-center gap-2 md:gap-4 text-sm mt-1 text-gray-400">
                                     <span className="flex items-center gap-1 font-medium text-blue-400">
-                                        <Star size={14} /> Niv {getLevel(user.xp)}
+                                        <Star size={14} /> {t('leaderboard.lvl') || "Niv"} {getLevel(user.xp)}
                                     </span>
                                     <span className="flex items-center gap-1 text-orange-400 font-medium">
                                         <Flame size={14} /> {user.streak || 0}j
@@ -133,7 +135,7 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
 
                     {leaders.length === 0 && (
                         <div className="text-center py-12 text-gray-400">
-                            Aucun apprenti n'est encore classé. Gagne de l'XP pour devenir le premier !
+                            {t('leaderboard.empty') || "Aucun apprenti n'est encore classé. Gagne de l'XP pour devenir le premier !"}
                         </div>
                     )}
                 </div>
