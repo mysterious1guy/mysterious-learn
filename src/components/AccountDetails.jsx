@@ -531,21 +531,25 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
   const renderSecurityTab = () => (
     <div className="space-y-6">
-      <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-8 shadow-sm dark:shadow-none">
-        <h4 className="text-lg font-bold text-slate-800 dark:text-white uppercase tracking-tight mb-6">Sécurité du compte</h4>
+      <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
+        <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-6 flex items-center gap-2">
+          <Shield size={22} className="text-blue-600" /> Sécurité du compte
+        </h4>
         <div className="space-y-4">
           <button
             onClick={() => setShowPasswordChange(!showPasswordChange)}
-            className="w-full flex items-center justify-between p-5 bg-slate-50 dark:bg-gray-800 rounded-2xl border border-slate-200 dark:border-gray-700 hover:border-blue-500/30 transition-all group"
+            className="w-full flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-500/50 transition-all group shadow-sm"
           >
             <div className="flex items-center gap-4">
-              <Lock className="text-slate-400 dark:text-gray-400 group-hover:text-blue-500 transition-colors" size={20} />
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
+                <Lock size={20} />
+              </div>
               <div className="text-left">
-                <p className="text-sm font-bold text-slate-800 dark:text-white">Changer le mot de passe</p>
-                <p className="text-[10px] uppercase font-bold text-slate-400 dark:text-gray-500 tracking-wider">Sécurité renforcée</p>
+                <p className="text-base font-black text-slate-900 dark:text-white">Changer le mot de passe</p>
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sécurité renforcée</p>
               </div>
             </div>
-            <ChevronRight className={`text-slate-400 dark:text-gray-400 transition-transform ${showPasswordChange ? 'rotate-90' : ''}`} size={20} />
+            <ChevronRight className={`text-slate-400 dark:text-slate-400 transition-transform duration-300 ${showPasswordChange ? 'rotate-90 text-blue-600' : ''}`} size={20} />
           </button>
 
           <AnimatePresence>
@@ -556,45 +560,48 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <form onSubmit={handleChangePassword} className="p-4 bg-gray-800/50 rounded-lg border border-gray-700 space-y-4 mt-2">
+                <form onSubmit={handleChangePassword} className="p-6 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-5 mt-3 shadow-inner">
                   <div className="space-y-2">
-                    <label className="text-sm text-gray-400">Mot de passe actuel</label>
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Mot de passe actuel</label>
                     <input
                       type="password"
                       required
+                      placeholder="Entrez votre mot de passe actuel"
                       value={passwordForm.currentPassword}
                       onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                      className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-sm text-gray-400">Nouveau mot de passe</label>
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Nouveau mot de passe</label>
                       <input
                         type="password"
                         required
+                        placeholder="Au moins 6 caractères"
                         value={passwordForm.newPassword}
                         onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                        className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                        className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm text-gray-400">Confirmer le nouveau</label>
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Confirmer le nouveau</label>
                       <input
                         type="password"
                         required
+                        placeholder="Répétez le nouveau mot de passe"
                         value={passwordForm.confirmPassword}
                         onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                        className="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-blue-500 outline-none"
+                        className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
                       />
                     </div>
                   </div>
                   <button
                     type="submit"
-                    disabled={isLoading}
-                    className="w-full py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition disabled:opacity-50"
+                    disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/20 hover:shadow-lg disabled:opacity-50"
                   >
-                    Mettre à jour le mot de passe
+                    {isLoading ? 'Mise à jour en cours...' : 'Mettre à jour le mot de passe'}
                   </button>
                 </form>
               </motion.div>
@@ -603,32 +610,36 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
           <button
             onClick={() => navigate('/two-factor-setup')}
-            className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition"
+            className="w-full flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-500/50 transition-all group shadow-sm"
           >
-            <div className="flex items-center gap-3">
-              <Shield className="text-blue-500" size={20} />
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
+                <Shield size={20} />
+              </div>
               <div className="text-left">
-                <p className="text-white">Authentification à deux facteurs</p>
-                <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${user.twoFactorEnabled ? 'bg-green-500' : 'bg-red-500'}`}></span>
-                  <p className={`text-xs ${user.twoFactorEnabled ? 'text-green-400' : 'text-red-400'} font-medium`}>
-                    {user.twoFactorEnabled ? 'Activée' : 'Service SMS désactivé (Mode test dispo)'}
+                <p className="text-base font-black text-slate-900 dark:text-white">Authentification à deux facteurs</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className={`w-2 h-2 rounded-full ${user.twoFactorEnabled ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
+                  <p className={`text-xs ${user.twoFactorEnabled ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} font-bold`}>
+                    {user.twoFactorEnabled ? 'Activée' : 'Service 2FA prêt (Mode test dispo)'}
                   </p>
                 </div>
               </div>
             </div>
-            <ChevronRight className="text-gray-400" size={20} />
+            <ChevronRight className="text-slate-400 dark:text-slate-400" size={20} />
           </button>
 
-          <button className="w-full flex items-center justify-between p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition">
-            <div className="flex items-center gap-3">
-              <Globe className="text-gray-400" size={20} />
+          <button className="w-full flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-500/50 transition-all group shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl group-hover:scale-110 transition-transform">
+                <Globe size={20} />
+              </div>
               <div className="text-left">
-                <p className="text-white">Sessions actives</p>
-                <p className="text-sm text-gray-400">2 sessions actives</p>
+                <p className="text-base font-black text-slate-900 dark:text-white">Sessions actives</p>
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">1 session active (Cet appareil)</p>
               </div>
             </div>
-            <ChevronRight className="text-gray-400" size={20} />
+            <ChevronRight className="text-slate-400 dark:text-slate-400" size={20} />
           </button>
         </div>
       </div>
