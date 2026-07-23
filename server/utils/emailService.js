@@ -23,6 +23,9 @@ const createSmtpTransporter = () => {
 const sendEmail = async ({ to, subject, html, text }) => {
   const relayUrl = process.env.GAS_RELAY_URL;
   const fullSubject = subject.startsWith('[Mysterious') ? subject : `[Mysterious Classroom] ${subject}`;
+  
+  // Générer une version texte brut à partir du HTML pour éviter les filtres anti-spam
+  const plainText = text || (html ? html.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim() : '');
 
   // 1. Essayer le relais Google Apps Script si configuré
   if (relayUrl) {
@@ -33,7 +36,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
         body: JSON.stringify({
           to: to,
           subject: fullSubject,
-          text: text || '',
+          text: plainText,
           html: html,
           name: "Mysterious Classroom",
           from: "Mysterious Classroom <mysteriousclassroom@gmail.com>",
@@ -60,8 +63,12 @@ const sendEmail = async ({ to, subject, html, text }) => {
         from: process.env.EMAIL_FROM || `"Mysterious Classroom" <${process.env.EMAIL_USER}>`,
         to,
         subject: fullSubject,
-        text: text || '',
+        text: plainText,
         html,
+        headers: {
+          'X-Entity-Ref-ID': Date.now().toString(),
+          'List-Unsubscribe': `<mailto:${process.env.EMAIL_USER}?subject=unsubscribe>`
+        }
       });
       console.log(`✅ Email [${subject}] envoyé via SMTP à ${to}`);
       return info;
