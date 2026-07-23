@@ -14,8 +14,21 @@ const seedCourses = require('./seedCourses');
 
 const coursesData = require('./data/courses/index');
 
+const User = require('./models/User');
+
 connectDB().then(async () => {
   try {
+    const superAdmin = await User.findOne({ email: 'mouhamedfall@esp.sn' });
+    if (superAdmin) {
+      superAdmin.firstName = 'Mouhamed';
+      superAdmin.lastName = 'FALL';
+      superAdmin.name = 'Mouhamed FALL';
+      superAdmin.completedQuests = [];
+      superAdmin.unlockedCourses = [];
+      await superAdmin.save();
+      console.log('✅ Profil Super Admin mouhamedfall@esp.sn nettoyé avec succès !');
+    }
+
     const count = await Course.countDocuments();
     if (count !== coursesData.length) {
       console.log(`⚙️ Base de données désynchronisée (${count} cours trouvés, ${coursesData.length} obligatoires). Lancement de la table rase et de l'auto-seeding...`);

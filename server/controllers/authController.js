@@ -558,16 +558,11 @@ const updateProfile = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    if (name) user.name = name;
-    // user.email cannot be updated directly here for security reasons (requires re-verification)
-    if (avatar) user.avatar = avatar;
-    if (lastSelectedCourse !== undefined) user.lastSelectedCourse = lastSelectedCourse;
-    if (req.body.favorites !== undefined) user.favorites = req.body.favorites;
-    if (bio !== undefined) user.bio = bio;
-    if (location !== undefined) user.location = location;
-    if (phone !== undefined) user.phone = phone;
     if (firstName !== undefined) user.firstName = firstName;
     if (lastName !== undefined) user.lastName = lastName;
+    if (firstName !== undefined || lastName !== undefined || name !== undefined) {
+      user.name = (name || `${user.firstName || ''} ${user.lastName || ''}`).trim();
+    }
 
     // Nouveaux champs onboarding/preferences
     if (preferences !== undefined) {

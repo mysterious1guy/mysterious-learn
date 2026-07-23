@@ -122,9 +122,11 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      // 1. D'abord, sauvegarder les autres informations du profil (nom, bio, etc.)
-      // On retire l'email du corps de la requête pour updateProfile car il est géré à part
-      const { email, ...otherFields } = editForm;
+      const payload = {
+        firstName: editForm.firstName,
+        lastName: editForm.lastName,
+        programmingLevel: editForm.programmingLevel
+      };
 
       const profileResponse = await fetch(`${API_URL}/auth/profile`, {
         method: 'PUT',
@@ -132,7 +134,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${user.token}`
         },
-        body: JSON.stringify(otherFields)
+        body: JSON.stringify(payload)
       });
 
       if (!profileResponse.ok) {
@@ -143,33 +145,9 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
       }
 
       const updatedUser = await profileResponse.json();
-      onUpdateUser(updatedUser);
-
-      // 2. Ensuite, si l'email a été changé, lancer la procédure de vérification
-      const isEmailChanged = editForm.email !== user.email;
-
-      if (isEmailChanged) {
-        const res = await fetch(`${API_URL}/auth/request-email-change`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${user.token}`
-          },
-          body: JSON.stringify({ newEmail: editForm.email })
-        });
-
-        if (res.ok) {
-          setNewEmail(editForm.email);
-          setShowEmailModal(true);
-          setOtpSent(true);
-          setToast({ message: 'Code de vérification envoyé au nouvel email', type: 'info' });
-        } else {
-          const errData = await res.json();
-          setToast({ message: `Profil mis à jour mais erreur email: ${errData.message}`, type: 'error' });
-        }
-      } else {
-        setIsEditing(false);
-      }
+      onUpdateUser({ ...user, ...updatedUser });
+      setIsEditing(false);
+      setToast({ message: 'Informations personnelles mises à jour avec succès !', type: 'success' });
     } catch (err) {
       setToast({ message: 'Erreur réseau', type: 'error' });
     } finally {
@@ -420,50 +398,19 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Email</label>
-            <div className="flex gap-2">
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Adresse Email</label>
+            <div className="relative flex items-center">
               <input
                 type="email"
-                value={editForm.email}
-                disabled={!isEditing}
-                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                className={`w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white outline-none transition-all ${!isEditing ? 'opacity-60 cursor-not-allowed' : 'focus:border-blue-500'}`}
-                placeholder="Votre email"
+                value={user?.email || ''}
+                readOnly
+                disabled
+                className="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-300 font-medium cursor-not-allowed opacity-90 select-none"
               />
+              <span className="absolute right-3 inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-lg border border-emerald-500/20">
+                <CheckCircle size={14} /> Vérifié
+              </span>
             </div>
-            {isEditing && editForm.email !== user?.email && (
-              <p className="text-[10px] text-blue-500 mt-1">* Une vérification sera envoyée à cette nouvelle adresse.</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Téléphone</label>
-            {isEditing ? (
-              <input
-                type="tel"
-                value={editForm.phone}
-                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
-              />
-            ) : (
-              <p className="text-slate-900 dark:text-white font-medium">{user?.phone || '-'}</p>
-            )}
-          </div>
-
-
-
-          <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Localisation</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editForm.location}
-                onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
-              />
-            ) : (
-              <p className="text-slate-900 dark:text-white font-medium">{user?.location || '-'}</p>
-            )}
           </div>
 
 
