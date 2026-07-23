@@ -113,12 +113,21 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
               </Link>
             </>
           ) : (
-            <Link
-              to="/auth"
-              className="px-3 py-1.5 sm:px-6 sm:py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[10px] sm:text-sm font-black rounded-lg sm:rounded-xl transition-all shadow-xl shadow-blue-900/20 active:scale-95 flex items-center gap-2 shrink-0"
-            >
-              SE CONNECTER
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/auth"
+                state={{ register: true }}
+                className="hidden sm:flex px-3 py-1.5 sm:px-6 sm:py-2 bg-transparent text-blue-600 dark:text-blue-400 border border-blue-600 dark:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-[10px] sm:text-sm font-black rounded-lg sm:rounded-xl transition-all active:scale-95 items-center gap-2 shrink-0"
+              >
+                {t('nav.register') || "S'INSCRIRE"}
+              </Link>
+              <Link
+                to="/auth"
+                className="px-3 py-1.5 sm:px-6 sm:py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-[10px] sm:text-sm font-black rounded-lg sm:rounded-xl transition-all shadow-xl shadow-blue-900/20 active:scale-95 flex items-center gap-2 shrink-0"
+              >
+                {t('nav.login') || "SE CONNECTER"}
+              </Link>
+            </div>
           )}
         </div>
       </div>

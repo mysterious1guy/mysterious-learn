@@ -13,6 +13,10 @@ export const translations = {
         logout: "Déconnexion",
         projects: "Projets",
         leaderboard: "Classement",
+        nav: {
+            login: "SE CONNECTER",
+            register: "S'INSCRIRE"
+        },
         onboarding: {
             title: "Personnalise ton espace",
             theme: "Thème",
@@ -49,6 +53,7 @@ export const translations = {
             first_name: "Prénom",
             last_name: "Nom",
             email: "Email",
+            verified: "Vérifié",
             phone: "Téléphone",
             location: "Localisation",
             privacy: "Confidentialité du profil",
@@ -103,6 +108,10 @@ export const translations = {
         logout: "Logout",
         projects: "Projects",
         leaderboard: "Leaderboard",
+        nav: {
+            login: "LOG IN",
+            register: "SIGN UP"
+        },
         onboarding: {
             title: "Personalize your space",
             theme: "Theme",
@@ -139,6 +148,7 @@ export const translations = {
             first_name: "First Name",
             last_name: "Last Name",
             email: "Email",
+            verified: "Verified",
             phone: "Phone",
             location: "Location",
             privacy: "Profile Privacy",

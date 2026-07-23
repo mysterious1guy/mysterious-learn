@@ -275,9 +275,9 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
   };
 
   const tabs = [
-    { id: 'profile', label: 'Profil', icon: User },
-    { id: 'security', label: 'Sécurité', icon: Shield },
-    { id: 'preferences', label: 'Préférences', icon: Settings }
+    { id: 'profile', label: t('account.profile_tab') || 'Profil', icon: User },
+    { id: 'security', label: t('account.security_tab') || 'Sécurité', icon: Shield },
+    { id: 'preferences', label: t('account.preferences_tab') || 'Préférences', icon: Settings }
   ];
 
   const renderTabButton = (tab) => {
@@ -334,14 +334,14 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         <div className="flex-1">
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">{user?.firstName} {user?.lastName}</h3>
           <p className="text-slate-500 dark:text-gray-400">{user?.email}</p>
-          <p className="text-xs text-slate-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-bold">Membre depuis {new Date(user?.createdAt || Date.now()).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</p>
+          <p className="text-xs text-slate-400 dark:text-gray-500 mt-1 uppercase tracking-wider font-bold">{t('account.member_since') || 'Membre depuis'} {new Date(user?.createdAt || Date.now()).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</p>
         </div>
       </div>
 
       {/* Informations personnelles */}
       <div className="bg-white dark:bg-gray-900/50 border border-slate-200 dark:border-gray-700 rounded-3xl p-8 shadow-sm dark:shadow-none">
         <div className="flex justify-between items-center mb-8">
-          <h4 className="text-lg font-bold text-slate-800 dark:text-white uppercase tracking-tight">Informations personnelles</h4>
+          <h4 className="text-lg font-bold text-slate-800 dark:text-white uppercase tracking-tight">{t('account.personal_info') || 'Informations personnelles'}</h4>
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
@@ -371,7 +371,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Prénom</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('account.first_name') || 'Prénom'}</label>
               {isEditing ? (
                 <input
                   type="text"
@@ -384,7 +384,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               )}
             </div>
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Nom</label>
+              <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('account.last_name') || 'Nom'}</label>
               {isEditing ? (
                 <input
                   type="text"
@@ -399,7 +399,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
           </div>
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Adresse Email</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('account.email') || 'Adresse Email'}</label>
             <div className="relative flex items-center">
               <input
                 type="email"
@@ -409,7 +409,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
                 className="w-full bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-300 font-medium cursor-not-allowed opacity-90 select-none"
               />
               <span className="absolute right-3 inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-lg border border-emerald-500/20">
-                <CheckCircle size={14} /> Vérifié
+                <CheckCircle size={14} /> {t('account.verified') || 'Vérifié'}
               </span>
             </div>
           </div>
@@ -417,16 +417,16 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
 
 
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">Niveau d'expertise</label>
+            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('account.level') || "Niveau d'expertise"}</label>
             {isEditing ? (
               <select
                 value={editForm.programmingLevel}
                 onChange={(e) => setEditForm({ ...editForm, programmingLevel: e.target.value })}
                 className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
               >
-                <option value="Débutant">Débutant</option>
-                <option value="Intermédiaire">Intermédiaire</option>
-                <option value="Avancé">Avancé</option>
+                <option value="Débutant">{t('account.level_beginner') || 'Débutant'}</option>
+                <option value="Intermédiaire">{t('account.level_intermediate') || 'Intermédiaire'}</option>
+                <option value="Avancé">{t('account.level_advanced') || 'Avancé'}</option>
               </select>
             ) : (
               <div className="flex items-center gap-2">

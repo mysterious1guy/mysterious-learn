@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle, ArrowRight, ShieldCheck, FileText, X } from 'lucide-react';
 import CyberPet from '../CyberPet';
 
 const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     const navigate = useNavigate();
-    const [authMode, setAuthMode] = useState('signin'); // 'signin', 'signup', 'verification'
+    const location = useLocation();
+    const [authMode, setAuthMode] = useState(location.state?.register ? 'signup' : 'signin'); // 'signin', 'signup', 'verification'
     const [signupStep, setSignupStep] = useState(1);
     const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', goal: '', startingLevel: '' });
     const [verificationKey, setVerificationKey] = useState('');
