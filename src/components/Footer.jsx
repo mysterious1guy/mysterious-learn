@@ -119,12 +119,12 @@ const Footer = () => {
                 </div>
                 <div>
                   <h5 className="text-white font-medium">{c.creatorName}</h5>
-                  <p className="text-gray-400 text-sm">{c.creatorTitle}</p>
+                  <p className="text-gray-400 text-sm">{t('footer.creator_title') || c.creatorTitle}</p>
                 </div>
               </div>
 
               <div className="space-y-2 text-sm text-gray-400">
-                {c.creatorBio.map((line, i) => (
+                {(t('footer.bio_1') ? [t('footer.bio_1'), t('footer.bio_2'), t('footer.bio_3')] : c.creatorBio).map((line, i) => (
                   <p key={i} className="flex items-center gap-2">
                     {i === 0 && <Sparkles size={14} className="text-yellow-400" />}
                     {i === 1 && <Heart size={14} className="text-red-400" />}
@@ -175,7 +175,7 @@ const Footer = () => {
                 © {currentYear} {c.siteName}. {t('footer.platform_created_by') || 'Plateforme créée par'} {c.creatorName}.
               </p>
               <p className="text-gray-500 text-xs mt-1">
-                {c.creatorName} • {c.creatorTitle} • 18 ans
+                {c.creatorName} • {t('footer.creator_title') || c.creatorTitle} • 18 ans
               </p>
             </div>
 

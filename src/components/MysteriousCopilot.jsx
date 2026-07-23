@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2, Copy, Check } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
 import AnimatedAIAvatar from './AnimatedAIAvatar';
+import { useLanguage } from '../context/LanguageContext';
 
 const TerminalBlock = ({ code, lang }) => {
     const [copied, setCopied] = useState(false);
@@ -42,8 +43,10 @@ const TerminalBlock = ({ code, lang }) => {
 };
 
 const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
+    const { t } = useLanguage();
+    
     const [messages, setMessages] = useState([
-        { role: 'system', content: `Bonjour ${safeGetUserName(user, 'Voyageur')}. Prêt à apprendre l'algorithmique aujourd'hui ?` }
+        { role: 'system', content: `${t('copilot.welcome') || 'Bonjour'} ${safeGetUserName(user, 'Voyageur')}. ${t('copilot.ready') || 'Prêt à apprendre la logique des algorithmes ?'}` }
     ]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -61,7 +64,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: `Bonjour ${safeGetUserName(user, 'Voyageur')}. Prêt à apprendre la logique des algorithmes ?` }
+                detail: { text: `${t('copilot.welcome') || 'Bonjour'} ${safeGetUserName(user, 'Voyageur')}. ${t('copilot.ready') || 'Prêt à apprendre la logique des algorithmes ?'}` }
             }));
         }, 2000);
         return () => clearTimeout(timer);

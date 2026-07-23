@@ -182,6 +182,20 @@ export const translations = {
             security_desc: "Vos mots de passe sont chiffrés avec bcrypt. Nous ne revendons ni ne partageons jamais vos données personnelles à des tiers.",
             rights_title: "⚙️ 4. Vos Droits",
             rights_desc: "Vous disposez d'un droit d'accès, d'exportation et de suppression définitive de votre compte à tout moment depuis les paramètres de votre profil."
+        },
+        footer: {
+            creator: "Créateur",
+            technologies: "Technologies",
+            innovative_platform: "Plateforme d'apprentissage innovante créée avec passion pour l'éducation technologique et le partage des connaissances.",
+            rights: "Mysterious Classroom. Plateforme créée par",
+            creator_title: "Étudiant en 1ère année — ESP Dakar",
+            bio_1: "Je crois en un monde où la technologie est accessible à tous.",
+            bio_2: "Mysterious Classroom est ma contribution pour rendre l'apprentissage du code gratuit, fun et interactif.",
+            bio_3: "Étudiant passionné par la transmission du savoir."
+        },
+        copilot: {
+            welcome: "Bonjour",
+            ready: "Prêt à apprendre la logique des algorithmes ?"
         }
     },
     en: {
@@ -363,13 +377,35 @@ export const translations = {
             security_desc: "Your passwords are encrypted with bcrypt. We never sell or share your personal data with third parties.",
             rights_title: "⚙️ 4. Your Rights",
             rights_desc: "You have the right to access, export, and permanently delete your account at any time from your profile settings."
+        },
+        footer: {
+            creator: "Creator",
+            technologies: "Technologies",
+            innovative_platform: "Innovative learning platform created with passion for tech education and knowledge sharing.",
+            rights: "Mysterious Classroom. Platform created by",
+            creator_title: "1st Year Student — ESP Dakar",
+            bio_1: "I believe in a world where technology is accessible to everyone.",
+            bio_2: "Mysterious Classroom is my contribution to making coding education free, fun, and interactive.",
+            bio_3: "Student passionate about knowledge sharing."
+        },
+        copilot: {
+            welcome: "Hello",
+            ready: "Ready to learn the logic of algorithms?"
         }
     }
 };
 
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState(() => {
-        return localStorage.getItem('language') || 'fr';
+        const saved = localStorage.getItem('language');
+        if (saved) return saved;
+        if (typeof navigator !== 'undefined') {
+            const browserLang = navigator.language || navigator.userLanguage;
+            if (browserLang && browserLang.toLowerCase().startsWith('en')) {
+                return 'en';
+            }
+        }
+        return 'fr';
     });
 
     useEffect(() => {
