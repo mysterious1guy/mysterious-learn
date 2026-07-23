@@ -184,37 +184,75 @@ const aiChat = async (req, res) => {
 
         let responseText = null;
 
-        // Phase 0: EXCLUSIVE DEEPSEEK ENGINE (DeepSeek-V3 & DeepSeek-R1)
-        const deepseekModels = [
-            { name: 'deepseek-v3', param: 'deepseek' },
-            { name: 'deepseek-r1', param: 'deepseek-r1' }
-        ];
+        // Phase 0: EXCLUSIVE DEEPSEEK ENGINE (POST & GET Multi-Method)
+        const deepseekModels = ['deepseek', 'deepseek-r1'];
 
-        for (const ds of deepseekModels) {
+        for (const modelParam of deepseekModels) {
+            if (responseText) break;
+
+            // Attempt 1: DeepSeek via POST JSON (Handles long prompts & special chars perfectly)
             try {
-                console.log(`📡 [AI RELAY] Appel Exclusif DeepSeek (${ds.name})...`);
+                console.log(`📡 [AI RELAY] Appel DeepSeek POST (${modelParam})...`);
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 12000);
 
-                const fullPrompt = `[CONSIGNE SYSTEME ASSISTANT MYSTERIOUS COPILOT]\n${systemInstruction}\n\n[PROFIL ELEVE: ${user.name}]\n[QUESTION ELEVE]: ${message}`;
-                const getUrl = `https://text.pollinations.ai/${encodeURIComponent(fullPrompt.slice(0, 350))}?model=${ds.param}&seed=${Math.floor(Math.random() * 100000)}`;
+                const postPayload = {
+                    messages: [
+                        { role: "system", content: systemInstruction },
+                        { role: "user", content: `Élève ${user.name}: ${message}` }
+                    ],
+                    model: modelParam
+                };
 
-                const dsRes = await fetch(getUrl, { signal: controller.signal });
+                const dsPostRes = await fetch('https://text.pollinations.ai/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postPayload),
+                    signal: controller.signal
+                });
                 clearTimeout(timeout);
 
-                if (dsRes.ok) {
-                    const dsTxt = await dsRes.text();
-                    if (dsTxt && dsTxt.trim().length > 0 && !dsTxt.includes('PAYMENT_REQUIRED') && !dsTxt.includes('402 Payment')) {
-                        responseText = dsTxt;
-                        console.log(`✅ [AI RELAY] DeepSeek (${ds.name}) a répondu avec succès.`);
+                if (dsPostRes.ok) {
+                    const txt = await dsPostRes.text();
+                    if (txt && txt.trim().length > 0 && !txt.includes('PAYMENT_REQUIRED') && !txt.includes('402 Payment')) {
+                        responseText = txt;
+                        console.log(`✅ [AI RELAY] DeepSeek POST (${modelParam}) a répondu avec succès.`);
                         break;
                     }
                 } else {
-                    const errText = await dsRes.text();
-                    console.warn(`⚠️ [AI RELAY] DeepSeek (${ds.name}) HTTP ${dsRes.status}: ${errText.slice(0, 150)}`);
+                    const errTxt = await dsPostRes.text();
+                    console.warn(`⚠️ [AI RELAY] DeepSeek POST (${modelParam}) HTTP ${dsPostRes.status}: ${errTxt.slice(0, 150)}`);
                 }
             } catch (e) {
-                console.warn(`⚠️ [AI RELAY] DeepSeek (${ds.name}) failed: ${e.message}`);
+                console.warn(`⚠️ [AI RELAY] DeepSeek POST (${modelParam}) échoué: ${e.message}`);
+            }
+
+            // Attempt 2: DeepSeek via Clean GET (Short query without special chars)
+            if (!responseText) {
+                try {
+                    console.log(`📡 [AI RELAY] Appel DeepSeek GET (${modelParam})...`);
+                    const cleanMessage = message.replace(/[^a-zA-Z0-9 ?!,.'"-]/g, ' ').slice(0, 150);
+                    const getUrl = `https://text.pollinations.ai/${encodeURIComponent(cleanMessage)}?model=${modelParam}`;
+
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 10000);
+                    const dsGetRes = await fetch(getUrl, { signal: controller.signal });
+                    clearTimeout(timeout);
+
+                    if (dsGetRes.ok) {
+                        const txt = await dsGetRes.text();
+                        if (txt && txt.trim().length > 0 && !txt.includes('PAYMENT_REQUIRED') && !txt.includes('402 Payment')) {
+                            responseText = txt;
+                            console.log(`✅ [AI RELAY] DeepSeek GET (${modelParam}) a répondu avec succès.`);
+                            break;
+                        }
+                    } else {
+                        const errTxt = await dsGetRes.text();
+                        console.warn(`⚠️ [AI RELAY] DeepSeek GET (${modelParam}) HTTP ${dsGetRes.status}: ${errTxt.slice(0, 150)}`);
+                    }
+                } catch (e) {
+                    console.warn(`⚠️ [AI RELAY] DeepSeek GET (${modelParam}) échoué: ${e.message}`);
+                }
             }
         }
 
