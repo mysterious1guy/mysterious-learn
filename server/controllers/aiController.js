@@ -187,12 +187,18 @@ const aiChat = async (req, res) => {
         // Phase 0: Check for Gemini API key if present in environment
         const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
         if (geminiKey) {
-            const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-1.5-flash'];
-            for (const modelName of geminiModels) {
+            const geminiEndpoints = [
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', name: 'gemini-2.0-flash' },
+                { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash (v1)' },
+                { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent', name: 'gemini-1.5-pro (v1)' },
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent', name: 'gemini-2.0-flash-lite' }
+            ];
+
+            for (const ep of geminiEndpoints) {
                 try {
-                    console.log(`📡 [AI RELAY] Appel Google Gemini API ('${modelName}')...`);
+                    console.log(`📡 [AI RELAY] Appel Google Gemini API (${ep.name})...`);
                     const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 10000);
+                    const timeout = setTimeout(() => controller.abort(), 12000);
 
                     const geminiPayload = {
                         system_instruction: { parts: [{ text: systemInstruction }] },
@@ -205,7 +211,7 @@ const aiChat = async (req, res) => {
                         ]
                     };
 
-                    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${geminiKey}`, {
+                    const geminiRes = await fetch(`${ep.url}?key=${geminiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(geminiPayload),
@@ -218,15 +224,15 @@ const aiChat = async (req, res) => {
                         const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
                         if (text && text.trim()) {
                             responseText = text;
-                            console.log(`✅ [AI RELAY] Gemini API (${modelName}) a répondu avec succès.`);
+                            console.log(`✅ [AI RELAY] Gemini API (${ep.name}) a répondu avec succès.`);
                             break;
                         }
                     } else {
                         const errText = await geminiRes.text();
-                        console.warn(`⚠️ [AI RELAY] Gemini API (${modelName}) HTTP ${geminiRes.status}: ${errText}`);
+                        console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) HTTP ${geminiRes.status}: ${errText.slice(0, 200)}`);
                     }
                 } catch (e) {
-                    console.warn(`⚠️ [AI RELAY] Gemini API (${modelName}) failed: ${e.message}`);
+                    console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) failed: ${e.message}`);
                 }
             }
         }
@@ -236,7 +242,7 @@ const aiChat = async (req, res) => {
             try {
                 console.log(`📡 [AI RELAY] Appel Pollinations Anonymous POST...`);
                 const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 9000);
+                const timeout = setTimeout(() => controller.abort(), 12000);
 
                 const resApi = await fetch('https://text.pollinations.ai/', {
                     method: 'POST',
@@ -266,7 +272,7 @@ const aiChat = async (req, res) => {
                 const getUrl = `https://text.pollinations.ai/${encodeURIComponent(cleanPrompt)}`;
                 
                 const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 8000);
+                const timeout = setTimeout(() => controller.abort(), 12000);
                 const getRes = await fetch(getUrl, { signal: controller.signal });
                 clearTimeout(timeout);
 
