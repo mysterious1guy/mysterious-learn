@@ -77,8 +77,8 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
         }
     ];
 
-    // Ne garder que les étapes dont l'élément cible existe dans le DOM au moment du rendu
-    const activeSteps = steps.filter(step => step.target === 'body' || document.querySelector(step.target));
+    // On laisse Joyride gérer les cibles manquantes car querySelector() pendant le rendu initial échoue
+    const activeSteps = steps;
 
     const handleJoyrideCallback = (data) => {
         const { status, index, action, type } = data;
