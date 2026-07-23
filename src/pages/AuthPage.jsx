@@ -26,6 +26,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     const [passwordStrength, setPasswordStrength] = useState(0);
     const [petSecret, setPetSecret] = useState(null);
     const [resendCooldown, setResendCooldown] = useState(0);
+    const [resetModalData, setResetModalData] = useState({ open: false, email: '' });
 
     const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -423,7 +424,8 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                      });
                                                                      const data = await res.json();
                                                                      if (res.ok) {
-                                                                         setToast({ message: 'Email de réinitialisation envoyé ! Consultez votre boîte mail.', type: 'success' });
+                                                                         setResetModalData({ open: true, email: formData.email });
+                                                                         setAuthError('');
                                                                      } else {
                                                                          setAuthError(data.message || 'Erreur lors de l\'envoi');
                                                                      }
@@ -480,7 +482,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                              });
                                                                              const data = await res.json();
                                                                              if (res.ok) {
-                                                                                 setToast({ message: t('authPage.email_sent_local') || 'Email envoyé ! Suivez le lien pour créer un mot de passe local.', type: 'success' });
+                                                                                 setResetModalData({ open: true, email: formData.email });
                                                                                  setAuthError('');
                                                                              } else {
                                                                                  setToast({ message: data.message || t('authPage.error') || 'Erreur', type: 'error' });
@@ -692,6 +694,49 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                     J'ai lu et j'accepte
                                 </button>
                             </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Modal Succès Réinitialisation Email */}
+            <AnimatePresence>
+                {resetModalData.open && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[250] bg-slate-950/80 backdrop-blur-xl flex items-center justify-center p-4"
+                        onClick={() => setResetModalData({ open: false, email: '' })}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-slate-900 border border-slate-800 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl relative overflow-hidden"
+                        >
+                            <div className="w-16 h-16 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/30 shadow-[0_0_25px_rgba(59,130,246,0.3)]">
+                                <Mail size={32} />
+                            </div>
+
+                            <h3 className="text-xl font-black text-white tracking-tight mb-2">
+                                {t('authPage.reset_modal_title') || "Email Envoyé avec Succès !"}
+                            </h3>
+
+                            <p className="text-xs text-slate-300 leading-relaxed mb-6">
+                                {t('authPage.reset_modal_body_prefix') || "Un lien sécurisé de réinitialisation a été envoyé à "}
+                                <span className="text-blue-400 font-bold">{resetModalData.email}</span>. <br className="my-1" />
+                                {t('authPage.reset_modal_body_suffix') || "Consultez votre boîte mail (et vos indésirables/spams) puis cliquez sur le lien pour modifier votre mot de passe."}
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={() => setResetModalData({ open: false, email: '' })}
+                                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-2xl transition-all shadow-lg shadow-blue-600/30"
+                            >
+                                {t('authPage.reset_modal_confirm') || "D'ACCORD"}
+                            </button>
                         </motion.div>
                     </motion.div>
                 )}

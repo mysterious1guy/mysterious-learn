@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const PendingUser = require('../models/PendingUser');
+const TwoFactorAuth = require('../models/TwoFactorAuth');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
@@ -236,7 +237,7 @@ const login = async (req, res) => {
     }
 
     // Check if 2FA is enabled for this user
-    const twoFactor = await mongoose.model('TwoFactorAuth').findOne({ userId: user._id, isEnabled: true });
+    const twoFactor = await TwoFactorAuth.findOne({ userId: user._id, isEnabled: true });
     if (twoFactor) {
       return res.status(200).json({
         twoFactorRequired: true,
