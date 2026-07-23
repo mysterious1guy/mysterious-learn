@@ -240,37 +240,35 @@ const aiChat = async (req, res) => {
             }
         }
 
-        // Phase 1: Anonymous Pollinations POST (NO model parameter to prevent 402 Payment Required)
+        // Phase 1: Free DeepSeek Relay (DeepSeek-V3 & DeepSeek-R1 via Pollinations)
         if (!responseText) {
-            try {
-                console.log(`📡 [AI RELAY] Appel Pollinations Anonymous POST...`);
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 10000);
+            const deepseekModels = ['deepseek', 'deepseek-r1'];
+            for (const modelName of deepseekModels) {
+                try {
+                    console.log(`📡 [AI RELAY] Appel DeepSeek Gratuit (${modelName})...`);
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 10000);
 
-                const pollinationsMessages = [
-                    { role: "user", content: `Tu es Mysterious Copilot, assistant cyber et mentor de ${user.name}.\n\nQuestion de l'élève: ${message}` }
-                ];
+                    const safePrompt = `[CONSIGNE SYSTÈME]\n${systemInstruction}\n\n[ÉLÈVE ${user.name}]\n${message}`;
+                    const getUrl = `https://text.pollinations.ai/${encodeURIComponent(safePrompt.slice(0, 300))}?model=${modelName}`;
 
-                const resApi = await fetch('https://text.pollinations.ai/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ messages: pollinationsMessages }),
-                    signal: controller.signal
-                });
-                clearTimeout(timeout);
+                    const dsRes = await fetch(getUrl, { signal: controller.signal });
+                    clearTimeout(timeout);
 
-                if (resApi.ok) {
-                    const txt = await resApi.text();
-                    if (txt && txt.trim().length > 0 && !txt.includes('PAYMENT_REQUIRED') && !txt.includes('402 Payment')) {
-                        responseText = txt;
-                        console.log(`✅ [AI RELAY] Pollinations Anonymous POST a répondu avec succès.`);
+                    if (dsRes.ok) {
+                        const dsTxt = await dsRes.text();
+                        if (dsTxt && dsTxt.trim().length > 0 && !dsTxt.includes('PAYMENT_REQUIRED') && !dsTxt.includes('402 Payment')) {
+                            responseText = dsTxt;
+                            console.log(`✅ [AI RELAY] DeepSeek Gratuit (${modelName}) a répondu avec succès.`);
+                            break;
+                        }
+                    } else {
+                        const errText = await dsRes.text();
+                        console.warn(`⚠️ [AI RELAY] DeepSeek (${modelName}) HTTP ${dsRes.status}: ${errText.slice(0, 150)}`);
                     }
-                } else {
-                    const errText = await resApi.text();
-                    console.warn(`⚠️ [AI RELAY] Pollinations POST HTTP ${resApi.status}: ${errText.slice(0, 150)}`);
+                } catch (e) {
+                    console.warn(`⚠️ [AI RELAY] DeepSeek (${modelName}) failed: ${e.message}`);
                 }
-            } catch (e) {
-                console.warn(`⚠️ [AI RELAY] Pollinations POST échoué: ${e.message}`);
             }
         }
 
