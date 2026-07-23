@@ -202,7 +202,20 @@ export const translations = {
             student: "Étudiant",
             email: "Email",
             preferences: "Préférences d'apprentissage",
-            delete_account: "Supprimer mon compte"
+            delete_account: "Supprimer mon compte",
+            profile_tab: "Profil",
+            security_tab: "Sécurité",
+            preferences_tab: "Préférences",
+            personal_info: "Informations personnelles",
+            favorites: "Favoris",
+            in_progress: "En cours",
+            streak: "Série",
+            time: "Temps",
+            days: "jours",
+            minutes_short: "m",
+            logout: "Déconnexion",
+            export_data: "Exporter mes données",
+            exporting: "Export en cours..."
         },
         course: {
             level_locked_warning: "Vous devez terminer le niveau précédent pour accéder à ce cours.",
@@ -545,7 +558,20 @@ export const translations = {
             student: "Student",
             email: "Email",
             preferences: "Learning Preferences",
-            delete_account: "Delete my account"
+            delete_account: "Delete my account",
+            profile_tab: "Profile",
+            security_tab: "Security",
+            preferences_tab: "Preferences",
+            personal_info: "Personal Information",
+            favorites: "Favorites",
+            in_progress: "In Progress",
+            streak: "Streak",
+            time: "Time",
+            days: "days",
+            minutes_short: "m",
+            logout: "Logout",
+            export_data: "Export my data",
+            exporting: "Exporting..."
         },
         course: {
             level_locked_warning: "You must complete the previous level to access this course.",
