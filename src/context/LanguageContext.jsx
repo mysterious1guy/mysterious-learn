@@ -197,12 +197,6 @@ export const translations = {
             tab_xp: "Niveaux XP",
             tab_ai: "IA Oracle"
         },
-        announcements: {
-            title: "Annonces",
-            no_announcements: "Aucune nouvelle annonce",
-            end_announcements: "Fin des annonces",
-            got_it: "J'AI COMPRIS"
-        },
         resetPasswordPage: {
             title: "Réinitialisation du mot de passe",
             subtitle: "Choisissez votre nouveau mot de passe sécurisé",
@@ -217,6 +211,26 @@ export const translations = {
             password_too_short: "Le mot de passe doit contenir au moins 6 caractères.",
             invalid_token: "Lien invalide ou expiré.",
             request_new_link: "Demander un nouveau lien"
+        },
+        onboardingTour: {
+            welcome_title: "Bienvenue dans l'Obscurité",
+            welcome_desc: "Mysterious Classroom n'est pas une école ordinaire. Suivez ce guide interactif pour découvrir votre nouvel environnement.",
+            dashboard_title: "Tableau de Bord",
+            dashboard_desc: "C'est votre centre de contrôle. Retrouvez ici vos cours, votre progression et vos statistiques en temps réel.",
+            projects_title: "Les Projets",
+            projects_desc: "L'apprentissage théorique ne suffit pas. C'est ici que vous débloquerez des missions pratiques concrètes.",
+            leaderboard_title: "Le Classement",
+            leaderboard_desc: "Compétition ou simple motivation ? Surveillez votre position et vos XP. Relevez des défis pour grimper au sommet.",
+            account_title: "Votre Profil",
+            account_desc: "Accédez à vos paramètres, sécurisez votre compte (2FA) et modifiez vos préférences ici.",
+            ai_title: "Ton Mentor IA",
+            ai_desc: "Un doute ? Un bug ? Cliquez ici à tout moment pour parler à votre assistant personnel. Il veille sur vous !"
+        },
+        announcements: {
+            title: "Annonces",
+            no_announcements: "Aucune nouvelle annonce",
+            end_announcements: "Fin des annonces",
+            got_it: "J'AI COMPRIS"
         },
         accountPage: {
             back_to_dashboard: "Retour au tableau de bord"
@@ -598,6 +612,20 @@ export const translations = {
             password_too_short: "Password must be at least 6 characters long.",
             invalid_token: "Invalid or expired link.",
             request_new_link: "Request a new link"
+        },
+        onboardingTour: {
+            welcome_title: "Welcome to the Dark Room",
+            welcome_desc: "Mysterious Classroom is no ordinary school. Follow this interactive guide to explore your new environment.",
+            dashboard_title: "Dashboard",
+            dashboard_desc: "This is your control center. Track your courses, progress, and real-time statistics here.",
+            projects_title: "Projects",
+            projects_desc: "Theory is not enough. This is where you will unlock hands-on real-world missions.",
+            leaderboard_title: "Leaderboard",
+            leaderboard_desc: "Competition or pure motivation? Monitor your rank and XP. Complete challenges to reach the top.",
+            account_title: "Your Profile",
+            account_desc: "Access your settings, secure your account (2FA), and update your preferences here.",
+            ai_title: "Your AI Mentor",
+            ai_desc: "Any doubt or bug? Click here anytime to talk to your personal assistant. He's watching over you!"
         },
         accountPage: {
             back_to_dashboard: "Back to dashboard"
