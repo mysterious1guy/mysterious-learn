@@ -190,12 +190,10 @@ const aiChat = async (req, res) => {
             geminiKey = geminiKey.trim().replace(/^["']|["']$/g, '');
 
             const historyText = (history && Array.isArray(history)) 
-                ? history.slice(-6).map(h => `${(h.role === 'assistant' || h.role === 'model') ? 'Assistant' : 'Élève'}: ${h.text || h.content || ''}`).join('\n')
+                ? history.slice(-4).map(h => `${(h.role === 'assistant' || h.role === 'model') ? 'Assistant' : 'Élève'}: ${h.text || h.content || ''}`).join('\n')
                 : '';
 
-            const userPromptText = historyText.length > 0 
-                ? `[HISTORIQUE CONVERSATION RÉCENTE]\n${historyText}\n\n[NOUVELLE QUESTION DE L'ÉLÈVE]\n${message}`
-                : message;
+            const combinedUserPrompt = `[CONSIGNE SYSTÈME ASSISTANT]\n${systemInstruction}\n\n${historyText ? `[HISTORIQUE CONVERSATION]\n${historyText}\n\n` : ''}[QUESTION ÉLÈVE]\n${message}`;
 
             const geminiEndpoints = [
                 { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash' },
@@ -208,12 +206,11 @@ const aiChat = async (req, res) => {
                 try {
                     console.log(`📡 [AI RELAY] Appel Google Gemini API (${ep.name})...`);
                     const controller = new AbortController();
-                    const timeout = setTimeout(() => controller.abort(), 12000);
+                    const timeout = setTimeout(() => controller.abort(), 10000);
 
                     const geminiPayload = {
-                        system_instruction: { parts: [{ text: systemInstruction }] },
                         contents: [
-                            { role: 'user', parts: [{ text: userPromptText }] }
+                            { role: 'user', parts: [{ text: combinedUserPrompt }] }
                         ]
                     };
 
@@ -235,7 +232,7 @@ const aiChat = async (req, res) => {
                         }
                     } else {
                         const errText = await geminiRes.text();
-                        console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) HTTP ${geminiRes.status}: ${errText.slice(0, 200)}`);
+                        console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) HTTP ${geminiRes.status}: ${errText.slice(0, 150)}`);
                     }
                 } catch (e) {
                     console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) failed: ${e.message}`);
@@ -248,7 +245,7 @@ const aiChat = async (req, res) => {
             try {
                 console.log(`📡 [AI RELAY] Appel Pollinations Anonymous POST...`);
                 const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 12000);
+                const timeout = setTimeout(() => controller.abort(), 10000);
 
                 const pollinationsMessages = [
                     { role: "system", content: systemInstruction },
@@ -271,22 +268,23 @@ const aiChat = async (req, res) => {
                     }
                 } else {
                     const errText = await resApi.text();
-                    console.warn(`⚠️ [AI RELAY] Pollinations POST HTTP ${resApi.status}: ${errText.slice(0, 200)}`);
+                    console.warn(`⚠️ [AI RELAY] Pollinations POST HTTP ${resApi.status}: ${errText.slice(0, 150)}`);
                 }
             } catch (e) {
                 console.warn(`⚠️ [AI RELAY] Pollinations POST échoué: ${e.message}`);
             }
         }
 
-        // Phase 2: Anonymous Pollinations GET (NO ?model= parameter)
+        // Phase 2: Anonymous Short Pollinations GET (URL < 250 chars guarantees fast delivery)
         if (!responseText) {
             try {
-                console.log(`📡 [AI RELAY] Fallback vers Pollinations Anonymous GET...`);
-                const cleanPrompt = `Tu es Mysterious Copilot (Assistant Mysterious Classroom). Élève: ${user.name}. Question: ${message}`;
-                const getUrl = `https://text.pollinations.ai/${encodeURIComponent(cleanPrompt)}`;
+                console.log(`📡 [AI RELAY] Fallback vers Pollinations Fast GET...`);
+                const shortPrompt = `Assistant Cyber Mysterious Classroom. Question de ${user.name}: ${message}`;
+                const safeUrlPrompt = shortPrompt.length > 200 ? shortPrompt.slice(0, 200) : shortPrompt;
+                const getUrl = `https://text.pollinations.ai/${encodeURIComponent(safeUrlPrompt)}`;
                 
                 const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 12000);
+                const timeout = setTimeout(() => controller.abort(), 10000);
                 const getRes = await fetch(getUrl, { signal: controller.signal });
                 clearTimeout(timeout);
 
@@ -294,47 +292,54 @@ const aiChat = async (req, res) => {
                     const getTxt = await getRes.text();
                     if (getTxt && getTxt.trim().length > 0 && !getTxt.includes('PAYMENT_REQUIRED')) {
                         responseText = getTxt;
-                        console.log(`✅ [AI RELAY] Pollinations Anonymous GET a répondu avec succès.`);
+                        console.log(`✅ [AI RELAY] Pollinations Fast GET a répondu avec succès.`);
                     }
                 } else {
                     const errText = await getRes.text();
-                    console.warn(`⚠️ [AI RELAY] Pollinations GET HTTP ${getRes.status}: ${errText.slice(0, 200)}`);
+                    console.warn(`⚠️ [AI RELAY] Pollinations GET HTTP ${getRes.status}: ${errText.slice(0, 150)}`);
                 }
             } catch (e) {
                 console.warn(`⚠️ [AI RELAY] GET Fallback échoué: ${e.message}`);
             }
         }
 
-        // Phase 3: Intelligent Platform Helper (Si les API distantes sont inatteignables)
+        // Phase 3: Conversational Local Assistant (Dynamic fallback if external APIs offline)
         if (!responseText) {
-            console.warn(`⚠️ [AI RELAY] Relais externes indisponibles. Mode Assistant Local Intelligent activé.`);
-            const lowerMsg = message.toLowerCase();
+            console.warn(`⚠️ [AI RELAY] Mode Assistant Local Intelligent activé.`);
+            const lowerMsg = message.toLowerCase().trim();
 
-            if (lowerMsg.includes('classement') || lowerMsg.includes('leaderboard') || lowerMsg.includes('rang') || lowerMsg.includes('points') || lowerMsg.includes('xp')) {
+            if (lowerMsg.includes('comment tu vas') || lowerMsg.includes('ca va') || lowerMsg.includes('ça va') || lowerMsg.includes('comment vas') || lowerMsg.includes('alors')) {
+                responseText = `Je vais très bien, Agent **${user.firstName || user.name}** ! Prêt à relever de nouveaux défis sur Mysterious Classroom aujourd'hui ? Que souhaites-tu explorer ?`;
+            } else if (lowerMsg.includes('salut') || lowerMsg.includes('coucou') || lowerMsg.includes('hello') || lowerMsg.includes('bonjour') || lowerMsg.includes('yoo') || lowerMsg.includes('yo')) {
+                responseText = `Bonjour Agent **${user.firstName || user.name}** ! Je suis ton mentor Mysterious Copilot. En quoi puis-je t'aider aujourd'hui ?`;
+            } else if (lowerMsg.includes('qui es tu') || lowerMsg.includes('qui es-tu') || lowerMsg.includes('tes qui') || lowerMsg.includes('t\'es qui')) {
+                responseText = `Je suis **Mysterious Copilot**, l'Intelligence Artificielle et le Mentor Pédagogique Officiel de Mysterious Classroom. Mon rôle est de te guider dans ton apprentissage de la Cybersécurité et du Hacking Éthique !`;
+            } else if (lowerMsg.includes('classement') || lowerMsg.includes('leaderboard') || lowerMsg.includes('rang') || lowerMsg.includes('points') || lowerMsg.includes('xp')) {
                 responseText = `Agent **${user.firstName || user.name}**, pour consulter le **Classement (Hall of Fame)** :
 
-1. Regarde la barre de navigation supérieure de Mysterious Classroom.
+1. Regarde la barre de navigation supérieure.
 2. Clique sur l'onglet **🏆 Classement**.
-3. Tu y trouveras le rang de tous les agents, leurs points d'expérience (XP) et les badges débloqués !`;
+3. Tu y trouveras le rang des élèves, leurs points d'expérience (XP) et les badges débloqués !`;
             } else if (lowerMsg.includes('projet') || lowerMsg.includes('ctf') || lowerMsg.includes('mission')) {
                 responseText = `Pour accéder aux **Projets & Challenges CTF** :
 
-1. Clique sur l'onglet **📁 Projets** dans la barre de navigation en haut.
-2. Sélectionne le projet ou le challenge de ton niveau.
-3. Résous la mission pour gagner de l'XP et grimper au classement !`;
+1. Clique sur l'onglet **📁 Projets** dans la barre supérieure.
+2. Choisis un challenge de ton niveau.
+3. Résous la mission pour accumuler des points XP !`;
             } else if (lowerMsg.includes('profil') || lowerMsg.includes('compte') || lowerMsg.includes('2fa') || lowerMsg.includes('mot de passe')) {
                 responseText = `Pour gérer ton **Profil & Sécurité** :
 
-1. Clique sur ton avatar / nom en haut à droite.
+1. Clique sur ton avatar en haut à droite.
 2. Choisis **Mon Profil**.
-3. Tu pourras y activer l'authentification à 2 facteurs (A2F) et exporter ton Dossier Agent !`;
+3. Tu pourras y configurer la 2FA (A2F) et télécharger ton Dossier Agent !`;
+            } else if (isAdmin && (lowerMsg.includes('mail') || lowerMsg.includes('email') || lowerMsg.includes('annonce') || lowerMsg.includes('notification') || lowerMsg.includes('utilisateur'))) {
+                responseText = `Bonjour Boss **Mouhamed** ! Je suis prêt pour tes commandes d'administration. Que souhaites-tu effectuer ? (envoi d'email, publication d'annonce ou gestion des utilisateurs).`;
             } else {
-                responseText = `Bonjour Agent **${user.firstName || user.name}** ! 
+                responseText = `Reçu Agent **${user.firstName || user.name}** ! 
 
-L'Oracle fonctionne actuellement en mode local. Tu peux me poser des questions sur :
-• Le **Classement** et la progression XP
-• Les **Projets & CTF**
-• La sécurité Web & Linux`;
+Pour me poser tes questions :
+• **Cybersécurité & Hacking Éthique** (XSS, SQLi, CSRF, Linux)
+• **Plateforme** (Classement 🏆, Projets 📁, Profil 👤)`;
             }
         }
 
