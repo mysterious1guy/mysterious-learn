@@ -3,10 +3,12 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Lock, Eye, EyeOff, CheckCircle, XCircle, ArrowRight, ShieldCheck, FileText, X } from 'lucide-react';
 import CyberPet from '../CyberPet';
+import { useLanguage } from '../context/LanguageContext';
 
 const AuthPage = ({ user, setUser, API_URL, setToast }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { t } = useLanguage();
     const [authMode, setAuthMode] = useState(location.state?.register ? 'signup' : 'signin'); // 'signin', 'signup', 'verification'
     const [signupStep, setSignupStep] = useState(1);
     const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '', goal: '', startingLevel: '' });
@@ -228,7 +230,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                     </div>
 
                     <h2 className="text-3xl brand-font text-slate-800 text-center mb-8 tracking-tight">
-                        {authMode === 'verification' ? 'Vérification' : (authMode === 'signin' ? 'Connexion' : 'Inscription')}
+                        {authMode === 'verification' ? t('authPage.verification') || 'Vérification' : (authMode === 'signin' ? t('authPage.signin') || 'Connexion' : t('authPage.signup') || 'Inscription')}
                     </h2>
 
                     <form onSubmit={authMode === 'verification' ? handleVerifyEmail : (authMode === 'two-factor' ? handleVerifyTwoFactor : (authMode === 'signin' ? handleLogin : handleRegister))} className="space-y-4">
@@ -242,7 +244,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                     className="space-y-6"
                                 >
                                     <p className="text-slate-500 text-center text-sm font-medium">
-                                        {authMode === 'two-factor' ? "Saisis le code 2FA envoyé à ton téléphone" : `Code envoyé à ${formData.email}`}
+                                        {authMode === 'two-factor' ? t('authPage.two_factor_prompt') || "Saisis le code 2FA envoyé à ton téléphone" : `${t('authPage.code_sent_to') || "Code envoyé à"} ${formData.email}`}
                                     </p>
                                     <input
                                         type="text"
@@ -258,7 +260,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                         disabled={isLoading || verificationKey.length !== 6}
                                         className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/25"
                                     >
-                                        {isLoading ? 'Vérification...' : (authMode === 'two-factor' ? 'Vérifier' : 'Activer mon compte')}
+                                        {isLoading ? t('authPage.loading') || 'Chargement...' : (authMode === 'two-factor' ? t('authPage.verify') || 'Vérifier' : t('authPage.activate_account') || 'Activer mon compte')}
                                     </button>
                                     {authMode === 'verification' && (
                                         <button
@@ -268,8 +270,8 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                             className={`w-full text-slate-500 hover:text-white text-sm transition-colors ${resendCooldown > 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         >
                                             {resendCooldown > 0
-                                                ? `Renvoyer le code (${resendCooldown}s)`
-                                                : "Renvoyer le code"}
+                                                ? `${t('authPage.resend_code') || "Renvoyer le code"} (${resendCooldown}s)`
+                                                : t('authPage.resend_code') || "Renvoyer le code"}
                                         </button>
                                     )}
                                 </motion.div>
@@ -282,7 +284,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <input
                                                             type="text"
-                                                            placeholder="Prénom"
+                                                            placeholder={t('authPage.firstname') || "Prénom"}
                                                             value={formData.firstName}
                                                             onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                                                             className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-colors"
@@ -290,7 +292,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                         />
                                                         <input
                                                             type="text"
-                                                            placeholder="Nom"
+                                                            placeholder={t('authPage.lastname') || "Nom"}
                                                             value={formData.lastName}
                                                             onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                                                             className="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-colors"
@@ -303,7 +305,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                                     <input
                                                         type="email"
-                                                        placeholder="Email"
+                                                        placeholder={t('authPage.email') || "Email"}
                                                         value={formData.email}
                                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                                         className="w-full pl-12 pr-5 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-colors"
@@ -315,7 +317,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                                     <input
                                                         type={showPassword ? 'text' : 'password'}
-                                                        placeholder="Mot de passe"
+                                                        placeholder={t('authPage.password') || "Mot de passe"}
                                                         value={formData.password}
                                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                                         onFocus={() => setIsPasswordFocused(true)}
@@ -333,7 +335,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                         <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                                         <input
                                                             type={showPassword ? 'text' : 'password'}
-                                                            placeholder="Confirmer le mot de passe"
+                                                            placeholder={t('authPage.confirm_password') || "Confirmer le mot de passe"}
                                                             value={formData.confirmPassword}
                                                             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                                             onFocus={() => setIsPasswordFocused(true)}
@@ -358,7 +360,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                 className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                             />
                                                             <div className="text-xs text-slate-500 flex-1">
-                                                                J'accepte la{' '}
+                                                                {t('authPage.accept_policy') || "J'accepte la "}{' '}
                                                                 <button
                                                                     type="button"
                                                                     onClick={(e) => {
@@ -367,7 +369,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                     }}
                                                                     className="text-blue-600 font-semibold hover:underline cursor-pointer"
                                                                 >
-                                                                    politique de confidentialité
+                                                                    {t('authPage.policy') || "politique de confidentialité"}
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -380,7 +382,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                 className="w-4 h-4 rounded border-slate-300 bg-white text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                             />
                                                             <div className="text-xs text-slate-500 flex-1">
-                                                                J'accepte les{' '}
+                                                                {t('authPage.accept_terms') || "J'accepte les "}{' '}
                                                                 <button
                                                                     type="button"
                                                                     onClick={(e) => {
@@ -389,7 +391,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                     }}
                                                                     className="text-blue-600 font-semibold hover:underline cursor-pointer"
                                                                 >
-                                                                    conditions d'utilisation
+                                                                    {t('authPage.terms') || "conditions d'utilisation"}
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -398,7 +400,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
 
                                                 {authMode === 'signup' && !passwordsMatch && formData.confirmPassword && (
                                                     <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest pl-2 animate-pulse">
-                                                        Les mots de passe ne correspondent pas
+                                                        {t('authPage.passwords_mismatch') || "Les mots de passe ne correspondent pas"}
                                                     </p>
                                                 )}
 
@@ -433,7 +435,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                              }}
                                                              className="text-xs text-blue-600 hover:underline font-semibold"
                                                          >
-                                                             Mot de passe oublié ?
+                                                             {t('authPage.forgot_password') || "Mot de passe oublié ?"}
                                                          </button>
                                                      </div>
                                                  )}
@@ -452,7 +454,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                  }}
                                                                  className="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1.5"
                                                              >
-                                                                 <ArrowRight size={14} /> Se connecter directement avec cet email
+                                                                 <ArrowRight size={14} /> {t('authPage.direct_login') || "Se connecter directement avec cet email"}
                                                              </button>
                                                          )}
                                                          {authError.includes("lié à Google") && (
@@ -463,7 +465,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                      className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
                                                                  >
                                                                      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-4 h-4" />
-                                                                     Se connecter avec Google
+                                                                     {t('authPage.google_login') || "Se connecter avec Google"}
                                                                  </button>
                                                                  <button
                                                                      type="button"
@@ -478,20 +480,20 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                              });
                                                                              const data = await res.json();
                                                                              if (res.ok) {
-                                                                                 setToast({ message: 'Email envoyé ! Suivez le lien pour créer un mot de passe local.', type: 'success' });
+                                                                                 setToast({ message: t('authPage.email_sent_local') || 'Email envoyé ! Suivez le lien pour créer un mot de passe local.', type: 'success' });
                                                                                  setAuthError('');
                                                                              } else {
-                                                                                 setToast({ message: data.message || 'Erreur', type: 'error' });
+                                                                                 setToast({ message: data.message || t('authPage.error') || 'Erreur', type: 'error' });
                                                                              }
                                                                          } catch (err) {
-                                                                             setToast({ message: 'Erreur réseau', type: 'error' });
+                                                                             setToast({ message: t('authPage.network_error') || 'Erreur réseau', type: 'error' });
                                                                          } finally {
                                                                              setIsLoading(false);
                                                                          }
                                                                      }}
                                                                      className="text-xs text-blue-600 font-semibold hover:underline text-center py-1"
                                                                  >
-                                                                     🔑 Définir un mot de passe local pour ce compte
+                                                                     {t('authPage.set_local_password') || "🔑 Définir un mot de passe local pour ce compte"}
                                                                  </button>
                                                              </div>
                                                          )}
@@ -504,7 +506,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                         disabled={isLoading}
                                                         className={`w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2 group ${isLoading ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
                                                     >
-                                                        {isLoading ? 'Chargement...' : 'Connexion'}
+                                                        {isLoading ? t('authPage.loading') || 'Chargement...' : t('authPage.signin') || 'Connexion'}
                                                         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                                     </button>
                                                 ) : (
@@ -513,7 +515,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                         disabled={isLoading || !formData.firstName || !formData.lastName || !!emailError || !formData.password || !passwordsMatch || !agreedToPolicy || !agreedToTerms}
                                                         className={`w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-all shadow-lg flex items-center justify-center gap-2 group ${(isLoading || !formData.firstName || !formData.lastName || !!emailError || !formData.password || !passwordsMatch || !agreedToPolicy || !agreedToTerms) ? 'opacity-50 grayscale cursor-not-allowed' : 'shadow-blue-500/25 hover:scale-[1.02] active:scale-95'}`}
                                                     >
-                                                        {isLoading ? 'Création...' : "S'inscrire"} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                                        {isLoading ? t('authPage.creating') || 'Création...' : t('authPage.signup') || "S'inscrire"} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                                     </button>
                                                 )}
                                             </motion.div>
@@ -531,7 +533,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                         <div className="mt-8 space-y-6">
                             <div className="relative">
                                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
-                                <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400 font-bold tracking-wider">ou avec</span></div>
+                                <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400 font-bold tracking-wider">{t('authPage.or_with') || "ou avec"}</span></div>
                             </div>
 
                             <button
@@ -543,7 +545,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                             </button>
 
                             <p className="text-center text-sm text-slate-500 font-medium">
-                                {authMode === 'signin' ? "Pas de compte ?" : "Déjà un compte ?"}
+                                {authMode === 'signin' ? t('authPage.no_account') || "Pas de compte ?" : t('authPage.already_account') || "Déjà un compte ?"}
                                 <button
                                     onClick={() => {
                                         setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
@@ -551,7 +553,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                     }}
                                     className="ml-2 text-blue-600 font-bold hover:underline"
                                 >
-                                    {authMode === 'signin' ? "S'inscrire" : "Se connecter"}
+                                    {authMode === 'signin' ? t('authPage.signup') || "S'inscrire" : t('authPage.signin') || "Se connecter"}
                                 </button>
                             </p>
                         </div>
@@ -584,7 +586,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold text-slate-800">
-                                            {activeModal === 'policy' ? 'Politique de Confidentialité' : 'Conditions d\'Utilisation'}
+                                            {activeModal === 'policy' ? t('authPage.policy_title') || 'Politique de Confidentialité' : t('authPage.terms_title') || "Conditions d'Utilisation"}
                                         </h3>
                                         <p className="text-xs text-slate-500 font-medium">Mysterious Classroom</p>
                                     </div>
@@ -603,43 +605,29 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                 {activeModal === 'policy' ? (
                                     <>
                                         <section className="space-y-1.5">
-                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                                🛡️ 1. Collecte des données
-                                            </h4>
-                                            <p className="text-xs text-slate-600">
-                                                Sur <strong>Mysterious Classroom</strong>, nous recueillons uniquement les informations essentielles pour créer votre espace d'apprentissage : prénom, nom, adresse email et votre niveau initial.
+                                            <h4 className="font-bold text-slate-800 mb-2">{t('authPage.collection_title') || "🛡️ 1. Collecte des données"}</h4>
+                                            <p className="text-slate-600 leading-relaxed mb-4">
+                                                {t('authPage.collection_desc') || "Sur Mysterious Classroom, nous recueillons uniquement les informations essentielles pour créer votre espace d'apprentissage : prénom, nom, adresse email et votre niveau initial."}
                                             </p>
-                                        </section>
 
-                                        <section className="space-y-1.5">
-                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                                🎯 2. Utilisation des données
-                                            </h4>
-                                            <p className="text-xs text-slate-600">
-                                                Vos données sont utilisées exclusivement pour :
+                                            <h4 className="font-bold text-slate-800 mb-2">{t('authPage.usage_title') || "🎯 2. Utilisation des données"}</h4>
+                                            <p className="text-slate-600 leading-relaxed mb-2">
+                                                {t('authPage.usage_desc') || "Vos données sont utilisées exclusivement pour :"}
                                             </p>
-                                            <ul className="list-disc pl-5 space-y-1 text-xs text-slate-500">
-                                                <li>Sauvegarder votre progression dans les cours et exercices.</li>
-                                                <li>Calculer votre score XP, vos streaks et vos badges de réussite.</li>
-                                                <li>Adapter les recommandations et l'assistance de notre IA pédagogique.</li>
+                                            <ul className="list-disc pl-5 text-slate-600 space-y-1 mb-4">
+                                                <li>{t('authPage.usage_list1') || "Sauvegarder votre progression dans les cours et exercices."}</li>
+                                                <li>{t('authPage.usage_list2') || "Calculer votre score XP, vos streaks et vos badges de réussite."}</li>
+                                                <li>{t('authPage.usage_list3') || "Adapter les recommandations et l'assistance de notre IA pédagogique."}</li>
                                             </ul>
-                                        </section>
 
-                                        <section className="space-y-1.5">
-                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                                🔒 3. Sécurité & Confidentialité
-                                            </h4>
-                                            <p className="text-xs text-slate-600">
-                                                Vos mots de passe sont chiffrés avec <code>bcrypt</code> (12 rounds). Nous ne revendons ni ne partageons <strong>jamais</strong> vos données personnelles à des tiers.
+                                            <h4 className="font-bold text-slate-800 mb-2">{t('authPage.security_title') || "🔒 3. Sécurité & Confidentialité"}</h4>
+                                            <p className="text-slate-600 leading-relaxed mb-4">
+                                                {t('authPage.security_desc') || "Vos mots de passe sont chiffrés avec bcrypt. Nous ne revendons ni ne partageons jamais vos données personnelles à des tiers."}
                                             </p>
-                                        </section>
 
-                                        <section className="space-y-1.5">
-                                            <h4 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                                ⚙️ 4. Vos Droits
-                                            </h4>
-                                            <p className="text-xs text-slate-600">
-                                                Vous disposez d'un droit d'accès, d'exportation et de suppression définitive de votre compte à tout moment depuis les paramètres de votre profil.
+                                            <h4 className="font-bold text-slate-800 mb-2">{t('authPage.rights_title') || "⚙️ 4. Vos Droits"}</h4>
+                                            <p className="text-slate-600 leading-relaxed">
+                                                {t('authPage.rights_desc') || "Vous disposez d'un droit d'accès, d'exportation et de suppression définitive de votre compte à tout moment depuis les paramètres de votre profil."}
                                             </p>
                                         </section>
                                     </>
