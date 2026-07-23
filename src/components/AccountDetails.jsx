@@ -747,6 +747,23 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     </div>
   );
 
+  return (
+    <div className="w-full max-w-5xl mx-auto space-y-8">
+      {/* En-tête avec Navigation */}
+      <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+        <div className="flex gap-2 p-1.5 bg-slate-100 dark:bg-gray-900 rounded-3xl overflow-x-auto custom-horizontal-scrollbar w-full md:w-auto">
+          {tabs.map(renderTabButton)}
+        </div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2 }}
+        >
           {activeTab === 'profile' && renderProfileTab()}
           {activeTab === 'security' && renderSecurityTab()}
           {activeTab === 'preferences' && renderPreferencesTab()}
