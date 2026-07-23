@@ -19,12 +19,12 @@ const courseSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['Programmation', 'Web', 'Data', 'Théorie', 'Mobile', 'DevOps', 'DevOps & SI']
+    enum: ['Programmation', 'Programmation C', 'Web', 'Data', 'Théorie', 'Mobile', 'DevOps', 'DevOps & SI']
   },
   level: {
     type: String,
     required: true,
-    enum: ['Débutant', 'Intermédiaire', 'Avancé']
+    enum: ['Débutant', 'Intermédiaire', 'Avancé', 'Expert']
   },
   duration: {
     type: String,
