@@ -187,43 +187,47 @@ const aiChat = async (req, res) => {
         // Phase 0: Check for Gemini API key if present in environment
         const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
         if (geminiKey) {
-            try {
-                console.log(`📡 [AI RELAY] Appel Google Gemini API...`);
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 10000);
+            const geminiModels = ['gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro', 'gemini-1.5-flash'];
+            for (const modelName of geminiModels) {
+                try {
+                    console.log(`📡 [AI RELAY] Appel Google Gemini API ('${modelName}')...`);
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 10000);
 
-                const geminiPayload = {
-                    system_instruction: { parts: [{ text: systemInstruction }] },
-                    contents: [
-                        ...(history && Array.isArray(history) ? history.slice(-6).map(h => ({
-                            role: (h.role === 'assistant' || h.role === 'model') ? 'model' : 'user',
-                            parts: [{ text: h.text || h.content || '' }]
-                        })) : []),
-                        { role: 'user', parts: [{ text: message }] }
-                    ]
-                };
+                    const geminiPayload = {
+                        system_instruction: { parts: [{ text: systemInstruction }] },
+                        contents: [
+                            ...(history && Array.isArray(history) ? history.slice(-6).map(h => ({
+                                role: (h.role === 'assistant' || h.role === 'model') ? 'model' : 'user',
+                                parts: [{ text: h.text || h.content || '' }]
+                            })) : []),
+                            { role: 'user', parts: [{ text: message }] }
+                        ]
+                    };
 
-                const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(geminiPayload),
-                    signal: controller.signal
-                });
-                clearTimeout(timeout);
+                    const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${geminiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(geminiPayload),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeout);
 
-                if (geminiRes.ok) {
-                    const geminiData = await geminiRes.json();
-                    const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (text && text.trim()) {
-                        responseText = text;
-                        console.log(`✅ [AI RELAY] Gemini API a répondu avec succès.`);
+                    if (geminiRes.ok) {
+                        const geminiData = await geminiRes.json();
+                        const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (text && text.trim()) {
+                            responseText = text;
+                            console.log(`✅ [AI RELAY] Gemini API (${modelName}) a répondu avec succès.`);
+                            break;
+                        }
+                    } else {
+                        const errText = await geminiRes.text();
+                        console.warn(`⚠️ [AI RELAY] Gemini API (${modelName}) HTTP ${geminiRes.status}: ${errText}`);
                     }
-                } else {
-                    const errText = await geminiRes.text();
-                    console.warn(`⚠️ [AI RELAY] Gemini API HTTP ${geminiRes.status}: ${errText}`);
+                } catch (e) {
+                    console.warn(`⚠️ [AI RELAY] Gemini API (${modelName}) failed: ${e.message}`);
                 }
-            } catch (e) {
-                console.warn(`⚠️ [AI RELAY] Gemini API failed: ${e.message}`);
             }
         }
 
