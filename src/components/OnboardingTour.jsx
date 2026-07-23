@@ -162,13 +162,6 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
                     borderRadius: '1.5rem',
                 }
             }}
-            locale={{
-                back: 'Retour',
-                close: 'Fermer',
-                last: 'Terminer',
-                next: 'Suivant',
-                skip: 'Passer'
-            }}
         />
     );
 };

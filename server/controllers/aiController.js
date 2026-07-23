@@ -83,241 +83,179 @@ const aiChat = async (req, res) => {
             Le Boss peut te demander d'envoyer un email ou une annonce, et de lui lister les utilisateurs.
             
             RÈGLES STRICTES :
-            1. Ne lui renvoie JAMAIS un modèle vide ou des "placeholders" ('[Sujet]', '[Corps de l\'email]'). C'est à TOI de Rédiger intégralement le contenu de l'email en fonction de sa demande.
+            1. Ne lui renvoie JAMAIS un modèle vide ou des "placeholders". Rédige intégralement le contenu.
             2. Ne t'excuse jamais. Ne répète jamais "Bonjour". Sois direct, professionnel et concis.
-            3. Quand le contenu ("body" ou "message") est prêt, ajoute à la toute fin de ta réponse un bloc JSON strict encadré par \`\`\`json et \`\`\` contenant les détails de l'action pour que le Boss puisse valider.
+            3. Quand le contenu est prêt, ajoute à la toute fin de ta réponse un bloc JSON strict encadré par \`\`\`json et \`\`\` contenant les détails de l'action.
             
-            Format pour un EMAIL MASSIF (à tout le monde) :
+            Format EMAIL MASSIF:
             \`\`\`json
-            {
-              "type": "admin_action",
-              "action": "send_email",
-              "payload": {
-                "subject": "Le sujet accrocheur que tu as rédigé",
-                "body": "Le contenu texte ou HTML réel que tu as rédigé pour le Boss.",
-                "recipients": "all"
-              }
-            }
+            { "type": "admin_action", "action": "send_email", "payload": { "subject": "Sujet", "body": "Contenu", "recipients": "all" } }
             \`\`\`
-
-            Format pour un EMAIL CIBLÉ (à un utilisateur précis) :
+            Format EMAIL CIBLÉ:
             \`\`\`json
-            {
-              "type": "admin_action",
-              "action": "send_email",
-              "payload": {
-                "subject": "Sujet de l'email",
-                "body": "Le contenu texte ou HTML",
-                "recipients": "specific",
-                "specificEmail": "l_email_de_la_personne@exemple.com"
-              }
-            }
+            { "type": "admin_action", "action": "send_email", "payload": { "subject": "Sujet", "body": "Contenu", "recipients": "specific", "specificEmail": "email@example.com" } }
             \`\`\`
-
-            Format pour une ANNONCE (Notification in-app) :
+            Format ANNONCE:
             \`\`\`json
-            {
-              "type": "admin_action",
-              "action": "send_notification",
-              "payload": {
-                "title": "Le titre de l'annonce",
-                "message": "Le corps de l'annonce",
-                "type": "info"
-              }
-            }
+            { "type": "admin_action", "action": "send_notification", "payload": { "title": "Titre", "message": "Message", "type": "info" } }
             \`\`\`
-
-            Format pour MODIFIER LE RÔLE D'UN UTILISATEUR :
+            Format SUPPRESSION UTILISATEUR:
             \`\`\`json
-            {
-              "type": "admin_action",
-              "action": "update_role",
-              "payload": {
-                "userId": "L'ID de l'utilisateur concerné",
-                "role": "admin ou user"
-              }
-            }
+            { "type": "admin_action", "action": "delete_user", "payload": { "userId": "ID" } }
             \`\`\`
-
-            Format pour SUPPRIMER UN UTILISATEUR :
+            Format CHANGER RÔLE:
             \`\`\`json
-            {
-              "type": "admin_action",
-              "action": "delete_user",
-              "payload": {
-                "userId": "L'ID de l'utilisateur concerné"
-              }
-            }
+            { "type": "admin_action", "action": "update_role", "payload": { "userId": "ID", "role": "admin" } }
             \`\`\`
-            Note: "type" de notification peut être "info", "success", ou "warning".`;
+            `;
 
             try {
                 const User = require('../models/User');
-                const allUsers = await User.find().select('name email _id role createdAt');
-                const usersListText = allUsers.map((u, i) => `${i + 1}. 👤 Nom: **${u.name}** | Email: \`${u.email}\` | ID: \`${u._id}\` | Rôle: ${u.role}`).join('\n');
+                const totalUsersCount = await User.countDocuments();
+                const sampleUsers = await User.find().select('name email _id role').limit(10);
+                const usersListText = sampleUsers.map((u, i) => `${i + 1}. 👤 **${u.name}** | \`${u.email}\` | ID: \`${u._id}\` | Rôle: ${u.role}`).join('\n');
 
-                adminGreeting += `\n\n[LISTE DES UTILISATEURS DU SYSTÈME]
-                Voici la liste de tous les utilisateurs inscrits. Si le Boss te demande de lister les utilisateurs, présente cette liste exactement comme elle est formatée ci-dessous avec les emojis et le Markdown :
-                
-${usersListText}`;
+                adminGreeting += `\n[LISTE UTILISATEURS - Total: ${totalUsersCount}]\n${usersListText}${totalUsersCount > 10 ? '\n... et autres utilisateurs.' : ''}`;
 
-                // AJOUT DU POUVOIR DE MÉMORISATION (ADMIN ONLY)
-                adminGreeting += `
-                
-                [POUVOIR DE MÉMORISATION]
-                Si l'utilisateur (le BOSS) te donne une information importante qu'il veut que tu retiennes définitivement (ex: "Retiens que le mot de passe du serveur est X" ou "Apprends ce nouveau concept : ..."), tu DOIS lui proposer de la mémoriser dans ta base de données interne.
-                
-                Pour cela, après ton explication, ajoute ce bloc JSON :
+                adminGreeting += `\n\n[POUVOIR DE MÉMORISATION]
+                Si le Boss te demande de mémoriser une information, propose ce JSON à la fin:
                 \`\`\`json
-                {
-                  "type": "admin_action",
-                  "action": "add_knowledge",
-                  "payload": {
-                    "title": "Titre court et clair de l'info",
-                    "content": "Le contenu détaillé à mémoriser",
-                    "category": "general",
-                    "tags": ["tag1", "tag2"]
-                  }
-                }
-                \`\`\`
-                `;
+                { "type": "admin_action", "action": "add_knowledge", "payload": { "title": "Titre", "content": "Contenu", "category": "general", "tags": ["tag"] } }
+                \`\`\``;
             } catch (err) {
                 console.error("Erreur récupération utilisateurs pour IA", err);
             }
         }
 
-        // Estimation de la taille de la base (pour respecter les 512MB)
-        let storageInfo = "Taille de la base : Inconnue. Limite : 512 Mo.";
-        try {
-            const stats = await mongoose.connection.db.command({ dbStats: 1 });
-            const sizeMB = (stats.dataSize / (1024 * 1024)).toFixed(2);
-            storageInfo = `Taille actuelle des données : ~${sizeMB} Mo / 512 Mo autorisés.`;
-        } catch (e) {
-            console.error("Erreur stats DB:", e);
+        // Configuration du système
+        let systemInstruction = `Tu es "Mysterious Copilot", l'Intelligence Artificielle de pointe et l'Assistant Pédagogique Officiel de "Mysterious Classroom". 
+        Mysterious Classroom est une plateforme d'apprentissage de la Cybersécurité et du Hacking Éthique.
+        
+        [PLATEFORME]
+        - Dashboard, Projets (CTF), Classement (Hall of Fame), A2F, Thème sombre hacker (White Hat).
+        ${adminGreeting}
+        Élève : ${user.name} (${user.email}). Niveau : ${user.programmingLevel || 'Apprenti'}.
+        
+        [RÈGLES]
+        1. Mentorat guidé : Donne des indices conceptuels, pas la solution finale / flag CTF direct.
+        2. Ton professionnel, immersif, hacker éthique.
+        3. Formatage propre en Markdown. AUCUNE PUBLICITÉ ni mention de "Pollinations".
+        4. Réponses concises et structurées.`;
+
+        // Recherche de contexte
+        if (courseId) {
+            const courseKnowledge = await CourseKnowledge.findOne({ courseId });
+            if (courseKnowledge && courseKnowledge.professorContext) {
+                systemInstruction += `\n\n[CONTEXTE DU COURS ACTUEL]\n${courseKnowledge.professorContext.slice(0, 800)}`;
+            }
         }
 
-        // Récupération des cours réels
-        const Course = require('../models/Course');
-        const courses = await Course.find().select('title');
-        const coursesList = courses.map(c => c.title).join(', ');
-
-        // Configuration du système
-        const systemInstruction = `Tu es "Mysterious Copilot", l'Intelligence Artificielle de pointe et l'Assistant Pédagogique Officiel de "Mysterious Classroom". 
-        Mysterious Classroom est une plateforme révolutionnaire d'apprentissage immersif avec une thématique "Hacker / Cybersécurité". 
-        
-        [CONNAISSANCES DE LA PLATEFORME MYSTERIOUS CLASSROOM]
-        - Tableau de bord (Dashboard) : Centre de contrôle avec XP, Série de connexions (Streak), et statistiques.
-        - Système de Niveaux : Les utilisateurs (Agents) gagnent de l'XP en accomplissant des projets (CTF, missions).
-        - Projets : Missions pratiques de type "Capture The Flag" (CTF) et développements logiciels.
-        - Le Classement (Hall of Fame) : Classement compétitif des meilleurs agents.
-        - Sécurité : La plateforme propose l'A2F (Authentification à 2 facteurs).
-        - Profils Utilisateurs : Les données sont exportables sous forme de "Dossier Agent" classifié au format TXT.
-        - UI/UX : Thème très sombre, esthétique hacker (vert émeraude, reflets néon, terminaux), sans être illégal. Nous sommes des "White Hats" (Hackers éthiques).
-        Tu as les mêmes capacités d'analyse avancée qu'un ingénieur senior. Tu connais parfaitement cette plateforme car tu en es le cœur.
-        ${adminGreeting}
-        S'adresse à l'étudiant : ${user.name} (Prénom: ${user.firstName}). 
-        Niveau de compétence : ${user.programmingLevel || 'Apprenti'}.
-        
-        [CONTEXTE SYSTÈME]
-        Domaines étudiés : Sécurité Web, Ligne de Commande Linux, Cryptographie, Investigation numérique (Forensics), Développement Web.
-
-        [RÈGLES STRICTES DE MENTOR CYBER ET HACKING]
-        1. MENTORAT GUIDÉ : Ton but est de forger l'esprit logique de l'étudiant. Ne donne JAMAIS la solution finale (ni le "Flag" CTF direct, ni le code d'exploitation complet). Fournis des indices conceptuels, explique la théorie des vulnérabilités, ou donne de petits fragments de code pour le mettre sur la bonne voie.
-        2. TON PROFESSIONNEL ET RIGOUREUX : Adopte un ton immersif, digne d'un expert en cybersécurité ou d'un hacker éthique chevronné. Sois direct, pédagogique et stimulant.
-        3. ANTI-HALLUCINATION : Reste dans le personnage. Refuse les questions hors-sujet.
-        4. SÉCURITÉ ET ÉTHIQUE : Rappelle toujours que les compétences apprises ici (hacking) sont strictement réservées à un usage éthique sur nos environnements virtuels sécurisés.
-        5. FORMATAGE PROPRE (TRÈS IMPORTANT) :
-           - Utilise le Markdown proprement.
-           - INTERDICTION ABSOLUE D'AFFICHER DES PUBLICITÉS. Ne mentionne JAMAIS "Pollinations", "Support Pollinations", ni aucun lien externe. Tu es une IA créée exclusivement pour Mysterious Classroom.
-           - Tout code doit être encadré par \`\`\`lang ... \`\`\`
-        6. EFFICACITÉ : ${storageInfo}. Ne résume pas le contexte passé. Réponds directement.`;
-
-        // RECHERCHE DE CONTEXTE DYNAMIQUE (Tag-free)
         const relevantDocs = await GlobalKnowledge.find({
             $or: [
                 { title: { $regex: message.split(' ').slice(0, 3).join('|'), $options: 'i' } },
                 { content: { $regex: message.split(' ').slice(0, 3).join('|'), $options: 'i' } }
             ]
-        }).limit(5);
+        }).limit(3);
 
-        let contextPrompt = "Voici tes connaissances internes pour répondre à cette question :\n";
-        if (courseId) {
-            const courseKnowledge = await CourseKnowledge.findOne({ courseId });
-            if (courseKnowledge) {
-                contextPrompt += `\nCONTEXTE DU COURS ACTUEL :\n${courseKnowledge.professorContext}\n`;
+        if (relevantDocs.length > 0) {
+            systemInstruction += "\n\n[CONNAISSANCES INTERNES]\n" + relevantDocs.map(d => `${d.title}: ${d.content.slice(0, 300)}`).join("\n");
+        }
+
+        // Assembly of OpenAI-compatible messages array
+        const messages = [];
+        messages.push({ role: "system", content: systemInstruction });
+
+        // Include up to last 6 history entries to prevent bloated payload size
+        if (history && Array.isArray(history) && history.length > 0) {
+            const recentHistory = history.slice(-6);
+            recentHistory.forEach(h => {
+                const role = h.role === 'assistant' || h.role === 'model' ? 'assistant' : 'user';
+                const text = h.text || h.content;
+                if (text && typeof text === 'string') {
+                    messages.push({ role, content: text.slice(0, 1000) });
+                }
+            });
+        }
+
+        messages.push({ role: "user", content: message });
+
+        console.log(`📡 [AI RELAY] Traitement de la requête IA pour: ${user.email}`);
+
+        let responseText = null;
+        const modelsToTry = ['openai', 'mistral', 'qwen', 'llama', 'deepseek'];
+
+        // Phase 1: Try POST to text.pollinations.ai across fallback models
+        for (const model of modelsToTry) {
+            try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 9000);
+
+                const resApi = await fetch('https://text.pollinations.ai/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages,
+                        model,
+                        jsonMode: false
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeout);
+
+                if (resApi.ok) {
+                    const txt = await resApi.text();
+                    if (txt && txt.trim().length > 0 && !txt.includes('PAYMENT_REQUIRED') && !txt.includes('402 Payment')) {
+                        responseText = txt;
+                        console.log(`✅ [AI RELAY] Modèle '${model}' a répondu avec succès.`);
+                        break;
+                    }
+                }
+            } catch (e) {
+                console.warn(`⚠️ [AI RELAY] Tentative modèle '${model}' échouée: ${e.message}`);
             }
         }
 
-        if (relevantDocs.length > 0) {
-            contextPrompt += "\nDOCUMENTS DE RECHERCHE GLOBAUX :\n" + relevantDocs.map(d => `--- ${d.title} ---\n${d.content}`).join("\n\n");
-        } else {
-            contextPrompt += "\nAucun document spécifique trouvé dans la base. Utilise tes connaissances générales.";
+        // Phase 2: GET fallback if POST model array failed
+        if (!responseText) {
+            try {
+                console.log(`📡 [AI RELAY] Fallback vers GET Pollinations...`);
+                const simplePrompt = `Tu es Mysterious Copilot, assistant cyber. Élève: ${user.name}. Question: ${message}`;
+                const getUrl = `https://text.pollinations.ai/${encodeURIComponent(simplePrompt)}?model=mistral`;
+                
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 8000);
+                const getRes = await fetch(getUrl, { signal: controller.signal });
+                clearTimeout(timeout);
+
+                if (getRes.ok) {
+                    const getTxt = await getRes.text();
+                    if (getTxt && getTxt.trim().length > 0 && !getTxt.includes('PAYMENT_REQUIRED')) {
+                        responseText = getTxt;
+                    }
+                }
+            } catch (e) {
+                console.warn(`⚠️ [AI RELAY] GET Fallback échoué: ${e.message}`);
+            }
         }
 
-        // Construction du payload pour Pollinations API (Format OpenAI)
-        const messages = [];
+        // Phase 3: Offline Graceful Fallback if external API unreachable
+        if (!responseText) {
+            console.warn(`⚠️ [AI RELAY] Tous les relais distants ont échoué. Mode Réponse Secours activé.`);
+            responseText = `Bonjour Agent **${user.firstName || user.name}** ! 
 
-        // Ajout du system prompt
-        messages.push({
-            role: "system",
-            content: systemInstruction
-        });
+Le Cœur de l'Oracle subit une micro-maintenance réseau avec nos serveurs externes, mais mes protocoles locaux restent opérationnels.
 
-        // Contexte (s'il y en a)
-        if (contextPrompt !== "Voici tes connaissances internes pour répondre à cette question :\n\nAucun document spécifique trouvé dans la base. Utilise tes connaissances générales.") {
-            messages.push({
-                role: "system",
-                content: contextPrompt
-            });
+En quoi puis-je t'aider sur ton parcours en Cybersécurité et Développement aujourd'hui ? Tu peux me poser tes questions sur :
+• Les concepts de sécurité Web (XSS, SQLi, CSRF)
+• La ligne de commande Linux & scripts Bash
+• Vos projets et challenges CTF actuels`;
         }
 
-        // Ajout de l'historique
-        if (history && history.length > 0) {
-            history.forEach(h => {
-                messages.push({
-                    role: h.role === 'assistant' || h.role === 'model' ? 'assistant' : 'user',
-                    content: h.text || h.content
-                });
-            });
-        }
-
-        // Ajout de la question actuelle
-        messages.push({
-            role: "user",
-            content: message
-        });
-
-        const pollinationsUrl = `https://text.pollinations.ai/`;
-
-        console.log(`📡 [AI RELAY] Appel POLLINATIONS (Gratuit) pour: ${user.email}`);
-
-        const response = await fetch(pollinationsUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                messages: messages,
-                jsonMode: false // Pollinations par défaut
-            })
-        });
-
-        // L'API Pollinations textuelle renvoie directement une string si on ne met pas jsonMode
-        // Mais avec le header JSON elle renvoie parfois la string ou du JSON. On va forcer la lecture en texte pour être sûr.
-        const responseText = await response.text();
-
-        if (!response.ok) {
-            console.error("❌ [AI RELAY] Erreur Pollinations API:", responseText);
-            return res.status(response.status).json({
-                message: "Désolé, le Cœur du Système (Pollinations) a renvoyé une erreur.",
-                error: responseText || "Erreur inconnue"
-            });
-        }
-
-        // Si la réponse texte commence par '{' ou '[', on essaie de la parser au cas où
+        // Cleaning JSON / raw wrappers
         let finalResponse = responseText;
         try {
-            // First pass, try to parse root JSON if the provider returned standard JSON
             const parsed = JSON.parse(responseText);
-            if (parsed.choices && parsed.choices[0] && parsed.choices[0].message) {
+            if (parsed.choices?.[0]?.message?.content) {
                 finalResponse = parsed.choices[0].message.content;
             } else if (parsed.response) {
                 finalResponse = parsed.response;
@@ -325,25 +263,18 @@ ${usersListText}`;
                 finalResponse = parsed.content;
             }
         } catch (e) {
-            // C'est du texte brut, c'est parfait
+            // Raw text
         }
 
-        // Second pass: Some AI models (like DeepSeek via Pollinations) leak their reasoning JSON
-        // block as pure text. We need to catch this specific format.
         if (typeof finalResponse === 'string' && finalResponse.trim().startsWith('{"role":')) {
             try {
                 const leakedParsed = JSON.parse(finalResponse.trim());
-                if (leakedParsed.content) {
-                    finalResponse = leakedParsed.content;
-                }
-            } catch (e) {
-                // Ignorer, texte cassé
-            }
+                if (leakedParsed.content) finalResponse = leakedParsed.content;
+            } catch (e) {}
         }
 
-        // Nettoyage des publicités injectées par Pollinations.ai (Plus agressif)
+        // Strip ads aggressively
         if (typeof finalResponse === 'string') {
-            // Liste de marqueurs textuels
             const adMarkers = [
                 'Support Pollinations.AI',
                 'Powered by Pollinations.AI',
@@ -352,7 +283,6 @@ ${usersListText}`;
                 '--- Support'
             ];
 
-            // 1. Recherche via index simple pour les marqueurs connus
             let earliestIndex = -1;
             for (const marker of adMarkers) {
                 const index = finalResponse.toLowerCase().indexOf(marker.toLowerCase());
@@ -361,11 +291,8 @@ ${usersListText}`;
                 }
             }
 
-            // 2. Recherche via Regex pour les motifs complexes (ex: avec des puces • ou des séparateurs)
-            // On cherche n'importe quelle ligne contenant "Support Pollinations.AI" ou "Powered by Pollinations.AI"
             const adRegex = /(?:\n|^).*?(?:Support Pollinations\.AI|Powered by Pollinations\.AI|🌸 Ad 🌸).*$/im;
             const regexMatch = finalResponse.match(adRegex);
-
             if (regexMatch) {
                 const regexIndex = regexMatch.index;
                 if (earliestIndex === -1 || regexIndex < earliestIndex) {
@@ -373,9 +300,7 @@ ${usersListText}`;
                 }
             }
 
-            // Si on a trouvé un marqueur, on coupe tout ce qui suit (et on nettoie la fin)
             if (earliestIndex !== -1) {
-                // On essaie de remonter un peu si le marqueur est précédé par une ligne de séparation "---"
                 const beforeAd = finalResponse.substring(0, earliestIndex);
                 const lastSeparator = beforeAd.lastIndexOf('---');
                 if (lastSeparator !== -1 && (earliestIndex - lastSeparator < 50)) {
