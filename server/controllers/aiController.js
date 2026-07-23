@@ -198,10 +198,10 @@ const aiChat = async (req, res) => {
                 : message;
 
             const geminiEndpoints = [
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash' },
                 { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', name: 'gemini-2.0-flash' },
-                { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash (v1)' },
-                { url: 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent', name: 'gemini-1.5-pro (v1)' },
-                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent', name: 'gemini-2.0-flash-lite' }
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent', name: 'gemini-2.0-flash-lite' },
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent', name: 'gemini-1.5-pro' }
             ];
 
             for (const ep of geminiEndpoints) {
@@ -269,6 +269,9 @@ const aiChat = async (req, res) => {
                         responseText = txt;
                         console.log(`✅ [AI RELAY] Pollinations Anonymous POST a répondu avec succès.`);
                     }
+                } else {
+                    const errText = await resApi.text();
+                    console.warn(`⚠️ [AI RELAY] Pollinations POST HTTP ${resApi.status}: ${errText.slice(0, 200)}`);
                 }
             } catch (e) {
                 console.warn(`⚠️ [AI RELAY] Pollinations POST échoué: ${e.message}`);
@@ -293,6 +296,9 @@ const aiChat = async (req, res) => {
                         responseText = getTxt;
                         console.log(`✅ [AI RELAY] Pollinations Anonymous GET a répondu avec succès.`);
                     }
+                } else {
+                    const errText = await getRes.text();
+                    console.warn(`⚠️ [AI RELAY] Pollinations GET HTTP ${getRes.status}: ${errText.slice(0, 200)}`);
                 }
             } catch (e) {
                 console.warn(`⚠️ [AI RELAY] GET Fallback échoué: ${e.message}`);
