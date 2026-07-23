@@ -193,6 +193,12 @@ export const translations = {
             topic_rev_tag: "Analyse Informatique",
             topic_rev_desc: "Démontez des programmes pour comprendre exactement comment ils ont été fabriqués à l'intérieur."
         },
+        announcements: {
+            title: "Annonces",
+            no_announcements: "Aucune nouvelle annonce",
+            end_announcements: "Fin des annonces",
+            got_it: "J'AI COMPRIS"
+        },
         accountPage: {
             back_to_dashboard: "Retour au tableau de bord"
         },
@@ -548,6 +554,12 @@ export const translations = {
             topic_rev_name: "Software Disassembly",
             topic_rev_tag: "Computer Analysis",
             topic_rev_desc: "Take apart programs to understand exactly how they were built inside."
+        },
+        announcements: {
+            title: "Announcements",
+            no_announcements: "No new announcements",
+            end_announcements: "End of announcements",
+            got_it: "GOT IT"
         },
         accountPage: {
             back_to_dashboard: "Back to dashboard"

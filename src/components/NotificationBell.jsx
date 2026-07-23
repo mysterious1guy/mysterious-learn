@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Bell, Info, AlertTriangle, CheckCircle, Megaphone, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 
 const NotificationBell = ({ user, API_URL }) => {
+    const { t, language } = useLanguage();
     const [notifications, setNotifications] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const [proactiveNotif, setProactiveNotif] = useState(null);
@@ -69,7 +71,7 @@ const NotificationBell = ({ user, API_URL }) => {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all"
-                title="Notifications"
+                title={t('announcements.title') || "Annonces"}
             >
                 <Bell size={20} />
                 {notifications.length > 0 && (
@@ -94,7 +96,7 @@ const NotificationBell = ({ user, API_URL }) => {
                             <div className="p-6 border-b border-white/5 bg-gradient-to-r from-blue-600/10 to-transparent flex justify-between items-center">
                                 <div className="flex items-center gap-3">
                                     <Megaphone className="text-blue-400" />
-                                    <h2 className="text-xl font-black text-white uppercase tracking-tighter">Nouvelle Annonce</h2>
+                                    <h2 className="text-xl font-black text-white uppercase tracking-tighter">{t('announcements.title') || "Annonces"}</h2>
                                 </div>
                                 <button onClick={() => setProactiveNotif(null)} className="p-2 hover:bg-white/5 rounded-full text-slate-400">
                                     <X size={20} />
@@ -110,9 +112,9 @@ const NotificationBell = ({ user, API_URL }) => {
                                 </div>
                                 <button
                                     onClick={() => setProactiveNotif(null)}
-                                    className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all shadow-lg shadow-blue-900/40"
+                                    className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all shadow-lg shadow-blue-900/40 uppercase tracking-wider"
                                 >
-                                    J'AI COMPRIS
+                                    {t('announcements.got_it') || "J'AI COMPRIS"}
                                 </button>
                             </div>
                         </motion.div>
@@ -132,7 +134,7 @@ const NotificationBell = ({ user, API_URL }) => {
                         <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
                             <h3 className="font-bold text-white flex items-center gap-2">
                                 <Megaphone size={16} className="text-blue-400" />
-                                Annonces
+                                {t('announcements.title') || "Annonces"}
                             </h3>
                             <button onClick={() => setIsOpen(false)} className="text-slate-500 hover:text-white">
                                 <X size={16} />
@@ -143,7 +145,7 @@ const NotificationBell = ({ user, API_URL }) => {
                             {notifications.length === 0 ? (
                                 <div className="p-8 text-center">
                                     <Bell size={32} className="mx-auto text-slate-700 mb-3 opacity-20" />
-                                    <p className="text-slate-500 text-sm">Aucune nouvelle annonce</p>
+                                    <p className="text-slate-500 text-sm">{t('announcements.no_announcements') || "Aucune nouvelle annonce"}</p>
                                 </div>
                             ) : (
                                 <div className="divide-y divide-slate-800">
@@ -155,7 +157,7 @@ const NotificationBell = ({ user, API_URL }) => {
                                                     <p className="text-sm font-bold text-white leading-tight mb-1">{notif.title}</p>
                                                     <p className="text-xs text-slate-400 leading-relaxed mb-2">{notif.message}</p>
                                                     <span className="text-[10px] text-slate-600 font-medium">
-                                                        {new Date(notif.createdAt).toLocaleDateString()} • {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                        {new Date(notif.createdAt).toLocaleDateString(language === 'en' ? 'en-US' : 'fr-FR')} • {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </span>
                                                 </div>
                                             </div>
@@ -167,7 +169,7 @@ const NotificationBell = ({ user, API_URL }) => {
 
                         {notifications.length > 0 && (
                             <div className="p-4 bg-slate-950/30 text-center">
-                                <p className="text-[10px] text-slate-600 uppercase tracking-widest font-black">Fin des annonces</p>
+                                <p className="text-[10px] text-slate-600 uppercase tracking-widest font-black">{t('announcements.end_announcements') || "Fin des annonces"}</p>
                             </div>
                         )}
                     </motion.div>
