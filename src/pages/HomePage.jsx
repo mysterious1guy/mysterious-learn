@@ -178,8 +178,7 @@ const HomePage = ({ API_URL }) => {
                                 </span>
                             </h1>
 
-                            <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mt-10" dangerouslySetInnerHTML={{ __html: t('home.hero_desc') || "L'arène d'entraînement ultime pour <strong class=\"text-slate-900\">apprendre la cybersécurité</strong>, maîtriser l'investigation numérique et résoudre des scénarios CTF concrets." }}>
-                            </p>
+                            <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mt-10" dangerouslySetInnerHTML={{ __html: t('home.hero_desc') || "L'arène d'entraînement ultime pour <strong class=\"text-slate-900\">apprendre la cybersécurité</strong>, maîtriser le développement web et résoudre des missions pratiques de hacking éthique." }} />
 
                             {/* Section Objectif de l'Application - Design Studio Ultra Clair & Interactif */}
                             <div className="max-w-6xl w-full mx-auto mt-16 p-4 md:p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden text-left">
@@ -204,7 +203,7 @@ const HomePage = ({ API_URL }) => {
                                                         {obj.badge}
                                                     </span>
                                                     <span className="text-xs font-bold text-white/80 uppercase tracking-widest backdrop-blur-md px-3 py-1 bg-black/40 rounded-full hidden sm:inline-block">
-                                                        MYSTERIOUS CTF
+                                                        HACKING & CODE
                                                     </span>
                                                 </div>
                                             </div>
@@ -453,7 +452,7 @@ const HomePage = ({ API_URL }) => {
                         </h2>
 
                         <p className="text-slate-400 text-base md:text-xl max-w-3xl mx-auto leading-relaxed font-medium">
-                            <span className="text-red-500 font-bold">[INFO]</span> {t('home.intercept_desc') || "J'injecte actuellement les nouveaux scénarios d'entraînement (CTF) dans la matrice. La plateforme évolue. Préparez-vous pour de nouvelles missions imminentes."}
+                            <span className="text-red-500 font-bold">[INFO]</span> {t('home.intercept_desc') || "J'injecte actuellement de nouvelles missions pratiques de code et de cybersécurité. La plateforme évolue. Préparez-vous à relever de nouveaux défis imminents."}
                         </p>
 
                         <div className="pt-4 flex flex-wrap items-center justify-center gap-6">
