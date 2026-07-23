@@ -726,14 +726,8 @@ export const translations = {
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState(() => {
         const saved = localStorage.getItem('language');
-        if (saved) return saved;
-        if (typeof navigator !== 'undefined') {
-            const browserLang = navigator.language || navigator.userLanguage;
-            if (browserLang && browserLang.toLowerCase().startsWith('en')) {
-                return 'en';
-            }
-        }
-        return 'fr';
+        if (saved === 'en' || saved === 'fr') return saved;
+        return 'fr'; // Always default to French for new users
     });
 
     useEffect(() => {
@@ -742,18 +736,31 @@ export const LanguageProvider = ({ children }) => {
 
     const t = (key) => {
         const keys = key.split('.');
-        let result = translations[language];
-        for (const k of keys) {
-            if (result && result[k] !== undefined) {
-                result = result[k];
-            } else {
-                return undefined;
+        
+        const resolvePath = (dict) => {
+            let cur = dict;
+            for (const k of keys) {
+                if (cur && cur[k] !== undefined) {
+                    cur = cur[k];
+                } else {
+                    return undefined;
+                }
             }
+            return cur;
+        };
+
+        let result = resolvePath(translations[language]);
+        
+        // Fallback to French if translation key is missing in English
+        if (result === undefined && language !== 'fr') {
+            result = resolvePath(translations['fr']);
         }
+
         if (typeof result === 'object' && result !== null) {
             const titleKey = `${key}_title`;
-            if (translations[language] && typeof translations[language][titleKey] === 'string') {
-                return translations[language][titleKey];
+            const dict = translations[language] || translations['fr'];
+            if (dict && typeof dict[titleKey] === 'string') {
+                return dict[titleKey];
             }
             return undefined;
         }

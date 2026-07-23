@@ -669,7 +669,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
               <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile_fields.language_desc') || "Choisir la langue d'affichage globale du site (Français / English)."}</p>
             </div>
             <select
-              value={user?.preferences?.language || localStorage.getItem('language') || 'fr'}
+              value={language || user?.preferences?.language || 'fr'}
               onChange={async (e) => {
                 const val = e.target.value;
                 setLanguage(val);
