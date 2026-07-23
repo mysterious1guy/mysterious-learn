@@ -218,98 +218,10 @@ const aiChat = async (req, res) => {
             }
         }
 
-        // Phase 2: Anonymous Short Pollinations GET (URL < 250 chars guarantees fast delivery)
+        // Pure DeepSeek Mode (No local assistant fallback)
         if (!responseText) {
-            try {
-                console.log(`📡 [AI RELAY] Fallback vers Pollinations Fast GET...`);
-                const shortPrompt = `Assistant Cyber Mysterious Classroom. Question de ${user.name}: ${message}`;
-                const safeUrlPrompt = shortPrompt.length > 200 ? shortPrompt.slice(0, 200) : shortPrompt;
-                const getUrl = `https://text.pollinations.ai/${encodeURIComponent(safeUrlPrompt)}`;
-                
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 10000);
-                const getRes = await fetch(getUrl, { signal: controller.signal });
-                clearTimeout(timeout);
-
-                if (getRes.ok) {
-                    const getTxt = await getRes.text();
-                    if (getTxt && getTxt.trim().length > 0 && !getTxt.includes('PAYMENT_REQUIRED')) {
-                        responseText = getTxt;
-                        console.log(`✅ [AI RELAY] Pollinations Fast GET a répondu avec succès.`);
-                    }
-                } else {
-                    const errText = await getRes.text();
-                    console.warn(`⚠️ [AI RELAY] Pollinations GET HTTP ${getRes.status}: ${errText.slice(0, 150)}`);
-                }
-            } catch (e) {
-                console.warn(`⚠️ [AI RELAY] GET Fallback échoué: ${e.message}`);
-            }
-        }
-
-        // Phase 3: Conversational Local Assistant (Dynamic fallback if external APIs offline)
-        if (!responseText) {
-            console.warn(`⚠️ [AI RELAY] Mode Assistant Local Intelligent activé.`);
-            const lowerMsg = message.toLowerCase().trim();
-
-            if (lowerMsg.includes('ctf signifie') || lowerMsg.includes('signifie quoi') || lowerMsg.includes('définition ctf') || lowerMsg.includes('definition ctf') || lowerMsg.includes('c quoi ctf') || lowerMsg.includes('c\'est quoi ctf')) {
-                responseText = `Le **CTF (Capture The Flag)** est un jeu de hacking éthique ! 🚩
-
-Le principe : tu dois exploiter une vulnérabilité (dans un site web, un serveur ou un binaire) pour trouver un texte secret caché appelé **« Flag »** (exemple: \`MYSTERIOUS{hacked_xss_2026}\`).
-
-En soumettant le Flag sur la plateforme, tu prouves que tu as réussi la mission et tu gagnes des points XP !`;
-            } else if (lowerMsg.includes('cours') || lowerMsg.includes('module') || lowerMsg.includes('formation') || lowerMsg.includes('programme') || lowerMsg.includes('apprendre') || lowerMsg.includes('disponible') || lowerMsg.includes('dispo')) {
-                responseText = `Voici les modules de formation actuellement disponibles sur **Mysterious Classroom** :
-
-• 🛡️ **Sécurité Web & Injection** (XSS, SQLi, CSRF)
-• 🐧 **Administration Linux & Hacking Terminal** (Commandes, Bash, Privilèges)
-• 🌐 **Analyse Réseau & Web Recon** (Port Scanning, Footprinting)
-
-Tu peux les explorer directement depuis ton **Tableau de bord** !`;
-            } else if (lowerMsg.includes('projet') || lowerMsg.includes('ctf') || lowerMsg.includes('mission')) {
-                responseText = `Pour accéder aux **Projets & Challenges CTF** :
-
-1. Clique sur l'onglet **📁 Projets** dans la barre supérieure.
-2. Choisis un challenge de ton niveau.
-3. Résous la mission pour accumuler des points XP !`;
-            } else if (lowerMsg.includes('classement') || lowerMsg.includes('leaderboard') || lowerMsg.includes('rang') || lowerMsg.includes('points') || lowerMsg.includes('xp')) {
-                responseText = `Agent **${user.firstName || user.name}**, pour consulter le **Classement (Hall of Fame)** :
-
-1. Regarde la barre de navigation supérieure.
-2. Clique sur l'onglet **🏆 Classement**.
-3. Tu y trouveras le rang des élèves, leurs points d'expérience (XP) et les badges débloqués !`;
-            } else if (lowerMsg.includes('fondateur') || lowerMsg.includes('créateur') || lowerMsg.includes('createur') || lowerMsg.includes('qui a fait') || lowerMsg.includes('mouhamed fall') || lowerMsg.includes('boss')) {
-                responseText = `La plateforme **Mysterious Classroom** a été conçue et développée par **Mouhamed FALL**, passionné d'investigation numérique, de cybersécurité et de développement web ! 🚀`;
-            } else if (lowerMsg.includes('qui es tu') || lowerMsg.includes('qui es-tu') || lowerMsg.includes('tes qui') || lowerMsg.includes('t\'es qui') || lowerMsg.includes('tu est ki')) {
-                responseText = `Je suis **Mysterious Copilot**, l'IA et Mentor Officiel de Mysterious Classroom. Mon rôle est de te guider dans ton apprentissage de la Cybersécurité et du Hacking Éthique !`;
-            } else if (lowerMsg.includes('profil') || lowerMsg.includes('compte') || lowerMsg.includes('2fa') || lowerMsg.includes('mot de passe')) {
-                responseText = `Pour gérer ton **Profil & Sécurité** :
-
-1. Clique sur ton avatar en haut à droite.
-2. Choisis **Mon Profil**.
-3. Tu pourras y configurer la 2FA (A2F) et télécharger ton Dossier Agent !`;
-            } else if (isAdmin && (lowerMsg.includes('mail') || lowerMsg.includes('email') || lowerMsg.includes('annonce') || lowerMsg.includes('notification') || lowerMsg.includes('utilisateur'))) {
-                responseText = `Bonjour Boss **Mouhamed** ! Je suis prêt pour tes commandes d'administration. Que souhaites-tu effectuer ? (envoi d'email, publication d'annonce ou gestion des utilisateurs).`;
-            } else if (lowerMsg.includes('arrete') || lowerMsg.includes('arrête') || lowerMsg.includes('repete') || lowerMsg.includes('répète') || lowerMsg.includes('meme reponse') || lowerMsg.includes('même réponse')) {
-                responseText = `Bien reçu Agent **${user.firstName || user.name}** ! 
-
-Actuellement, je fonctionne avec la base de connaissances locale. Pour débloquer la génération IA illimitée et totalement libre, il suffit d'ajouter une clé API Google Gemini dans les paramètres de Render. 
-
-En attendant, pose-moi une question sur un sujet précis (XSS, SQLi, Linux, CTF) !`;
-            } else if (lowerMsg.includes('how are you') || lowerMsg.includes('how are u')) {
-                responseText = `I'm doing great, Agent **${user.firstName || user.name}**! Ready to master cybersecurity on Mysterious Classroom today? How can I help you?`;
-            } else if (lowerMsg.includes('repond') || lowerMsg.includes('répond') || lowerMsg.includes('comprends pas') || lowerMsg.includes('wesh')) {
-                responseText = `Je suis là et à ton écoute Agent **${user.firstName || user.name}** ! Pose-moi directement ta question sur les **cours**, les **challenges CTF**, la **sécurité web (XSS, SQLi)** ou la **plateforme** !`;
-            } else if (lowerMsg.includes('comment tu vas') || lowerMsg.includes('ca va') || lowerMsg.includes('ça va') || lowerMsg.includes('comment vas') || lowerMsg.includes('alors')) {
-                responseText = `Je vais très bien, Agent **${user.firstName || user.name}** ! Prêt à relever de nouveaux défis sur Mysterious Classroom aujourd'hui ? Que souhaites-tu explorer ?`;
-            } else if (lowerMsg.includes('salut') || lowerMsg.includes('coucou') || lowerMsg.includes('hello') || lowerMsg.includes('bonjour') || lowerMsg.includes('yo')) {
-                responseText = `Bonjour Agent **${user.firstName || user.name}** ! Je suis ton mentor Mysterious Copilot. En quoi puis-je t'aider aujourd'hui ?`;
-            } else {
-                responseText = `Reçu Agent **${user.firstName || user.name}** ! 
-
-Pour me poser tes questions :
-• **Cybersécurité & Hacking Éthique** (XSS, SQLi, CSRF, Linux)
-• **Plateforme** (Classement 🏆, Projets 📁, Profil 👤)`;
-            }
+            console.warn(`⚠️ [AI RELAY] DeepSeek n'a pas renvoyé de texte.`);
+            responseText = `⚠️ [MODE TEST DEEPSEEK UNIQUEMENT] DeepSeek n'a pas renvoyé de réponse. Vérifie les logs de Render.`;
         }
 
         // Cleaning JSON / raw wrappers
