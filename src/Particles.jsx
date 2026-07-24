@@ -54,7 +54,7 @@ class Particle {
     if (theme === 'dark') {
       this.ctx.fillStyle = `hsla(${this.hue}, 70%, 65%, ${pulsedOpacity})`;
     } else {
-      this.ctx.fillStyle = `rgba(37, 99, 235, ${pulsedOpacity * 0.85})`;
+      this.ctx.fillStyle = `rgba(99, 102, 241, ${pulsedOpacity * 0.7})`;
     }
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -118,11 +118,11 @@ const Particles = () => {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < CONNECTION_DISTANCE) {
-            const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.25;
+            const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.22;
             ctx.strokeStyle = theme === 'dark'
               ? `rgba(99, 130, 246, ${opacity})`
-              : `rgba(37, 99, 235, ${opacity})`;
-            ctx.lineWidth = 0.8;
+              : `rgba(139, 92, 246, ${opacity * 0.4})`;
+            ctx.lineWidth = 0.6;
             ctx.beginPath();
             ctx.moveTo(particlesList[i].x, particlesList[i].y);
             ctx.lineTo(particlesList[j].x, particlesList[j].y);
