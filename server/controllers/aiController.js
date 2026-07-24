@@ -195,7 +195,11 @@ const aiChat = async (req, res) => {
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 12000);
 
-                const headers = { 'Content-Type': 'application/json' };
+                const headers = { 
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://mysterious-classroom-free-courses.onrender.com',
+                    'X-Title': 'Mysterious Classroom'
+                };
                 if (openrouterKey) {
                     headers['Authorization'] = `Bearer ${openrouterKey.trim()}`;
                 }
