@@ -141,13 +141,23 @@ const HomePage = ({ API_URL }) => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-500/30 text-slate-900 relative overflow-hidden">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans selection:bg-blue-500/30 text-slate-900 dark:text-white relative overflow-hidden">
             
-            {/* Dynamic Mouse Tracking Background */}
+            {/* Ambient Cyber Glowing Orbs (Interactive Background) */}
+            <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/15 dark:bg-blue-600/20 rounded-full blur-[120px] animate-pulse" />
+                <div className="absolute top-1/2 right-1/4 w-[30rem] h-[30rem] bg-purple-500/15 dark:bg-purple-600/20 rounded-full blur-[140px] animate-pulse delay-1000" />
+                <div className="absolute bottom-1/4 left-1/3 w-80 h-80 bg-indigo-500/15 dark:bg-indigo-600/20 rounded-full blur-[100px] animate-pulse delay-500" />
+                
+                {/* Cyber Grid Lines */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#3b82f60a_1px,transparent_1px),linear-gradient(to_bottom,#3b82f60a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+            </div>
+
+            {/* Dynamic Mouse Tracking Radial Gradient */}
             <div 
                 className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-100"
                 style={{
-                    background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.15), transparent 80%)`
+                    background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.18), transparent 80%)`
                 }}
             />
 
