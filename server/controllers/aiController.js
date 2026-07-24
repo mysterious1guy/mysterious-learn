@@ -184,9 +184,56 @@ const aiChat = async (req, res) => {
 
         let responseText = null;
 
-        // Phase 0: Google Gemini API (Direct project channel - Immune to Render IP limits)
+        // Phase 0: OpenRouter Free DeepSeek Engine (DeepSeek-R1:free & DeepSeek-Chat:free)
+        let openrouterKey = process.env.OPENROUTER_API_KEY;
+        const openrouterModels = ['deepseek/deepseek-r1:free', 'deepseek/deepseek-chat:free', 'meta-llama/llama-3.3-70b-instruct:free'];
+
+        for (const orModel of openrouterModels) {
+            if (responseText) break;
+            try {
+                console.log(`📡 [AI RELAY] Appel OpenRouter DeepSeek (${orModel})...`);
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 12000);
+
+                const headers = { 'Content-Type': 'application/json' };
+                if (openrouterKey) {
+                    headers['Authorization'] = `Bearer ${openrouterKey.trim()}`;
+                }
+
+                const orRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        model: orModel,
+                        messages: [
+                            { role: "system", content: systemInstruction },
+                            { role: "user", content: `Élève ${user.name}: ${message}` }
+                        ]
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeout);
+
+                if (orRes.ok) {
+                    const orData = await orRes.json();
+                    const text = orData.choices?.[0]?.message?.content;
+                    if (text && text.trim()) {
+                        responseText = text;
+                        console.log(`✅ [AI RELAY] OpenRouter DeepSeek (${orModel}) a répondu avec succès.`);
+                        break;
+                    }
+                } else {
+                    const errTxt = await orRes.text();
+                    console.warn(`⚠️ [AI RELAY] OpenRouter DeepSeek (${orModel}) HTTP ${orRes.status}: ${errTxt.slice(0, 150)}`);
+                }
+            } catch (e) {
+                console.warn(`⚠️ [AI RELAY] OpenRouter DeepSeek (${orModel}) échoué: ${e.message}`);
+            }
+        }
+
+        // Phase 1: Google Gemini API (Direct project channel)
         let geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
-        if (geminiKey) {
+        if (!responseText && geminiKey) {
             geminiKey = geminiKey.trim().replace(/^["']|["']$/g, '');
 
             const historyText = (history && Array.isArray(history)) 
