@@ -157,19 +157,21 @@ const NotificationBell = ({ user, API_URL }) => {
                         <div className="max-h-[60vh] sm:max-h-96 overflow-y-auto scrollbar-hide">
                             {notifications.length === 0 ? (
                                 <div className="p-8 text-center">
-                                    <Bell size={32} className="mx-auto text-slate-700 mb-3 opacity-20" />
-                                    <p className="text-slate-500 text-sm">{t('announcements.no_announcements') || "Aucune nouvelle annonce"}</p>
+                                    <Bell size={32} className="mx-auto text-slate-600 mb-3 opacity-40" />
+                                    <p className="text-slate-400 text-sm font-medium">{t('announcements.no_announcements') || "Aucune nouvelle annonce"}</p>
                                 </div>
                             ) : (
-                                <div className="divide-y divide-slate-800">
+                                <div className="divide-y divide-slate-800/80">
                                     {notifications.map((notif) => (
-                                        <div key={notif._id} className="p-5 hover:bg-slate-800/50 transition-colors group cursor-default">
-                                            <div className="flex gap-4">
+                                        <div key={notif._id} className="p-4 hover:bg-slate-800/60 transition-colors group cursor-default">
+                                            <div className="flex gap-3">
                                                 <div className="mt-1 flex-shrink-0">{getIcon(notif.type)}</div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-bold text-white leading-tight mb-1">{notif.title}</p>
-                                                    <p className="text-xs text-slate-400 leading-relaxed mb-2">{notif.message}</p>
-                                                    <span className="text-[10px] text-slate-600 font-medium">
+                                                    <p className="text-sm font-black text-white leading-tight mb-2">{notif.title}</p>
+                                                    <div className="p-3 rounded-xl bg-slate-950/70 border border-white/10 text-xs text-slate-200 leading-relaxed font-medium mb-2 shadow-inner">
+                                                        {notif.message}
+                                                    </div>
+                                                    <span className="text-[10px] text-blue-400 font-mono font-semibold">
                                                         {new Date(notif.createdAt).toLocaleDateString(language === 'en' ? 'en-US' : 'fr-FR')} • {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </span>
                                                 </div>
@@ -181,8 +183,8 @@ const NotificationBell = ({ user, API_URL }) => {
                         </div>
 
                         {notifications.length > 0 && (
-                            <div className="p-4 bg-slate-950/30 text-center">
-                                <p className="text-[10px] text-slate-600 uppercase tracking-widest font-black">{t('announcements.end_announcements') || "Fin des annonces"}</p>
+                            <div className="p-3 bg-slate-950/80 text-center border-t border-white/5">
+                                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black">{t('announcements.end_announcements') || "Fin des annonces"}</p>
                             </div>
                         )}
                     </motion.div>
