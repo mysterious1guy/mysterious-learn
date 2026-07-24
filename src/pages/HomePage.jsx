@@ -153,7 +153,7 @@ const HomePage = ({ API_URL }) => {
 
             {/* Hero Section */}
             <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 px-4 md:px-6 z-10">
-                <div className="max-w-7xl mx-auto">
+                <div className="max-w-[1400px] mx-auto">
                     <div className="text-center space-y-12">
                         
                         <motion.div
@@ -181,7 +181,7 @@ const HomePage = ({ API_URL }) => {
                             <p className="text-slate-600 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed mt-10" dangerouslySetInnerHTML={{ __html: t('home.hero_desc') || "L'arène d'entraînement ultime pour <strong class=\"text-slate-900\">apprendre la cybersécurité</strong>, maîtriser le développement web et résoudre des missions pratiques de hacking éthique." }} />
 
                             {/* Section Objectif de l'Application - Design Studio Ultra Clair & Interactif */}
-                            <div className="max-w-6xl w-full mx-auto mt-16 p-4 md:p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden text-left">
+                            <div className="max-w-[1400px] w-full mx-auto mt-16 p-4 md:p-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] shadow-2xl overflow-hidden text-left">
                                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                                     
                                     {/* Left Column: Sharp & Vibrant Showcase Image */}
