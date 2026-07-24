@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mysterious-classroom-v1';
+const CACHE_NAME = 'mysterious-classroom-v2';
 
 // Fichiers statiques minimaux à mettre en cache pour le mode hors-ligne
 const urlsToCache = [
