@@ -295,10 +295,24 @@ const aiChat = async (req, res) => {
                     const controller = new AbortController();
                     const timeout = setTimeout(() => controller.abort(), 10000);
 
+                    let aiTemperature = 0.7;
+                    try {
+                        const SiteConfig = require('../models/SiteConfig');
+                        const siteConf = await SiteConfig.findOne();
+                        if (siteConf && typeof siteConf.aiTemperature === 'number') {
+                            aiTemperature = siteConf.aiTemperature;
+                        }
+                    } catch (e) {
+                        console.error("Erreur lecture SiteConfig pour aiTemperature", e);
+                    }
+
                     const geminiPayload = {
                         contents: [
                             { role: 'user', parts: parts }
-                        ]
+                        ],
+                        generationConfig: {
+                            temperature: aiTemperature
+                        }
                     };
 
                     const geminiRes = await fetch(`${ep.url}?key=${geminiKey}`, {

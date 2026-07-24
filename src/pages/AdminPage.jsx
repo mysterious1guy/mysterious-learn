@@ -270,8 +270,8 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     }
   };
 
-  const handleUpdateConfig = async (e) => {
-    e.preventDefault();
+  const handleSaveConfigImmediate = async (updatedConfig) => {
+    setConfig(updatedConfig);
     try {
       const res = await fetch(`${API_URL}/site-config`, {
         method: 'PUT',
@@ -279,16 +279,21 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`
         },
-        body: JSON.stringify(config)
+        body: JSON.stringify(updatedConfig)
       });
       if (res.ok) {
-        setToast({ message: 'Configuration mise à jour !', type: 'success' });
+        setToast({ message: '✅ Configuration mise à jour en temps réel !', type: 'success' });
       } else {
         setToast({ message: 'Échec de la mise à jour', type: 'error' });
       }
     } catch (err) {
       setToast({ message: 'Erreur réseau', type: 'error' });
     }
+  };
+
+  const handleUpdateConfig = async (e) => {
+    if (e) e.preventDefault();
+    await handleSaveConfigImmediate(config);
   };
 
   const handleConfigAvatarChange = async (e) => {
@@ -1221,13 +1226,15 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                           min="0"
                           max="100"
                           value={config.aiTemperature * 100}
-                          onChange={(e) => setConfig({ ...config, aiTemperature: e.target.value / 100 })}
+                          onChange={(e) => setConfig({ ...config, aiTemperature: parseFloat((e.target.value / 100).toFixed(2)) })}
+                          onMouseUp={(e) => handleSaveConfigImmediate({ ...config, aiTemperature: parseFloat((e.target.value / 100).toFixed(2)) })}
+                          onTouchEnd={(e) => handleSaveConfigImmediate({ ...config, aiTemperature: parseFloat((e.target.value / 100).toFixed(2)) })}
                         />
                         <p className="text-[9px] text-slate-400 dark:text-white/30 italic">Une valeur plus haute rend l'Assistant plus imprévisible mais plus "humain".</p>
                       </div>
 
                       <div
-                        onClick={() => setConfig({ ...config, aiMemory: !config.aiMemory })}
+                        onClick={() => handleSaveConfigImmediate({ ...config, aiMemory: !config.aiMemory })}
                         className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-blue-500/30 transition-all group/toggle"
                       >
                         <div className="space-y-1">
@@ -1250,7 +1257,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
                     <div className="space-y-6">
                       <div
-                        onClick={() => setConfig({ ...config, gamificationStreaks: !config.gamificationStreaks })}
+                        onClick={() => handleSaveConfigImmediate({ ...config, gamificationStreaks: !config.gamificationStreaks })}
                         className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-purple-500/30 transition-all group/toggle"
                       >
                         <div className="space-y-1">
@@ -1263,7 +1270,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       </div>
 
                       <div
-                        onClick={() => setConfig({ ...config, gamificationBadges: !config.gamificationBadges })}
+                        onClick={() => handleSaveConfigImmediate({ ...config, gamificationBadges: !config.gamificationBadges })}
                         className="flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-200 dark:border-slate-800/50 cursor-pointer hover:border-purple-500/30 transition-all group/toggle"
                       >
                         <div className="space-y-1">
@@ -1291,7 +1298,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                           {['AUTO', 'DARK'].map(mode => (
                             <button
                               key={mode}
-                              onClick={() => setConfig({ ...config, themeForce: mode })}
+                              onClick={() => handleSaveConfigImmediate({ ...config, themeForce: mode })}
                               className={`py-2.5 rounded-xl text-[10px] font-black transition-all border ${config.themeForce === mode ? 'bg-amber-500 border-amber-400 text-white shadow-lg' : 'bg-white dark:bg-slate-900 text-slate-400 border-slate-200 dark:border-slate-800 hover:border-amber-500/50'}`}
                             >
                               {mode}
@@ -1301,7 +1308,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       </div>
 
                       <div
-                        onClick={() => setConfig({ ...config, ultraImmersiveMode: !config.ultraImmersiveMode })}
+                        onClick={() => handleSaveConfigImmediate({ ...config, ultraImmersiveMode: !config.ultraImmersiveMode })}
                         className="p-6 bg-slate-50 dark:bg-slate-950/50 rounded-[1.5rem] border border-slate-200 dark:border-slate-800 space-y-5 cursor-pointer hover:border-amber-500/30 transition-all group/toggle"
                       >
                         <p className="text-[10px] font-black uppercase text-slate-500 dark:text-white/40 tracking-widest pl-1">Mode Immersion</p>
@@ -1314,7 +1321,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       </div>
 
                       <div
-                        onClick={() => setConfig({ ...config, maintenanceMode: !config.maintenanceMode })}
+                        onClick={() => handleSaveConfigImmediate({ ...config, maintenanceMode: !config.maintenanceMode })}
                         className={`p-6 rounded-[1.5rem] border transition-all cursor-pointer group/toggle ${config.maintenanceMode ? 'bg-red-500/10 border-red-500/30' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-red-500/30'}`}
                       >
                         <p className={`text-[10px] font-black uppercase tracking-widest pl-1 mb-5 transition-colors ${config.maintenanceMode ? 'text-red-500' : 'text-slate-500 dark:text-white/40'}`}>Mode Maintenance</p>
