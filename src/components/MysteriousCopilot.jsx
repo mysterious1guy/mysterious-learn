@@ -689,10 +689,5 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         </AnimatePresence>
     );
 };
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
-};
 
 export default MysteriousCopilot;
