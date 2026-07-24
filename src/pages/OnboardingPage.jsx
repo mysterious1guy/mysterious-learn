@@ -130,6 +130,12 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
             title: t('onboardingFlow.goal_4_title') || '💻 Développement & Code Sécurisé',
             desc: t('onboardingFlow.goal_4_desc') || 'Scripts Python, Exploits Custom & Algorithmique',
             icon: Cpu
+        },
+        {
+            id: 'goal_other',
+            title: t('onboardingFlow.goal_5_title') || '✨ Autre / Exploration Globale',
+            desc: t('onboardingFlow.goal_5_desc') || 'Découverte générale et exploration de tous les modules de formation',
+            icon: Sparkles
         }
     ];
 
