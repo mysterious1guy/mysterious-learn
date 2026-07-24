@@ -362,17 +362,17 @@ const HomePage = ({ API_URL }) => {
             </section>
 
             {/* Creator Section */}
-            <section className="py-24 relative overflow-hidden bg-slate-50 z-10 border-t border-slate-200/50">
+            <section className="py-24 relative overflow-hidden bg-transparent z-10 border-t border-slate-200/50">
                 <div className="max-w-4xl mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="bg-white border border-slate-200 rounded-[3rem] p-10 md:p-16 text-center space-y-10 shadow-xl relative"
+                        className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 rounded-[3rem] p-10 md:p-16 text-center space-y-10 shadow-2xl relative"
                     >
                         <div className="absolute -top-12 left-1/2 -translate-x-1/2">
                             <div className="w-24 h-24 p-1.5 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full shadow-2xl overflow-hidden">
-                                <div className="w-full h-full bg-white rounded-full flex items-center justify-center overflow-hidden">
+                                <div className="w-full h-full bg-white dark:bg-slate-900 rounded-full flex items-center justify-center overflow-hidden">
                                     {config?.creatorAvatar && config.creatorAvatar.length > 2 ? (
                                         <img
                                             src={config.creatorAvatar}
@@ -394,8 +394,8 @@ const HomePage = ({ API_URL }) => {
 
                         <div className="space-y-4 pt-4">
                             <h3 className="text-xs font-black uppercase tracking-[0.5em] text-blue-600">{t('home.architect_tag') || "L'ARCHITECTE SYSTÈME"}</h3>
-                            <h2 className="text-4xl md:text-5xl font-black text-slate-900">{config?.creatorName || 'Mouhamed FALL'}</h2>
-                            <p className="text-slate-600 text-lg md:text-xl font-medium max-w-xl mx-auto italic leading-relaxed">
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white">{config?.creatorName || 'Mouhamed FALL'}</h2>
+                            <p className="text-slate-600 dark:text-slate-300 text-lg md:text-xl font-medium max-w-xl mx-auto italic leading-relaxed">
                                 "{config?.creatorBio && config.creatorBio.length > 0
                                     ? config.creatorBio[config.creatorBio.length - 1]
                                     : t('home.architect_quote') || "Je crois en un monde où la technologie doit être comprise pour être sécurisée. Mysterious Classroom est l'arène que j'ai bâtie pour forger la prochaine génération d'experts cyber."
@@ -409,22 +409,22 @@ const HomePage = ({ API_URL }) => {
                                 { icon: Heart, label: "Passion", value: "Code & Cybersécurité" },
                                 { icon: Terminal, label: "Focus", value: "Hacking Éthique" }
                             ].map((item, i) => (
-                                <div key={i} className="p-6 bg-slate-50 rounded-2xl border border-slate-200 group hover:border-blue-500/30 transition-colors">
+                                <div key={i} className="p-6 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm rounded-2xl border border-slate-200/80 dark:border-slate-700/60 group hover:border-blue-500/40 transition-colors">
                                     <item.icon size={24} className="mx-auto mb-3 text-blue-600 group-hover:scale-110 transition-transform" />
                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</p>
-                                    <p className="text-slate-900 font-bold mt-1">{item.value}</p>
+                                    <p className="text-slate-900 dark:text-white font-bold mt-1">{item.value}</p>
                                 </div>
                             ))}
                         </div>
 
                         <div className="flex justify-center gap-6 pt-2">
-                            <a href="#" className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-600 hover:text-slate-900 hover:border-blue-500 transition-all">
+                            <a href="#" className="p-4 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700/60 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-blue-500 transition-all">
                                 <Github size={24} />
                             </a>
-                            <a href="#" className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-600 hover:text-blue-600 hover:border-blue-500 transition-all">
+                            <a href="#" className="p-4 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700/60 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:border-blue-500 transition-all">
                                 <Linkedin size={24} />
                             </a>
-                            <a href="mailto:mouhamedfa2007@gmail.com" className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-slate-600 hover:text-red-500 hover:border-red-500 transition-all">
+                            <a href="mailto:mouhamedfa2007@gmail.com" className="p-4 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700/60 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-red-500 hover:border-red-500 transition-all">
                                 <Mail size={24} />
                             </a>
                         </div>
