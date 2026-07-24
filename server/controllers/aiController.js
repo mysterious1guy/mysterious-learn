@@ -70,8 +70,10 @@ const deleteGlobalKnowledge = async (req, res) => {
 // @access  Private
 const aiChat = async (req, res) => {
     try {
-        const { message, courseId, history } = req.body;
+        const { message, courseId, history, language } = req.body;
         const user = req.user;
+
+        const isEnglish = (language || 'fr').toLowerCase().startsWith('en');
 
         // Vérification stricte si l'utilisateur est le créateur (uniquement via cet email précis)
         const isAdmin = user.email === 'mouhamedfall@esp.sn';
@@ -137,11 +139,17 @@ const aiChat = async (req, res) => {
         ${adminGreeting}
         Élève : ${user.name} (${user.email}). Niveau : ${user.programmingLevel || 'Apprenti'}.
         
-        [RÈGLES]
+        [RÈGLES PÉDAGOGIQUES]
         1. Mentorat guidé : Donne des indices conceptuels, pas la solution finale / flag CTF direct.
         2. Ton professionnel, immersif, hacker éthique.
-        3. Formatage propre en Markdown. AUCUNE PUBLICITÉ ni mention de "Pollinations".
+        3. Formatage propre en Markdown. AUCUNE PUBLICITÉ ni mention de tiers.
         4. Réponses concises et structurées.`;
+
+        if (isEnglish) {
+            systemInstruction += `\n\n[CRITICAL LANGUAGE MANDATE]\nThe user's selected UI language is ENGLISH. You MUST write ALL your responses, titles, greetings, and explanations strictly in natural, fluent ENGLISH. Do NOT output French text under any circumstances.`;
+        } else {
+            systemInstruction += `\n\n[RÈGLE STRICTE DE LANGUE]\nLa langue globale choisie par l'utilisateur est le FRANÇAIS. Tes réponses, explications et conseils doivent être IMPÉRATIVEMENT rédigés en FRANÇAIS.`;
+        }
 
         // Recherche de contexte
         if (courseId) {
@@ -217,7 +225,7 @@ const aiChat = async (req, res) => {
                         model: orModel,
                         messages: [
                             { role: "system", content: systemInstruction },
-                            { role: "user", content: `Élève ${user.name}: ${message}` }
+                            { role: "user", content: `${isEnglish ? 'Student' : 'Élève'} ${user.name}: ${message}` }
                         ]
                     }),
                     signal: controller.signal

@@ -133,7 +133,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 },
                 body: JSON.stringify({
                     message: userMsg,
-                    history: historyPayload
+                    history: historyPayload,
+                    language: language || 'fr'
                 })
             });
 

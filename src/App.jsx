@@ -244,16 +244,20 @@ function App() {
                   <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
                   <Route path="dashboard" element={
                     user ? (
-                      <DashboardPage
-                        user={user}
-                        onUpdateUser={handleUpdateUser}
-                        favorites={favorites}
-                        toggleFavorite={handleToggleFavorite}
-                        progressions={progressions}
-                        API_URL={API_URL}
-                        setToast={setToast}
-                        searchQuery={searchQuery}
-                      />
+                      user.hasCompletedOnboarding ? (
+                        <DashboardPage
+                          user={user}
+                          onUpdateUser={handleUpdateUser}
+                          favorites={favorites}
+                          toggleFavorite={handleToggleFavorite}
+                          progressions={progressions}
+                          API_URL={API_URL}
+                          setToast={setToast}
+                          searchQuery={searchQuery}
+                        />
+                      ) : (
+                        <Navigate to="/onboarding" replace />
+                      )
                     ) : (
                       <Navigate to="/auth" replace />
                     )
@@ -273,7 +277,7 @@ function App() {
                           setToast={setToast}
                         />
                       ) : (
-                        <Navigate to="/dashboard" replace />
+                        <Navigate to="/onboarding" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -285,7 +289,7 @@ function App() {
                       user.hasCompletedOnboarding ? (
                         <Leaderboard user={user} API_URL={API_URL} setToast={setToast} />
                       ) : (
-                        <Navigate to="/dashboard" replace />
+                        <Navigate to="/onboarding" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -297,7 +301,7 @@ function App() {
                       user.hasCompletedOnboarding ? (
                         <ProjectsList user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
                       ) : (
-                        <Navigate to="/dashboard" replace />
+                        <Navigate to="/onboarding" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -315,7 +319,7 @@ function App() {
                           progressions={progressions}
                         />
                       ) : (
-                        <Navigate to="/dashboard" replace />
+                        <Navigate to="/onboarding" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -333,7 +337,7 @@ function App() {
                           progressions={progressions}
                         />
                       ) : (
-                        <Navigate to="/dashboard" replace />
+                        <Navigate to="/onboarding" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />
@@ -350,7 +354,7 @@ function App() {
                           setToast={setToast}
                         />
                       ) : (
-                        <Navigate to="/dashboard" replace />
+                        <Navigate to="/onboarding" replace />
                       )
                     ) : (
                       <Navigate to="/auth" replace />

@@ -21,6 +21,12 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
     const [tourStep, setTourStep] = useState(user?.uiPreferences?.tourStep || 0);
 
     useEffect(() => {
+        if (user && (!user.seenGuides || !user.seenGuides.includes('main_onboarding'))) {
+            setShowTour(true);
+        }
+    }, [user]);
+
+    useEffect(() => {
         const handleMouseMove = (e) => {
             setMousePosition({
                 x: (e.clientX / window.innerWidth - 0.5) * 20,
