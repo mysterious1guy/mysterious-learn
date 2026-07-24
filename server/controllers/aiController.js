@@ -184,14 +184,14 @@ const aiChat = async (req, res) => {
 
         let responseText = null;
 
-        // Phase 0: OpenRouter Free AI Engine (DeepSeek R1, DeepSeek Chat, Qwen Coder & Llama)
+        // Phase 0: OpenRouter Engine (DeepSeek-R1, DeepSeek-Chat, Gemini Thinking Free, Qwen)
         let openrouterKey = process.env.OPENROUTER_API_KEY;
         const openrouterModels = [
-            'deepseek/deepseek-r1:free',
-            'deepseek/deepseek-chat:free',
-            'qwen/qwen-2.5-coder-32b-instruct:free',
-            'google/gemini-2.0-flash-exp:free',
-            'meta-llama/llama-3.3-70b-instruct:free'
+            'deepseek/deepseek-r1',
+            'deepseek/deepseek-chat',
+            'google/gemini-2.0-flash-thinking-exp:free',
+            'qwen/qwen-2.5-72b-instruct:free',
+            'meta-llama/llama-3.3-70b-instruct'
         ];
 
         for (const orModel of openrouterModels) {
