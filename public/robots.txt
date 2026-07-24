@@ -9,6 +9,22 @@ Disallow: /course/
 Disallow: /two-factor-setup
 Disallow: /onboarding
 
+# Explicit authorization for Major Search Engine Crawlers (Brave, Bing, DuckDuckGo, Yahoo, Google)
+User-agent: Bravebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckGoBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
 # Explicit authorization for AI Search Crawlers (ChatGPT, Perplexity, Claude, Gemini)
 User-agent: GPTBot
 Allow: /
