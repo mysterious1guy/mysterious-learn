@@ -184,82 +184,155 @@ const aiChat = async (req, res) => {
 
         let responseText = null;
 
-        // Phase 0: EXCLUSIVE DEEPSEEK ENGINE (POST & GET Multi-Method)
-        const deepseekModels = ['deepseek', 'deepseek-r1'];
+        // Phase 0: Google Gemini API (Direct project channel - Immune to Render IP limits)
+        let geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+        if (geminiKey) {
+            geminiKey = geminiKey.trim().replace(/^["']|["']$/g, '');
 
-        for (const modelParam of deepseekModels) {
-            if (responseText) break;
+            const historyText = (history && Array.isArray(history)) 
+                ? history.slice(-4).map(h => `${(h.role === 'assistant' || h.role === 'model') ? 'Assistant' : 'Élève'}: ${h.text || h.content || ''}`).join('\n')
+                : '';
 
-            // Attempt 1: DeepSeek via POST JSON (Handles long prompts & special chars perfectly)
-            try {
-                console.log(`📡 [AI RELAY] Appel DeepSeek POST (${modelParam})...`);
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 12000);
+            const combinedUserPrompt = `[CONSIGNE SYSTÈME ASSISTANT MYSTERIOUS COPILOT]\n${systemInstruction}\n\n${historyText ? `[HISTORIQUE CONVERSATION]\n${historyText}\n\n` : ''}[QUESTION ÉLÈVE]\n${message}`;
 
-                const postPayload = {
-                    messages: [
-                        { role: "system", content: systemInstruction },
-                        { role: "user", content: `Élève ${user.name}: ${message}` }
-                    ],
-                    model: modelParam
-                };
+            const geminiEndpoints = [
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', name: 'gemini-2.0-flash' },
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', name: 'gemini-1.5-flash' },
+                { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent', name: 'gemini-2.0-flash-lite' }
+            ];
 
-                const dsPostRes = await fetch('https://text.pollinations.ai/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(postPayload),
-                    signal: controller.signal
-                });
-                clearTimeout(timeout);
-
-                if (dsPostRes.ok) {
-                    const txt = await dsPostRes.text();
-                    if (txt && txt.trim().length > 0 && !txt.includes('PAYMENT_REQUIRED') && !txt.includes('402 Payment')) {
-                        responseText = txt;
-                        console.log(`✅ [AI RELAY] DeepSeek POST (${modelParam}) a répondu avec succès.`);
-                        break;
-                    }
-                } else {
-                    const errTxt = await dsPostRes.text();
-                    console.warn(`⚠️ [AI RELAY] DeepSeek POST (${modelParam}) HTTP ${dsPostRes.status}: ${errTxt.slice(0, 150)}`);
-                }
-            } catch (e) {
-                console.warn(`⚠️ [AI RELAY] DeepSeek POST (${modelParam}) échoué: ${e.message}`);
-            }
-
-            // Attempt 2: DeepSeek via Clean GET (Short query without special chars)
-            if (!responseText) {
+            for (const ep of geminiEndpoints) {
                 try {
-                    console.log(`📡 [AI RELAY] Appel DeepSeek GET (${modelParam})...`);
-                    const cleanMessage = message.replace(/[^a-zA-Z0-9 ?!,.'"-]/g, ' ').slice(0, 150);
-                    const getUrl = `https://text.pollinations.ai/${encodeURIComponent(cleanMessage)}?model=${modelParam}`;
-
+                    console.log(`📡 [AI RELAY] Appel Google Gemini API (${ep.name})...`);
                     const controller = new AbortController();
                     const timeout = setTimeout(() => controller.abort(), 10000);
-                    const dsGetRes = await fetch(getUrl, { signal: controller.signal });
+
+                    const geminiPayload = {
+                        contents: [
+                            { role: 'user', parts: [{ text: combinedUserPrompt }] }
+                        ]
+                    };
+
+                    const geminiRes = await fetch(`${ep.url}?key=${geminiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(geminiPayload),
+                        signal: controller.signal
+                    });
                     clearTimeout(timeout);
 
-                    if (dsGetRes.ok) {
-                        const txt = await dsGetRes.text();
-                        if (txt && txt.trim().length > 0 && !txt.includes('PAYMENT_REQUIRED') && !txt.includes('402 Payment')) {
-                            responseText = txt;
-                            console.log(`✅ [AI RELAY] DeepSeek GET (${modelParam}) a répondu avec succès.`);
+                    if (geminiRes.ok) {
+                        const geminiData = await geminiRes.json();
+                        const text = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+                        if (text && text.trim()) {
+                            responseText = text;
+                            console.log(`✅ [AI RELAY] Gemini API (${ep.name}) a répondu avec succès.`);
                             break;
                         }
                     } else {
-                        const errTxt = await dsGetRes.text();
-                        console.warn(`⚠️ [AI RELAY] DeepSeek GET (${modelParam}) HTTP ${dsGetRes.status}: ${errTxt.slice(0, 150)}`);
+                        const errText = await geminiRes.text();
+                        console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) HTTP ${geminiRes.status}: ${errText.slice(0, 150)}`);
                     }
                 } catch (e) {
-                    console.warn(`⚠️ [AI RELAY] DeepSeek GET (${modelParam}) échoué: ${e.message}`);
+                    console.warn(`⚠️ [AI RELAY] Gemini API (${ep.name}) failed: ${e.message}`);
                 }
             }
         }
 
-        // Pure DeepSeek Mode (No local assistant fallback)
+        // Phase 1: DeepSeek Relay via OpenAI endpoint
         if (!responseText) {
-            console.warn(`⚠️ [AI RELAY] DeepSeek n'a pas renvoyé de texte.`);
-            responseText = `⚠️ [MODE TEST DEEPSEEK UNIQUEMENT] DeepSeek n'a pas renvoyé de réponse. Vérifie les logs de Render.`;
+            const deepseekModels = ['openai', 'qwen-coder'];
+            for (const modelParam of deepseekModels) {
+                if (responseText) break;
+                try {
+                    console.log(`📡 [AI RELAY] Appel DeepSeek/OpenAI Relay (${modelParam})...`);
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 10000);
+
+                    const postPayload = {
+                        messages: [
+                            { role: "system", content: systemInstruction },
+                            { role: "user", content: message }
+                        ],
+                        model: modelParam
+                    };
+
+                    const dsPostRes = await fetch('https://text.pollinations.ai/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(postPayload),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeout);
+
+                    if (dsPostRes.ok) {
+                        const txt = await dsPostRes.text();
+                        if (txt && txt.trim().length > 0 && !txt.includes('PAYMENT_REQUIRED') && !txt.includes('Queue full')) {
+                            responseText = txt;
+                            console.log(`✅ [AI RELAY] DeepSeek/OpenAI (${modelParam}) a répondu avec succès.`);
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    console.warn(`⚠️ [AI RELAY] DeepSeek (${modelParam}) failed: ${e.message}`);
+                }
+            }
+        }
+
+        // Phase 2: Conversational Local Mentor (Zero downtime backup)
+        if (!responseText) {
+            console.warn(`⚠️ [AI RELAY] Mode Assistant Local Intelligent activé.`);
+            const lowerMsg = message.toLowerCase().trim();
+
+            if (lowerMsg.includes('ctf signifie') || lowerMsg.includes('signifie quoi') || lowerMsg.includes('définition ctf') || lowerMsg.includes('definition ctf') || lowerMsg.includes('c quoi ctf') || lowerMsg.includes('c\'est quoi ctf')) {
+                responseText = `Le **CTF (Capture The Flag)** est un jeu de hacking éthique ! 🚩
+
+Le principe : tu dois exploiter une vulnérabilité (dans un site web, un serveur ou un binaire) pour trouver un texte secret caché appelé **« Flag »** (exemple: \`MYSTERIOUS{hacked_xss_2026}\`).
+
+En soumettant le Flag sur la plateforme, tu prouves que tu as réussi la mission et tu gagnes des points XP !`;
+            } else if (lowerMsg.includes('cours') || lowerMsg.includes('module') || lowerMsg.includes('formation') || lowerMsg.includes('programme') || lowerMsg.includes('apprendre') || lowerMsg.includes('disponible') || lowerMsg.includes('dispo')) {
+                responseText = `Voici les modules de formation actuellement disponibles sur **Mysterious Classroom** :
+
+• 🛡️ **Sécurité Web & Injection** (XSS, SQLi, CSRF)
+• 🐧 **Administration Linux & Hacking Terminal** (Commandes, Bash, Privilèges)
+• 🌐 **Analyse Réseau & Web Recon** (Port Scanning, Footprinting)
+
+Tu peux les explorer directement depuis ton **Tableau de bord** !`;
+            } else if (lowerMsg.includes('projet') || lowerMsg.includes('ctf') || lowerMsg.includes('mission')) {
+                responseText = `Pour accéder aux **Projets & Challenges CTF** :
+
+1. Clique sur l'onglet **📁 Projets** dans la barre supérieure.
+2. Choisis un challenge de ton niveau.
+3. Résous la mission pour accumuler des points XP !`;
+            } else if (lowerMsg.includes('classement') || lowerMsg.includes('leaderboard') || lowerMsg.includes('rang') || lowerMsg.includes('points') || lowerMsg.includes('xp')) {
+                responseText = `Agent **${user.firstName || user.name}**, pour consulter le **Classement (Hall of Fame)** :
+
+1. Regarde la barre de navigation supérieure.
+2. Clique sur l'onglet **🏆 Classement**.
+3. Tu y trouveras le rang des élèves, leurs points d'expérience (XP) et les badges débloqués !`;
+            } else if (lowerMsg.includes('fondateur') || lowerMsg.includes('créateur') || lowerMsg.includes('createur') || lowerMsg.includes('qui a fait') || lowerMsg.includes('mouhamed fall') || lowerMsg.includes('boss')) {
+                responseText = `La plateforme **Mysterious Classroom** a été conçue et développée par **Mouhamed FALL**, passionné d'investigation numérique, de cybersécurité et de développement web ! 🚀`;
+            } else if (lowerMsg.includes('qui es tu') || lowerMsg.includes('qui es-tu') || lowerMsg.includes('tes qui') || lowerMsg.includes('t\'es qui') || lowerMsg.includes('tu est ki')) {
+                responseText = `Je suis **Mysterious Copilot**, l'IA et Mentor Officiel de Mysterious Classroom. Mon rôle est de te guider dans ton apprentissage de la Cybersécurité et du Hacking Éthique !`;
+            } else if (lowerMsg.includes('profil') || lowerMsg.includes('compte') || lowerMsg.includes('2fa') || lowerMsg.includes('mot de passe')) {
+                responseText = `Pour gérer ton **Profil & Sécurité** :
+
+1. Clique sur ton avatar en haut à droite.
+2. Choisis **Mon Profil**.
+3. Tu pourras y configurer la 2FA (A2F) et télécharger ton Dossier Agent !`;
+            } else if (isAdmin && (lowerMsg.includes('mail') || lowerMsg.includes('email') || lowerMsg.includes('annonce') || lowerMsg.includes('notification') || lowerMsg.includes('utilisateur'))) {
+                responseText = `Bonjour Boss **Mouhamed** ! Je suis prêt pour tes commandes d'administration. Que souhaites-tu effectuer ? (envoi d'email, publication d'annonce ou gestion des utilisateurs).`;
+            } else if (lowerMsg.includes('how are you') || lowerMsg.includes('how are u')) {
+                responseText = `I'm doing great, Agent **${user.firstName || user.name}**! Ready to master cybersecurity on Mysterious Classroom today? How can I help you?`;
+            } else if (lowerMsg.includes('repond') || lowerMsg.includes('répond') || lowerMsg.includes('comprends pas') || lowerMsg.includes('wesh')) {
+                responseText = `Je suis là et à ton écoute Agent **${user.firstName || user.name}** ! Pose-moi directement ta question sur les **cours**, les **challenges CTF**, la **sécurité web (XSS, SQLi)** ou la **plateforme** !`;
+            } else if (lowerMsg.includes('comment tu vas') || lowerMsg.includes('ca va') || lowerMsg.includes('ça va') || lowerMsg.includes('comment vas') || lowerMsg.includes('alors')) {
+                responseText = `Je vais très bien, Agent **${user.firstName || user.name}** ! Prêt à relever de nouveaux défis sur Mysterious Classroom aujourd'hui ? Que souhaites-tu explorer ?`;
+            } else if (lowerMsg.includes('salut') || lowerMsg.includes('coucou') || lowerMsg.includes('hello') || lowerMsg.includes('bonjour') || lowerMsg.includes('yo')) {
+                responseText = `Bonjour Agent **${user.firstName || user.name}** ! Je suis ton mentor Mysterious Copilot. En quoi puis-je t'aider aujourd'hui ?`;
+            } else {
+                responseText = `Bonjour Agent **${user.firstName || user.name}** ! Je suis ton mentor Mysterious Copilot. Pose-moi ta question sur les **cours de cybersécurité**, les **CTF** ou le **classement** !`;
+            }
         }
 
         // Cleaning JSON / raw wrappers
