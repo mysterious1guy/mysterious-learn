@@ -17,12 +17,14 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
     const [recentlyUnlocked, setRecentlyUnlocked] = useState(null);
     const [courseStats, setCourseStats] = useState({});
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-    const [showTour, setShowTour] = useState(!user?.seenGuides?.includes('main_onboarding'));
+    const [showTour, setShowTour] = useState(
+        Boolean(user && Array.isArray(user.seenGuides) && !user.seenGuides.includes('main_onboarding'))
+    );
     const [tourStep, setTourStep] = useState(user?.uiPreferences?.tourStep || 0);
 
     useEffect(() => {
-        if (user && (!user.seenGuides || !user.seenGuides.includes('main_onboarding'))) {
-            setShowTour(true);
+        if (user && Array.isArray(user.seenGuides)) {
+            setShowTour(!user.seenGuides.includes('main_onboarding'));
         }
     }, [user]);
 
