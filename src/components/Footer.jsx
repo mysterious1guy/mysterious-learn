@@ -108,20 +108,16 @@ const Footer = () => {
 
             <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                  {c.creatorAvatar?.length <= 2 ? (
-                    <span className="text-white font-bold text-lg">{c.creatorAvatar}</span>
-                  ) : (
-                    <img
-                      src={c.creatorAvatar}
-                      alt="Creator"
-                      className="w-full h-full rounded-full object-cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(c.creatorName || 'MF')}&background=3B82F6&color=fff`;
-                      }}
-                    />
-                  )}
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center overflow-hidden">
+                  <img
+                    src={c.creatorAvatar && c.creatorAvatar.length > 10 ? c.creatorAvatar : "/creator.jpg"}
+                    alt="Creator"
+                    className="w-full h-full rounded-full object-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/creator.jpg";
+                    }}
+                  />
                 </div>
                 <div>
                   <h5 className="text-white font-medium">{c.creatorName}</h5>

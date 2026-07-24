@@ -373,21 +373,15 @@ const HomePage = ({ API_URL }) => {
                         <div className="absolute -top-12 left-1/2 -translate-x-1/2">
                             <div className="w-24 h-24 p-1.5 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full shadow-2xl overflow-hidden">
                                 <div className="w-full h-full bg-white dark:bg-slate-900 rounded-full flex items-center justify-center overflow-hidden">
-                                    {config?.creatorAvatar && config.creatorAvatar.length > 2 ? (
-                                        <img
-                                            src={config.creatorAvatar}
-                                            alt="L'Architecte"
-                                            className="w-full h-full object-cover"
-                                            onError={(e) => {
-                                                e.target.onerror = null;
-                                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(config?.creatorName || 'MF')}&background=0D8ABC&color=fff&size=128`;
-                                            }}
-                                        />
-                                    ) : (
-                                        <span className="text-3xl font-black bg-gradient-to-tr from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                                            {config?.creatorAvatar || 'MF'}
-                                        </span>
-                                    )}
+                                    <img
+                                        src={config?.creatorAvatar && config.creatorAvatar.length > 10 ? config.creatorAvatar : "/creator.jpg"}
+                                        alt="L'Architecte"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = "/creator.jpg";
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </div>
