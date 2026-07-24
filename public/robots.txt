@@ -1,8 +1,5 @@
 User-agent: *
-Allow: /$
-Allow: /auth
-Allow: /privacy
-Allow: /terms
+Allow: /
 Disallow: /dashboard
 Disallow: /account
 Disallow: /admin
