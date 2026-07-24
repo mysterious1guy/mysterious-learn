@@ -296,8 +296,6 @@ const aiChat = async (req, res) => {
                         contents: [
                             { role: 'user', parts: parts }
                         ]
-                    };ts: [{ text: combinedUserPrompt }] }
-                        ]
                     };
 
                     const geminiRes = await fetch(`${ep.url}?key=${geminiKey}`, {
