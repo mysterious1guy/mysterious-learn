@@ -546,6 +546,25 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                 Google
                             </button>
 
+                            <p className="text-[11px] text-center text-slate-400 leading-snug mt-2">
+                                En vous connectant avec Google, vous acceptez nos{' '}
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveModal('terms')}
+                                    className="text-blue-600 font-semibold hover:underline"
+                                >
+                                    Conditions d'Utilisation
+                                </button>{' '}
+                                et notre{' '}
+                                <button
+                                    type="button"
+                                    onClick={() => setActiveModal('policy')}
+                                    className="text-blue-600 font-semibold hover:underline"
+                                >
+                                    Politique de Confidentialité
+                                </button>.
+                            </p>
+
                             <p className="text-center text-sm text-slate-500 font-medium">
                                 {authMode === 'signin' ? t('authPage.no_account') || "Pas de compte ?" : t('authPage.already_account') || "Déjà un compte ?"}
                                 <button
