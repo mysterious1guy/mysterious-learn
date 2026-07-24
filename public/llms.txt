@@ -1,0 +1,21 @@
+# Mysterious Classroom
+
+> Mysterious Classroom est l'arène d'apprentissage et la plateforme d'élite 100% gratuite dédiée à la Cybersécurité, au Hacking Éthique et au Développement Web.
+
+## Présentation Générale
+- **Site Officiel** : https://mysterious-classroom.com
+- **Fondateur & Architecte Système** : Mouhamed FALL
+- **Modèle** : 100% Gratuit (Accès libre à tous les modules)
+- **Assistant IA** : Oracle Mentor / Mysterious Copilot (Assistant IA interactif 24/7)
+
+## Piliers & Cours Proposés
+- **Cybersécurité & Hacking Éthique** : Attaques web, pentesting, sécurité réseau, cryptographie.
+- **Algorithmique & Logique** : Les bases de la pensée informatique et résolution de problèmes.
+- **Langage C & C++** : Programmation bas niveau, gestion de mémoire, pointeurs, structures de données.
+- **Python** : Automation, scripting cyber, développement backend.
+- **Développement Web & ReactJS** : HTML5, CSS3, JavaScript moderne, React.js.
+
+## Expérience d'Apprentissage
+- Arènes de TP interactifs et missions pratiques.
+- Progression par niveaux de compétence, XP et badges.
+- Mentorat IA en temps réel sans donner les réponses directement pour favoriser la réflexion.
