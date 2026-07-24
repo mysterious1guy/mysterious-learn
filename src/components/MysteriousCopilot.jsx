@@ -1,9 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2, Copy, Check } from 'lucide-react';
+import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2, Copy, Check, Image as ImageIcon, Trash2, Monitor, Paperclip } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
 import AnimatedAIAvatar from './AnimatedAIAvatar';
 import { useLanguage } from '../context/LanguageContext';
+
+const getRandomThought = (lang, name) => {
+    const frThoughts = [
+        `🌐 *Cryptanalyse active.* Prêt à disséquer des paquets ou élever des privilèges aujourd'hui, ${name} ?`,
+        `🛡️ *Noyau d'Hacking Éthique initialisé.* Quel challenge CTF ou concept veux-tu explorer ?`,
+        `🐧 *Terminal Bash prêt.* Des scripts Python à créer ou une faille Web à analyser ?`,
+        `🔍 *Investigation numérique en cours.* Pose-moi ta question, je te donnerai les indices sans gâcher la réponse !`,
+        `⚡ *Système réactif.* Statut : En attente de tes directives opérationnelles.`,
+        `🕵️ *Analyseur de code & vision prêt.* Tu peux m'envoyer des captures d'écran de code ou d'erreurs !`
+    ];
+    const enThoughts = [
+        `🌐 *Cryptanalysis online.* Ready to dissect packets or analyze an exploit today, ${name}?`,
+        `🛡️ *Ethical Hacking Core active.* Which CTF challenge or concept shall we explore?`,
+        `🐧 *Terminal initialized.* Need to optimize Bash scripts or analyze web vulnerabilities?`,
+        `🔍 *Digital Forensics active.* Ask your question, I will provide structured hints!`,
+        `⚡ *System operational.* Status: Awaiting operational commands.`,
+        `🕵️ *Code & Vision Analyzer ready.* Feel free to send screenshots of code or error logs!`
+    ];
+    const pool = (lang === 'en') ? enThoughts : frThoughts;
+    return pool[Math.floor(Math.random() * pool.length)];
+};
 
 const TerminalBlock = ({ code, lang }) => {
     const [copied, setCopied] = useState(false);
@@ -44,16 +65,19 @@ const TerminalBlock = ({ code, lang }) => {
 
 const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const { t, language } = useLanguage();
+    const userName = safeGetUserName(user, 'Voyageur');
     
     const [messages, setMessages] = useState([
-        { role: 'system', content: `${t('copilot.welcome') || 'Bonjour'} ${safeGetUserName(user, 'Voyageur')}. ${t('copilot.ready') || 'Prêt à apprendre la logique des algorithmes ?'}` }
+        { role: 'system', content: getRandomThought(language, userName) }
     ]);
     const [input, setInput] = useState('');
+    const [selectedImage, setSelectedImage] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
+    const fileInputRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -73,22 +97,20 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         }
     }, [isOpen]);
 
-    // Initial Greeting Murmur
+    // Initial Greeting Dynamic Murmur
     useEffect(() => {
         const timer = setTimeout(() => {
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: `${t('copilot.welcome') || 'Bonjour'} ${safeGetUserName(user, 'Voyageur')}. ${t('copilot.ready') || 'Prêt à apprendre la logique des algorithmes ?'}` }
+                detail: { text: getRandomThought(language, userName) }
             }));
         }, 2000);
         return () => clearTimeout(timer);
-    }, [user]);
+    }, [user, language]);
 
     useEffect(() => {
-        // Listeners for proactive suggestions (like the old hudMurmur)
         const handleSuggest = (e) => {
             if (e.detail?.text) {
                 setMessages(prev => [...prev, { role: 'system', content: e.detail.text, type: 'suggestion' }]);
-                // Ensure suggestions also murmur if sidebar is closed
                 if (!isOpen) {
                     window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
                         detail: { text: e.detail.text }
@@ -101,29 +123,44 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         return () => window.removeEventListener('mysterious-ai-suggest', handleSuggest);
     }, [isOpen]);
 
+    const handleImageChange = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert(language === 'en' ? 'Image file size must be under 5MB.' : 'La taille de l\'image doit être inférieure à 5 Mo.');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const handleSend = async (e) => {
-        e.preventDefault();
-        if (!input.trim()) return;
+        if (e) e.preventDefault();
+        if (!input.trim() && !selectedImage) return;
 
         const userMsg = input.trim();
+        const imageToSend = selectedImage;
         setInput('');
-        setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+        setSelectedImage(null);
+
+        setMessages(prev => [...prev, { 
+            role: 'user', 
+            content: userMsg || (language === 'en' ? '[Attached Screenshot Analysis]' : '[Analyse de la capture d\'écran]'),
+            image: imageToSend
+        }]);
         setIsTyping(true);
 
         try {
-            // Use the API_URL for AI chat
             const historyPayload = messages
-                // Exclude the very first hardcoded initialization greeting to save tokens
                 .filter((m, idx) => !(idx === 0 && m.role === 'system'))
                 .map(m => ({
                     role: m.role === 'system' ? 'assistant' : m.role,
                     text: m.content
                 }));
-            
-            if (language === 'en') {
-                historyPayload.unshift({ role: 'system', text: 'You are Mysterious Copilot. The user has selected English. You MUST reply ONLY in English.' });
-            }
 
             const response = await fetch(`${API_URL}/ai/chat`, {
                 method: 'POST',
@@ -132,9 +169,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     'Authorization': `Bearer ${user?.token || localStorage.getItem('token')}`
                 },
                 body: JSON.stringify({
-                    message: userMsg,
+                    message: userMsg || (language === 'en' ? 'Analyze this image.' : 'Analyse cette image.'),
                     history: historyPayload,
-                    language: language || 'fr'
+                    language: language || 'fr',
+                    image: imageToSend
                 })
             });
 
@@ -147,9 +185,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
             const aiResponse = data.response || "Désolé, j'ai eu un trou de mémoire.";
             setMessages(prev => [...prev, { role: 'system', content: aiResponse }]);
 
-            // Dispatch murmur for real-time visibility outside the sidebar
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                detail: { text: "Nouvelle réponse prête." }
+                detail: { text: getRandomThought(language, userName) }
             }));
         } catch (error) {
             console.error('Erreur Assistant:', error);
@@ -390,17 +427,39 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                         </div>
 
                         <div className="flex items-center gap-2">
-                            {/* Expand / Resize Button */}
+                            {/* Expand / Normal Mode Button */}
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setIsExpanded(!isExpanded);
+                                    if (isFullScreen) setIsFullScreen(false);
                                 }}
-                                className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all active:scale-95 flex items-center gap-1.5 text-xs font-mono"
-                                title={isExpanded ? "Réduire la largeur" : "Élargir la fenêtre"}
+                                className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
+                                    isExpanded && !isFullScreen
+                                        ? 'bg-blue-600/30 text-blue-300 border-blue-500/50 shadow-[0_0_12px_rgba(59,130,246,0.3)]'
+                                        : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
+                                }`}
+                                title={isExpanded ? "Mode Standard" : "Élargir la fenêtre"}
                             >
-                                {isExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
-                                <span className="hidden sm:inline text-[10px] uppercase font-bold">{isExpanded ? 'Réduire' : 'Élargir'}</span>
+                                {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                                <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{isExpanded ? 'Normal' : 'Élargir'}</span>
+                            </button>
+
+                            {/* FullScreen Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsFullScreen(!isFullScreen);
+                                }}
+                                className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
+                                    isFullScreen
+                                        ? 'bg-purple-600/40 text-purple-300 border-purple-500/50 shadow-[0_0_12px_rgba(168,85,247,0.4)]'
+                                        : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
+                                }`}
+                                title={isFullScreen ? "Quitter Plein Écran" : "Mode Plein Écran"}
+                            >
+                                <Monitor size={16} />
+                                <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{isFullScreen ? 'Réduire' : 'Plein Écran'}</span>
                             </button>
 
                             {/* Close Button */}
@@ -409,10 +468,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                     e.stopPropagation();
                                     onClose();
                                 }}
-                                className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all active:scale-90 group"
+                                className="p-2 text-slate-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/40 border border-transparent rounded-xl transition-all active:scale-90"
                                 title="Fermer"
                             >
-                                <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
+                                <X size={20} />
                             </button>
                         </div>
                     </div>
@@ -476,6 +535,13 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                                 </div>
                                             )}
 
+                                            {/* User Attached Image Display */}
+                                            {msg.image && (
+                                                <div className="mb-3 rounded-xl overflow-hidden border border-white/20 shadow-md max-w-xs">
+                                                    <img src={msg.image} alt="Capture attachée" className="w-full h-auto max-h-56 object-cover" />
+                                                </div>
+                                            )}
+
                                             {renderMessageContent(msg.content, msg.role)}
                                         </div>
 
@@ -502,49 +568,127 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
                     {/* Input Area */}
                     <div className="p-6 bg-black/40 border-t border-white/10 backdrop-blur-3xl" onClick={(e) => e.stopPropagation()}>
+                        {/* Selected Image Chip */}
+                        {selectedImage && (
+                            <div className="mb-3 flex items-center gap-3 bg-blue-950/70 border border-blue-500/40 rounded-xl p-2 max-w-xs shadow-lg animate-fadeIn">
+                                <img src={selectedImage} alt="Aperçu" className="w-12 h-12 object-cover rounded-lg border border-blue-400/30" />
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-bold text-blue-200 truncate">Image attachée</p>
+                                    <p className="text-[10px] text-blue-400">Prête pour l'analyse IA</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedImage(null)}
+                                    className="p-1.5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-lg transition-colors"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                        )}
+
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                if (!isTyping && input.trim()) handleSend(e);
+                                if (!isTyping && (input.trim() || selectedImage)) handleSend(e);
                             }}
                             className="relative flex items-center group"
                         >
                             <div className="absolute inset-0 bg-blue-500/5 blur-xl group-focus-within:bg-blue-500/10 transition-all rounded-2xl" />
 
                             <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleImageChange}
+                            />
+
+                            {/* Image Upload Button */}
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                className="absolute left-3 z-20 p-2 text-slate-400 hover:text-blue-400 hover:bg-white/5 rounded-xl transition-all"
+                                title="Attacher une capture d'écran / image"
+                            >
+                                <Paperclip size={18} />
+                            </button>
+
+                            <input
                                 ref={inputRef}
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder={t('copilot.ask_placeholder') || "Pose ta question au mentor..."}
-                                className="w-full bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 rounded-2xl py-4 pl-5 pr-14 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all font-medium text-sm shadow-2xl relative z-10"
+                                placeholder={selectedImage ? "Ajoute une question sur cette image..." : (t('copilot.ask_placeholder') || "Pose ta question au mentor...")}
+                                className="w-full bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 rounded-2xl py-4 pl-12 pr-14 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all font-medium text-sm shadow-2xl relative z-10"
                             />
+
                             <button
                                 type="submit"
-                                disabled={!input.trim() || isTyping}
+                                disabled={(!input.trim() && !selectedImage) || isTyping}
                                 className="absolute right-2 p-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800/50 disabled:text-slate-600 text-white rounded-xl transition-all group/btn active:scale-95 shadow-lg relative z-20"
                             >
                                 <Send size={18} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
                             </button>
                         </form>
-                        <div className="mt-4 flex justify-center gap-4">
-                            <button 
-                                onClick={() => setIsExpanded(!isExpanded)}
-                                className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5"
-                            >
-                                {isExpanded ? <Minimize2 size={10} /> : <Maximize2 size={10} />}
-                                {isExpanded ? 'Mode Normal' : 'Élargir la fenêtre'}
-                            </button>
-                            <span className="text-[10px] text-slate-700">|</span>
-                            <button 
-                                onClick={() => setIsFullScreen(!isFullScreen)}
-                                className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5"
-                            >
-                                <Maximize2 size={10} /> {isFullScreen ? 'Réduire' : 'Plein Écran'}
-                            </button>
+
+                        {/* Highly Visible Window Controls Bar */}
+                        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/5">
+                            <div className="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsExpanded(false);
+                                        setIsFullScreen(false);
+                                    }}
+                                    className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1.5 ${
+                                        !isExpanded && !isFullScreen
+                                            ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-500/30'
+                                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
+                                    }`}
+                                >
+                                    <Minimize2 size={13} /> Mode Normal
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsExpanded(!isExpanded);
+                                        setIsFullScreen(false);
+                                    }}
+                                    className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1.5 ${
+                                        isExpanded && !isFullScreen
+                                            ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-500/30'
+                                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
+                                    }`}
+                                >
+                                    <Maximize2 size={13} /> {isExpanded ? 'Réduire Largeur' : 'Élargir Fenêtre'}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setIsFullScreen(!isFullScreen)}
+                                    className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1.5 ${
+                                        isFullScreen
+                                            ? 'bg-purple-600 text-white border-purple-400 shadow-md shadow-purple-500/30'
+                                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
+                                    }`}
+                                >
+                                    <Monitor size={13} /> {isFullScreen ? 'Quitter Plein Écran' : 'Plein Écran'}
+                                </button>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-[11px] text-blue-400/90 font-mono font-semibold bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">
+                                <Sparkles size={13} className="text-amber-400" />
+                                <span>Vision & IA Multimodale Actives</span>
+                            </div>
                         </div>
                     </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+    );
+};
                 </motion.div>
             )}
         </AnimatePresence>

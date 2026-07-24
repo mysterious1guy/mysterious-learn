@@ -70,7 +70,7 @@ const deleteGlobalKnowledge = async (req, res) => {
 // @access  Private
 const aiChat = async (req, res) => {
     try {
-        const { message, courseId, history, language } = req.body;
+        const { message, courseId, history, language, image } = req.body;
         const user = req.user;
 
         const isEnglish = (language || 'fr').toLowerCase().startsWith('en');
@@ -143,7 +143,7 @@ const aiChat = async (req, res) => {
         1. Mentorat guidé : Donne des indices conceptuels, pas la solution finale / flag CTF direct.
         2. Ton professionnel, immersif, hacker éthique.
         3. Formatage propre en Markdown. AUCUNE PUBLICITÉ ni mention de tiers.
-        4. Réponses concises et structurées.`;
+        4. Réponses concises et structurées. Si une image est fournie, analyse le code, l'erreur, la capture réseau ou le terminal qu'elle contient pour aider l'élève.`;
 
         if (isEnglish) {
             systemInstruction += `\n\n[CRITICAL LANGUAGE MANDATE]\nThe user's selected UI language is ENGLISH. You MUST write ALL your responses, titles, greetings, and explanations strictly in natural, fluent ENGLISH. Do NOT output French text under any circumstances.`;
@@ -188,19 +188,27 @@ const aiChat = async (req, res) => {
 
         messages.push({ role: "user", content: message });
 
-        console.log(`📡 [AI RELAY] Traitement de la requête IA pour: ${user.email}`);
+        console.log(`📡 [AI RELAY] Traitement de la requête IA pour: ${user.email} (Image attachée: ${image ? 'OUI' : 'NON'})`);
 
         let responseText = null;
 
         // Phase 0: OpenRouter Engine (DeepSeek-R1, DeepSeek-Chat, Gemini Thinking Free, Qwen)
         let openrouterKey = process.env.OPENROUTER_API_KEY;
         const openrouterModels = [
+            'google/gemini-2.0-flash-thinking-exp:free',
             'deepseek/deepseek-r1',
             'deepseek/deepseek-chat',
-            'google/gemini-2.0-flash-thinking-exp:free',
             'qwen/qwen-2.5-72b-instruct:free',
             'meta-llama/llama-3.3-70b-instruct'
         ];
+
+        let openrouterUserMsgContent = `${isEnglish ? 'Student' : 'Élève'} ${user.name}: ${message}`;
+        if (image && typeof image === 'string') {
+            openrouterUserMsgContent = [
+                { type: "text", text: `${isEnglish ? 'Student' : 'Élève'} ${user.name}: ${message}` },
+                { type: "image_url", image_url: { url: image } }
+            ];
+        }
 
         for (const orModel of openrouterModels) {
             if (responseText) break;
@@ -225,7 +233,7 @@ const aiChat = async (req, res) => {
                         model: orModel,
                         messages: [
                             { role: "system", content: systemInstruction },
-                            { role: "user", content: `${isEnglish ? 'Student' : 'Élève'} ${user.name}: ${message}` }
+                            { role: "user", content: openrouterUserMsgContent }
                         ]
                     }),
                     signal: controller.signal
@@ -237,19 +245,19 @@ const aiChat = async (req, res) => {
                     const text = orData.choices?.[0]?.message?.content;
                     if (text && text.trim()) {
                         responseText = text;
-                        console.log(`✅ [AI RELAY] OpenRouter DeepSeek (${orModel}) a répondu avec succès.`);
+                        console.log(`✅ [AI RELAY] OpenRouter (${orModel}) a répondu avec succès.`);
                         break;
                     }
                 } else {
                     const errTxt = await orRes.text();
-                    console.warn(`⚠️ [AI RELAY] OpenRouter DeepSeek (${orModel}) HTTP ${orRes.status}: ${errTxt.slice(0, 150)}`);
+                    console.warn(`⚠️ [AI RELAY] OpenRouter (${orModel}) HTTP ${orRes.status}: ${errTxt.slice(0, 150)}`);
                 }
             } catch (e) {
-                console.warn(`⚠️ [AI RELAY] OpenRouter DeepSeek (${orModel}) échoué: ${e.message}`);
+                console.warn(`⚠️ [AI RELAY] OpenRouter (${orModel}) échoué: ${e.message}`);
             }
         }
 
-        // Phase 1: Google Gemini API (Direct project channel)
+        // Phase 1: Google Gemini API (Direct project channel) - Supports Multimodal natively
         let geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
         if (!responseText && geminiKey) {
             geminiKey = geminiKey.trim().replace(/^["']|["']$/g, '');
@@ -259,6 +267,18 @@ const aiChat = async (req, res) => {
                 : '';
 
             const combinedUserPrompt = `[CONSIGNE SYSTÈME ASSISTANT MYSTERIOUS COPILOT]\n${systemInstruction}\n\n${historyText ? `[HISTORIQUE CONVERSATION]\n${historyText}\n\n` : ''}[QUESTION ÉLÈVE]\n${message}`;
+
+            const parts = [{ text: combinedUserPrompt }];
+            if (image && typeof image === 'string') {
+                const mimeType = image.startsWith('data:') ? image.split(';')[0].split(':')[1] : 'image/jpeg';
+                const base64Data = image.includes(',') ? image.split(',')[1] : image;
+                parts.push({
+                    inline_data: {
+                        mime_type: mimeType,
+                        data: base64Data
+                    }
+                });
+            }
 
             const geminiEndpoints = [
                 { url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', name: 'gemini-2.0-flash' },
@@ -274,7 +294,9 @@ const aiChat = async (req, res) => {
 
                     const geminiPayload = {
                         contents: [
-                            { role: 'user', parts: [{ text: combinedUserPrompt }] }
+                            { role: 'user', parts: parts }
+                        ]
+                    };ts: [{ text: combinedUserPrompt }] }
                         ]
                     };
 
