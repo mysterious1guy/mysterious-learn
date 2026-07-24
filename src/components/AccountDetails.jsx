@@ -689,7 +689,13 @@ ${JSON.stringify(exportObj, null, 2)}
         <div className="space-y-6">
           <div
             onClick={async () => {
-              const val = !(user?.preferences?.notifications ?? true);
+              const currentVal = user?.preferences?.notifications ?? true;
+              const val = !currentVal;
+              // Optimistic UI update
+              onUpdateUser({
+                ...user,
+                preferences: { ...(user?.preferences || {}), notifications: val }
+              });
               try {
                 const res = await fetch(`${API_URL}/auth/profile`, {
                   method: 'PUT',
@@ -697,15 +703,32 @@ ${JSON.stringify(exportObj, null, 2)}
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user.token}`
                   },
-                  body: JSON.stringify({ preferences: { ...user.preferences, notifications: val } })
+                  body: JSON.stringify({
+                    preferences: { ...(user?.preferences || {}), notifications: val }
+                  })
                 });
                 if (res.ok) {
                   const updated = await res.json();
                   onUpdateUser(updated);
-                  setToast({ message: 'Préférences mises à jour', type: 'success' });
+                  setToast({
+                    message: val ? '✅ Notifications par email activées !' : '🔕 Notifications par email désactivées !',
+                    type: 'success'
+                  });
+                } else {
+                  // Revert on error
+                  onUpdateUser({
+                    ...user,
+                    preferences: { ...(user?.preferences || {}), notifications: currentVal }
+                  });
+                  setToast({ message: 'Échec de la mise à jour des préférences', type: 'error' });
                 }
               } catch (err) {
                 console.error(err);
+                onUpdateUser({
+                  ...user,
+                  preferences: { ...(user?.preferences || {}), notifications: currentVal }
+                });
+                setToast({ message: 'Erreur réseau', type: 'error' });
               }
             }}
             className="flex items-center justify-between p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50 cursor-pointer hover:border-blue-500/30 transition-colors"

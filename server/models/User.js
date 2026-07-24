@@ -102,6 +102,7 @@ const userSchema = new mongoose.Schema(
       theme: { type: String, default: 'dark' },
       language: { type: String, default: 'fr' },
       soundEnabled: { type: Boolean, default: true },
+      notifications: { type: Boolean, default: true },
     },
     // Progressive learning tracking
     completedModules: {

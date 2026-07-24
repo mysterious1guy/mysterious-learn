@@ -571,6 +571,7 @@ const updateProfile = async (req, res) => {
       if (preferences.theme !== undefined) user.preferences.theme = preferences.theme;
       if (preferences.language !== undefined) user.preferences.language = preferences.language;
       if (preferences.soundEnabled !== undefined) user.preferences.soundEnabled = preferences.soundEnabled;
+      if (preferences.notifications !== undefined) user.preferences.notifications = preferences.notifications;
     }
     if (hasCompletedOnboarding !== undefined) user.hasCompletedOnboarding = hasCompletedOnboarding;
     if (programmingLevel !== undefined) user.programmingLevel = programmingLevel;
