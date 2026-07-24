@@ -222,7 +222,7 @@ const aiChat = async (req, res) => {
 
                 const headers = { 
                     'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://mysterious-classroom-free-courses.onrender.com',
+                    'HTTP-Referer': 'https://mysterious-classroom.com',
                     'X-Title': 'Mysterious Classroom'
                 };
                 if (openrouterKey) {

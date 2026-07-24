@@ -506,7 +506,7 @@ const googleCallback = async (req, res) => {
     const token = generateToken(user._id);
 
     const clientUrl = process.env.NODE_ENV === 'production'
-      ? 'https://mysterious-classroom-free-courses.onrender.com'
+      ? 'https://mysterious-classroom.com'
       : process.env.CLIENT_URL || 'http://localhost:5173';
 
     res.redirect(`${clientUrl}/auth/callback?token=${token}`);
@@ -514,7 +514,7 @@ const googleCallback = async (req, res) => {
   } catch (error) {
     console.error('Erreur Google callback:', error);
     const clientUrl = process.env.NODE_ENV === 'production'
-      ? 'https://mysterious-classroom-free-courses.onrender.com'
+      ? 'https://mysterious-classroom.com'
       : process.env.CLIENT_URL || 'http://localhost:5173';
     res.redirect(`${clientUrl}/auth?error=google_auth_failed`);
   }
@@ -659,7 +659,7 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     const clientUrl = process.env.CLIENT_URL || (process.env.NODE_ENV === 'production'
-      ? 'https://mysterious-classroom-free-courses.onrender.com'
+      ? 'https://mysterious-classroom.com'
       : 'http://localhost:5173');
 
     const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
