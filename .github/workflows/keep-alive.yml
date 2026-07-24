@@ -1,0 +1,18 @@
+name: Keep-Alive Server Pinger
+
+on:
+  schedule:
+    # Runs automatically every 10 minutes to prevent Render free tier from sleeping
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    name: Ping Mysterious Classroom API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Server Endpoint
+        run: |
+          echo "📡 Pinging https://mysterious-classroom.com/api/status..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://mysterious-classroom.com/api/status)
+          echo "✅ Server returned HTTP Status: $HTTP_STATUS"

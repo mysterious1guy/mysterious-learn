@@ -143,7 +143,7 @@ app.listen(PORT, '0.0.0.0', () => {
 // 7. Auto-Ping to keep Render awake (Free Tier)
 const https = require('https');
 const RENDER_SERVICE_NAME = process.env.RENDER_SERVICE_NAME;
-const RENDER_URL = process.env.RENDER_URL || (RENDER_SERVICE_NAME ? `https://${RENDER_SERVICE_NAME}.onrender.com/api/status` : null);
+const RENDER_URL = process.env.RENDER_URL || 'https://mysterious-classroom.com/api/status';
 
 if (RENDER_URL) {
   setInterval(() => {
@@ -152,5 +152,5 @@ if (RENDER_URL) {
     }).on('error', (err) => {
       console.log('⚠️ Erreur ping de réveil:', err.message);
     });
-  }, 14 * 60 * 1000); // 14 mins
+  }, 10 * 60 * 1000); // 10 mins
 }
