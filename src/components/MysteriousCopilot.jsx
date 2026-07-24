@@ -293,8 +293,16 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
             <div className="space-y-4">
                 {parts.map((part, pIdx) => {
                     if (part.type === 'text') {
-                        // Simple Markdown-like parsing for text segments
-                        const sanitizedContent = part.content.replace(/\\'/g, "'");
+                        // Clean legacy meta tags, artificial headers and stray backslashes for ChatGPT/Gemini level clarity
+                        const sanitizedContent = part.content
+                            .replace(/\\'/g, "'")
+                            .replace(/`?\[HINT\]`?/gi, '')
+                            .replace(/`?\[STATUT.*?\]`?/gi, '')
+                            .replace(/`?\[CONSIGNE.*?\]`?/gi, '')
+                            .replace(/Mysterious Copilot 🔐/gi, '')
+                            .replace(/Connection établie - Terminal 0x[A-Za-z0-9]+/gi, '')
+                            .trim();
+
                         const lines = sanitizedContent.split('\n');
                         return lines.map((line, lIdx) => {
                             if (!line.trim()) return <div key={lIdx} className="h-2" />;

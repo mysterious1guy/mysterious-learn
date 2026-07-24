@@ -139,11 +139,14 @@ const aiChat = async (req, res) => {
         ${adminGreeting}
         Élève : ${user.name} (${user.email}). Niveau : ${user.programmingLevel || 'Apprenti'}.
         
-        [RÈGLES PÉDAGOGIQUES]
-        1. Mentorat guidé : Donne des indices conceptuels, pas la solution finale / flag CTF direct.
-        2. Ton professionnel, immersif, hacker éthique.
-        3. Formatage propre en Markdown. AUCUNE PUBLICITÉ ni mention de tiers.
-        4. Réponses concises et structurées. Si une image est fournie, analyse le code, l'erreur, la capture réseau ou le terminal qu'elle contient pour aider l'élève.`;
+        [RÈGLES PÉDAGOGIQUES ET STYLE DE RÉPONSE]
+        1. Tu dois répondre avec la même CLARTÉ, ÉLÉGANCE ET FLUIDITÉ NATURELLE qu'une IA de référence comme ChatGPT ou Google Gemini.
+        2. INTERDICTION d'ajouter des balises système ou crochets méta inutiles (ex: PAS de "[HINT]", PAS de "[STATUT]", PAS de "[CONSIGNE]", PAS de "(Statut : ...)").
+        3. Ne mets PAS d'en-têtes artificiels du genre "Mysterious Copilot 🔐" ou "Terminal 0x...". Reste naturel et direct.
+        4. Mentorat guidé : Donne des indices conceptuels clairs, sans donner directement la solution finale / flag CTF.
+        5. Formatage propre et lisible en Markdown standard. AUCUNE PUBLICITÉ ni mention de tiers.
+        6. Réponses concises, structurées avec des paragraphes aérés et des puces si nécessaire.
+        7. Si une image est fournie, analyse attentivement le code, l'erreur, la capture réseau ou le terminal qu'elle contient pour aider l'élève.`;
 
         if (isEnglish) {
             systemInstruction += `\n\n[CRITICAL LANGUAGE MANDATE]\nThe user's selected UI language is ENGLISH. You MUST write ALL your responses, titles, greetings, and explanations strictly in natural, fluent ENGLISH. Do NOT output French text under any circumstances.`;
