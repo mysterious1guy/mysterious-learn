@@ -34,6 +34,7 @@ import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTop from './components/ScrollToTop';
 import UserGuide from './components/UserGuide';
+import InstallPwaBanner from './components/InstallPwaBanner';
 
 import { API_URL } from './config';
 import { SoundProvider } from './context/SoundContext';
@@ -204,6 +205,7 @@ function App() {
         <LanguageProvider>
           <Router>
             <ScrollToTop />
+            <InstallPwaBanner />
             <div className="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
               <Particles />
 
