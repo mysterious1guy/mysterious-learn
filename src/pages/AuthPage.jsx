@@ -422,16 +422,20 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                          headers: { 'Content-Type': 'application/json' },
                                                                          body: JSON.stringify({ email: formData.email }),
                                                                      });
-                                                                     const data = await res.json();
+                                                                     let data = {};
+                                                                     try {
+                                                                         data = await res.json();
+                                                                     } catch (parseErr) {
+                                                                         data = { message: "Serveur en cours d'utilisation ou de réveil. Veuillez réinterroger." };
+                                                                     }
                                                                      if (res.ok) {
                                                                          setResetModalData({ open: true, email: formData.email });
-                                                                         setAuthError('');
+                                                                         setAuthError("");
                                                                      } else {
-                                                                         setAuthError(data.message || 'Erreur lors de l\'envoi');
+                                                                         setAuthError(data.message || "Erreur lors de l'envoi");
                                                                      }
                                                                  } catch (err) {
-                                                                     setAuthError('Erreur réseau');
-                                                                 } finally {
+                                                                     setAuthError(err?.message || "Erreur de connexion au serveur.");
                                                                      setIsLoading(false);
                                                                  }
                                                              }}
