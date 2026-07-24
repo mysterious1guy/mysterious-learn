@@ -218,6 +218,13 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const renderMessageContent = (msg, role) => {
         if (role === 'user') return <p className="text-sm font-medium leading-relaxed" style={{ wordBreak: 'break-word' }}>{msg}</p>;
 
+        let cleanMsg = msg || '';
+        // Auto-close unclosed code blocks if necessary
+        const backtickMatches = cleanMsg.match(/```/g);
+        if (backtickMatches && backtickMatches.length % 2 !== 0) {
+            cleanMsg += '\n```';
+        }
+
         const parts = [];
         let lastIndex = 0;
 
@@ -225,14 +232,14 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         const combinedRegex = /(```(?:json)?\s*[\s\S]*?```)/g;
         let match;
 
-        while ((match = combinedRegex.exec(msg)) !== null) {
+        while ((match = combinedRegex.exec(cleanMsg)) !== null) {
             // Add preceding text
             if (match.index > lastIndex) {
-                parts.push({ type: 'text', content: msg.substring(lastIndex, match.index) });
+                parts.push({ type: 'text', content: cleanMsg.substring(lastIndex, match.index) });
             }
 
             const rawBlock = match[0];
-            if (rawBlock.startsWith('```json') && rawBlock.includes('"type": "admin_action"')) {
+            if (rawBlock.includes('"type": "admin_action"') || (rawBlock.startsWith('```json') && rawBlock.includes('"action":'))) {
                 parts.push({ type: 'action', content: rawBlock });
             } else {
                 parts.push({ type: 'code', content: rawBlock });
@@ -240,8 +247,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
             lastIndex = combinedRegex.lastIndex;
         }
 
-        if (lastIndex < msg.length) {
-            parts.push({ type: 'text', content: msg.substring(lastIndex) });
+        if (lastIndex < cleanMsg.length) {
+            parts.push({ type: 'text', content: cleanMsg.substring(lastIndex) });
         }
 
         return (
@@ -254,21 +261,22 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                         return lines.map((line, lIdx) => {
                             if (!line.trim()) return <div key={lIdx} className="h-2" />;
 
-                            // Check for list items
-                            const isListItem = line.trim().startsWith('•') || line.trim().startsWith('-') || line.trim().startsWith('*');
+                            const trimmed = line.trim();
+                            // Check for list items (only if symbol is followed by a space)
+                            const isListItem = /^[•\-\*]\s+/.test(trimmed);
                             
-                            // Remove the leading character if it's a list item to avoid double bullets/dashes
                             let cleanLine = line;
                             if (isListItem) {
-                                cleanLine = line.trim().substring(1).trim();
+                                cleanLine = trimmed.replace(/^[•\-\*]\s+/, '');
                             }
 
                             // Check for bold text
                             const boldParsed = cleanLine.split(/(\*\*.*?\*\*)/g).map((seg, sIdx) => {
-                                if (seg.startsWith('**') && seg.endsWith('**')) {
+                                if (seg.startsWith('**') && seg.endsWith('**') && seg.length > 4) {
                                     return <strong key={sIdx} className="text-blue-400 font-bold">{seg.slice(2, -2)}</strong>;
                                 }
-                                return seg;
+                                // Remove orphan backslashes or asterisks
+                                return seg.replace(/\*\*/g, '').replace(/\*/g, '');
                             });
 
                             return (

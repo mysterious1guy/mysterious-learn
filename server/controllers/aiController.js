@@ -454,11 +454,16 @@ Tu peux les explorer directement depuis ton **Tableau de bord** !`;
             // Sanitize stray asterisks and raw markdown tags
             finalResponse = finalResponse
                 .replace(/^```markdown\s*/i, '')
-                .replace(/```$/g, '')
                 .replace(/^markdown\s*\n/i, '')
-                .replace(/\*(?=[a-zA-Z0-9\s]+\*)/g, '• ') // replace orphan bullet asterisks with clean bullet points
+                .replace(/^[\*\-]\s+(?!\*)/gm, '• ') // Convert list asterisks/dashes into clean bullet points without breaking **bold**
                 .replace(/\\\*/g, '*') // unescape escaped asterisks
                 .trim();
+
+            // Auto-close unclosed code blocks if necessary
+            const backtickMatches = finalResponse.match(/```/g);
+            if (backtickMatches && backtickMatches.length % 2 !== 0) {
+                finalResponse += '\n```';
+            }
         }
 
         res.json({ response: finalResponse });
