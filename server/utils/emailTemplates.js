@@ -106,7 +106,7 @@ const getWelcomeEmail = (name) => `
     </div>
     
     <div style="text-align: center; margin-top: 40px;">
-      <a href="https://mysterious-classroom-free-courses.onrender.com" style="${buttonStyles}">Accéder à mon espace</a>
+      <a href="https://mysterious-classroom.com" style="${buttonStyles}">Accéder à mon espace</a>
     </div>
   </div>
   
@@ -206,7 +206,7 @@ const getAccountDeletionEmail = (name) => `
     </div>
     
     <div style="text-align: center; margin-top: 40px;">
-      <a href="https://mysterious-classroom-free-courses.onrender.com" style="${buttonStyles} background: linear-gradient(135deg, #475569 0%, #1e293b 100%);">Retourner à l'accueil</a>
+      <a href="https://mysterious-classroom.com" style="${buttonStyles} background: linear-gradient(135deg, #475569 0%, #1e293b 100%);">Retourner à l'accueil</a>
     </div>
   </div>
   <div style="${footerStyles}">

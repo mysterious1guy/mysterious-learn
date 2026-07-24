@@ -24,6 +24,6 @@ services:
       - key: EMAIL_PASS
         sync: false
       - key: CLIENT_URL
-        value: https://mysterious-classroom-free-courses.onrender.com
+        value: https://mysterious-classroom.com
       - key: GOOGLE_CLIENT_ID
         sync: false
