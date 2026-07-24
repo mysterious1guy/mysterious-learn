@@ -50,7 +50,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     ]);
     const [input, setInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [isFullScreen, setIsFullScreen] = useState(false);
     const messagesEndRef = useRef(null);
+    const inputRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -59,6 +62,16 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     useEffect(() => {
         scrollToBottom();
     }, [messages, isTyping]);
+
+    // Auto-focus input when AI modal opens
+    useEffect(() => {
+        if (isOpen) {
+            const timer = setTimeout(() => {
+                inputRef.current?.focus();
+            }, 150);
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen]);
 
     // Initial Greeting Murmur
     useEffect(() => {
@@ -340,12 +353,19 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: '100%', opacity: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="fixed top-0 right-0 h-full w-[400px] bg-slate-950/95 border-l border-blue-500/20 backdrop-blur-2xl z-[150] shadow-[-10px_0_50px_rgba(0,0,0,0.5)] flex flex-col"
+                    onClick={() => inputRef.current?.focus()}
+                    className={`fixed top-0 right-0 h-full transition-all duration-300 bg-slate-950/95 border-l border-blue-500/20 backdrop-blur-2xl z-[150] shadow-[-10px_0_50px_rgba(0,0,0,0.5)] flex flex-col ${
+                        isFullScreen 
+                            ? 'w-full left-0' 
+                            : isExpanded 
+                                ? 'w-full sm:w-[850px] lg:w-[1000px]' 
+                                : 'w-full sm:w-[540px] md:w-[640px]'
+                    }`}
                 >
                     {/* Header */}
                     <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/60 shadow-xl relative z-10">
                         <div className="flex items-center gap-4">
-                            <div className="relative w-14 h-14">
+                            <div className="relative w-14 h-14 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
                                 <div className="absolute inset-0 bg-blue-500/20 blur-lg rounded-full animate-pulse" />
                                 <AnimatedAIAvatar isTyping={isTyping} />
                                 <div className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-slate-950 z-10"></div>
@@ -359,12 +379,33 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 </span>
                             </div>
                         </div>
-                        <button
-                            onClick={onClose}
-                            className="p-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-2xl transition-all active:scale-90 group"
-                        >
-                            <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
+
+                        <div className="flex items-center gap-2">
+                            {/* Expand / Resize Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsExpanded(!isExpanded);
+                                }}
+                                className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all active:scale-95 flex items-center gap-1.5 text-xs font-mono"
+                                title={isExpanded ? "Réduire la largeur" : "Élargir la fenêtre"}
+                            >
+                                {isExpanded ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                                <span className="hidden sm:inline text-[10px] uppercase font-bold">{isExpanded ? 'Réduire' : 'Élargir'}</span>
+                            </button>
+
+                            {/* Close Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onClose();
+                                }}
+                                className="p-2.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-all active:scale-90 group"
+                                title="Fermer"
+                            >
+                                <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Messages Area */}
@@ -451,7 +492,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     </div>
 
                     {/* Input Area */}
-                    <div className="p-6 bg-black/40 border-t border-white/10 backdrop-blur-3xl">
+                    <div className="p-6 bg-black/40 border-t border-white/10 backdrop-blur-3xl" onClick={(e) => e.stopPropagation()}>
                         <form
                             onSubmit={(e) => {
                                 e.preventDefault();
@@ -463,6 +504,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                             <div className="absolute inset-0 bg-blue-500/5 blur-xl group-focus-within:bg-blue-500/10 transition-all rounded-2xl" />
 
                             <input
+                                ref={inputRef}
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
@@ -478,12 +520,19 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                             </button>
                         </form>
                         <div className="mt-4 flex justify-center gap-4">
-                            <button className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5">
-                                <Maximize2 size={10} /> {t('copilot.focus_mode') || 'Mode Focus'}
+                            <button 
+                                onClick={() => setIsExpanded(!isExpanded)}
+                                className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5"
+                            >
+                                {isExpanded ? <Minimize2 size={10} /> : <Maximize2 size={10} />}
+                                {isExpanded ? 'Mode Normal' : 'Élargir la fenêtre'}
                             </button>
                             <span className="text-[10px] text-slate-700">|</span>
-                            <button className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5">
-                                <Terminal size={10} /> {t('copilot.help') || 'Aide'}
+                            <button 
+                                onClick={() => setIsFullScreen(!isFullScreen)}
+                                className="text-[10px] text-slate-500 hover:text-blue-400 transition-colors flex items-center gap-1.5"
+                            >
+                                <Maximize2 size={10} /> {isFullScreen ? 'Réduire' : 'Plein Écran'}
                             </button>
                         </div>
                     </div>
