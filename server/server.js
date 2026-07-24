@@ -85,9 +85,22 @@ app.use('/api/auth/register', authLimiter);
 app.use('/api/auth/resend-verification', authLimiter);
 app.use('/api/auth/forgot-password', authLimiter);
 
-// Middlewares
+const allowedOrigins = [
+  'https://mysterious-classroom.com',
+  'https://www.mysterious-classroom.com',
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || '*',
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('mysterious-classroom') || origin.endsWith('.onrender.com')) {
+      return callback(null, origin);
+    }
+    return callback(null, origin);
+  },
   credentials: true
 }));
 

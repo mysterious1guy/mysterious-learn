@@ -68,9 +68,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
 
     const handleGoogleLogin = () => {
         setIsLoading(true);
-        const redirectUri = import.meta.env.DEV
-            ? `${window.location.origin}/api/auth/google/callback`
-            : 'https://mysterious-classroom-free-courses.onrender.com/api/auth/google/callback';
+        const redirectUri = `${window.location.origin}/api/auth/google/callback`;
 
         const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${import.meta.env.VITE_GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=email profile&prompt=select_account`;
         window.location.href = googleAuthUrl;
