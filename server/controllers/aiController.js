@@ -450,6 +450,15 @@ Tu peux les explorer directement depuis ton **Tableau de bord** !`;
                     finalResponse = beforeAd.trim();
                 }
             }
+
+            // Sanitize stray asterisks and raw markdown tags
+            finalResponse = finalResponse
+                .replace(/^```markdown\s*/i, '')
+                .replace(/```$/g, '')
+                .replace(/^markdown\s*\n/i, '')
+                .replace(/\*(?=[a-zA-Z0-9\s]+\*)/g, '• ') // replace orphan bullet asterisks with clean bullet points
+                .replace(/\\\*/g, '*') // unescape escaped asterisks
+                .trim();
         }
 
         res.json({ response: finalResponse });
