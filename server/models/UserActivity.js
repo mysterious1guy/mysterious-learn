@@ -75,12 +75,7 @@ const userActivitySchema = new mongoose.Schema({
       visitTime: Date,
       duration: Number
     }],
-    interactions: [{
-      type: String, // 'click', 'scroll', 'hover', etc.
-      timestamp: Date,
-      target: String,
-      metadata: mongoose.Schema.Types.Mixed
-    }]
+    interactions: [mongoose.Schema.Types.Mixed]
   }
 }, {
   timestamps: true
