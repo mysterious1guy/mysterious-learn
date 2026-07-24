@@ -86,7 +86,12 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: formData.email, password: formData.password }),
             });
-            const data = await response.json();
+            let data = {};
+            try {
+                data = await response.json();
+            } catch (pErr) {
+                data = { message: "Le serveur est en cours de démarrage sur Render. Veuillez réessayer dans quelques secondes." };
+            }
             if (response.ok) {
                 if (data.twoFactorRequired) {
                     setAuthMode('two-factor');
@@ -134,7 +139,12 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
-            const data = await response.json();
+            let data = {};
+            try {
+                data = await response.json();
+            } catch (pErr) {
+                data = { message: "Le serveur est en cours de démarrage sur Render. Veuillez réessayer dans quelques secondes." };
+            }
             if (response.ok) {
                 setAuthMode('verification');
                 setToast({ message: 'Code de vérification envoyé !', type: 'info' });
