@@ -7,7 +7,7 @@ class Particle {
     this.ctx = ctx;
     this.x = Math.random() * canvas.width;
     this.y = Math.random() * canvas.height;
-    this.baseSize = Math.random() * 2.5 + 0.5;
+    this.baseSize = Math.random() * 2.8 + 1.2;
     this.size = this.baseSize;
     this.speedX = (Math.random() - 0.5) * 0.4;
     this.speedY = (Math.random() - 0.5) * 0.4;
@@ -15,7 +15,7 @@ class Particle {
     this.vy = this.speedY;
     this.pulseSpeed = Math.random() * 0.02 + 0.01;
     this.pulseOffset = Math.random() * Math.PI * 2;
-    this.opacity = Math.random() * 0.4 + 0.1;
+    this.opacity = Math.random() * 0.4 + 0.3;
     this.friction = 0.95;
     this.hue = theme === 'dark'
       ? 210 + Math.random() * 40  // Blue-purple range
@@ -54,7 +54,7 @@ class Particle {
     if (theme === 'dark') {
       this.ctx.fillStyle = `hsla(${this.hue}, 70%, 65%, ${pulsedOpacity})`;
     } else {
-      this.ctx.fillStyle = `rgba(99, 102, 241, ${pulsedOpacity * 0.7})`;
+      this.ctx.fillStyle = `rgba(99, 102, 241, ${pulsedOpacity * 0.85})`;
     }
     this.ctx.beginPath();
     this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -94,8 +94,8 @@ const Particles = () => {
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
 
-    const PARTICLE_COUNT = Math.min(120, Math.floor((window.innerWidth * window.innerHeight) / 10000));
-    const CONNECTION_DISTANCE = 120;
+    const PARTICLE_COUNT = Math.min(150, Math.floor((window.innerWidth * window.innerHeight) / 7500));
+    const CONNECTION_DISTANCE = 140;
 
     const initParticles = () => {
       particlesList = [];
@@ -118,11 +118,11 @@ const Particles = () => {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < CONNECTION_DISTANCE) {
-            const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.22;
+            const opacity = (1 - dist / CONNECTION_DISTANCE) * 0.35;
             ctx.strokeStyle = theme === 'dark'
               ? `rgba(99, 130, 246, ${opacity})`
-              : `rgba(139, 92, 246, ${opacity * 0.4})`;
-            ctx.lineWidth = 0.6;
+              : `rgba(139, 92, 246, ${opacity * 0.65})`;
+            ctx.lineWidth = 0.8;
             ctx.beginPath();
             ctx.moveTo(particlesList[i].x, particlesList[i].y);
             ctx.lineTo(particlesList[j].x, particlesList[j].y);

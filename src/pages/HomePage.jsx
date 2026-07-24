@@ -141,13 +141,13 @@ const HomePage = ({ API_URL }) => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-500/30 text-slate-900 relative overflow-hidden">
+        <div className="min-h-screen bg-transparent font-sans selection:bg-blue-500/30 text-slate-900 relative overflow-hidden">
             
             {/* Dynamic Mouse Tracking Radial Gradient (Identique à Connexion) */}
             <div 
                 className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-100"
                 style={{
-                    background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.12), transparent 80%)`
+                    background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(99, 102, 241, 0.15), transparent 80%)`
                 }}
             />
 
