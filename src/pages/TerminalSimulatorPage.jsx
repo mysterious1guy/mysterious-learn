@@ -363,222 +363,121 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     };
 
     return (
-        <div className="flex-1 min-w-0 bg-slate-50 dark:bg-[#0B1120] relative flex flex-col min-h-screen">
-            <div className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 mt-14 lg:mt-0 pb-20">
-                <div className="w-full max-w-full mx-auto space-y-6">
+        <div className="flex-1 min-w-0 bg-slate-900 dark:bg-[#070C14] relative flex flex-col min-h-screen">
+            <div className="flex-1 p-2 sm:p-4 lg:p-6 pb-12">
+                <div className="w-full max-w-full mx-auto space-y-4">
 
-                    {/* Header Banner */}
-                    <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
-                                <Terminal size={32} />
+                    {/* Header Minimaliste du Projet / Mode libre */}
+                    <div className="bg-slate-900/90 dark:bg-slate-900 rounded-2xl p-4 lg:p-5 border border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                                <Terminal size={24} />
                             </div>
                             <div>
-                                <div className="flex items-center gap-2">
-                                    <span className="px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-black uppercase tracking-wider">
-                                        {activeMission ? `Projet Actif : ${activeMission.level}` : 'Salle d\'Entraînement'}
-                                    </span>
-                                    <span className="px-3 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1">
-                                        <Bot size={12} /> Copilot Assistant
-                                    </span>
-                                </div>
-                                <h1 className="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white mt-1">
-                                    {activeMission ? activeMission.title : 'Terminal CLI & Noyau Linux Universel'}
+                                <h1 className="text-lg lg:text-xl font-black text-white flex items-center gap-2">
+                                    {activeMission ? activeMission.title : 'Terminal Linux CLI (Console Officielle)'}
                                 </h1>
+                                {activeMission && (
+                                    <p className="text-xs text-slate-400 font-mono mt-0.5">
+                                        🎯 Mission : {activeMission.scenario}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
-                        {/* Stats & Navigation */}
-                        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                            <div className="px-4 py-3 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/50 flex items-center gap-2">
-                                <Trophy size={18} className="text-amber-500" />
-                                <div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase">Score XP</p>
-                                    <p className="text-sm font-black text-slate-900 dark:text-white">{score} XP</p>
-                                </div>
+                        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+                            <div className="px-3 py-2 bg-slate-800/80 rounded-xl border border-slate-700/50 flex items-center gap-2">
+                                <Trophy size={16} className="text-amber-400" />
+                                <span className="text-xs font-black text-white">{score} XP</span>
                             </div>
 
-                            {activeMission ? (
-                                <button
-                                    onClick={() => navigate('/projects')}
-                                    className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-indigo-500/20 flex items-center gap-2 transition"
-                                >
-                                    <ArrowLeft size={16} />
-                                    Retour à la Liste des Projets
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={() => navigate('/projects')}
-                                    className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition"
-                                >
-                                    <Layers size={16} />
-                                    Voir les Cartes de Projets
-                                </button>
-                            )}
+                            <button
+                                onClick={() => navigate('/projects')}
+                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center gap-1.5"
+                            >
+                                <ArrowLeft size={14} />
+                                Cartes de Projets
+                            </button>
                         </div>
                     </div>
 
-                    {/* Conteneur Principal : Console Terminal + Copilot Mentor */}
-                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
+                    {/* Console Terminal Linux Authentique (100% Plein Écran) */}
+                    <div className="w-full bg-[#06141d] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden font-mono">
 
-                        {/* Console Terminal Principal (3 colonnes) */}
-                        <div className="xl:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 lg:p-6 shadow-xl space-y-4">
-
-                            {/* Header de Console */}
-                            <div className="flex items-center justify-between bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 text-xs font-mono">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                                    <span className="text-slate-400 font-bold ml-2">bash - root@mysterious-lab:{currentPath}</span>
-                                </div>
-                                <span className="text-emerald-400 font-bold hidden sm:inline">
-                                    {activeMission ? `PROJET : ${activeMission.title.substring(0, 30)}...` : 'NOYAU LINUX UNIVERSEL [ENTRAÎNEMENT LIBRE]'}
-                                </span>
+                        {/* Top Bar macOS / Linux Native */}
+                        <div className="bg-[#0b1d28] px-4 py-3 border-b border-slate-800/80 flex items-center justify-between select-none">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]/50 cursor-pointer" onClick={() => navigate('/')}></div>
+                                <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]/50"></div>
+                                <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50"></div>
                             </div>
+                            <div className="text-xs font-bold text-slate-300 tracking-wide font-mono flex items-center gap-2">
+                                <span>mouhamed@MYSTERIOUS: ~</span>
+                            </div>
+                            <div className="w-12"></div>
+                        </div>
 
-                            {/* Banner d'Information si Projet Actif */}
-                            {activeMission && (
-                                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-300 space-y-2">
-                                    <div className="flex items-center justify-between text-emerald-400 font-bold">
-                                        <span>🎯 CIBLE : {activeMission.targetHost}</span>
-                                        <span className="text-amber-400">+{activeMission.xpReward} XP</span>
-                                    </div>
-                                    <p className="text-slate-300 leading-relaxed">{activeMission.scenario}</p>
-                                </div>
-                            )}
-
-                            {/* Output Terminal & Inline Command Line (Authentic Linux Shell) */}
-                            <div
-                                ref={outputContainerRef}
-                                onClick={() => inputRef.current?.focus()}
-                                className="bg-slate-950 border border-slate-800 rounded-2xl p-5 font-mono text-xs md:text-sm h-[580px] lg:h-[660px] xl:h-[720px] overflow-y-auto space-y-3 shadow-inner custom-scrollbar cursor-text relative flex flex-col justify-between"
-                            >
-                                <div className="space-y-3">
-                                    {history.map((h, i) => (
-                                        <div
-                                            key={i}
-                                            className={`leading-relaxed whitespace-pre-wrap ${
-                                                h.type === 'user'
-                                                    ? 'text-amber-300 font-bold'
-                                                    : h.type === 'success'
-                                                    ? 'text-emerald-400 font-bold bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-500/20'
-                                                    : h.type === 'error'
-                                                    ? 'text-red-400 font-semibold'
-                                                    : h.type === 'mission'
-                                                    ? 'text-purple-300 font-semibold bg-purple-500/20 p-3.5 rounded-xl border border-purple-500/30'
-                                                    : 'text-slate-300'
-                                            }`}
-                                        >
+                        {/* Écran Terminal et Invite de Commande Directe (Sans boutons séparés) */}
+                        <div
+                            ref={outputContainerRef}
+                            onClick={() => inputRef.current?.focus()}
+                            className="p-4 sm:p-6 text-xs sm:text-sm md:text-base h-[680px] lg:h-[760px] overflow-y-auto custom-scrollbar cursor-text space-y-2 leading-relaxed text-slate-200"
+                            style={{ backgroundColor: '#06141d' }}
+                        >
+                            {/* Historique des lignes de commande */}
+                            {history.map((h, i) => (
+                                <div key={i} className="whitespace-pre-wrap">
+                                    {h.type === 'user' ? (
+                                        <div className="flex items-center gap-2 py-0.5">
+                                            <span className="text-[#eab308] font-bold">mouhamed@MYSTERIOUS</span>
+                                            <span className="text-slate-400">:</span>
+                                            <span className="text-[#38bdf8] font-bold">{currentPath}</span>
+                                            <span className="text-white font-bold">$</span>
+                                            <span className="text-white font-bold ml-1">{h.text.split('# ').pop() || h.text}</span>
+                                        </div>
+                                    ) : h.type === 'success' ? (
+                                        <div className="text-emerald-400 font-bold py-1 bg-emerald-500/10 px-3 rounded-lg border border-emerald-500/20 my-1">
                                             {h.text}
                                         </div>
-                                    ))}
-                                    {executingCmd && (
-                                        <div className="text-emerald-400 animate-pulse font-bold text-xs flex items-center gap-2">
-                                            <RefreshCw size={14} className="animate-spin" />
-                                            <span>⚡ [Noyau Linux] Traitement de la commande en cours...</span>
+                                    ) : h.type === 'error' ? (
+                                        <div className="text-red-400 font-medium py-0.5">
+                                            {h.text}
+                                        </div>
+                                    ) : h.type === 'mission' ? (
+                                        <div className="text-purple-300 font-semibold py-1 bg-purple-500/10 px-3 rounded-lg border border-purple-500/20 my-1">
+                                            {h.text}
+                                        </div>
+                                    ) : (
+                                        <div className="text-slate-300 font-mono py-0.5">
+                                            {h.text}
                                         </div>
                                     )}
                                 </div>
+                            ))}
 
-                                {/* Invite de Commande Intégrée au Terminal */}
-                                <form onSubmit={handleCommand} className="flex items-center gap-2 pt-4 border-t border-slate-800/80 mt-4 shrink-0">
-                                    <span className="text-emerald-400 font-mono text-xs md:text-sm font-black shrink-0">
-                                        root@mysterious-lab:{currentPath}#
-                                    </span>
-                                    <input
-                                        ref={inputRef}
-                                        type="text"
-                                        value={input}
-                                        onChange={(e) => setInput(e.target.value)}
-                                        disabled={executingCmd}
-                                        autoFocus
-                                        placeholder={executingCmd ? "Exécution en cours..." : "Tapez votre commande Linux..."}
-                                        className="w-full bg-transparent text-slate-100 font-mono text-xs md:text-sm focus:outline-none placeholder:text-slate-600 disabled:opacity-50"
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={executingCmd}
-                                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-emerald-600/30 transition shrink-0 flex items-center gap-1.5"
-                                    >
-                                        {executingCmd ? (
-                                            <RefreshCw size={14} className="animate-spin" />
-                                        ) : (
-                                            'Exécuter ↵'
-                                        )}
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-
-                        {/* Panneau de Guidage & Copilot Mentor (1 Colonne) */}
-                        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-                            
-                            {/* Header Copilot */}
-                            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
-                                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
-                                    <Bot size={22} />
-                                </div>
-                                <div>
-                                    <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                                        Mysterious Copilot
-                                    </h3>
-                                    <p className="text-xs text-purple-500 font-bold">Mentor Cyber & Terminal</p>
-                                </div>
-                            </div>
-
-                            {/* Guidance contextualisée */}
-                            {activeMission ? (
-                                <div className="space-y-4 bg-purple-500/10 border border-purple-500/20 p-4 rounded-2xl">
-                                    <div className="flex items-center gap-2 text-purple-400 text-xs font-black uppercase">
-                                        <Sparkles size={14} /> Guidage de Projet Pas-à-Pas
-                                    </div>
-                                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                                        Pour ce projet, votre objectif est : <br/>
-                                        <strong className="text-purple-600 dark:text-purple-300">{activeMission.hint}</strong>
-                                    </p>
-                                    <button
-                                        onClick={() => setInput(activeMission.expectedCommand)}
-                                        className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition text-center"
-                                    >
-                                        ⚡ Pré-remplir la commande suggérée
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="space-y-4 bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-2xl">
-                                    <div className="flex items-center gap-2 text-indigo-400 text-xs font-black uppercase">
-                                        <Compass size={14} /> Salle d'Entraînement Libre
-                                    </div>
-                                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                                        Testez toutes les commandes Linux réelles. Cliquez sur n'importe quelle suggestion pour l'essayer directement dans le terminal !
-                                    </p>
+                            {executingCmd && (
+                                <div className="text-emerald-400 animate-pulse font-bold text-xs flex items-center gap-2 py-1">
+                                    <RefreshCw size={14} className="animate-spin" />
+                                    <span>[Noyau Linux] Traitement de la commande...</span>
                                 </div>
                             )}
 
-                            {/* Guide & Aide-Mémoire Commandes */}
-                            <div className="space-y-3">
-                                <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Guide & Commandes Linux :</p>
-                                <div className="space-y-2.5 h-[340px] lg:h-[420px] overflow-y-auto pr-1 custom-scrollbar">
-                                    {CHEATSHEET.map((item, index) => (
-                                        <div
-                                            key={index}
-                                            onClick={() => setInput(item.cmd.split(' ')[0])}
-                                            className="p-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/50 rounded-2xl cursor-pointer transition group"
-                                        >
-                                            <div className="flex items-center justify-between mb-1">
-                                                <span className="font-mono text-xs font-black text-indigo-600 dark:text-indigo-400 group-hover:underline">
-                                                    {item.cmd}
-                                                </span>
-                                                <span className="text-[10px] font-bold text-slate-400 uppercase">Tester</span>
-                                            </div>
-                                            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
-                                                {item.desc}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
+                            {/* Ligne d'invité de commande active et fluide (Directement intégrée au flux du texte) */}
+                            <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
+                                <span className="text-[#eab308] font-bold shrink-0">mouhamed@MYSTERIOUS</span>
+                                <span className="text-slate-400 font-bold shrink-0">:</span>
+                                <span className="text-[#38bdf8] font-bold shrink-0">{currentPath}</span>
+                                <span className="text-white font-bold shrink-0">$</span>
+                                <input
+                                    ref={inputRef}
+                                    type="text"
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    disabled={executingCmd}
+                                    autoFocus
+                                    className="flex-1 bg-transparent text-white font-mono text-xs sm:text-sm md:text-base focus:outline-none border-none p-0 m-0 caret-emerald-400 disabled:opacity-50"
+                                />
+                            </form>
                         </div>
 
                     </div>
