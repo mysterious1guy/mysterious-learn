@@ -27,9 +27,6 @@ connectDB().then(async () => {
       console.log('✅ Profil Super Admin mouhamedfall@esp.sn ajusté avec succès !');
     }
 
-    // Table rase : Purge intégrale de tous les anciens cours démo/hardcodés
-    await Course.deleteMany({});
-    console.log('🧹 Purge totale des anciens cours effectuée avec succès.');
   } catch (e) {
     console.error('❌ Erreur initialisation DB:', e.message);
   }
