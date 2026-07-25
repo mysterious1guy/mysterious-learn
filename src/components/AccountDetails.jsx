@@ -561,7 +561,7 @@ ${JSON.stringify(exportObj, null, 2)}
   );
 
   const renderSecurityTab = () => {
-    const isGoogleOrSuperAdmin = user?.email === 'mouhamedfall@esp.sn' || Boolean(user?.googleId) || user?.authProvider === 'google';
+    const isSuperAdmin = user?.email === 'mouhamedfall@esp.sn';
 
     return (
       <div className="space-y-6">
@@ -570,7 +570,7 @@ ${JSON.stringify(exportObj, null, 2)}
             <Shield size={22} className="text-blue-600" /> {t('profile_fields.security_tab') || 'Sécurité du compte'}
           </h4>
           <div className="space-y-4">
-            {!isGoogleOrSuperAdmin && (
+            {!isSuperAdmin && (
               <>
                 <button
                   onClick={() => setShowPasswordChange(!showPasswordChange)}
