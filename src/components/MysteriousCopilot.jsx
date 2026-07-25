@@ -408,7 +408,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     exit={{ x: '100%', opacity: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     onClick={() => inputRef.current?.focus()}
-                    className={`fixed top-0 right-0 h-full transition-all duration-300 bg-slate-950/95 border-l border-blue-500/20 backdrop-blur-2xl z-[150] shadow-[-10px_0_50px_rgba(0,0,0,0.5)] flex flex-col ${
+                    className={`fixed top-0 right-0 h-full transition-all duration-300 bg-[#070b14]/95 border-l border-indigo-500/20 backdrop-blur-3xl z-[150] shadow-[-20px_0_80px_rgba(0,0,0,0.8)] flex flex-col relative overflow-hidden ${
                         isFullScreen 
                             ? 'w-full left-0' 
                             : isExpanded 
@@ -416,59 +416,88 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 : 'w-full sm:w-[540px] md:w-[640px]'
                     }`}
                 >
+                    {/* Glowing Ambient Background Effects */}
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 blur-[130px] pointer-events-none rounded-full" />
+                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/10 blur-[130px] pointer-events-none rounded-full" />
+
                     {/* Header */}
-                    <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/60 shadow-xl relative z-10">
-                        <div className="flex items-center gap-4">
-                            <div className="relative w-14 h-14 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
-                                <div className="absolute inset-0 bg-blue-500/20 blur-lg rounded-full animate-pulse" />
+                    <div className="p-5 md:p-6 border-b border-white/10 flex justify-between items-center bg-slate-950/80 backdrop-blur-xl shadow-2xl relative z-10">
+                        <div className="flex items-center gap-3.5">
+                            <div className="relative w-12 h-12 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+                                <div className="absolute inset-0 bg-blue-500/25 blur-md rounded-full animate-pulse" />
                                 <AnimatedAIAvatar isTyping={isTyping} />
-                                <div className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-slate-950 z-10"></div>
+                                <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-slate-950 z-10 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
                             </div>
                             <div className="flex flex-col">
-                                <span className="font-mono font-black text-white tracking-[0.2em] text-xs uppercase opacity-90">
-                                    Mysterious Copilot
-                                </span>
-                                <span className="text-[10px] text-blue-400 font-bold opacity-60">
-                                    {t('copilot.advanced_logic') || 'Système de Logique Avancé'}
+                                <div className="flex items-center gap-2">
+                                    <span className="font-mono font-black text-white tracking-[0.15em] text-xs uppercase">
+                                        Mysterious Copilot
+                                    </span>
+                                    <span className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 rounded-full text-[9px] font-mono font-bold uppercase">
+                                        v2.5
+                                    </span>
+                                </div>
+                                <span className="text-[11px] text-slate-400 font-medium mt-0.5">
+                                    {t('copilot.advanced_logic') || 'Assistant & Mentor Cyber'}
                                 </span>
                             </div>
                         </div>
 
+                        {/* Unified High-Tech Header Window Controls */}
                         <div className="flex items-center gap-2">
-                            {/* Expand / Normal Mode Button */}
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setIsExpanded(!isExpanded);
-                                    if (isFullScreen) setIsFullScreen(false);
-                                }}
-                                className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
-                                    isExpanded && !isFullScreen
-                                        ? 'bg-blue-600/30 text-blue-300 border-blue-500/50 shadow-[0_0_12px_rgba(59,130,246,0.3)]'
-                                        : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
-                                }`}
-                                title={isExpanded ? "Mode Standard" : "Élargir la fenêtre"}
-                            >
-                                {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-                                <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{isExpanded ? 'Normal' : 'Élargir'}</span>
-                            </button>
+                            <div className="flex items-center bg-slate-900/90 border border-white/10 rounded-xl p-1 gap-1 shadow-inner">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsExpanded(false);
+                                        setIsFullScreen(false);
+                                    }}
+                                    className={`px-3 py-1.5 rounded-lg transition-all text-[11px] font-black uppercase tracking-wider flex items-center gap-1.5 ${
+                                        !isExpanded && !isFullScreen
+                                            ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
+                                            : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                    }`}
+                                    title="Mode Normal (Largeur standard)"
+                                >
+                                    <Minimize2 size={13} />
+                                    <span className="hidden sm:inline">Normal</span>
+                                </button>
 
-                            {/* FullScreen Button */}
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setIsFullScreen(!isFullScreen);
-                                }}
-                                className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
-                                    isFullScreen
-                                        ? 'bg-purple-600/40 text-purple-300 border-purple-500/50 shadow-[0_0_12px_rgba(168,85,247,0.4)]'
-                                        : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
-                                }`}
-                                title={isFullScreen ? "Quitter Plein Écran" : "Mode Plein Écran"}
-                            >
-                                <Monitor size={16} />
-                                <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{isFullScreen ? 'Réduire' : 'Plein Écran'}</span>
-                            </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsExpanded(true);
+                                        setIsFullScreen(false);
+                                    }}
+                                    className={`px-3 py-1.5 rounded-lg transition-all text-[11px] font-black uppercase tracking-wider flex items-center gap-1.5 ${
+                                        isExpanded && !isFullScreen
+                                            ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
+                                            : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                    }`}
+                                    title="Élargir la fenêtre"
+                                >
+                                    <Maximize2 size={13} />
+                                    <span className="hidden sm:inline">Élargir</span>
+                                </button>
+
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsFullScreen(!isFullScreen);
+                                    }}
+                                    className={`px-3 py-1.5 rounded-lg transition-all text-[11px] font-black uppercase tracking-wider flex items-center gap-1.5 ${
+                                        isFullScreen
+                                            ? 'bg-purple-600 text-white shadow-md shadow-purple-500/30'
+                                            : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                    }`}
+                                    title={isFullScreen ? "Quitter le Plein Écran" : "Mode Plein Écran"}
+                                >
+                                    <Monitor size={13} />
+                                    <span className="hidden sm:inline">{isFullScreen ? 'Réduire' : 'Plein Écran'}</span>
+                                </button>
+                            </div>
+
+                            <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block" />
 
                             {/* Close Button */}
                             <button
@@ -476,27 +505,28 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                     e.stopPropagation();
                                     onClose();
                                 }}
-                                className="p-2 text-slate-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/40 border border-transparent rounded-xl transition-all active:scale-90"
+                                className="p-2.5 text-slate-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/40 border border-transparent rounded-xl transition-all active:scale-90"
                                 title="Fermer"
                             >
-                                <X size={20} />
+                                <X size={18} />
                             </button>
                         </div>
                     </div>
 
                     {/* Messages Area */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-6 custom-scrollbar relative z-10">
                         {messages.map((msg, idx) => (
                             <motion.div
                                 key={idx}
-                                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                                initial={{ opacity: 0, y: 15, scale: 0.98 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
+                                transition={{ duration: 0.25 }}
                                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
-                                <div className={`flex items-start gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} w-full max-w-[90%]`}>
+                                <div className={`flex items-start gap-3.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'} w-full max-w-[92%]`}>
                                     {/* Avatar Column */}
                                     <div className="shrink-0 mt-1">
-                                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden border shadow-lg ${msg.role === 'user' ? 'border-blue-500/30' : 'border-slate-800 bg-slate-900'}`}>
+                                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden border shadow-lg ${msg.role === 'user' ? 'border-blue-500/40 shadow-blue-500/10' : 'border-slate-800 bg-slate-900'}`}>
                                             {msg.role === 'user' ? (
                                                 (user?.avatar || user?.picture) ? (
                                                     <img
@@ -509,7 +539,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                                         }}
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-xs font-black text-white uppercase">
+                                                    <div className="w-full h-full bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-xs font-black text-white uppercase">
                                                         {user?.firstName?.charAt(0) || user?.name?.charAt(0) || 'U'}
                                                     </div>
                                                 )
@@ -521,24 +551,24 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                         </div>
                                     </div>
 
-                                    {/* Message Column */}
-                                    <div className="flex flex-col gap-2 w-full">
-                                        <div className={`px-5 py-4 rounded-[1.5rem] shadow-2xl relative overflow-hidden ${msg.role === 'user'
-                                            ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-tr-none border border-blue-400/30'
+                                    {/* Message Body */}
+                                    <div className="flex flex-col gap-1.5 w-full min-w-0">
+                                        <div className={`px-5 py-4 rounded-2xl shadow-xl relative overflow-hidden text-sm leading-relaxed ${msg.role === 'user'
+                                            ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 text-white rounded-tr-none border border-blue-400/30 shadow-blue-600/10'
                                             : msg.type === 'suggestion'
-                                                ? 'bg-gradient-to-br from-amber-500/10 to-amber-900/20 text-amber-100 border border-amber-500/20 rounded-tl-none'
-                                                : 'bg-gradient-to-br from-slate-900/80 to-slate-950/90 text-slate-200 border border-white/5 rounded-tl-none'
+                                                ? 'bg-gradient-to-br from-amber-500/10 via-amber-900/15 to-slate-900/90 text-amber-100 border border-amber-500/25 rounded-tl-none border-l-2 border-l-amber-500'
+                                                : 'bg-slate-900/85 backdrop-blur-md text-slate-100 border border-slate-800/80 rounded-tl-none border-l-2 border-l-blue-500/80 shadow-2xl'
                                             }`}>
-                                            {/* Subtile background patterns for AI */}
+                                            
                                             {msg.role !== 'user' && (
-                                                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[50px] pointer-events-none" />
-                                            )}
-
-                                            {msg.role !== 'user' && (
-                                                <div className="flex items-center gap-2 mb-3 opacity-60">
-                                                    {msg.type === 'suggestion' ? <Sparkles size={12} className="text-amber-400" /> : <Terminal size={12} className="text-blue-400" />}
-                                                    <span className="text-[10px] font-black font-mono tracking-widest uppercase">
-                                                        {msg.type === 'suggestion' ? 'Suggestion' : t('copilot.assistant') || 'Assistant'}
+                                                <div className="flex items-center gap-2 mb-2.5 pb-2 border-b border-white/5 opacity-80">
+                                                    {msg.type === 'suggestion' ? (
+                                                        <Sparkles size={13} className="text-amber-400" />
+                                                    ) : (
+                                                        <Terminal size={13} className="text-blue-400" />
+                                                    )}
+                                                    <span className="text-[10px] font-black font-mono tracking-widest uppercase text-slate-400">
+                                                        {msg.type === 'suggestion' ? 'Suggestion Pédagogique' : 'Mysterious Copilot'}
                                                     </span>
                                                 </div>
                                             )}
@@ -553,8 +583,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                             {renderMessageContent(msg.content, msg.role)}
                                         </div>
 
-                                        {/* Timestamp/Status (Subtle) */}
-                                        <span className={`text-[9px] font-mono opacity-30 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                                        <span className={`text-[9px] font-mono opacity-40 px-1 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                                             {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </span>
                                     </div>
@@ -563,22 +592,25 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                         ))}
 
                         {isTyping && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start pl-14">
-                                <div className="bg-slate-900/60 border border-white/5 rounded-full px-5 py-3 flex justify-center items-center gap-1.5 shadow-xl">
-                                    <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                                    <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
-                                    <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start pl-12">
+                                <div className="bg-slate-900/80 border border-slate-800 rounded-2xl px-4 py-3 flex items-center gap-2 shadow-xl border-l-2 border-l-blue-500">
+                                    <span className="text-xs font-mono text-slate-400 font-semibold mr-1">Analyse en cours</span>
+                                    <div className="flex items-center gap-1">
+                                        <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+                                        <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+                                        <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+                                    </div>
                                 </div>
                             </motion.div>
                         )}
                         <div ref={messagesEndRef} />
                     </div>
 
-                    {/* Input Area */}
-                    <div className="p-6 bg-black/40 border-t border-white/10 backdrop-blur-3xl" onClick={(e) => e.stopPropagation()}>
+                    {/* Input Area Footer */}
+                    <div className="p-4 md:p-5 bg-slate-950/90 border-t border-white/10 backdrop-blur-2xl relative z-10" onClick={(e) => e.stopPropagation()}>
                         {/* Selected Image Chip */}
                         {selectedImage && (
-                            <div className="mb-3 flex items-center gap-3 bg-blue-950/70 border border-blue-500/40 rounded-xl p-2 max-w-xs shadow-lg animate-fadeIn">
+                            <div className="mb-3 flex items-center gap-3 bg-blue-950/80 border border-blue-500/40 rounded-xl p-2 max-w-xs shadow-lg animate-fadeIn">
                                 <img src={selectedImage} alt="Aperçu" className="w-12 h-12 object-cover rounded-lg border border-blue-400/30" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-bold text-blue-200 truncate">Image attachée</p>
@@ -602,7 +634,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                             }}
                             className="relative flex items-center group"
                         >
-                            <div className="absolute inset-0 bg-blue-500/5 blur-xl group-focus-within:bg-blue-500/10 transition-all rounded-2xl" />
+                            <div className="absolute inset-0 bg-blue-500/10 blur-xl group-focus-within:bg-blue-500/20 transition-all rounded-2xl" />
 
                             <input
                                 ref={fileInputRef}
@@ -612,7 +644,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 onChange={handleImageChange}
                             />
 
-                            {/* Image Upload Button */}
+                            {/* Attachment Button */}
                             <button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
@@ -627,69 +659,31 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder={selectedImage ? "Ajoute une question sur cette image..." : (t('copilot.ask_placeholder') || "Pose ta question au mentor...")}
-                                className="w-full bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 rounded-2xl py-4 pl-12 pr-14 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all font-medium text-sm shadow-2xl relative z-10"
+                                placeholder={selectedImage ? "Pose ta question sur cette capture..." : (t('copilot.ask_placeholder') || "Pose ta question au mentor...")}
+                                className="w-full bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 rounded-2xl py-3.5 pl-12 pr-14 focus:outline-none focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/20 transition-all font-medium text-sm shadow-2xl relative z-10"
                             />
 
                             <button
                                 type="submit"
                                 disabled={(!input.trim() && !selectedImage) || isTyping}
-                                className="absolute right-2 p-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800/50 disabled:text-slate-600 text-white rounded-xl transition-all group/btn active:scale-95 shadow-lg relative z-20"
+                                className="absolute right-2 p-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-600 text-white rounded-xl transition-all group/btn active:scale-95 shadow-lg relative z-20"
                             >
-                                <Send size={18} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                                <Send size={16} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
                             </button>
                         </form>
 
-                        {/* Highly Visible Window Controls Bar */}
-                        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/5">
-                            <div className="flex items-center gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsExpanded(false);
-                                        setIsFullScreen(false);
-                                    }}
-                                    className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1.5 ${
-                                        !isExpanded && !isFullScreen
-                                            ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-500/30'
-                                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
-                                    }`}
-                                >
-                                    <Minimize2 size={13} /> Mode Normal
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsExpanded(!isExpanded);
-                                        setIsFullScreen(false);
-                                    }}
-                                    className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1.5 ${
-                                        isExpanded && !isFullScreen
-                                            ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-500/30'
-                                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
-                                    }`}
-                                >
-                                    <Maximize2 size={13} /> {isExpanded ? 'Réduire Largeur' : 'Élargir Fenêtre'}
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={() => setIsFullScreen(!isFullScreen)}
-                                    className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all flex items-center gap-1.5 ${
-                                        isFullScreen
-                                            ? 'bg-purple-600 text-white border-purple-400 shadow-md shadow-purple-500/30'
-                                            : 'bg-slate-900 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
-                                    }`}
-                                >
-                                    <Monitor size={13} /> {isFullScreen ? 'Quitter Plein Écran' : 'Plein Écran'}
-                                </button>
+                        {/* Clean Status & Capability Footer Bar */}
+                        <div className="mt-3 flex items-center justify-between px-1">
+                            <div className="flex items-center gap-2 text-xs text-slate-400">
+                                <div className="p-1 bg-amber-500/10 border border-amber-500/20 rounded-md">
+                                    <Sparkles size={12} className="text-amber-400 animate-pulse" />
+                                </div>
+                                <span className="font-medium text-[11px] text-slate-300">Vision & IA Multimodale activées</span>
                             </div>
 
-                            <div className="flex items-center gap-1.5 text-[11px] text-blue-400/90 font-mono font-semibold bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">
-                                <Sparkles size={13} className="text-amber-400" />
-                                <span>Vision & IA Multimodale Actives</span>
-                            </div>
+                            <span className="text-[10px] text-slate-500 font-mono hidden sm:inline">
+                                Appuyez sur <kbd className="px-1.5 py-0.5 bg-slate-900 border border-slate-700 rounded text-slate-300">Entrée ↵</kbd> pour envoyer
+                            </span>
                         </div>
                     </div>
                 </motion.div>
