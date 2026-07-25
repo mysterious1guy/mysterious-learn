@@ -219,7 +219,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         try {
             const savedVfs = localStorage.getItem(`terminal_vfs_${displayUsername}`);
             return savedVfs ? JSON.parse(savedVfs) : {
-                [`/home/${displayUsername}/script.sh`]: '#!/bin/bash\necho "Bienvenue dans Mysterious Classroom !"'
+                [`/home/${displayUsername}/script.sh`]: 'echo "Bienvenue dans Mysterious Classroom !"'
             };
         } catch (e) {
             return {};
@@ -376,7 +376,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             const fileName = parts[1] || 'script.sh';
             setActiveEditor({
                 fileName: fileName,
-                content: fileName.endsWith('.sh') ? '#!/bin/bash\necho "Hello from Mysterious Classroom!"' : '',
+                content: fileName.endsWith('.sh') ? 'echo "Hello from Mysterious Classroom!"' : '',
                 editorType: editorName.includes('vi') ? 'vim' : 'nano'
             });
             return;
