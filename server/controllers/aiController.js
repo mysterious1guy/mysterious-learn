@@ -826,6 +826,74 @@ const generateTerminalMission = async (req, res) => {
     }
 };
 
+// @desc    Interpréteur Linux Universel par IA
+// @route   POST /api/ai/execute-terminal-command
+// @access  Private
+const executeTerminalCommand = async (req, res) => {
+    try {
+        const { command, currentPath = '/root', mission } = req.body;
+        if (!command) {
+            return res.status(400).json({ message: 'Commande requise' });
+        }
+
+        const cleanCmd = command.trim();
+        const path = currentPath || '/root';
+
+        // Commande clear immédiate
+        if (cleanCmd === 'clear') {
+            return res.json({ output: '', newPath: path, isClear: true });
+        }
+
+        const systemPrompt = `Tu es le Noyau Système et l'Interpréteur Bash d'un terminal Linux Ubuntu 24.04 LTS (Hacker Environment).
+L'utilisateur s'exécute en tant que super-utilisateur 'root' dans le répertoire '${path}'.
+
+FONCTIONNEMENT UNIVERSEL LINUX :
+- Tu dois simuler la réponse brute (stdout / stderr) exacte d'un système Linux pour TOUTE commande exécutée ("${cleanCmd}").
+- Tu supportes l'ensemble des commandes Linux (whoami, ls, pwd, cat, grep, find, ps, netstat, nmap, chmod, mkdir, touch, rm, python3, curl, ping, uname, top, etc.).
+- Si la commande est 'cd <dossier>', change le répertoire et renvoie le nouveau chemin dans "newPath". Sinon garde "${path}".
+${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.description}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}
+
+RÉPONDS EXCLUSIVEMENT SOUS CE FORMAT JSON STRICT :
+\`\`\`json
+{
+  "output": "Sortie texte brute exacte de la console",
+  "newPath": "${path}",
+  "isMissionCompleted": false,
+  "completionMessage": ""
+}
+\`\`\``;
+
+        const aiResponse = await callDeepSeekAPI(systemPrompt, `Commande exécutée: ${cleanCmd}`);
+        let parsed = null;
+
+        try {
+            const cleanJson = aiResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+            parsed = JSON.parse(cleanJson);
+        } catch (e) {
+            console.error("Échec parse JSON terminal exec:", e.message);
+        }
+
+        if (!parsed) {
+            parsed = {
+                output: aiResponse || `[+] Commande "${cleanCmd}" exécutée.`,
+                newPath: path,
+                isMissionCompleted: false
+            };
+        }
+
+        res.json({
+            output: parsed.output || aiResponse,
+            newPath: parsed.newPath || path,
+            isMissionCompleted: !!parsed.isMissionCompleted,
+            completionMessage: parsed.completionMessage || null
+        });
+
+    } catch (err) {
+        console.error("Erreur executeTerminalCommand:", err);
+        res.status(500).json({ output: "bash: erreur système lors de l'exécution." });
+    }
+};
+
 module.exports = {
     getGlobalKnowledge,
     upsertGlobalKnowledge,
@@ -835,5 +903,6 @@ module.exports = {
     generateChallenge,
     adaptiveRoadmap,
     generateCertificate,
-    generateTerminalMission
+    generateTerminalMission,
+    executeTerminalCommand
 };

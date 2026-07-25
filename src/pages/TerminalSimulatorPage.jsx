@@ -86,15 +86,18 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const terminalEndRef = useRef(null);
     const outputContainerRef = useRef(null);
 
+    const [currentPath, setCurrentPath] = useState('/root');
+    const [executingCmd, setExecutingCmd] = useState(false);
+
     // Initialiser l'historique lors du changement de mission
     useEffect(() => {
         if (activeMission) {
             setHistory([
-                { type: 'sys', text: '=== MYSTERIOUS TERMINAL HACKING SIMULATOR v3.0 ===' },
-                { type: 'sys', text: 'Bienvenue dans le centre d\'entraînement au Terminal CLI pour Débutants.' },
-                { type: 'sys', text: 'Tapez "help" à tout moment pour consulter le guide complet.' },
+                { type: 'sys', text: '=== MYSTERIOUS TERMINAL HACKING SIMULATOR v4.0 (Noyau Linux Universel) ===' },
+                { type: 'sys', text: 'Bienvenue dans le centre d\'entraînement au Terminal CLI pour Débutants & Experts.' },
+                { type: 'sys', text: 'Toutes les commandes Linux réelles sont désormais supportées sans restriction.' },
                 { type: 'mission', text: `🎯 OBJET : ${activeMission.title}\n${activeMission.description}` },
-                { type: 'output', text: activeMission.initialOutput || '[+] Terminal prêt.' }
+                { type: 'output', text: activeMission.initialOutput || '[+] Noyau Linux prêt. Shell connecté.' }
             ]);
             setShowHint(false);
         }
@@ -105,7 +108,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         if (outputContainerRef.current) {
             outputContainerRef.current.scrollTop = outputContainerRef.current.scrollHeight;
         }
-    }, [history]);
+    }, [history, executingCmd]);
 
     // Générer une mission aléatoire via l'IA
     const fetchAIMission = async () => {
@@ -137,80 +140,110 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         }
     };
 
-    const handleCommand = (e) => {
+    const handleCommand = async (e) => {
         e.preventDefault();
         const cmd = input.trim();
-        if (!cmd) return;
+        if (!cmd || executingCmd) return;
 
-        const newHistory = [...history, { type: 'user', text: `root@mysterious-lab:~# ${cmd}` }];
+        const promptText = `root@mysterious-lab:${currentPath}# ${cmd}`;
+        const newHistory = [...history, { type: 'user', text: promptText }];
+        setInput('');
+
         const lower = cmd.toLowerCase();
-        const expected = (activeMission.expectedCommand || '').toLowerCase().trim();
+        const expected = (activeMission?.expectedCommand || '').toLowerCase().trim();
+
+        if (lower === 'clear') {
+            setHistory([]);
+            return;
+        }
 
         if (lower === 'help') {
             newHistory.push({
                 type: 'sys',
-                text: `📚 COMMANDES DE BASE DISPONIBLES :
-- whoami              : Vérifier le nom d'utilisateur connecté
-- ls                  : Lister les fichiers du répertoire
-- cat <fichier>       : Lire un fichier (ex: cat flag.txt)
-- scan <ip>           : Analyser les ports (ex: scan 192.168.1.10)
-- decode <base64>     : Décoder du texte Base64
-- ping <ip>           : Tester la connectivité réseau
+                text: `📚 NOYAU LINUX UNIVERSEL (Toutes commandes supportées) :
+- whoami, ls, pwd, cat, cd, mkdir, touch, rm, chmod, chown
+- grep, find, ps aux, netstat, nmap, python3, curl, ping, uname -a
 - clear               : Effacer l'écran
 - hint                : Obtenir un indice sur la mission actuelle`
             });
-        } else if (lower === 'clear') {
-            setHistory([]);
-            setInput('');
+            setHistory(newHistory);
             return;
-        } else if (lower === 'hint') {
-            setShowHint(true);
-            newHistory.push({ type: 'mission', text: `💡 INDICE : ${activeMission.hint}` });
-        } else if (lower === expected || lower.startsWith(expected)) {
-            // Reussite de la mission
-            newHistory.push({ type: 'success', text: activeMission.successOutput || '[+] Mission Accomplie avec succès !' });
-            
-            if (!completedMissions.includes(activeMission.id)) {
-                const gained = activeMission.xpReward || 150;
-                const newScore = score + gained;
-                setScore(newScore);
-                setCompletedMissions([...completedMissions, activeMission.id]);
-
-                if (setUser) {
-                    setUser(prev => prev ? ({ ...prev, xp: newScore }) : prev);
-                }
-
-                if (setToast) {
-                    setToast({ message: `🎯 Mission réussie ! +${gained} XP gagnés`, type: 'success' });
-                }
-            }
-        } else if (lower === 'whoami') {
-            newHistory.push({ type: 'output', text: 'root (Super-utilisateur)' });
-        } else if (lower === 'ls' || lower === 'ls -la') {
-            newHistory.push({ type: 'output', text: 'passwords.txt  config.env  flag.txt  firewall.log' });
-        } else if (lower.startsWith('cat ')) {
-            const fileName = cmd.substring(4).trim();
-            if (fileName === 'flag.txt') {
-                newHistory.push({ type: 'output', text: 'FLAG{MYSTERIOUS_CLI_MASTER_2026}' });
-            } else if (fileName === 'config.env') {
-                newHistory.push({ type: 'output', text: 'PORT=5000\nENV=production\nSECRET=mysterious_key_99' });
-            } else if (fileName === 'passwords.txt') {
-                newHistory.push({ type: 'output', text: 'admin:$2a$10$e8Z.hK7q7...' });
-            } else {
-                newHistory.push({ type: 'error', text: `cat: ${fileName}: Aucun fichier de ce nom` });
-            }
-        } else if (lower.startsWith('scan ')) {
-            const target = cmd.substring(5).trim();
-            newHistory.push({ type: 'output', text: `[+] Audit de ${target}...\nPORT 80/TCP  : OPEN (HTTP Nginx)\nPORT 8080/TCP: OPEN (Spring Boot Vuln)` });
-        } else if (lower.startsWith('decode ')) {
-            const hash = cmd.substring(7).trim();
-            newHistory.push({ type: 'output', text: `[+] Décodage de "${hash}" -> Output: MysteriousPass2026` });
-        } else {
-            newHistory.push({ type: 'error', text: `Commande "${cmd}" non reconnue. Tapez "help" ou "hint" pour être guidé.` });
         }
 
+        if (lower === 'hint') {
+            setShowHint(true);
+            newHistory.push({ type: 'mission', text: `💡 INDICE : ${activeMission.hint}` });
+            setHistory(newHistory);
+            return;
+        }
+
+        // Exécution via Noyau IA Universel Linux
         setHistory(newHistory);
-        setInput('');
+        setExecutingCmd(true);
+
+        try {
+            const token = user?.token || localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/ai/execute-terminal-command`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    command: cmd,
+                    currentPath: currentPath,
+                    mission: activeMission
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                
+                if (data.newPath && data.newPath !== currentPath) {
+                    setCurrentPath(data.newPath);
+                }
+
+                setHistory(prev => [
+                    ...prev,
+                    { type: 'output', text: data.output }
+                ]);
+
+                // Vérifier si la mission est accomplie (via IA ou correspondance de commande)
+                const isCompleted = data.isMissionCompleted || (expected && (lower === expected || lower.startsWith(expected)));
+
+                if (isCompleted && !completedMissions.includes(activeMission.id)) {
+                    const gained = activeMission.xpReward || 150;
+                    const newScore = score + gained;
+                    setScore(newScore);
+                    setCompletedMissions(prev => [...prev, activeMission.id]);
+
+                    if (data.completionMessage || activeMission.successOutput) {
+                        setHistory(prev => [
+                            ...prev,
+                            { type: 'success', text: data.completionMessage || activeMission.successOutput || '[+] Mission accomplie avec succès !' }
+                        ]);
+                    }
+
+                    if (setUser) {
+                        setUser(prev => prev ? ({ ...prev, xp: newScore }) : prev);
+                    }
+                    if (setToast) {
+                        setToast({ message: `🎯 Mission réussie ! +${gained} XP gagnés`, type: 'success' });
+                    }
+                }
+
+            } else {
+                throw new Error("Erreur exécution");
+            }
+        } catch (err) {
+            console.error("Erreur commande terminal:", err);
+            setHistory(prev => [
+                ...prev,
+                { type: 'error', text: `bash: ${cmd}: erreur d'exécution système.` }
+            ]);
+        } finally {
+            setExecutingCmd(false);
+        }
     };
 
     const nextPresetMission = () => {
@@ -329,9 +362,9 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
                                     <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                                    <span className="text-slate-400 font-bold ml-2">bash - root@mysterious-lab:~</span>
+                                    <span className="text-slate-400 font-bold ml-2">bash - root@mysterious-lab:{currentPath}</span>
                                 </div>
-                                <span className="text-emerald-400 font-bold hidden sm:inline">CONNECTED [SSH]</span>
+                                <span className="text-emerald-400 font-bold hidden sm:inline">NOYAU LINUX UNIVERSEL [CONNECTÉ]</span>
                             </div>
 
                             {/* Terminal Window Output */}
@@ -357,23 +390,37 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                         {h.text}
                                     </div>
                                 ))}
+                                {executingCmd && (
+                                    <div className="text-emerald-400 animate-pulse font-bold text-xs">
+                                        ⚡ [Noyau Linux] Traitement de la commande en cours...
+                                    </div>
+                                )}
                             </div>
 
                             {/* Command Input Form */}
                             <form onSubmit={handleCommand} className="flex items-center gap-3 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3">
-                                <span className="text-emerald-500 font-mono text-xs font-black shrink-0">root@mysterious-lab:~#</span>
+                                <span className="text-emerald-500 font-mono text-xs font-black shrink-0">root@mysterious-lab:{currentPath}#</span>
                                 <input
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    placeholder="Tapez votre commande (ex: whoami, ls, cat flag.txt, scan 10.0.0.5)..."
-                                    className="w-full bg-transparent text-slate-900 dark:text-white font-mono text-xs md:text-sm focus:outline-none placeholder:text-slate-400"
+                                    disabled={executingCmd}
+                                    placeholder="Tapez n'importe quelle commande Linux (ex: uname -a, nmap, chmod, grep, python3, cat, ls)..."
+                                    className="w-full bg-transparent text-slate-900 dark:text-white font-mono text-xs md:text-sm focus:outline-none placeholder:text-slate-400 disabled:opacity-50"
                                 />
                                 <button
                                     type="submit"
-                                    className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/30 transition shrink-0"
+                                    disabled={executingCmd}
+                                    className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/30 transition shrink-0 flex items-center gap-2"
                                 >
-                                    Exécuter
+                                    {executingCmd ? (
+                                        <>
+                                            <RefreshCw size={14} className="animate-spin" />
+                                            Exécution...
+                                        </>
+                                    ) : (
+                                        'Exécuter'
+                                    )}
                                 </button>
                             </form>
                         </div>
