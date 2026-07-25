@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2, Copy, Check, Image as ImageIcon, Trash2, Monitor, Paperclip } from 'lucide-react';
+import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2, Copy, Check, Image as ImageIcon, Trash2, Monitor, Paperclip, Sun, Moon } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
 import AnimatedAIAvatar from './AnimatedAIAvatar';
 import { useLanguage } from '../context/LanguageContext';
@@ -417,6 +417,8 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         );
     };
 
+    const [copilotTheme, setCopilotTheme] = useState('light'); // 'light' by default per user request
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -426,7 +428,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     exit={{ x: '100%', opacity: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     onClick={() => inputRef.current?.focus()}
-                    className={`fixed transition-all duration-300 bg-slate-950/95 border-l border-blue-500/20 backdrop-blur-2xl flex flex-col shadow-[-10px_0_50px_rgba(0,0,0,0.5)] ${
+                    className={`fixed transition-all duration-300 backdrop-blur-2xl flex flex-col shadow-[-10px_0_50px_rgba(0,0,0,0.15)] ${
+                        copilotTheme === 'light'
+                            ? 'bg-slate-50 text-slate-900 border-l border-slate-300'
+                            : 'bg-slate-950/95 text-white border-l border-blue-500/20'
+                    } ${
                         isFullScreen 
                             ? 'fixed inset-0 w-screen h-screen z-[99999] top-0 left-0 right-0 bottom-0' 
                             : 'top-0 right-0 h-full z-[150] ' + (
@@ -437,7 +443,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     }`}
                 >
                     {/* Header */}
-                    <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/60 shadow-xl relative z-10">
+                    <div className={`p-6 flex justify-between items-center relative z-10 transition-colors ${
+                        copilotTheme === 'light'
+                            ? 'bg-white/90 border-b border-slate-200 text-slate-900 shadow-sm'
+                            : 'bg-black/60 border-b border-white/10 text-white shadow-xl'
+                    }`}>
                         <div className="flex items-center gap-4">
                             <div className="relative w-14 h-14 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
                                 <div className="absolute inset-0 bg-blue-500/20 blur-lg rounded-full animate-pulse" />
@@ -445,10 +455,12 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 <div className="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-slate-950 z-10"></div>
                             </div>
                             <div className="flex flex-col">
-                                <span className="font-mono font-black text-white tracking-[0.2em] text-xs uppercase opacity-90">
+                                <span className={`font-mono font-black tracking-[0.2em] text-xs uppercase ${
+                                    copilotTheme === 'light' ? 'text-slate-900' : 'text-white opacity-90'
+                                }`}>
                                     Mysterious Copilot
                                 </span>
-                                <span className="text-[10px] text-blue-400 font-bold opacity-60">
+                                <span className="text-[10px] text-blue-500 font-bold opacity-80">
                                     {t('copilot.advanced_logic') || 'Système de Logique Avancé'}
                                 </span>
                             </div>
@@ -456,6 +468,23 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
                         {/* Top Window Mode Controls */}
                         <div className="flex items-center gap-2">
+                            {/* Theme Toggle Button */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCopilotTheme(copilotTheme === 'light' ? 'dark' : 'light');
+                                }}
+                                className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
+                                    copilotTheme === 'light'
+                                        ? 'bg-amber-500/10 text-amber-700 border-amber-500/30 hover:bg-amber-500/20'
+                                        : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
+                                }`}
+                                title="Basculer le Thème (Clair / Sombre)"
+                            >
+                                {copilotTheme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+                                <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{copilotTheme === 'light' ? 'Sombre' : 'Clair'}</span>
+                            </button>
+
                             {/* Expand / Normal Mode Button */}
                             <button
                                 onClick={(e) => {
@@ -465,8 +494,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 }}
                                 className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
                                     isExpanded && !isFullScreen
-                                        ? 'bg-blue-600/30 text-blue-300 border-blue-500/50 shadow-[0_0_12px_rgba(59,130,246,0.3)]'
-                                        : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
+                                        ? 'bg-blue-600/30 text-blue-500 border-blue-500/50 shadow-[0_0_12px_rgba(59,130,246,0.3)]'
+                                        : copilotTheme === 'light'
+                                            ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                                            : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
                                 }`}
                                 title={isExpanded ? "Mode Standard" : "Élargir la fenêtre"}
                             >
@@ -482,8 +513,10 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 }}
                                 className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
                                     isFullScreen
-                                        ? 'bg-purple-600/40 text-purple-300 border-purple-500/50 shadow-[0_0_12px_rgba(168,85,247,0.4)]'
-                                        : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
+                                        ? 'bg-purple-600/40 text-purple-400 border-purple-500/50 shadow-[0_0_12px_rgba(168,85,247,0.4)]'
+                                        : copilotTheme === 'light'
+                                            ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                                            : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
                                 }`}
                                 title={isFullScreen ? "Quitter Plein Écran" : "Mode Plein Écran"}
                             >
@@ -497,7 +530,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                     e.stopPropagation();
                                     onClose();
                                 }}
-                                className="p-2 text-slate-400 hover:text-white hover:bg-red-500/20 hover:border-red-500/40 border border-transparent rounded-xl transition-all active:scale-90"
+                                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-500/10 border border-transparent rounded-xl transition-all active:scale-90"
                                 title="Fermer"
                             >
                                 <X size={20} />
@@ -544,21 +577,27 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
                                     {/* Message Column */}
                                     <div className="flex flex-col gap-2 w-full">
-                                        <div className={`px-5 py-4 rounded-[1.5rem] shadow-2xl relative overflow-hidden ${msg.role === 'user'
+                                        <div className={`px-5 py-4 rounded-[1.5rem] shadow-lg relative overflow-hidden transition-colors ${msg.role === 'user'
                                             ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-tr-none border border-blue-400/30'
                                             : msg.type === 'suggestion'
-                                                ? 'bg-gradient-to-br from-amber-500/10 to-amber-900/20 text-amber-100 border border-amber-500/20 rounded-tl-none'
-                                                : 'bg-gradient-to-br from-slate-900/80 to-slate-950/90 text-slate-200 border border-white/5 rounded-tl-none'
+                                                ? copilotTheme === 'light'
+                                                    ? 'bg-amber-50 text-amber-900 border border-amber-300 rounded-tl-none'
+                                                    : 'bg-gradient-to-br from-amber-500/10 to-amber-900/20 text-amber-100 border border-amber-500/20 rounded-tl-none'
+                                                : copilotTheme === 'light'
+                                                    ? 'bg-white text-slate-800 border border-slate-200/90 shadow-md rounded-tl-none'
+                                                    : 'bg-gradient-to-br from-slate-900/80 to-slate-950/90 text-slate-200 border border-white/5 rounded-tl-none'
                                             }`}>
                                             {/* Subtile background patterns for AI */}
-                                            {msg.role !== 'user' && (
+                                            {msg.role !== 'user' && copilotTheme !== 'light' && (
                                                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-[50px] pointer-events-none" />
                                             )}
 
                                             {msg.role !== 'user' && (
-                                                <div className="flex items-center gap-2 mb-3 opacity-60">
-                                                    {msg.type === 'suggestion' ? <Sparkles size={12} className="text-amber-400" /> : <Terminal size={12} className="text-blue-400" />}
-                                                    <span className="text-[10px] font-black font-mono tracking-widest uppercase">
+                                                <div className="flex items-center gap-2 mb-3 opacity-80">
+                                                    {msg.type === 'suggestion' ? <Sparkles size={12} className="text-amber-500" /> : <Terminal size={12} className="text-blue-500" />}
+                                                    <span className={`text-[10px] font-black font-mono tracking-widest uppercase ${
+                                                        copilotTheme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                                                    }`}>
                                                         {msg.type === 'suggestion' ? 'Suggestion' : t('copilot.assistant') || 'Assistant'}
                                                     </span>
                                                 </div>
@@ -566,7 +605,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
                                             {/* User Attached Image Display */}
                                             {msg.image && (
-                                                <div className="mb-3 rounded-xl overflow-hidden border border-white/20 shadow-md max-w-xs">
+                                                <div className="mb-3 rounded-xl overflow-hidden border border-slate-300 shadow-md max-w-xs">
                                                     <img src={msg.image} alt="Capture attachée" className="w-full h-auto max-h-56 object-cover" />
                                                 </div>
                                             )}
@@ -575,7 +614,9 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                         </div>
 
                                         {/* Timestamp/Status (Subtle) */}
-                                        <span className={`text-[9px] font-mono opacity-30 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                                        <span className={`text-[9px] font-mono opacity-50 ${msg.role === 'user' ? 'text-right' : 'text-left'} ${
+                                            copilotTheme === 'light' ? 'text-slate-500' : 'text-slate-400'
+                                        }`}>
                                             {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </span>
                                     </div>
@@ -585,7 +626,9 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
                         {isTyping && (
                             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start pl-14">
-                                <div className="bg-slate-900/60 border border-white/5 rounded-full px-5 py-3 flex justify-center items-center gap-1.5 shadow-xl">
+                                <div className={`border rounded-full px-5 py-3 flex justify-center items-center gap-1.5 shadow-xl ${
+                                    copilotTheme === 'light' ? 'bg-white border-slate-300' : 'bg-slate-900/60 border-white/5'
+                                }`}>
                                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                                     <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
@@ -596,14 +639,18 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     </div>
 
                     {/* Input Area */}
-                    <div className="p-6 bg-black/40 border-t border-white/10 backdrop-blur-3xl relative z-10" onClick={(e) => e.stopPropagation()}>
+                    <div className={`p-6 transition-colors border-t relative z-10 ${
+                        copilotTheme === 'light'
+                            ? 'bg-white/95 border-slate-200 shadow-lg'
+                            : 'bg-black/40 border-white/10 backdrop-blur-3xl'
+                    }`} onClick={(e) => e.stopPropagation()}>
                         {/* Selected Image Chip */}
                         {selectedImage && (
-                            <div className="mb-3 flex items-center gap-3 bg-blue-950/70 border border-blue-500/40 rounded-xl p-2 max-w-xs shadow-lg animate-fadeIn">
+                            <div className="mb-3 flex items-center gap-3 bg-blue-500/10 border border-blue-500/30 rounded-xl p-2 max-w-xs shadow-lg animate-fadeIn">
                                 <img src={selectedImage} alt="Aperçu" className="w-12 h-12 object-cover rounded-lg border border-blue-400/30" />
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-bold text-blue-200 truncate">Image attachée</p>
-                                    <p className="text-[10px] text-blue-400">Prête pour l'analyse IA</p>
+                                    <p className="text-xs font-bold text-blue-600 truncate">Image attachée</p>
+                                    <p className="text-[10px] text-blue-500">Prête pour l'analyse IA</p>
                                 </div>
                                 <button
                                     type="button"
@@ -637,7 +684,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                             <button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
-                                className="absolute left-3 z-20 p-2 text-slate-400 hover:text-blue-400 hover:bg-white/5 rounded-xl transition-all"
+                                className="absolute left-3 z-20 p-2 text-slate-400 hover:text-blue-500 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all"
                                 title="Attacher une capture d'écran / image"
                             >
                                 <Paperclip size={18} />
@@ -649,7 +696,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
                                 placeholder={selectedImage ? "Ajoute une question sur cette image..." : (t('copilot.ask_placeholder') || "Pose ta question au mentor...")}
-                                className="w-full bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 rounded-2xl py-4 pl-12 pr-14 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all font-medium text-sm shadow-2xl relative z-10"
+                                className={`w-full border rounded-2xl py-4 pl-12 pr-14 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all font-medium text-sm shadow-sm relative z-10 ${
+                                    copilotTheme === 'light'
+                                        ? 'bg-slate-100 border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-500'
+                                        : 'bg-slate-900/80 border-white/10 text-white placeholder-slate-500 focus:border-blue-500/50'
+                                }`}
                             />
 
                             <button
