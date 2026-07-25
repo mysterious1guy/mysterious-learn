@@ -570,9 +570,9 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 <div className="w-full max-w-full mx-auto space-y-4">
 
                     {/* Header Minimaliste du Projet - Mode libre */}
-                    <div className="bg-slate-900/90 dark:bg-slate-900 rounded-2xl p-4 lg:p-5 border border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div className="bg-slate-900 dark:bg-slate-900 rounded-2xl p-4 lg:p-5 border border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-950 border border-emerald-500 flex items-center justify-center text-emerald-400 shrink-0">
                                 <Terminal size={24} />
                             </div>
                             <div>
@@ -588,7 +588,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                         </div>
 
                         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                            <div className="px-3 py-2 bg-slate-800/80 rounded-xl border border-slate-700/50 flex items-center gap-2">
+                            <div className="px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 flex items-center gap-2">
                                 <Trophy size={16} className="text-amber-400" />
                                 <span className="text-xs font-black text-white">{score} XP</span>
                             </div>
@@ -607,11 +607,11 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     <div className="w-full bg-[#06141d] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden font-mono">
 
                         {/* Top Bar macOS - Linux Native */}
-                        <div className="bg-[#0b1d28] px-4 py-3 border-b border-slate-800/80 flex items-center justify-between select-none">
+                        <div className="bg-[#0b1d28] px-4 py-3 border-b border-slate-800 flex items-center justify-between select-none">
                             <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]/50 cursor-pointer" onClick={() => navigate('/')}></div>
-                                <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]/50"></div>
-                                <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50"></div>
+                                <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] cursor-pointer" onClick={() => navigate('/')}></div>
+                                <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
+                                <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
                             </div>
                             <div className="text-xs font-bold text-slate-300 tracking-wide font-mono flex items-center gap-2">
                                 <span>{activeUser}@mysterious-classroom: ~</span>
@@ -641,8 +641,8 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 {/* Barre de Contrôle et Raccourcis Nano */}
                                 <div className="bg-slate-950 border-t border-slate-800 p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
                                     <div className="flex items-center gap-3 text-slate-300">
-                                        <span className="bg-slate-800/80 px-2 py-1 rounded border border-slate-700 font-bold">^O Ecrire (Ctrl+O)</span>
-                                        <span className="bg-slate-800/80 px-2 py-1 rounded border border-slate-700 font-bold">^X Quitter (Ctrl+X)</span>
+                                        <span className="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">^O Ecrire (Ctrl+O)</span>
+                                        <span className="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">^X Quitter (Ctrl+X)</span>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <button
@@ -674,7 +674,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                         <button
                                             type="button"
                                             onClick={() => setActiveEditor(null)}
-                                            className="px-4 py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white font-bold rounded shadow transition-all text-xs flex items-center gap-1.5"
+                                            className="px-4 py-1.5 bg-rose-600 hover:bg-rose-600 text-white font-bold rounded shadow transition-all text-xs flex items-center gap-1.5"
                                         >
                                             ❌ Annuler
                                         </button>
@@ -696,7 +696,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                                 {h.text}
                                             </div>
                                         ) : h.type === 'success' ? (
-                                            <div className="text-emerald-400 font-bold py-1 bg-emerald-500/10 px-3 rounded-lg border border-emerald-500/20 my-1">
+                                            <div className="text-emerald-400 font-bold py-1 bg-emerald-950 px-3 rounded-lg border border-emerald-500 my-1">
                                                 {h.text}
                                             </div>
                                         ) : h.type === 'error' ? (
@@ -704,7 +704,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                                 {h.text}
                                             </div>
                                         ) : h.type === 'mission' ? (
-                                            <div className="text-purple-300 font-semibold py-1 bg-purple-500/10 px-3 rounded-lg border border-purple-500/20 my-1">
+                                            <div className="text-purple-300 font-semibold py-1 bg-purple-950 px-3 rounded-lg border border-purple-500 my-1">
                                                 {h.text}
                                             </div>
                                         ) : (
