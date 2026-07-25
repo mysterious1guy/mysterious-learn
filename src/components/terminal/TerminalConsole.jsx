@@ -7,6 +7,7 @@ const TerminalConsole = ({
     history,
     executingCmd,
     handleCommand,
+    handleKeyDown,
     pendingAuth,
     sshSession,
     activeUser,
@@ -81,6 +82,7 @@ const TerminalConsole = ({
                     type={pendingAuth ? "password" : "text"}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     disabled={executingCmd}
                     autoFocus
                     className="flex-1 bg-transparent text-white font-mono text-xs sm:text-sm md:text-base focus:outline-none border-none p-0 m-0 caret-emerald-400 disabled:opacity-50"

@@ -608,6 +608,65 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         }
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            if (!input) return;
+
+            const commonCommands = [
+                'ls', 'cd', 'cat', 'pwd', 'mkdir', 'touch', 'rm', 'nano', 'vim', 'vi',
+                'chmod', 'chown', 'echo', 'grep', 'clear', 'whoami', 'sudo', 'su', 'ssh',
+                'python3', 'python', 'node', 'npm', 'git', 'systemctl', 'service', 'top',
+                'htop', 'ps', 'df', 'du', 'find', 'history', 'exit'
+            ];
+
+            const parts = input.split(' ');
+
+            if (parts.length === 1) {
+                const prefix = parts[0].toLowerCase();
+                const matches = commonCommands.filter(c => c.startsWith(prefix));
+                if (matches.length === 1) {
+                    setInput(matches[0] + ' ');
+                } else if (matches.length > 1) {
+                    let common = prefix;
+                    for (let i = prefix.length; ; i++) {
+                        const char = matches[0][i];
+                        if (!char || !matches.every(m => m[i] === char)) break;
+                        common += char;
+                    }
+                    if (common !== prefix) {
+                        setInput(common);
+                    }
+                }
+            } else {
+                const lastPart = parts[parts.length - 1];
+                const vfsFiles = Object.keys(vfs || {}).map(pathStr => {
+                    const pathParts = pathStr.split('/').filter(Boolean);
+                    return pathParts[pathParts.length - 1] || pathStr;
+                });
+                const defaultFiles = ['script.sh', 'notes.txt', 'config.json', 'README.md', 'app.py'];
+                const candidates = Array.from(new Set([...vfsFiles, ...defaultFiles]));
+
+                const matches = candidates.filter(f => f.toLowerCase().startsWith(lastPart.toLowerCase()));
+                if (matches.length === 1) {
+                    parts[parts.length - 1] = matches[0];
+                    setInput(parts.join(' '));
+                } else if (matches.length > 1) {
+                    let common = lastPart;
+                    for (let i = lastPart.length; ; i++) {
+                        const char = matches[0][i];
+                        if (!char || !matches.every(m => m[i].toLowerCase() === char.toLowerCase())) break;
+                        common += char;
+                    }
+                    if (common !== lastPart) {
+                        parts[parts.length - 1] = common;
+                        setInput(parts.join(' '));
+                    }
+                }
+            }
+        }
+    };
+
     return (
         <div className="flex-1 min-w-0 bg-slate-900 dark:bg-[#070C14] relative flex flex-col min-h-screen">
             <div className="flex-1 p-2 sm:p-4 lg:p-6 pb-12">
@@ -696,6 +755,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 history={history}
                                 executingCmd={executingCmd}
                                 handleCommand={handleCommand}
+                                handleKeyDown={handleKeyDown}
                                 pendingAuth={pendingAuth}
                                 sshSession={sshSession}
                                 activeUser={activeUser}
