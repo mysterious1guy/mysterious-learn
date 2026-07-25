@@ -685,6 +685,7 @@ ${JSON.stringify(exportObj, null, 2)}
       </div>
     </div>
   );
+};
 
   const renderPreferencesTab = () => (
     <div className="space-y-6">
