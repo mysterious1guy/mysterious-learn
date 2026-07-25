@@ -63,18 +63,6 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                 </span>
               </Link>
-              <Link
-                id="tour-terminal"
-                to="/terminal-simulator"
-                className={`relative flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold transition-all ${location.pathname === '/terminal-simulator' ? 'bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/20' : 'text-slate-600 dark:text-gray-400 hover:text-emerald-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
-              >
-                <Terminal size={18} />
-                <span>Terminal CLI</span>
-                <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-              </Link>
             </>
           )}
         </div>

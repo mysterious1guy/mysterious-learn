@@ -5,6 +5,7 @@ import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft
 import PlacementTestModal from '../components/PlacementTestModal';
 import OnboardingTour from '../components/OnboardingTour';
 import CertificateModal from '../components/CertificateModal';
+import TerminalSimulatorPage from './TerminalSimulatorPage';
 import { useLanguage } from '../context/LanguageContext';
 
 const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, progressions = {}, API_URL }) => {
@@ -497,6 +498,28 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         <div className="h-[1px] w-24 bg-gradient-to-l from-transparent to-blue-500" />
                     </div>
                 </motion.div>
+            </div>
+
+            {/* Annonce Mysterious en Construction */}
+            <div className="max-w-7xl mx-auto px-6 lg:px-12 mb-8">
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-6 text-amber-600 dark:text-amber-400 flex items-center gap-4 backdrop-blur-md shadow-xl">
+                    <div className="p-3.5 bg-amber-500/20 rounded-2xl shrink-0">
+                        <Sparkles size={28} className="text-amber-500" />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-sm uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-2">
+                            <span>🚧</span> MYSTERIOUS CLASSROOM EST ACTUELLEMENT EN CONSTRUCTION
+                        </h4>
+                        <p className="text-xs mt-1 text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                            {t('dashboard.new_modules_desc') || "La plateforme Mysterious Classroom prépare son nouvel écosystème de cours interactifs. L'infrastructure est prête et la Salle d'Entraînement au Terminal CLI est disponible directement ci-dessous !"}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Intégration Élargie du Terminal CLI Simulator dans le Tableau de Bord */}
+            <div className="max-w-7xl mx-auto px-6 lg:px-12 mb-16">
+                <TerminalSimulatorPage user={user} API_URL={API_URL} />
             </div>
 
             {/* Categories */}
