@@ -658,37 +658,36 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                     <motion.div
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl"
+                        className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 text-slate-900 relative overflow-hidden shadow-xl"
                     >
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[100px] pointer-events-none -mr-32 -mt-32" />
                         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
                             <div className="space-y-2 max-w-2xl">
-                                <div className="flex items-center gap-2 text-indigo-400 text-xs font-black uppercase tracking-widest">
-                                    <Sparkles size={16} className="text-amber-400" /> Recommandations Copilot & Diagnostic d'Élite
+                                <div className="flex items-center gap-2 text-blue-600 text-xs font-extrabold uppercase tracking-wider">
+                                    <Sparkles size={16} className="text-amber-500" /> Recommandations Copilot & Diagnostic d'Élite
                                 </div>
-                                <h3 className="text-2xl font-black text-white">
+                                <h3 className="text-2xl font-black text-slate-900">
                                     Objectif : {roadmap.nextLevel}
                                 </h3>
-                                <p className="text-sm text-slate-300 font-medium leading-relaxed">
+                                <p className="text-sm text-slate-600 font-medium leading-relaxed">
                                     {roadmap.summary}
                                 </p>
                             </div>
                             <button
                                 onClick={fetchRoadmap}
                                 disabled={isRoadmapLoading}
-                                className="px-5 py-3 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/30 text-indigo-200 text-xs font-black uppercase tracking-widest rounded-2xl transition-all shrink-0 flex items-center gap-2"
+                                className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase tracking-wider rounded-2xl transition-all shrink-0 flex items-center gap-2 shadow-md"
                             >
                                 <Sparkles size={14} /> Réactualiser Diagnostic
                             </button>
                         </div>
 
                         {roadmap.recommendations && roadmap.recommendations.length > 0 && (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-indigo-500/20 relative z-10">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-100 relative z-10">
                                 {roadmap.recommendations.map((rec, rIdx) => (
-                                    <div key={rIdx} className="bg-slate-950/60 border border-indigo-500/20 rounded-2xl p-4 space-y-1">
-                                        <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-400 font-bold">{rec.focusArea}</span>
-                                        <h4 className="text-sm font-bold text-white">{rec.title}</h4>
-                                        <p className="text-xs text-slate-400">{rec.description}</p>
+                                    <div key={rIdx} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-2 shadow-sm">
+                                        <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200/80 inline-block">{rec.focusArea}</span>
+                                        <h4 className="text-base font-bold text-slate-900">{rec.title}</h4>
+                                        <p className="text-sm text-slate-600 font-normal leading-normal">{rec.description}</p>
                                     </div>
                                 ))}
                             </div>

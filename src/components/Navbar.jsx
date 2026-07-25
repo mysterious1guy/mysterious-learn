@@ -101,8 +101,8 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
                   <span className="text-sm font-bold text-slate-800 dark:text-white leading-none">
                     {user.firstName || user.name?.split(' ')[0] || 'Agent'} {user.lastName || user.name?.split(' ').slice(1).join(' ') || ''}
                   </span>
-                  <span className="text-[10px] text-blue-400 font-medium uppercase tracking-wider">
-                    {t('account_title')}
+                  <span className="text-[11px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider mt-0.5">
+                    {user.email === 'mouhamedfall@esp.sn' ? 'FONDATEUR' : user.role === 'admin' ? 'ADMINISTRATEUR' : 'ÉLITE'}
                   </span>
                 </div>
                 {(user.avatar || user.picture) ? (
