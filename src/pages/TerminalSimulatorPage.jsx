@@ -350,7 +350,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         if (!cmd || executingCmd) return;
 
         const activePromptUser = sshSession ? sshSession.user : activeUser;
-        const activeHost = sshSession ? sshSession.host : 'MYSTERIOUS';
+        const activeHost = sshSession ? sshSession.host : 'mysterious-classroom';
         const promptSymbol = activePromptUser === 'root' ? '#' : '$';
         const promptText = `${activePromptUser}@${activeHost}:${formattedPath}${promptSymbol} ${cmd}`;
         const newHistory = [...history, { type: 'user', text: promptText }];
@@ -614,7 +614,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50"></div>
                             </div>
                             <div className="text-xs font-bold text-slate-300 tracking-wide font-mono flex items-center gap-2">
-                                <span>{activeUser}@MYSTERIOUS: ~</span>
+                                <span>{activeUser}@mysterious-classroom: ~</span>
                             </div>
                             <div className="w-12"></div>
                         </div>
@@ -660,7 +660,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
                                                 setHistory(prev => [
                                                     ...prev,
-                                                    { type: 'user', text: `${activeUser}@MYSTERIOUS:${formattedPath}${activeUser === 'root' ? '#' : '$'} nano ${fileName}` },
+                                                    { type: 'user', text: `${activeUser}@mysterious-classroom:${formattedPath}${activeUser === 'root' ? '#' : '$'} nano ${fileName}` },
                                                     { type: 'sys', text: `[nano] Fichier '${fileName}' écrit et sauvegardé.` },
                                                     { type: 'output', text: `CMD: cat ${fileName}\n${savedContent}` }
                                                 ]);
@@ -693,7 +693,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                         {h.type === 'user' ? (
                                             <div className="flex items-center gap-2 py-0.5 font-bold">
                                                 <span className={activeUser === 'root' ? 'text-red-400 font-bold' : 'text-[#eab308] font-bold'}>
-                                                    {h.text.split('@')[0] || activeUser}@MYSTERIOUS
+                                                    {h.text.split('@')[0] || activeUser}@mysterious-classroom
                                                 </span>
                                                 <span className="text-slate-400">:</span>
                                                 <span className="text-[#38bdf8] font-bold">{formattedPath}</span>
@@ -743,7 +743,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                     ) : (
                                         <>
                                             <span className={activeUser === 'root' ? 'text-red-400 font-bold shrink-0' : 'text-[#eab308] font-bold shrink-0'}>
-                                                {activeUser}@MYSTERIOUS
+                                                {activeUser}@mysterious-classroom
                                             </span>
                                             <span className="text-slate-400 font-bold shrink-0">:</span>
                                             <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
