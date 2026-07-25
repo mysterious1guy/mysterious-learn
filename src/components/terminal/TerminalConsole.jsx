@@ -56,27 +56,25 @@ const TerminalConsole = ({
             )}
 
             {/* Ligne d'invité de commande active et fluide */}
-            <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
+            <form onSubmit={handleCommand} className="flex items-center gap-2 pt-1">
                 {pendingAuth ? (
                     <span className="text-slate-300 font-bold shrink-0">{pendingAuth.promptLabel}</span>
                 ) : sshSession ? (
-                    <>
-                        <span className="text-emerald-400 font-bold shrink-0">
-                            {sshSession.user}@{sshSession.host}
-                        </span>
-                        <span className="text-slate-400 font-bold shrink-0">:</span>
-                        <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
-                        <span className="text-white font-bold shrink-0">{sshSession.user === 'root' ? '#' : '$'}</span>
-                    </>
+                    <div className="flex items-center font-bold shrink-0">
+                        <span className="text-emerald-400">{sshSession.user}@{sshSession.host}</span>
+                        <span className="text-slate-400">:</span>
+                        <span className="text-[#38bdf8]">{formattedPath}</span>
+                        <span className="text-white ml-0.5">{sshSession.user === 'root' ? '#' : '$'}</span>
+                    </div>
                 ) : (
-                    <>
-                        <span className={activeUser === 'root' ? 'text-red-400 font-bold shrink-0' : 'text-[#eab308] font-bold shrink-0'}>
+                    <div className="flex items-center font-bold shrink-0">
+                        <span className={activeUser === 'root' ? 'text-red-400' : 'text-[#eab308]'}>
                             {activeUser}@mysterious-classroom
                         </span>
-                        <span className="text-slate-400 font-bold shrink-0">:</span>
-                        <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
-                        <span className="text-white font-bold shrink-0">{activeUser === 'root' ? '#' : '$'}</span>
-                    </>
+                        <span className="text-slate-400">:</span>
+                        <span className="text-[#38bdf8]">{formattedPath}</span>
+                        <span className="text-white ml-0.5">{activeUser === 'root' ? '#' : '$'}</span>
+                    </div>
                 )}
                 <input
                     ref={inputRef}
