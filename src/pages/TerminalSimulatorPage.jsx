@@ -769,50 +769,66 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                         </div>
 
                         <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
-                            <button
-                                type="button"
-                                onClick={() => setShowHint(!showHint)}
-                                className={`px-3 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                                    showHint
-                                        ? 'bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(251,191,36,0.6)] font-bold scale-105'
-                                        : 'bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20'
-                                }`}
-                                title="Afficher l'indice du projet"
-                            >
-                                <Lightbulb size={15} className="animate-pulse" />
-                                <span>Indice</span>
-                            </button>
+                            {activeMission ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowHint(!showHint)}
+                                        className={`px-3 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                                            showHint
+                                                ? 'bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(251,191,36,0.6)] font-bold scale-105'
+                                                : 'bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20'
+                                        }`}
+                                        title="Afficher l'indice du projet"
+                                    >
+                                        <Lightbulb size={15} className="animate-pulse" />
+                                        <span>Indice</span>
+                                    </button>
 
-                            <button
-                                type="button"
-                                onClick={() => setTerminalMode('libre')}
-                                className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
-                                    terminalMode === 'libre'
-                                        ? 'bg-emerald-500 text-slate-950 shadow-lg font-bold'
-                                        : 'text-slate-400 hover:text-white'
-                                }`}
-                            >
-                                <Zap size={14} />
-                                Mode Libre
-                            </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => navigate('/terminal-simulator')}
+                                        className="px-3 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700"
+                                        title="Quitter la mission de projet"
+                                    >
+                                        <ArrowLeft size={14} />
+                                        <span>Quitter Projet</span>
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={() => setTerminalMode('libre')}
+                                        className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
+                                            terminalMode === 'libre'
+                                                ? 'bg-emerald-500 text-slate-950 shadow-lg font-bold'
+                                                : 'text-slate-400 hover:text-white'
+                                        }`}
+                                    >
+                                        <Zap size={14} />
+                                        Mode Libre
+                                    </button>
 
-                            <button
-                                type="button"
-                                onClick={() => setTerminalMode('apprentissage')}
-                                className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
-                                    terminalMode === 'apprentissage'
-                                        ? 'bg-indigo-600 text-white shadow-lg font-bold'
-                                        : 'text-slate-400 hover:text-white'
-                                }`}
-                            >
-                                <BookOpen size={14} />
-                                Mode Apprentissage
-                            </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setTerminalMode('apprentissage')}
+                                        className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
+                                            terminalMode === 'apprentissage'
+                                                ? 'bg-indigo-600 text-white shadow-lg font-bold'
+                                                : 'text-slate-400 hover:text-white'
+                                        }`}
+                                    >
+                                        <BookOpen size={14} />
+                                        Mode Apprentissage
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </div>
 
-                    {/* Carte d'indice interactive et informations utiles */}
-                    {showHint && (
+                    {/* Carte d'indice interactive et informations utiles (UNIQUEMENT pour les projets) */}
+                    {showHint && activeMission && (
                         <div className="bg-gradient-to-r from-amber-950/90 via-slate-900 to-slate-900 border border-amber-500/40 rounded-2xl p-4 text-amber-200 shadow-2xl transition-all font-mono space-y-3">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2 font-black text-amber-400 text-sm tracking-wide uppercase">
