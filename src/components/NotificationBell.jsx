@@ -84,7 +84,7 @@ const NotificationBell = ({ user, API_URL }) => {
             <button
                 id="tour-notifications"
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all"
+                className="relative p-2.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all flex items-center justify-center border border-slate-200/50 dark:border-slate-800/80 shadow-sm"
                 title={t('announcements.title') || "Annonces"}
             >
                 <Bell size={20} />

@@ -82,6 +82,8 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
         <div className="flex items-center gap-1 sm:gap-4 ml-auto">
           {user ? (
             <>
+              <NotificationBell user={user} API_URL={API_URL} />
+
               {user.role === 'admin' && (
                 <Link
                   to="/admin"
