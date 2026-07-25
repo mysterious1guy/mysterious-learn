@@ -210,6 +210,18 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const [completedMissions, setCompletedMissions] = useState([]);
     const [score, setScore] = useState(user?.xp || 0);
 
+    // Système de fichiers virtuel VFS persistant
+    const [vfs, setVfs] = useState(() => {
+        try {
+            const savedVfs = localStorage.getItem(`terminal_vfs_${displayUsername}`);
+            return savedVfs ? JSON.parse(savedVfs) : {
+                [`/home/${displayUsername}/script.sh`]: '#!/bin/bash\necho "Bienvenue dans Mysterious Classroom !"'
+            };
+        } catch (e) {
+            return {};
+        }
+    });
+
     const outputContainerRef = useRef(null);
     const inputRef = useRef(null);
 
@@ -412,6 +424,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     command: cmd,
                     currentPath: currentPath,
                     currentUser: activeUser,
+                    vfs: vfs,
                     mission: activeMission,
                     history: newHistory
                 })
@@ -569,6 +582,14 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                             onClick={() => {
                                                 const savedContent = activeEditor.content;
                                                 const fileName = activeEditor.fileName;
+                                                const filePath = fileName.startsWith('/') ? fileName : `${currentPath}/${fileName}`.replace(/\/+/g, '/');
+
+                                                const updatedVfs = { ...vfs, [filePath]: savedContent };
+                                                setVfs(updatedVfs);
+                                                try {
+                                                    localStorage.setItem(`terminal_vfs_${displayUsername}`, JSON.stringify(updatedVfs));
+                                                } catch (e) {}
+
                                                 setHistory(prev => [
                                                     ...prev,
                                                     { type: 'user', text: `${activeUser}@MYSTERIOUS:${formattedPath}${activeUser === 'root' ? '#' : '$'} nano ${fileName}` },

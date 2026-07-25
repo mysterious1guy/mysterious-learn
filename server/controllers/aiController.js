@@ -836,7 +836,7 @@ const generateTerminalMission = async (req, res) => {
 // @access  Private
 const executeTerminalCommand = async (req, res) => {
     try {
-        const { command, currentPath = '/root', currentUser = 'root', mission, history = [] } = req.body;
+        const { command, currentPath = '/root', currentUser = 'root', vfs = {}, mission, history = [] } = req.body;
         if (!command) {
             return res.status(400).json({ message: 'Commande requise' });
         }
@@ -850,6 +850,13 @@ const executeTerminalCommand = async (req, res) => {
             return res.json({ output: '', newPath: path, isClear: true });
         }
 
+        // Extraction du Virtual File System (VFS)
+        let vfsText = "";
+        if (vfs && typeof vfs === 'object' && Object.keys(vfs).length > 0) {
+            vfsText = `[SYSTÈME DE FICHIERS VIRTUEL ACTIF (VFS PERSISTANT)]:\n` + 
+                Object.entries(vfs).map(([filepath, content]) => `Fichier: ${filepath}\nContenu:\n"""\n${content}\n"""`).join('\n---\n');
+        }
+
         // Extraction de l'historique de la session pour la persistance de l'état
         let sessionHistoryText = "";
         if (Array.isArray(history) && history.length > 0) {
@@ -860,28 +867,27 @@ const executeTerminalCommand = async (req, res) => {
                 .join('\n');
         }
 
-        const systemPrompt = `Tu es le Noyau Système et l'Interpréteur Bash d'un terminal Linux Ubuntu 24.04 LTS.
+        const systemPrompt = `Tu es le Noyau Système et l'Interpréteur Bash d'un terminal Linux Ubuntu 24.04 LTS réel.
 L'utilisateur actif est '${activeUser}' (statut : ${activeUser === 'root' ? 'ROOT super-utilisateur UID 0' : 'utilisateur standard'}).
 Répertoire courant : '${path}'.
 
-${sessionHistoryText ? `[HISTORIQUE ET ÉTAT PERSISTANT DE LA SESSION EN COURS]\n${sessionHistoryText}\n` : ''}
+${vfsText ? `${vfsText}\n\n` : ''}${sessionHistoryText ? `[HISTORIQUE DE SESSION EN COURS]\n${sessionHistoryText}\n` : ''}
 
 COMMANDE ACTUELLE À EXÉCUTER : "${cleanCmd}"
 
-RÈGLES STRICTES DE PERSISTANCE DE L'ÉTAT LINUX :
+RÈGLES STRICTES DE PERSISTANCE DU SYSTÈME DE FICHIERS LINUX :
 1. MAINTIENS LA PERSISTANCE TOTALE DU SYSTÈME DE FICHIERS ET DES UTILISATEURS.
-2. Si la commande est 'whoami', réponds exactement avec "${activeUser}".
-3. Si 'su root' ou 'sudo -i' ou 'su' est exécuté, simule le passage en root si l'utilisateur saisit le mot de passe ou bascule la session.
-4. Si un fichier/dossier a été créé (ex: 'touch secret.txt', ou via 'nano script.sh'), 'ls' et 'cat' DOIVENT lister et afficher ce fichier.
-5. GESTION DES EDITEURS & EXÉCUTION DE SCRIPTS :
-   - Si l'utilisateur tente d'exécuter un script (ex: './script.sh', 'bash script.sh', 'python3 script.py', './app'), analyse le contenu du fichier rédigé dans l'historique ci-dessus et simule son exécution réelle.
-   - Si l'utilisateur tente de lancer './script.sh' ou un binaire sans avoir au préalable rendu le fichier exécutable ('chmod +x' ou 'chmod 755'), renvoie l'erreur Linux authentique : "bash: ./script.sh: Permission denied".
-   - Si le script n'existe pas, renvoie "bash: ./script.sh: No such file or directory".
-6. Si une commande s'exécute avec succès sans produire de texte sur stdout (ex: 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "".
-7. Si l'utilisateur exécute 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
+2. Si la commande est 'ls' ou 'ls -la', liste les fichiers présents dans le VFS ci-dessus et dans le répertoire actuel '${path}'.
+3. Si la commande est 'cat <fichier>', affiche le contenu exact de ce fichier s'il existe dans le VFS ou l'historique.
+4. GESTION DES EXÉCUTIONS DE SCRIPTS & PERMISSIONS :
+   - Si l'utilisateur tente d'exécuter un script (ex: './script.sh', 'bash script.sh', 'python3 script.py', './app'), lis le contenu exact du fichier dans le VFS et exécute-le virtuellement ligne par ligne.
+   - Si l'utilisateur exécute './script.sh' sans avoir fait au préalable 'chmod +x script.sh', renvoie l'erreur Linux réelle : "bash: ./script.sh: Permission denied".
+   - Si le fichier n'existe pas, renvoie "bash: ./script.sh: No such file or directory".
+5. Si une commande s'exécute sans output sur stdout (ex: 'touch', 'mkdir', 'cd', 'chmod', 'rm'), renvoie output = "".
+6. Si l'utilisateur exécute 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
 ${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.scenario}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}
 
-RÉPONDS EXCLUSIVEMENT PAR UN OBJET JSON STRICT SANS AUCUN AUTRE TEXTE :
+RÉPONDS EXCLUSIVEMENT PAR UN OBJET JSON STRICT :
 \`\`\`json
 {
   "output": "texte de la console (stderr ou stdout)",
