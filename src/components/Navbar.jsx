@@ -81,17 +81,6 @@ const Navbar = ({ user, onMenuClick, onShowUsageMonitor, onSearch, API_URL }) =>
         <div className="flex items-center gap-1 sm:gap-4 ml-auto">
           {user ? (
             <>
-              <NotificationBell user={user} API_URL={API_URL} />
-              {user.email === 'mouhamedfall@esp.sn' && (
-                <Link
-                  to="/admin/lab"
-                  className="flex items-center gap-2 p-2 sm:px-4 bg-gradient-to-r from-purple-500/20 to-indigo-500/20 border border-purple-500/40 rounded-xl hover:bg-purple-500/30 transition-all group"
-                  title="Laboratoire IA & Jeux (Fondateur)"
-                >
-                  <span className="text-base">🧪</span>
-                  <span className="text-xs font-black text-purple-300 hidden lg:block">Lab IA & Jeux</span>
-                </Link>
-              )}
               {user.role === 'admin' && (
                 <Link
                   to="/admin"
