@@ -4,6 +4,7 @@ const {
   getAllCourses,
   getCourseById,
   getCategories,
+  createCourse,
   getProgress,
   updateProgress,
   getAllProgress,
@@ -19,6 +20,7 @@ router.get('/categories', getCategories);
 router.get('/:id', getCourseById);
 
 // Routes protégées (nécessitent d'être authentifié)
+router.post('/', protect, createCourse);
 router.get('/progress/all', protect, getAllProgress);
 router.get('/:courseId/progress', protect, getProgress);
 router.post('/:courseId/progress', protect, updateProgress);

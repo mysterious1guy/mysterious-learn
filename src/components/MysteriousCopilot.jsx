@@ -210,6 +210,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
             if (actionData.action === 'send_email') endpoint = '/admin/send-email';
             else if (actionData.action === 'send_notification') endpoint = '/admin/send-notification';
+            else if (actionData.action === 'create_course') {
+                endpoint = '/courses';
+                method = 'POST';
+                body = JSON.stringify(actionData.payload);
+            }
             else if (actionData.action === 'add_knowledge') {
                 endpoint = '/ai/knowledge';
                 method = 'POST';
@@ -372,6 +377,14 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                         <>
                                             <p><span className="text-slate-500">Action:</span> Notification In-App</p>
                                             <p><span className="text-slate-500">Titre:</span> {actionData.payload.title}</p>
+                                        </>
+                                    )}
+                                    {actionData.action === 'create_course' && (
+                                        <>
+                                            <p><span className="text-slate-500">Action:</span> CRÉATION ET PUBLICATION DE COURS</p>
+                                            <p><span className="text-slate-500">Titre:</span> <span className="text-blue-400 font-bold">{actionData.payload.title}</span></p>
+                                            <p><span className="text-slate-500">Catégorie:</span> <span className="text-emerald-400 font-bold">{actionData.payload.category || 'Web'}</span> | Niveau: {actionData.payload.level || 'Débutant'}</p>
+                                            <p><span className="text-slate-500">Chapitres:</span> {actionData.payload.chapters?.length || 1} module(s)</p>
                                         </>
                                     )}
                                     {actionData.action === 'add_knowledge' && (

@@ -110,6 +110,10 @@ const aiChat = async (req, res) => {
             \`\`\`json
             { "type": "admin_action", "action": "update_role", "payload": { "userId": "ID", "role": "admin" } }
             \`\`\`
+            Format CRÉATION DE COURS (Si le Boss te demande d'intégrer ou de créer un cours):
+            \`\`\`json
+            { "type": "admin_action", "action": "create_course", "payload": { "id": "custom_course_id", "title": "Titre du cours", "description": "Description complète", "category": "Web", "level": "Débutant", "duration": "2h", "chapters": [{ "title": "1. Module Principal", "description": "Aperçu du module", "order": 1, "content": "Contenu détaillé en Markdown..." }] } }
+            \`\`\`
             `;
 
             try {

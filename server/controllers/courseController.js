@@ -19,10 +19,21 @@ const isMongoDBAvailable = async () => {
 
 const getAllCourses = async (req, res) => {
   try {
-    // FORCE STATIC DATA as primary source
-    const coursesData = require('../data/courses/index');
+    const { FALLBACK_COURSES } = require('./courseControllerFallback');
+    let dbCourses = [];
+    try {
+      dbCourses = await Course.find().lean();
+    } catch (dbErr) {
+      console.error('Erreur lecture MongoDB courses:', dbErr.message);
+    }
 
-    let filteredCourses = [...coursesData];
+    const combinedMap = new Map();
+    [...FALLBACK_COURSES, ...dbCourses].forEach(c => {
+      const key = c.id || c._id?.toString();
+      combinedMap.set(key, c);
+    });
+
+    let filteredCourses = Array.from(combinedMap.values());
     const { category, level, search } = req.query;
 
     if (category) {
@@ -34,15 +45,15 @@ const getAllCourses = async (req, res) => {
     if (search) {
       const s = search.toLowerCase();
       filteredCourses = filteredCourses.filter(c =>
-        c.title.toLowerCase().includes(s) ||
-        c.description.toLowerCase().includes(s) ||
+        c.title?.toLowerCase().includes(s) ||
+        c.description?.toLowerCase().includes(s) ||
         (c.tags && c.tags.some(t => t.toLowerCase().includes(s)))
       );
     }
 
     res.json(filteredCourses);
   } catch (err) {
-    console.error('Erreur chargement cours statiques:', err);
+    console.error('Erreur chargement cours:', err);
     res.status(500).json({ message: 'Erreur lors du chargement des cours' });
   }
 };
@@ -52,9 +63,16 @@ const getAllCourses = async (req, res) => {
 const getCourseById = async (req, res) => {
   try {
     const { id } = req.params;
-    const coursesData = require('../data/courses/index');
+    let course = null;
 
-    const course = coursesData.find(c => c.id === id || (c._id && c._id.toString() === id));
+    try {
+      course = await Course.findOne({ $or: [{ id: id }, { _id: mongoose.Types.ObjectId.isValid(id) ? id : null }] }).lean();
+    } catch (e) {}
+
+    if (!course) {
+      const { FALLBACK_COURSES } = require('./courseControllerFallback');
+      course = FALLBACK_COURSES.find(c => c.id === id || c._id === id);
+    }
 
     if (!course) {
       return res.status(404).json({ message: 'Cours non trouvé' });
@@ -62,7 +80,7 @@ const getCourseById = async (req, res) => {
 
     res.json(course);
   } catch (err) {
-    console.error('Erreur chargement cours statique par ID:', err);
+    console.error('Erreur chargement cours par ID:', err);
     res.status(500).json({ message: 'Erreur serveur' });
   }
 };
@@ -71,12 +89,70 @@ const getCourseById = async (req, res) => {
 // @route   GET /api/courses/categories
 const getCategories = async (req, res) => {
   try {
-    const coursesData = require('../data/courses/index');
-    const categories = [...new Set(coursesData.map(c => c.category))];
+    const { FALLBACK_COURSES } = require('./courseControllerFallback');
+    let dbCourses = [];
+    try {
+      dbCourses = await Course.find().lean();
+    } catch (e) {}
+
+    const all = [...FALLBACK_COURSES, ...dbCourses];
+    const categories = [...new Set(all.map(c => c.category).filter(Boolean))];
     res.json(categories);
   } catch (err) {
-    console.error('Erreur chargement categories statiques:', err);
+    console.error('Erreur chargement categories:', err);
     res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+// @desc    Créer ou mettre à jour un cours dans MongoDB
+// @route   POST /api/courses
+// @access  Private/Admin
+const createCourse = async (req, res) => {
+  try {
+    const { id, title, description, category, level, duration, image, chapters, tags, isFree } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({ message: 'Titre et description requis' });
+    }
+
+    const courseId = id || `course_${Date.now()}`;
+    const courseCategory = category || 'Web';
+    const courseLevel = level || 'Débutant';
+    const courseDuration = duration || '2h';
+    const courseImage = image || 'https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&q=80';
+
+    let course = await Course.findOne({ id: courseId });
+    if (course) {
+      course.title = title;
+      course.description = description;
+      course.category = courseCategory;
+      course.level = courseLevel;
+      course.duration = courseDuration;
+      course.image = courseImage;
+      if (chapters) course.chapters = chapters;
+      if (tags) course.tags = tags;
+      course.updatedAt = Date.now();
+      await course.save();
+    } else {
+      course = await Course.create({
+        id: courseId,
+        title,
+        description,
+        category: courseCategory,
+        level: courseLevel,
+        duration: courseDuration,
+        image: courseImage,
+        chapters: chapters || [],
+        tags: tags || [],
+        isFree: isFree !== undefined ? isFree : true
+      });
+    }
+
+    console.log(`✅ [COURSE] Cours "${course.title}" enregistré dans MongoDB avec succès (ID: ${course.id})`);
+    res.status(201).json(course);
+  } catch (err) {
+    console.error('Erreur création cours:', err);
+    res.status(500).json({ message: 'Erreur lors de la création du cours', error: err.message });
   }
 };
 
@@ -202,6 +278,7 @@ module.exports = {
   getAllCourses,
   getCourseById,
   getCategories,
+  createCourse,
   getProgress,
   updateProgress,
   getAllProgress,
