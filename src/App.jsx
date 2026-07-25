@@ -311,6 +311,18 @@ function App() {
                     )
                   } />
 
+                  <Route path="/terminal" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <TerminalSimulatorPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
+                      ) : (
+                        <Navigate to="/onboarding" replace />
+                      )
+                    ) : (
+                      <Navigate to="/auth" replace />
+                    )
+                  } />
+
                   <Route path="/terminal-simulator" element={
                     user ? (
                       user.hasCompletedOnboarding ? (
