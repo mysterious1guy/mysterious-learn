@@ -844,19 +844,23 @@ const executeTerminalCommand = async (req, res) => {
             return res.json({ output: '', newPath: path, isClear: true });
         }
 
-        const systemPrompt = `Tu es le Noyau Système et l'Interpréteur Bash d'un terminal Linux Ubuntu 24.04 LTS (Hacker Environment).
-L'utilisateur s'exécute en tant que super-utilisateur 'root' dans le répertoire '${path}'.
+        const systemPrompt = `Tu es le Noyau Système et l'Interpréteur Bash d'un terminal Linux Ubuntu 24.04 LTS.
+L'utilisateur a le statut 'root' (UID 0, GID 0, privilèges administrateur complets).
+Répertoire courant : '${path}'.
 
-FONCTIONNEMENT UNIVERSEL LINUX :
-- Tu dois simuler la réponse brute (stdout / stderr) exacte d'un système Linux pour TOUTE commande exécutée ("${cleanCmd}").
-- Tu supportes l'ensemble des commandes Linux (whoami, ls, pwd, cat, grep, find, ps, netstat, nmap, chmod, mkdir, touch, rm, python3, curl, ping, uname, top, etc.).
-- Si la commande est 'cd <dossier>', change le répertoire et renvoie le nouveau chemin dans "newPath". Sinon garde "${path}".
+COMMANDE EXÉCUTÉE : "${cleanCmd}"
+
+RÈGLES STRICTES DU NOYAU LINUX :
+1. L'utilisateur est ROOT (super-utilisateur). Des commandes d'administration comme 'useradd', 'userdel', 'mkdir', 'chmod', 'chown', 'rm', 'touch', 'systemctl', 'apt' RÉUSSISSENT TOUJOURS avec les privilèges root sans aucune erreur de permission !
+2. Si une commande s'exécute avec succès sans produire de texte sur stdout (comme 'useradd', 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "" (ou un bref message si nécessaire).
+3. Si l'utilisateur crée un utilisateur avec 'useradd <nom>' puis fait 'su - <nom>' ou 'su <nom>', la commande 'su' doit réussir.
+4. Si la commande est 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
 ${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.description}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}
 
-RÉPONDS EXCLUSIVEMENT SOUS CE FORMAT JSON STRICT :
+RÉPONDS EXCLUSIVEMENT PAR UN OBJET JSON STRICT SANS AUCUN AUTRE TEXTE NI EXPLICATION :
 \`\`\`json
 {
-  "output": "Sortie texte brute exacte de la console",
+  "output": "texte de la console (stderr ou stdout)",
   "newPath": "${path}",
   "isMissionCompleted": false,
   "completionMessage": ""
@@ -867,25 +871,33 @@ RÉPONDS EXCLUSIVEMENT SOUS CE FORMAT JSON STRICT :
         let parsed = null;
 
         try {
-            const cleanJson = aiResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-            parsed = JSON.parse(cleanJson);
+            // Nettoyage rigoureux des balises markdown
+            const cleanJson = aiResponse
+                .replace(/^```json/g, '')
+                .replace(/^```/g, '')
+                .replace(/```$/g, '')
+                .trim();
+            
+            // Si le texte nettoyé commence par { et finit par }, tenter le parse
+            const jsonStart = cleanJson.indexOf('{');
+            const jsonEnd = cleanJson.lastIndexOf('}');
+            if (jsonStart !== -1 && jsonEnd !== -1) {
+                parsed = JSON.parse(cleanJson.substring(jsonStart, jsonEnd + 1));
+            }
         } catch (e) {
             console.error("Échec parse JSON terminal exec:", e.message);
         }
 
-        if (!parsed) {
-            parsed = {
-                output: aiResponse || `[+] Commande "${cleanCmd}" exécutée.`,
-                newPath: path,
-                isMissionCompleted: false
-            };
-        }
+        // Si la réponse est valide JSON et que output est défini (même vide ""), l'utiliser
+        const finalOutput = parsed && typeof parsed.output === 'string'
+            ? parsed.output
+            : (typeof aiResponse === 'string' ? aiResponse.replace(/```json/g, '').replace(/```/g, '').trim() : '');
 
         res.json({
-            output: parsed.output || aiResponse,
-            newPath: parsed.newPath || path,
-            isMissionCompleted: !!parsed.isMissionCompleted,
-            completionMessage: parsed.completionMessage || null
+            output: finalOutput,
+            newPath: parsed?.newPath || path,
+            isMissionCompleted: !!parsed?.isMissionCompleted,
+            completionMessage: parsed?.completionMessage || null
         });
 
     } catch (err) {
