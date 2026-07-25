@@ -198,10 +198,11 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         return 'agent';
     }, [user]);
 
+    const userHomePath = `/home/${displayUsername}`;
     const [activeMission, setActiveMission] = useState(null);
     const [input, setInput] = useState('');
     const [history, setHistory] = useState([]);
-    const [currentPath, setCurrentPath] = useState('/root');
+    const [currentPath, setCurrentPath] = useState(userHomePath);
     const [executingCmd, setExecutingCmd] = useState(false);
     const [showHint, setShowHint] = useState(false);
     const [completedMissions, setCompletedMissions] = useState([]);
@@ -209,6 +210,16 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
     const outputContainerRef = useRef(null);
     const inputRef = useRef(null);
+
+    // Formater le chemin pour afficher ~ pour le répertoire home
+    const formattedPath = useMemo(() => {
+        if (!currentPath) return '~';
+        if (currentPath === userHomePath || currentPath === `${userHomePath}/`) return '~';
+        if (currentPath.startsWith(`${userHomePath}/`)) {
+            return currentPath.replace(userHomePath, '~');
+        }
+        return currentPath;
+    }, [currentPath, userHomePath]);
 
     // Charger la mission active si spécifiée via query param (?mission=mission_1)
     useEffect(() => {
@@ -222,7 +233,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         }
     }, [missionIdParam]);
 
-    // Initialisation du terminal lors du lancement d'une mission ou du Sandbox libre
+    // Initialisation & Persistance de l'historique du terminal
     useEffect(() => {
         if (activeMission) {
             setHistory([
@@ -233,17 +244,42 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             ]);
             setShowHint(false);
         } else {
-            setHistory([
-                { type: 'sys', text: '=== MYSTERIOUS TERMINAL CLI (Salle d\'Entraînement Libre) ===' },
-                { type: 'sys', text: 'Bienvenue dans la Salle d\'Entraînement au Terminal Linux.' },
-                { type: 'sys', text: 'Toutes les commandes Linux réelles sont désormais supportées sans restriction (accès root).' },
-                { type: 'output', text: '[+] Interprète bash prêt. Tapez une commande ou utilisez le guide de droite.' }
-            ]);
+            // Mode entraînement libre : charger l'historique sauvegardé dans localStorage
+            const savedHistoryKey = `terminal_history_${displayUsername}`;
+            let loadedHistory = null;
+            try {
+                const stored = localStorage.getItem(savedHistoryKey);
+                if (stored) {
+                    loadedHistory = JSON.parse(stored);
+                }
+            } catch (e) {}
+
+            if (loadedHistory && Array.isArray(loadedHistory) && loadedHistory.length > 0) {
+                setHistory(loadedHistory);
+            } else {
+                setHistory([
+                    { type: 'sys', text: '=== MYSTERIOUS TERMINAL CLI (Console Officielle) ===' },
+                    { type: 'sys', text: `Bienvenue ${displayUsername} ! Répertoire personnel : ${userHomePath}` },
+                    { type: 'sys', text: 'Toutes les commandes Linux réelles sont supportées. Votre historique est sauvegardé.' },
+                    { type: 'output', text: '[+] Interprète bash prêt. Tapez votre commande...' }
+                ]);
+            }
         }
         setTimeout(() => {
             inputRef.current?.focus();
         }, 100);
-    }, [activeMission]);
+    }, [activeMission, displayUsername, userHomePath]);
+
+    // Sauvegarder l'historique dans localStorage après chaque modification
+    useEffect(() => {
+        if (!activeMission && history.length > 0) {
+            try {
+                const savedHistoryKey = `terminal_history_${displayUsername}`;
+                // Conserver les 120 dernières entrées pour des performances optimales
+                localStorage.setItem(savedHistoryKey, JSON.stringify(history.slice(-120)));
+            } catch (e) {}
+        }
+    }, [history, activeMission, displayUsername]);
 
     // Scroll automatique du terminal & maintien du focus
     useEffect(() => {
@@ -257,7 +293,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         const cmd = input.trim();
         if (!cmd || executingCmd) return;
 
-        const promptText = `root@mysterious-lab:${currentPath}# ${cmd}`;
+        const promptText = `${displayUsername}@MYSTERIOUS:${formattedPath}$ ${cmd}`;
         const newHistory = [...history, { type: 'user', text: promptText }];
         setInput('');
 
@@ -266,6 +302,11 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
         if (lower === 'clear') {
             setHistory([]);
+            if (!activeMission) {
+                try {
+                    localStorage.removeItem(`terminal_history_${displayUsername}`);
+                } catch (e) {}
+            }
             return;
         }
 
@@ -440,9 +481,9 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                         <div className="flex items-center gap-2 py-0.5">
                                             <span className="text-[#eab308] font-bold">{displayUsername}@MYSTERIOUS</span>
                                             <span className="text-slate-400">:</span>
-                                            <span className="text-[#38bdf8] font-bold">{currentPath}</span>
+                                            <span className="text-[#38bdf8] font-bold">{formattedPath}</span>
                                             <span className="text-white font-bold">$</span>
-                                            <span className="text-white font-bold ml-1">{h.text.split('# ').pop() || h.text}</span>
+                                            <span className="text-white font-bold ml-1">{h.text.split('$ ').pop() || h.text}</span>
                                         </div>
                                     ) : h.type === 'success' ? (
                                         <div className="text-emerald-400 font-bold py-1 bg-emerald-500/10 px-3 rounded-lg border border-emerald-500/20 my-1">
@@ -475,7 +516,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
                                 <span className="text-[#eab308] font-bold shrink-0">{displayUsername}@MYSTERIOUS</span>
                                 <span className="text-slate-400 font-bold shrink-0">:</span>
-                                <span className="text-[#38bdf8] font-bold shrink-0">{currentPath}</span>
+                                <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
                                 <span className="text-white font-bold shrink-0">$</span>
                                 <input
                                     ref={inputRef}
