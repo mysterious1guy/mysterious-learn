@@ -691,14 +691,8 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 {history.map((h, i) => (
                                     <div key={i} className="whitespace-pre-wrap">
                                         {h.type === 'user' ? (
-                                            <div className="flex items-center gap-2 py-0.5 font-bold">
-                                                <span className={activeUser === 'root' ? 'text-red-400 font-bold' : 'text-[#eab308] font-bold'}>
-                                                    {h.text.split('@')[0] || activeUser}@mysterious-classroom
-                                                </span>
-                                                <span className="text-slate-400">:</span>
-                                                <span className="text-[#38bdf8] font-bold">{formattedPath}</span>
-                                                <span className="text-white font-bold">{activeUser === 'root' ? '#' : '$'}</span>
-                                                <span className="text-white font-bold ml-1">{h.text.split(/[$#]\s/).pop() || h.text}</span>
+                                            <div className="flex items-center gap-2 py-0.5 font-bold text-slate-100 font-mono">
+                                                {h.text}
                                             </div>
                                         ) : h.type === 'success' ? (
                                             <div className="text-emerald-400 font-bold py-1 bg-emerald-500/10 px-3 rounded-lg border border-emerald-500/20 my-1">
