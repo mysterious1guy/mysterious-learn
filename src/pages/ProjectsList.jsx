@@ -130,33 +130,33 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                 <motion.div
                                     key={m.id}
                                     whileHover={{ y: -4 }}
-                                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition relative overflow-hidden"
+                                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition relative overflow-hidden group hover:border-indigo-500/40"
                                 >
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
-                                            <span className="px-3 py-1 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 rounded-full text-[10px] font-black uppercase tracking-wider">
-                                                {m.category}
+                                            <span className="px-3.5 py-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
+                                                ⚡ {m.category}
                                             </span>
-                                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${getDifficultyColor(m.level)}`}>
-                                                {m.level}
+                                            <span className="text-[11px] font-mono text-slate-400 font-bold">
+                                                Cible: {m.targetHost}
                                             </span>
                                         </div>
 
-                                        <h3 className="text-xl font-black text-slate-900 dark:text-white leading-tight">
+                                        <h3 className="text-xl font-black text-slate-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
                                             {m.title}
                                         </h3>
 
-                                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
                                             {m.scenario}
                                         </p>
 
                                         {/* Objectifs du projet */}
-                                        <div className="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                                            <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Objectifs du projet :</p>
-                                            <ul className="space-y-1.5">
+                                        <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                            <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Objectifs d'Infiltration :</p>
+                                            <ul className="space-y-2">
                                                 {m.objectives.map((obj, i) => (
-                                                    <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                                                        <CheckCircle size={14} className="text-emerald-500 shrink-0 mt-0.5" />
+                                                    <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2.5 font-medium">
+                                                        <CheckCircle size={15} className="text-emerald-500 shrink-0 mt-0.5" />
                                                         <span>{obj}</span>
                                                     </li>
                                                 ))}
@@ -175,7 +175,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                             className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition"
                                         >
                                             <Play size={14} />
-                                            Lancer le Projet
+                                            Lancer le Projet ⚡
                                         </button>
                                     </div>
                                 </motion.div>

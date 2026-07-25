@@ -11,88 +11,83 @@ import AIAssistant from '../components/AIAssistant';
 export const ALL_PROJECT_MISSIONS = [
     {
         id: 'mission_1',
-        title: 'Projet 1 : Premier Contact & Exploration Système',
-        category: 'Système & Privilèges',
-        level: 'Débutant',
-        xpReward: 15,
+        title: 'Projet 1 : Hacker un Site Web (Infiltration & Privilèges)',
+        category: 'INFILTRATION WEB',
+        xpReward: 25,
         targetHost: '192.168.1.10',
-        scenario: 'Vous venez d\'obtenir un accès SSH initial sur un serveur mystérieux (192.168.1.10). Votre mission est de déterminer qui vous êtes et de vérifier votre niveau d\'accès.',
+        scenario: 'Infiltrez le serveur d\'hébergement d\'un site Web d\'entreprise. Votre objectif est d\'identifier le nom de l\'utilisateur actuellement connecté et de prendre le contrôle des accès root.',
         objectives: [
-            'Ouvrir la console SSH',
-            'Exécuter la commande whoami pour vérifier le nom d\'utilisateur'
+            'Ouvrir la console SSH du serveur Web cible',
+            'Exécuter la commande whoami pour vérifier votre niveau de privilège'
         ],
         hint: 'Tapez la commande `whoami` et appuyez sur Entrée.',
         expectedCommand: 'whoami',
-        initialOutput: '[+] Session SSH ouverte sur target@192.168.1.10\n[+] Tapez "whoami" pour vérifier votre niveau de privilège.',
-        successOutput: 'root\n[🎉 SUCCÈS] Vous êtes connecté en tant que SUPER-UTILISATEUR (root) ! (+15 XP)'
+        initialOutput: '[+] Session SSH ouverte sur webserver@192.168.1.10\n[+] Tapez "whoami" pour vérifier votre niveau de privilège.',
+        successOutput: 'root\n[🎉 SUCCÈS] Infiltration réussie ! Vous êtes connecté en tant que SUPER-UTILISATEUR (root) ! (+25 XP)'
     },
     {
         id: 'mission_2',
-        title: 'Projet 2 : Audit & Infiltration de Fichiers Confidentiels',
-        category: 'Gestion de Fichiers',
-        level: 'Débutant',
-        xpReward: 20,
+        title: 'Projet 2 : Hacker une Banque (Exploration & Mots de Passe)',
+        category: 'INFILTRATION BANCAIRE',
+        xpReward: 35,
         targetHost: '10.0.4.15',
-        scenario: 'Infiltré dans le répertoire /var/secret_data/, vous devez lister les fichiers présents pour trouver les mots de passe et configurations masquées.',
+        scenario: 'Accédez au répertoire secret des serveurs d\'une banque centrale (/var/secret_bank/). Inspectez la liste des fichiers sensibles et repérez les données d\'accès.',
         objectives: [
-            'Lister l\'intégralité des fichiers du répertoire courant avec ls',
-            'Repérer le fichier sensible flag.txt'
+            'Lister l\'intégralité des fichiers secrets avec la commande ls',
+            'Identifier le fichier d\'accès ultra-confidentiel flag.txt'
         ],
-        hint: 'Tapez `ls` (ou `ls -la` pour voir les fichiers masqués).',
+        hint: 'Tapez `ls` pour afficher la liste des fichiers du répertoire bancaire.',
         expectedCommand: 'ls',
-        initialOutput: '[+] Répertoire courant : /var/secret_data/\n[+] Tapez "ls" pour afficher les fichiers présents dans ce dossier.',
-        successOutput: 'passwords.txt  config.env  flag.txt  firewall.log\n[🎉 SUCCÈS] Fichiers découverts ! Vous avez repéré "flag.txt". (+20 XP)'
+        initialOutput: '[+] Répertoire courant : /var/secret_bank/\n[+] Tapez "ls" pour afficher les données bancaires confidentielles.',
+        successOutput: 'accounts.db  bank_passwords.env  flag.txt  audit.log\n[🎉 SUCCÈS] Fichiers bancaires découverts ! Fichier "flag.txt" repéré. (+35 XP)'
     },
     {
         id: 'mission_3',
-        title: 'Projet 3 : Extraction du Flag de Sécurité',
-        category: 'Analyse & Forensics',
-        level: 'Intermédiaire',
-        xpReward: 25,
+        title: 'Projet 3 : Vol de Données Confidentielles (Extraction du Flag)',
+        category: 'EXFILTRATION CYBER',
+        xpReward: 45,
         targetHost: '10.0.4.15',
-        scenario: 'Le fichier flag.txt contient le code de validation de l\'infiltration. Lisez son contenu pour soumettre le flag.',
+        scenario: 'Extrayez le flag d\'accès secret contenu dans le fichier flag.txt pour valider l\'opération d\'exfiltration et prouver la prise de contrôle.',
         objectives: [
-            'Utiliser la commande cat pour lire le fichier flag.txt',
-            'Extraire la clef secrète de format FLAG{...}'
+            'Utiliser la commande cat pour lire le fichier confidentiel flag.txt',
+            'Extraire la clef secrète sous forme de FLAG{...}'
         ],
-        hint: 'Exécutez `cat flag.txt` pour afficher la clef.',
+        hint: 'Exécutez `cat flag.txt` pour afficher la clef d\'accès.',
         expectedCommand: 'cat flag.txt',
-        initialOutput: '[+] Le fichier "flag.txt" est localisé.\n[+] Utilisez "cat flag.txt" pour extraire la clef secrète.',
-        successOutput: 'FLAG{MYSTERIOUS_CLI_MASTER_2026}\n[🎉 SUCCÈS] Flag déchiffré avec succès ! (+25 XP)'
+        initialOutput: '[+] Le fichier "flag.txt" est verrouillé dans le système.\n[+] Utilisez "cat flag.txt" pour lire et exfiltrer la clé.',
+        successOutput: 'FLAG{MYSTERIOUS_BANK_HACK_2026}\n[🎉 SUCCÈS] Données confidentielles exfiltrées avec succès ! (+45 XP)'
     },
     {
         id: 'mission_4',
-        title: 'Projet 4 : Reconnaissance & Audit de Ports Réseau',
-        category: 'Réseau & Pentest',
-        level: 'Intermédiaire',
-        xpReward: 30,
+        title: 'Projet 4 : Hacker un Jeu Vidéo (Audit Serveur & Scan de Ports)',
+        category: 'SERVEURS DE JEU',
+        xpReward: 50,
         targetHost: '10.0.0.5',
-        scenario: 'Détectez les services web et bases de données vulnérables qui tournent sur le serveur distant 10.0.0.5.',
+        scenario: 'Auditez les serveurs dédiés d\'un jeu vidéo multijoueur. Lancez un scan de ports réseau pour détecter les failles d\'hébergement et les portes dérobées.',
         objectives: [
-            'Lancer un scan de ports sur la cible 10.0.0.5',
-            'Identifier les services vulnérables ouverts'
+            'Exécuter un scan de ports réseau sur la cible 10.0.0.5',
+            'Détecter les services et failles ouvertes sur le serveur de jeu'
         ],
         hint: 'Exécutez `scan 10.0.0.5` (ou `nmap 10.0.0.5`).',
         expectedCommand: 'scan 10.0.0.5',
-        initialOutput: '[+] Préparation de l\'audit réseau sur 10.0.0.5...\n[+] Tapez "scan 10.0.0.5" pour démarrer l\'analyse.',
-        successOutput: '[+] PORT 80/TCP   : OPEN (HTTP Nginx)\n[+] PORT 8080/TCP : OPEN (Spring Boot Vuln)\n[🎉 SUCCÈS] Ports ouverts identifiés ! (+30 XP)'
+        initialOutput: '[+] Analyse du serveur de jeu 10.0.0.5...\n[+] Tapez "scan 10.0.0.5" pour lancer le scan de vulnérabilités.',
+        successOutput: '[+] PORT 80/TCP   : OPEN (HTTP Nginx Game API)\n[+] PORT 8080/TCP : OPEN (Spring Boot Vuln)\n[🎉 SUCCÈS] Ports et failles du serveur de jeu identifiés ! (+50 XP)'
     },
     {
         id: 'mission_5',
-        title: 'Projet 5 : Cryptanalyse & Décodage Base64',
-        category: 'Cryptographie',
-        level: 'Avancé',
-        xpReward: 40,
+        title: 'Projet 5 : Infiltrer un Serveur Secret & Décodage Crypto',
+        category: 'CRYPTANALYSE SECRÈTE',
+        xpReward: 60,
         targetHost: '172.16.0.8',
-        scenario: 'Une chaîne de texte chiffrée a été interceptée dans un paquet réseau. Décodez-la pour révéler le mot de passe administrateur.',
+        scenario: 'Interceptez un paquet de données crypté transmis entre deux serveurs d\'élite. Décodez la chaîne Base64 pour obtenir le mot de passe maître du système.',
         objectives: [
-            'Décoder la chaîne Base64 TXlzdGVyaW91c1Bhc3M2NzA=',
-            'Récupérer le mot de passe en clair'
+            'Décoder le paquet d\'accès encodé en Base64 : TXlzdGVyaW91c1Bhc3M2NzA=',
+            'Récupérer le mot de passe maître en clair'
         ],
         hint: 'Exécutez `decode TXlzdGVyaW91c1Bhc3M2NzA=`.',
         expectedCommand: 'decode TXlzdGVyaW91c1Bhc3M2NzA=',
-        initialOutput: '[+] Donnée encodée reçue : TXlzdGVyaW91c1Bhc3M2NzA=\n[+] Tapez "decode TXlzdGVyaW91c1Bhc3M2NzA=" pour la décoder.',
-        successOutput: 'Mot de passe décodé : MysteriousPass670\n[🎉 SUCCÈS] Mot de passe déchiffré ! Vous maîtrisez les bases du CLI ! (+40 XP)'
+        initialOutput: '[+] Paquet chiffré intercepté : TXlzdGVyaW91c1Bhc3M2NzA=\n[+] Tapez "decode TXlzdGVyaW91c1Bhc3M2NzA=" pour déchiffrer le mot de passe.',
+        successOutput: 'Mot de passe maître : MysteriousPass670\n[🎉 SUCCÈS] Mot de passe maître déchiffré ! Vous êtes un maître du Terminal CLI ! (+60 XP)'
     }
 ];
 
