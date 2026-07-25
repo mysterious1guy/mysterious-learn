@@ -56,6 +56,27 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
             disableBeacon: true,
         },
         {
+            target: '#tour-terminal',
+            content: (
+                <div className="p-1 max-w-[280px] sm:max-w-sm">
+                    <h3 className="text-base sm:text-lg font-bold text-emerald-500 mb-2 uppercase tracking-wide">{t('onboardingTour.terminal_title') || "Terminal & Hacking Simulator"}</h3>
+                    <p className="text-slate-700 text-xs sm:text-sm font-medium">{t('onboardingTour.terminal_desc') || "Entraînez-vous en ligne de commande ! Exécutez de vraies commandes Linux et résolvez des missions de hacking avec l'aide de l'IA."}</p>
+                </div>
+            ),
+            disableBeacon: true,
+        },
+        {
+            target: '#tour-notifications',
+            content: (
+                <div className="p-1 max-w-[280px] sm:max-w-sm">
+                    <h3 className="text-base sm:text-lg font-bold text-purple-600 mb-2 uppercase tracking-wide">{t('onboardingTour.notifications_title') || "Annonces & Notifications"}</h3>
+                    <p className="text-slate-700 text-xs sm:text-sm font-medium">{t('onboardingTour.notifications_desc') || "Restez informé en temps réel des nouveautés, alertes de sécurité et événements importants de la plateforme."}</p>
+                </div>
+            ),
+            disableBeacon: true,
+            placement: isMobile ? 'bottom' : 'bottom-end',
+        },
+        {
             target: '#tour-account',
             content: (
                 <div className="p-1 max-w-[280px] sm:max-w-sm">
@@ -70,7 +91,7 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
             target: '#tour-ai',
             content: (
                 <div className="p-1 max-w-[280px] sm:max-w-sm">
-                    <h3 className="text-base sm:text-lg font-bold text-emerald-500 mb-2 uppercase tracking-wide">{t('onboardingTour.ai_title') || "Ton Mentor IA"}</h3>
+                    <h3 className="text-base sm:text-lg font-bold text-blue-500 mb-2 uppercase tracking-wide">{t('onboardingTour.ai_title') || "Ton Mentor IA"}</h3>
                     <p className="text-slate-700 text-xs sm:text-sm font-medium">{t('onboardingTour.ai_desc') || "Un doute ? Un bug ? Cliquez ici à tout moment pour parler à votre assistant personnel. Il veille sur vous !"}</p>
                 </div>
             ),

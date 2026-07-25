@@ -82,6 +82,7 @@ const NotificationBell = ({ user, API_URL }) => {
     return (
         <div className="relative" ref={dropdownRef}>
             <button
+                id="tour-notifications"
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-all"
                 title={t('announcements.title') || "Annonces"}
