@@ -197,14 +197,14 @@ const aiChat = async (req, res) => {
 
         let responseText = null;
 
-        // Phase 0: OpenRouter Engine (DeepSeek-R1, DeepSeek-Chat, Gemini Thinking Free, Qwen)
+        // Phase 0: OpenRouter Engine (DeepSeek-Chat, Gemini 2.0 Free, Qwen Free, Llama 3.3 Free)
         let openrouterKey = process.env.OPENROUTER_API_KEY;
         const openrouterModels = [
-            'google/gemini-2.0-flash-thinking-exp:free',
-            'deepseek/deepseek-r1',
             'deepseek/deepseek-chat',
+            'google/gemini-2.0-flash-exp:free',
+            'deepseek/deepseek-r1:free',
             'qwen/qwen-2.5-72b-instruct:free',
-            'meta-llama/llama-3.3-70b-instruct'
+            'meta-llama/llama-3.3-70b-instruct:free'
         ];
 
         let openrouterUserMsgContent = `${isEnglish ? 'Student' : 'Élève'} ${user.name}: ${message}`;
@@ -218,7 +218,7 @@ const aiChat = async (req, res) => {
         for (const orModel of openrouterModels) {
             if (responseText) break;
             try {
-                console.log(`📡 [AI RELAY] Appel OpenRouter DeepSeek (${orModel})...`);
+                console.log(`📡 [AI RELAY] Appel OpenRouter (${orModel})...`);
                 const controller = new AbortController();
                 const timeout = setTimeout(() => controller.abort(), 12000);
 
@@ -239,7 +239,8 @@ const aiChat = async (req, res) => {
                         messages: [
                             { role: "system", content: systemInstruction },
                             { role: "user", content: openrouterUserMsgContent }
-                        ]
+                        ],
+                        max_tokens: 1500
                     }),
                     signal: controller.signal
                 });
