@@ -872,12 +872,14 @@ RÈGLES STRICTES DE PERSISTANCE DE L'ÉTAT LINUX :
 1. MAINTIENS LA PERSISTANCE TOTALE DU SYSTÈME DE FICHIERS ET DES UTILISATEURS.
 2. Si la commande est 'whoami', réponds exactement avec "${activeUser}".
 3. Si 'su root' ou 'sudo -i' ou 'su' est exécuté, simule le passage en root si l'utilisateur saisit le mot de passe ou bascule la session.
-4. Si un fichier/dossier a été créé (ex: 'touch secret.txt'), 'ls' DOIT lister ce fichier/dossier.
-5. Si une commande s'exécute avec succès sans produire de texte sur stdout (ex: 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "".
-6. Si l'utilisateur exécute 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
-${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.scenario}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}`;'exécute avec succès sans produire de texte sur stdout (comme 'useradd', 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "".
-4. Si l'utilisateur exécute 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
-${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.description}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}
+4. Si un fichier/dossier a été créé (ex: 'touch secret.txt', ou via 'nano script.sh'), 'ls' et 'cat' DOIVENT lister et afficher ce fichier.
+5. GESTION DES EDITEURS & EXÉCUTION DE SCRIPTS :
+   - Si l'utilisateur tente d'exécuter un script (ex: './script.sh', 'bash script.sh', 'python3 script.py', './app'), analyse le contenu du fichier rédigé dans l'historique ci-dessus et simule son exécution réelle.
+   - Si l'utilisateur tente de lancer './script.sh' ou un binaire sans avoir au préalable rendu le fichier exécutable ('chmod +x' ou 'chmod 755'), renvoie l'erreur Linux authentique : "bash: ./script.sh: Permission denied".
+   - Si le script n'existe pas, renvoie "bash: ./script.sh: No such file or directory".
+6. Si une commande s'exécute avec succès sans produire de texte sur stdout (ex: 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "".
+7. Si l'utilisateur exécute 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
+${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.scenario}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}
 
 RÉPONDS EXCLUSIVEMENT PAR UN OBJET JSON STRICT SANS AUCUN AUTRE TEXTE :
 \`\`\`json

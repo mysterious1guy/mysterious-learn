@@ -200,6 +200,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
     const userHomePath = `/home/${displayUsername}`;
     const [activeUser, setActiveUser] = useState(displayUsername);
+    const [activeEditor, setActiveEditor] = useState(null);
     const [activeMission, setActiveMission] = useState(null);
     const [input, setInput] = useState('');
     const [history, setHistory] = useState([]);
@@ -316,6 +317,19 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     localStorage.removeItem(`terminal_history_${displayUsername}`);
                 } catch (e) {}
             }
+            return;
+        }
+
+        // Interception des éditeurs de texte (nano, vim, vi)
+        if (lower.startsWith('nano') || lower.startsWith('vim') || lower.startsWith('vi')) {
+            const parts = cmd.split(/\s+/);
+            const editorName = parts[0].toLowerCase();
+            const fileName = parts[1] || 'script.sh';
+            setActiveEditor({
+                fileName: fileName,
+                content: fileName.endsWith('.sh') ? '#!/bin/bash\necho "Hello from Mysterious Classroom!"' : '',
+                editorType: editorName.includes('vi') ? 'vim' : 'nano'
+            });
             return;
         }
 
@@ -524,61 +538,114 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             <div className="w-12"></div>
                         </div>
 
-                        {/* Écran Terminal et Invite de Commande Directe (Sans boutons séparés) */}
-                        <div
-                            ref={outputContainerRef}
-                            onClick={() => inputRef.current?.focus()}
-                            className="p-4 sm:p-6 text-xs sm:text-sm md:text-base h-[680px] lg:h-[760px] overflow-y-auto custom-scrollbar cursor-text space-y-2 leading-relaxed text-slate-200"
-                            style={{ backgroundColor: '#06141d' }}
-                        >
-                            {/* Historique des lignes de commande */}
-                            {history.map((h, i) => (
-                                <div key={i} className="whitespace-pre-wrap">
-                                    {h.type === 'user' ? (
-                                        <div className="flex items-center gap-2 py-0.5 font-bold">
-                                            <span className={activeUser === 'root' ? 'text-red-400 font-bold' : 'text-[#eab308] font-bold'}>
-                                                {h.text.split('@')[0] || activeUser}@MYSTERIOUS
-                                            </span>
-                                            <span className="text-slate-400">:</span>
-                                            <span className="text-[#38bdf8] font-bold">{formattedPath}</span>
-                                            <span className="text-white font-bold">{activeUser === 'root' ? '#' : '$'}</span>
-                                            <span className="text-white font-bold ml-1">{h.text.split(/[$#]\s/).pop() || h.text}</span>
-                                        </div>
-                                    ) : h.type === 'success' ? (
-                                        <div className="text-emerald-400 font-bold py-1 bg-emerald-500/10 px-3 rounded-lg border border-emerald-500/20 my-1">
-                                            {h.text}
-                                        </div>
-                                    ) : h.type === 'error' ? (
-                                        <div className="text-red-400 font-medium py-0.5">
-                                            {h.text}
-                                        </div>
-                                    ) : h.type === 'mission' ? (
-                                        <div className="text-purple-300 font-semibold py-1 bg-purple-500/10 px-3 rounded-lg border border-purple-500/20 my-1">
-                                            {h.text}
-                                        </div>
-                                    ) : (
-                                        <div className="text-slate-300 font-mono py-0.5">
-                                            {h.text}
-                                        </div>
-                                    )}
+                        {/* Écran Terminal et Invite de Commande Directe ou Éditeur Nano */}
+                        {activeEditor ? (
+                            <div className="flex flex-col h-[680px] lg:h-[760px] bg-[#050c14] text-slate-100 font-mono overflow-hidden">
+                                {/* En-tête Nano */}
+                                <div className="bg-slate-200 text-slate-900 px-4 py-2 font-bold text-xs flex justify-between items-center select-none shadow-md">
+                                    <span>  GNU nano 7.2</span>
+                                    <span>Fichier : {activeEditor.fileName}</span>
+                                    <span className="text-slate-600 font-normal">[ Édition de code ]</span>
                                 </div>
-                            ))}
 
-                            {executingCmd && (
-                                <div className="text-emerald-400 animate-pulse font-bold text-xs flex items-center gap-2 py-1">
-                                    <RefreshCw size={14} className="animate-spin" />
-                                    <span>[Noyau Linux] Traitement de la commande...</span>
+                                {/* Editeur Textarea */}
+                                <textarea
+                                    value={activeEditor.content}
+                                    onChange={(e) => setActiveEditor({ ...activeEditor, content: e.target.value })}
+                                    placeholder={`# Saisissez votre script Linux ici (ex: Bash, Python)\n#!/bin/bash\necho "Exécution du script ${activeEditor.fileName}..."\necho "Succès !"`}
+                                    className="flex-1 w-full p-4 bg-[#030910] text-emerald-400 font-mono text-xs sm:text-sm md:text-base resize-none focus:outline-none custom-scrollbar leading-relaxed"
+                                    autoFocus
+                                />
+
+                                {/* Barre de Contrôle et Raccourcis Nano */}
+                                <div className="bg-slate-950 border-t border-slate-800 p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                                    <div className="flex items-center gap-3 text-slate-300">
+                                        <span className="bg-slate-800/80 px-2 py-1 rounded border border-slate-700 font-bold">^O Ecrire (Ctrl+O)</span>
+                                        <span className="bg-slate-800/80 px-2 py-1 rounded border border-slate-700 font-bold">^X Quitter (Ctrl+X)</span>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const savedContent = activeEditor.content;
+                                                const fileName = activeEditor.fileName;
+                                                setHistory(prev => [
+                                                    ...prev,
+                                                    { type: 'user', text: `${activeUser}@MYSTERIOUS:${formattedPath}${activeUser === 'root' ? '#' : '$'} nano ${fileName}` },
+                                                    { type: 'sys', text: `[nano] Fichier '${fileName}' écrit et sauvegardé.` },
+                                                    { type: 'output', text: `CMD: cat ${fileName}\n${savedContent}` }
+                                                ]);
+                                                setActiveEditor(null);
+                                            }}
+                                            className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded shadow transition-all text-xs flex items-center gap-1.5"
+                                        >
+                                            💾 Enregistrer & Quitter
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveEditor(null)}
+                                            className="px-4 py-1.5 bg-rose-600/80 hover:bg-rose-600 text-white font-bold rounded shadow transition-all text-xs flex items-center gap-1.5"
+                                        >
+                                            ❌ Annuler
+                                        </button>
+                                    </div>
                                 </div>
-                            )}
+                            </div>
+                        ) : (
+                            <div
+                                ref={outputContainerRef}
+                                onClick={() => inputRef.current?.focus()}
+                                className="p-4 sm:p-6 text-xs sm:text-sm md:text-base h-[680px] lg:h-[760px] overflow-y-auto custom-scrollbar cursor-text space-y-2 leading-relaxed text-slate-200"
+                                style={{ backgroundColor: '#06141d' }}
+                            >
+                                {/* Historique des lignes de commande */}
+                                {history.map((h, i) => (
+                                    <div key={i} className="whitespace-pre-wrap">
+                                        {h.type === 'user' ? (
+                                            <div className="flex items-center gap-2 py-0.5 font-bold">
+                                                <span className={activeUser === 'root' ? 'text-red-400 font-bold' : 'text-[#eab308] font-bold'}>
+                                                    {h.text.split('@')[0] || activeUser}@MYSTERIOUS
+                                                </span>
+                                                <span className="text-slate-400">:</span>
+                                                <span className="text-[#38bdf8] font-bold">{formattedPath}</span>
+                                                <span className="text-white font-bold">{activeUser === 'root' ? '#' : '$'}</span>
+                                                <span className="text-white font-bold ml-1">{h.text.split(/[$#]\s/).pop() || h.text}</span>
+                                            </div>
+                                        ) : h.type === 'success' ? (
+                                            <div className="text-emerald-400 font-bold py-1 bg-emerald-500/10 px-3 rounded-lg border border-emerald-500/20 my-1">
+                                                {h.text}
+                                            </div>
+                                        ) : h.type === 'error' ? (
+                                            <div className="text-red-400 font-medium py-0.5">
+                                                {h.text}
+                                            </div>
+                                        ) : h.type === 'mission' ? (
+                                            <div className="text-purple-300 font-semibold py-1 bg-purple-500/10 px-3 rounded-lg border border-purple-500/20 my-1">
+                                                {h.text}
+                                            </div>
+                                        ) : (
+                                            <div className="text-slate-300 font-mono py-0.5">
+                                                {h.text}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
 
-                            {/* Ligne d'invité de commande active et fluide (Directement intégrée au flux du texte) */}
-                            <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
-                                <span className={activeUser === 'root' ? 'text-red-400 font-bold shrink-0' : 'text-[#eab308] font-bold shrink-0'}>
-                                    {activeUser}@MYSTERIOUS
-                                </span>
-                                <span className="text-slate-400 font-bold shrink-0">:</span>
-                                <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
-                                <span className="text-white font-bold shrink-0">{activeUser === 'root' ? '#' : '$'}</span>
+                                {executingCmd && (
+                                    <div className="text-emerald-400 animate-pulse font-bold text-xs flex items-center gap-2 py-1">
+                                        <RefreshCw size={14} className="animate-spin" />
+                                        <span>[Noyau Linux] Traitement de la commande...</span>
+                                    </div>
+                                )}
+
+                                {/* Ligne d'invité de commande active et fluide (Directement intégrée au flux du texte) */}
+                                <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
+                                    <span className={activeUser === 'root' ? 'text-red-400 font-bold shrink-0' : 'text-[#eab308] font-bold shrink-0'}>
+                                        {activeUser}@MYSTERIOUS
+                                    </span>
+                                    <span className="text-slate-400 font-bold shrink-0">:</span>
+                                    <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
+                                    <span className="text-white font-bold shrink-0">{activeUser === 'root' ? '#' : '$'}</span>
                                 <input
                                     ref={inputRef}
                                     type="text"
