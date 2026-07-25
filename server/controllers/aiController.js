@@ -860,19 +860,21 @@ const executeTerminalCommand = async (req, res) => {
                 const sshResult = await new Promise((resolve) => {
                     const py = spawn('python3', [pyScript, sshSession.host, sshSession.user || 'root', sshSession.password, cleanCmd]);
                     let stdout = '';
+                    let stderr = '';
                     py.stdout.on('data', data => stdout += data.toString());
+                    py.stderr.on('data', data => stderr += data.toString());
                     py.on('close', () => {
                         try {
                             resolve(JSON.parse(stdout));
                         } catch (e) {
-                            resolve({ success: false, error: stdout || 'SSH execution error' });
+                            resolve({ success: false, error: stdout.trim() || stderr.trim() || `ssh: connect to host ${sshSession.host}: Connection failed` });
                         }
                     });
                 });
 
                 if (sshResult) {
                     return res.json({
-                        output: sshResult.success ? (sshResult.output || '') : (sshResult.error || 'SSH execution error'),
+                        output: sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host}: Connection failed`),
                         newPath: path,
                         isRealSsh: true,
                         sshSuccess: sshResult.success
