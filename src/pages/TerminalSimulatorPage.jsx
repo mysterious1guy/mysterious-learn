@@ -20,7 +20,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Ouvrir la console SSH du serveur Web cible',
             'Exécuter la commande "whoami" pour identifier votre compte'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : Tapez `whoami` et appuyez sur Entrée pour connaître votre identité sur le système.',
+        hint: '💡 CONSEIL DÉBUTANT : Tapez "whoami" et appuyez sur Entrée pour connaître votre identité sur le système.',
         expectedCommand: 'whoami',
         initialOutput: '[+] Session SSH ouverte sur webserver@192.168.1.10\n[+] Tapez "whoami" pour vérifier votre identité.',
         successOutput: 'root\n[🎉 SUCCÈS] Infiltration réussie ! Vous êtes connecté en tant que SUPER-UTILISATEUR (root) ! (+25 XP)'
@@ -36,7 +36,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Lister l\'intégralité des fichiers secrets avec la commande "ls"',
             'Repérer le fichier d\'accès ultra-confidentiel flag.txt'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : La commande `ls` (pour List) affiche tous les fichiers du dossier courant.',
+        hint: '💡 CONSEIL DÉBUTANT : La commande "ls" (pour List) affiche tous les fichiers du dossier courant.',
         expectedCommand: 'ls',
         initialOutput: '[+] Répertoire courant : /var/secret_bank/\n[+] Tapez "ls" pour afficher le contenu du répertoire bancaire.',
         successOutput: 'accounts.db  bank_passwords.env  flag.txt  audit.log\n[🎉 SUCCÈS] Fichiers bancaires découverts ! Le fichier "flag.txt" a été repéré. (+35 XP)'
@@ -52,7 +52,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Utiliser la commande "cat flag.txt" pour lire le fichier repéré au projet 2',
             'Extraire le flag d\'accès sous la forme FLAG{...}'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : La commande `cat <nom_du_fichier>` permet de lire directement le contenu d\'un fichier texte.',
+        hint: '💡 CONSEIL DÉBUTANT : La commande "cat <nom_du_fichier>" permet de lire directement le contenu d\'un fichier texte.',
         expectedCommand: 'cat flag.txt',
         initialOutput: '[+] Le fichier "flag.txt" est présent dans le répertoire.\n[+] Utilisez "cat flag.txt" pour lire et exfiltrer la clé.',
         successOutput: 'FLAG{MYSTERIOUS_BANK_HACK_2026}\n[🎉 SUCCÈS] Données bancaires confidentielles exfiltrées avec succès ! (+45 XP)'
@@ -68,7 +68,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Exécuter un scan de ports sur le serveur hôte 10.0.0.5',
             'Découvrir les failles et portes dérobées actives'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : Tapez `scan 10.0.0.5` pour analyser les ports réseau ouverts sur la machine cible.',
+        hint: '💡 CONSEIL DÉBUTANT : Tapez "scan 10.0.0.5" pour analyser les ports réseau ouverts sur la machine cible.',
         expectedCommand: 'scan 10.0.0.5',
         initialOutput: '[+] Connexion réseau établie vers le serveur de jeu 10.0.0.5...\n[+] Tapez "scan 10.0.0.5" pour analyser les ports ouverts.',
         successOutput: '[+] PORT 80/TCP   : OPEN (HTTP Nginx Game API)\n[+] PORT 8080/TCP : OPEN (Spring Boot Vuln)\n[🎉 SUCCÈS] Ports et failles du serveur de jeu identifiés ! (+50 XP)'
@@ -84,7 +84,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Décoder la chaîne chiffrée Base64 : TXlzdGVyaW91c1Bhc3M2NzA=',
             'Récupérer le mot de passe maître en clair'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : Tapez `decode TXlzdGVyaW91c1Bhc3M2NzA=` pour déchiffrer le mot de passe secret.',
+        hint: '💡 CONSEIL DÉBUTANT : Tapez "decode TXlzdGVyaW91c1Bhc3M2NzA=" pour déchiffrer le mot de passe secret.',
         expectedCommand: 'decode TXlzdGVyaW91c1Bhc3M2NzA=',
         initialOutput: '[+] Paquet chiffré intercepté : TXlzdGVyaW91c1Bhc3M2NzA=\n[+] Tapez "decode TXlzdGVyaW91c1Bhc3M2NzA=" pour déchiffrer le mot de passe.',
         successOutput: 'Mot de passe maître : MysteriousPass670\n[🎉 SUCCÈS] Mot de passe maître déchiffré ! (+60 XP)'
@@ -100,7 +100,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Tester la réactivité du serveur 192.168.1.50 avec la commande "ping"',
             'Confirmer l\'ouverture du canal d\'accès à distance'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : Tapez `ping 192.168.1.50` pour envoyer des requêtes de vérification réseau.',
+        hint: '💡 CONSEIL DÉBUTANT : Tapez "ping 192.168.1.50" pour envoyer des requêtes de vérification réseau.',
         expectedCommand: 'ping 192.168.1.50',
         initialOutput: '[+] Analyse de la joignabilité de l\'hôte VNC 192.168.1.50...\n[+] Tapez "ping 192.168.1.50" pour envoyer les paquets de test.',
         successOutput: '64 bytes from 192.168.1.50: icmp_seq=1 ttl=64 time=0.42 ms\n[🎉 SUCCÈS] Canal VNC réactif ! Le serveur répond aux pings ! (+70 XP)'
@@ -116,7 +116,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Utiliser "grep admin db_config.php" pour chercher le mot admin dans le fichier',
             'Isoler immédiatement les identifiants administrateurs'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : La commande `grep <recherche> <fichier>` extrait les lignes contenant le mot recherché.',
+        hint: '💡 CONSEIL DÉBUTANT : La commande "grep <recherche> <fichier>" extrait les lignes contenant le mot recherché.',
         expectedCommand: 'grep admin db_config.php',
         initialOutput: '[+] Fichier de configuration "db_config.php" accessible sur le serveur SQL.\n[+] Tapez "grep admin db_config.php" pour filtrer le mot de passe admin.',
         successOutput: 'DB_USER=admin DB_PASS=SuperSecretSQLPass2026!\n[🎉 SUCCÈS] Identifiants SQL Administrateur exfiltrés grâce à grep ! (+80 XP)'
@@ -132,7 +132,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Réutiliser la commande "cat keylog.txt" pour inspecter les frappes capturées',
             'Valider la saisie de la clé confidentielle'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : Réutilisez `cat keylog.txt` (comme au projet 3) pour afficher le journal de frappes.',
+        hint: '💡 CONSEIL DÉBUTANT : Réutilisez "cat keylog.txt" (comme au projet 3) pour afficher le journal de frappes.',
         expectedCommand: 'cat keylog.txt',
         initialOutput: '[+] Sonde furtive active. Journal "keylog.txt" prêt à être relu.\n[+] Tapez "cat keylog.txt" pour lire les frappes capturées.',
         successOutput: '[LOG] User: chief_officer | KeyTyped: FLAG{STEALTH_KEYLOG_CAPTURED}\n[🎉 SUCCÈS] Frappes réseau lues et analysées avec succès ! (+90 XP)'
@@ -148,7 +148,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Modifier les droits du script avec la commande "chmod 777 firewall.sh"',
             'Activer la neutralisation du flux malveillant'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : La commande `chmod 777 <fichier>` accorde tous les droits d\'exécution à un script.',
+        hint: '💡 CONSEIL DÉBUTANT : La commande "chmod 777 <fichier>" accorde tous les droits d\'exécution à un script.',
         expectedCommand: 'chmod 777 firewall.sh',
         initialOutput: '[+] Le script de secours "firewall.sh" est verrouillé en lecture seule.\n[+] Tapez "chmod 777 firewall.sh" pour lui accorder les droits d\'exécution.',
         successOutput: 'Permissions mises à jour : -rwxrwxrwx 1 root root firewall.sh\n[🎉 SUCCÈS] Le pare-feu a neutralisé le réseau Botnet ! (+100 XP)'
@@ -164,7 +164,7 @@ export const ALL_PROJECT_MISSIONS = [
             'Exécuter la commande "id root" pour confirmer l\'accréditation UID 0',
             'Valider l\'obtention du rang de Maître de Mysterious Classroom'
         ],
-        hint: '💡 CONSEIL DÉBUTANT : Tapez `id root` pour afficher l\'identifiant UID 0 (root) du système.',
+        hint: '💡 CONSEIL DÉBUTANT : Tapez "id root" pour afficher l\'identifiant UID 0 (root) du système.',
         expectedCommand: 'id root',
         initialOutput: '[+] Liaison montante vers le relais satellite SAT-ORBIT-99 établie.\n[+] Tapez "id root" pour valider l\'accréditation finale UID zéro.',
         successOutput: 'uid=0(root) gid=0(root) groups=0(root),27(sudo)\n[🎉 SUCCÈS ULTIME] Accréditation Spatiale Validée ! Vous avez accompli les 10 Projets et maîtrisez les bases du Terminal Linux ! (+120 XP)'
@@ -659,9 +659,10 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                                     localStorage.setItem(`terminal_vfs_${displayUsername}`, JSON.stringify(updatedVfs));
                                                 } catch (e) {}
 
+                                                const nanoPromptChar = activeUser === 'root' ? '#' : '$';
                                                 setHistory(prev => [
                                                     ...prev,
-                                                    { type: 'user', text: `${activeUser}@mysterious-classroom:${formattedPath}${activeUser === 'root' ? '#' : '$'} nano ${fileName}` },
+                                                    { type: 'user', text: activeUser + '@mysterious-classroom:' + formattedPath + nanoPromptChar + ' nano ' + fileName },
                                                     { type: 'sys', text: `[nano] Fichier '${fileName}' écrit et sauvegardé.` },
                                                     { type: 'output', text: `CMD: cat ${fileName}\n${savedContent}` }
                                                 ]);
