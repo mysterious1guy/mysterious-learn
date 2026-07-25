@@ -22,7 +22,7 @@ const createSmtpTransporter = () => {
  */
 const sendEmail = async ({ to, subject, html, text }) => {
   const relayUrl = process.env.GAS_RELAY_URL;
-  const fullSubject = subject.startsWith('[Mysterious') ? subject : `[Mysterious Classroom] ${subject}`;
+  const fullSubject = subject;
   
   // Générer une version texte brut à partir du HTML pour éviter les filtres anti-spam
   const plainText = text || (html ? html.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim() : '');
