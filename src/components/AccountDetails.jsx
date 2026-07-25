@@ -29,8 +29,7 @@ const AccountDetails = ({ user, onUpdateUser, onLogout, progressions, favorites,
     location: user?.location || '',
     language: user?.language || 'fr',
     notifications: user?.notifications || true,
-    privacy: user?.privacy || 'public',
-    programmingLevel: user?.programmingLevel || 'Débutant'
+    privacy: user?.privacy || 'public'
   });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
@@ -195,8 +194,7 @@ ${JSON.stringify(exportObj, null, 2)}
     try {
       const payload = {
         firstName: editForm.firstName,
-        lastName: editForm.lastName,
-        programmingLevel: editForm.programmingLevel
+        lastName: editForm.lastName
       };
 
       const profileResponse = await fetch(`${API_URL}/auth/profile`, {
@@ -301,8 +299,7 @@ ${JSON.stringify(exportObj, null, 2)}
       location: user?.location || '',
       language: user?.language || 'fr',
       notifications: user?.notifications || true,
-      privacy: user?.privacy || 'public',
-      programmingLevel: user?.programmingLevel || 'Débutant'
+      privacy: user?.privacy || 'public'
     });
     setIsEditing(false);
   };
@@ -498,30 +495,24 @@ ${JSON.stringify(exportObj, null, 2)}
 
           <div>
             <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-gray-500 mb-2">{t('profile_fields.level') || "Niveau d'expertise"}</label>
-            {isEditing ? (
-              <select
-                value={editForm.programmingLevel}
-                onChange={(e) => setEditForm({ ...editForm, programmingLevel: e.target.value })}
-                className="w-full bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:border-blue-500 outline-none transition-all"
-              >
-                <option value="Débutant">{t('profile_fields.level_beginner') || 'Débutant'}</option>
-                <option value="Intermédiaire">{t('profile_fields.level_intermediate') || 'Intermédiaire'}</option>
-                <option value="Avancé">{t('profile_fields.level_advanced') || 'Avancé'}</option>
-              </select>
-            ) : (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 opacity-95 select-none gap-2">
               <div className="flex items-center gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full ${
+                  (user?.programmingLevel === 'Débutant' || user?.programmingLevel === 'beginner' || user?.programmingLevel === 'Beginner') ? 'bg-blue-400' :
+                  (user?.programmingLevel === 'Intermédiaire' || user?.programmingLevel === 'intermediate' || user?.programmingLevel === 'Intermediate') ? 'bg-yellow-400' : 'bg-purple-400'
+                }`} />
                 <p className="text-slate-900 dark:text-white uppercase tracking-wider font-black text-sm">
-                  {(editForm.programmingLevel === 'Débutant' || editForm.programmingLevel === 'beginner' || editForm.programmingLevel === 'Beginner')
+                  {(user?.programmingLevel === 'Débutant' || user?.programmingLevel === 'beginner' || user?.programmingLevel === 'Beginner')
                     ? (t('profile_fields.level_beginner') || 'Débutant')
-                    : (editForm.programmingLevel === 'Intermédiaire' || editForm.programmingLevel === 'intermediate' || editForm.programmingLevel === 'Intermediate')
+                    : (user?.programmingLevel === 'Intermédiaire' || user?.programmingLevel === 'intermediate' || user?.programmingLevel === 'Intermediate')
                       ? (t('profile_fields.level_intermediate') || 'Intermédiaire')
                       : (t('profile_fields.level_advanced') || 'Avancé')}
                 </p>
-                <span className={`w-2 h-2 rounded-full ${(editForm.programmingLevel === 'Débutant' || editForm.programmingLevel === 'beginner' || editForm.programmingLevel === 'Beginner') ? 'bg-blue-400' :
-                  (editForm.programmingLevel === 'Intermédiaire' || editForm.programmingLevel === 'intermediate' || editForm.programmingLevel === 'Intermediate') ? 'bg-yellow-400' : 'bg-purple-400'
-                  }`}></span>
               </div>
-            )}
+              <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1">
+                🔒 {t('profile_fields.level_calculated_notice') || 'Calculé selon tes accomplissements et tests'}
+              </span>
+            </div>
           </div>
         </div>
       </div>
