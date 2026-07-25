@@ -6,7 +6,7 @@ import {
   BarChart3, UserPlus, UserMinus, Camera, Upload, AlertTriangle, TrendingUp,
   Activity, LayoutDashboard, Database, Shield, LogOut, Search, Filter,
   CheckCircle, XCircle, RefreshCw, ChevronRight, Menu, X, Megaphone, Save,
-  Sparkles, Bot, Globe, User, ShieldCheck, Lock
+  Sparkles, Bot, Globe, User, ShieldCheck, Lock, FlaskConical, Gamepad2, Terminal
 } from 'lucide-react';
 import ConfirmModal from '../components/ConfirmModal';
 import { formatTimeAgo } from '../utils/dateUtils';
@@ -42,6 +42,39 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
   const [selectedUserStats, setSelectedUserStats] = useState(null);
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
   const [loadingStats, setLoadingStats] = useState(false);
+
+  const [labPrompt, setLabPrompt] = useState('');
+  const [labResponse, setLabResponse] = useState('');
+  const [testingAi, setTestingAi] = useState(false);
+
+  const handleTestLabAi = async () => {
+    if (!labPrompt.trim()) return;
+    setTestingAi(true);
+    setLabResponse('');
+    try {
+      const res = await fetch(`${API_URL}/ai/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          message: labPrompt,
+          context: 'SECRET_LAB_TEST'
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLabResponse(data.reply || data.response || (typeof data === 'string' ? data : JSON.stringify(data, null, 2)));
+      } else {
+        setLabResponse("❌ Erreur de réponse du serveur IA.");
+      }
+    } catch (err) {
+      setLabResponse("❌ Impossible de se connecter au moteur IA.");
+    } finally {
+      setTestingAi(false);
+    }
+  };
   const fileInputRef = useRef(null);
   const configAvatarRef = useRef(null);
 
@@ -448,10 +481,14 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
             </button>
           ))}
 
-          {user?.email === 'mouhamedfall@esp.sn' && (
+          {(user?.email === 'mouhamedfall@esp.sn' || user?.adminTier === 'owner') && (
             <button
-              onClick={handleGoToLab}
-              className="w-full flex items-center gap-4 px-4 py-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 hover:bg-purple-500/20 transition-all mt-4"
+              onClick={() => setActiveTab('lab')}
+              className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl border transition-all mt-4 ${
+                activeTab === 'lab'
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30 border-purple-500 font-bold'
+                  : 'bg-purple-500/10 border-purple-500/30 text-purple-400 hover:bg-purple-500/20'
+              }`}
             >
               <span className="text-lg">🧪</span>
               {isSidebarOpen && <span className="font-black text-xs uppercase tracking-wider">Lab Secret IA & Jeux</span>}
@@ -1005,6 +1042,116 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                       <UserPlus size={16} /> Ajouter une ligne
                     </button>
                   </div>
+                </div>
+            )}
+
+            {activeTab === 'lab' && (
+              <motion.div key="lab" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
+                {/* Header Secret Lab */}
+                <div className="bg-gradient-to-r from-purple-900 via-slate-900 to-indigo-950 rounded-3xl p-8 border border-purple-500/30 shadow-2xl text-white relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+                  <div className="flex items-center gap-3 text-purple-400 text-xs font-black uppercase tracking-widest mb-2">
+                    <FlaskConical size={18} /> Espace Expérimental Super Admin (Mouhamed)
+                  </div>
+                  <h1 className="text-3xl lg:text-4xl font-black">🧪 Lab Secret IA & Arcade Cyber</h1>
+                  <p className="text-slate-300 text-sm mt-2 max-w-3xl leading-relaxed">
+                    Bienvenue dans le laboratoire secret. Ici vous pouvez tester directement le moteur d'IA, exécuter des bancs d'essais pour les failles et jouer aux prototypes de mini-jeux cyber.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                  {/* Carte 1 : Bac à Sable IA & Test de Prompts */}
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-xl space-y-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-purple-500/10 text-purple-500 rounded-2xl border border-purple-500/20">
+                        <Bot size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-black text-slate-900 dark:text-white">Banc d'Essai du Noyau IA</h3>
+                        <p className="text-xs text-slate-400">Test direct des requêtes et prompts de Mysterious AI</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <textarea
+                        rows={4}
+                        value={labPrompt}
+                        onChange={(e) => setLabPrompt(e.target.value)}
+                        placeholder="Ex: Analyse la vulnérabilité d'un script Python avec injection SQL..."
+                        className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-900 dark:text-slate-200 focus:outline-none focus:border-purple-500"
+                      />
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-slate-400">
+                          {testingAi ? '⚡ Moteur IA en cours d\'analyse...' : 'Prêt à tester'}
+                        </span>
+                        <button
+                          onClick={handleTestLabAi}
+                          disabled={testingAi || !labPrompt.trim()}
+                          className="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-purple-600/30 transition flex items-center gap-2"
+                        >
+                          {testingAi ? <RefreshCw size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                          Tester le Moteur IA
+                        </button>
+                      </div>
+                    </div>
+
+                    {labResponse && (
+                      <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 font-mono text-xs text-emerald-400 space-y-2 max-h-60 overflow-y-auto custom-scrollbar">
+                        <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Réponse du Noyau IA :</p>
+                        <div className="whitespace-pre-wrap leading-relaxed">{labResponse}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Carte 2 : Arcade Mini-Jeux Cyber (Firewall & Decoder) */}
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 lg:p-8 shadow-xl space-y-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-amber-500/10 text-amber-500 rounded-2xl border border-amber-500/20">
+                        <Gamepad2 size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-black text-slate-900 dark:text-white">Arcade & Mini-Jeux Cyber</h3>
+                        <p className="text-xs text-slate-400">Prototypes de défis ludiques interactifs</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Jeu 1: Firewall Defender */}
+                      <div className="bg-slate-50 dark:bg-slate-950 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="px-2.5 py-1 bg-amber-500/10 text-amber-500 text-[10px] font-black uppercase rounded-full">Arcade</span>
+                          <Shield size={18} className="text-amber-500" />
+                        </div>
+                        <h4 className="font-black text-sm text-slate-900 dark:text-white">Firewall Defender</h4>
+                        <p className="text-xs text-slate-500 leading-snug">Bloquez les paquets malveillants avant qu'ils ne touchent le serveur root.</p>
+                        <button
+                          onClick={() => setToast({ message: '🎮 Mini-jeu Firewall Defender prêt !', type: 'info' })}
+                          className="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl transition"
+                        >
+                          Lancer la Démo 🕹️
+                        </button>
+                      </div>
+
+                      {/* Jeu 2: Speed Decoder */}
+                      <div className="bg-slate-50 dark:bg-slate-950 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="px-2.5 py-1 bg-indigo-500/10 text-indigo-500 text-[10px] font-black uppercase rounded-full">Chrono</span>
+                          <Terminal size={18} className="text-indigo-500" />
+                        </div>
+                        <h4 className="font-black text-sm text-slate-900 dark:text-white">Terminal Speed Run</h4>
+                        <p className="text-xs text-slate-500 leading-snug">Tapez le plus de commandes Linux valides en 60 secondes.</p>
+                        <button
+                          onClick={() => setToast({ message: '⚡ Speed Run Terminal prêt !', type: 'info' })}
+                          className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition"
+                        >
+                          Démarrer le Test ⏱️
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
               </motion.div>
             )}
