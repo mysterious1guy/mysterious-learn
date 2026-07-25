@@ -361,6 +361,99 @@ const HomePage = ({ API_URL }) => {
                 </div>
             </section>
 
+            {/* Section Dédiée au Terminal CLI & Noyau Linux Universel */}
+            <section className="py-24 bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 text-white relative overflow-hidden z-10 border-t border-indigo-500/20">
+                <div className="absolute top-1/2 left-0 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
+                <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        
+                        {/* Colonne Gauche : Explication Détaillée des Fonctionnalités du Terminal */}
+                        <div className="lg:col-span-6 space-y-8">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full text-xs font-black uppercase tracking-widest">
+                                <Terminal size={16} /> NOYAU LINUX UNIVERSEL v4.0
+                            </div>
+
+                            <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
+                                Un Terminal Linux Complet, Immensément Puissant
+                            </h2>
+
+                            <p className="text-slate-300 text-base md:text-lg leading-relaxed font-medium">
+                                Découvrez une console CLI interactive complète directement dans votre navigateur. Conçue pour former les étudiants aux vraies commandes UNIX, à l'analyse système et aux scénarios réels de cybersécurité.
+                            </p>
+
+                            {/* Grille des 4 fonctionnalités phares du Terminal */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                                    <div className="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl w-max">
+                                        <Cpu size={20} />
+                                    </div>
+                                    <h4 className="font-bold text-white text-sm">Vraies Commandes Linux</h4>
+                                    <p className="text-xs text-slate-400">Exécution réelle de <code className="text-emerald-400 font-mono">whoami</code>, <code className="text-emerald-400 font-mono">ls</code>, <code className="text-emerald-400 font-mono">cat</code>, <code className="text-emerald-400 font-mono">grep</code>, <code className="text-emerald-400 font-mono">nmap</code>, privilèges Root et plus encore.</p>
+                                </div>
+
+                                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                                    <div className="p-2 bg-indigo-500/20 text-indigo-400 rounded-xl w-max">
+                                        <Bot size={20} />
+                                    </div>
+                                    <h4 className="font-bold text-white text-sm">Mysterious AI Mentor</h4>
+                                    <p className="text-xs text-slate-400">Une IA pédagogique intégrée qui analyse vos saisies, réponds à vos doutes et vous guide pas à pas sans dévoiler les solutions.</p>
+                                </div>
+
+                                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                                    <div className="p-2 bg-purple-500/20 text-purple-400 rounded-xl w-max">
+                                        <Shield size={20} />
+                                    </div>
+                                    <h4 className="font-bold text-white text-sm">Missions de Hacking</h4>
+                                    <p className="text-xs text-slate-400">Infiltration de serveurs web, coffres bancaires, serveurs de jeux vidéo et déchiffrement de paquets cryptés.</p>
+                                </div>
+
+                                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                                    <div className="p-2 bg-amber-500/20 text-amber-400 rounded-xl w-max">
+                                        <Trophy size={20} />
+                                    </div>
+                                    <h4 className="font-bold text-white text-sm">XP & Progression</h4>
+                                    <p className="text-xs text-slate-400">Gagnez des points d'expérience à chaque commande et projet validé pour grimper dans le classement général.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Colonne Droite : Aperçu Visuel Interactif du Terminal */}
+                        <div className="lg:col-span-6">
+                            <div className="bg-slate-950 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-4 font-mono text-xs text-slate-300 relative overflow-hidden">
+                                <div className="flex items-center justify-between bg-slate-900 px-4 py-3 rounded-2xl border border-slate-800">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                        <span className="text-slate-400 font-bold ml-2">bash - root@mysterious-lab:~</span>
+                                    </div>
+                                    <span className="text-emerald-400 font-bold">ONLINE</span>
+                                </div>
+
+                                <div className="space-y-3 pt-2 text-slate-300 leading-relaxed font-mono">
+                                    <p className="text-slate-500">=== MYSTERIOUS TERMINAL CLI (Noyau Linux v4.0) ===</p>
+                                    <p className="text-slate-400">[+] Session SSH ouverte sur target@192.168.1.10</p>
+                                    <p className="text-slate-400">[+] Type 'whoami' to check privilege level.</p>
+                                    <p className="text-emerald-400">root@mysterious-lab:/root# <span className="text-white">whoami</span></p>
+                                    <p className="text-emerald-400">root</p>
+                                    <p className="text-amber-400 font-bold">[🎉 SUCCÈS] Infiltration réussie ! Accès SUPER-UTILISATEUR (root) confirmé ! (+25 XP)</p>
+                                    <p className="text-emerald-400">root@mysterious-lab:/root# <span className="text-white">scan 10.0.0.5</span></p>
+                                    <p className="text-slate-300">[+] PORT 80/TCP   : OPEN (HTTP Nginx Game API)</p>
+                                    <p className="text-slate-300">[+] PORT 8080/TCP : OPEN (Spring Boot Vuln)</p>
+                                    <div className="flex items-center gap-2 pt-2 text-emerald-400">
+                                        <span>root@mysterious-lab:/root#</span>
+                                        <span className="w-2.5 h-4 bg-emerald-400 animate-pulse"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
             {/* Creator Section */}
             <section className="py-24 relative overflow-hidden bg-transparent z-10 border-t border-slate-200/50">
                 <div className="max-w-4xl mx-auto px-6">
