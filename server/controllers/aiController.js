@@ -789,7 +789,7 @@ const generateTerminalMission = async (req, res) => {
           "hint": "Indice pédagogique donnant la commande de départ",
           "expectedCommand": "la commande exacte ou pattern principal à exécuter (ex: cat flag.txt ou scan 192.168.1.42)",
           "commandCategory": "Fichiers / Réseau / Infiltration",
-          "xpReward": 150,
+          "xpReward": ${level === 'Avancé' ? 35 : (level === 'Intermédiaire' ? 25 : 15)},
           "initialOutput": "Message initial ou contextuel affiché au démarrage dans le terminal",
           "successOutput": "Message de victoire affiché quand l'utilisateur réussit la commande"
         }`;
@@ -813,7 +813,7 @@ const generateTerminalMission = async (req, res) => {
                 hint: "Tapez 'scan 10.0.4.12' pour lancer le balayage de la cible.",
                 expectedCommand: "scan 10.0.4.12",
                 commandCategory: "Réseau & Scan",
-                xpReward: 150,
+                xpReward: 20,
                 initialOutput: "[+] Connexion réseau établie. Cible identifiée : 10.0.4.12",
                 successOutput: "[+] PORT 80/TCP OPEN - Faille Web détectée ! Mission accomplie."
             };

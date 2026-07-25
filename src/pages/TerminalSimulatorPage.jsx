@@ -11,9 +11,9 @@ const BEGINNER_MISSIONS = [
         hint: 'Tapez la commande `whoami` dans le terminal et appuyez sur Entrée.',
         expectedCommand: 'whoami',
         commandCategory: 'Système',
-        xpReward: 100,
+        xpReward: 15,
         initialOutput: '[+] Session SSH ouverte sur target@192.168.1.10\n[+] Tapez "whoami" pour vérifier votre niveau de privilège.',
-        successOutput: 'root\n[🎉 SUCCÈS] Vous êtes connecté en tant que SUPER-UTILISATEUR (root) ! (+100 XP)'
+        successOutput: 'root\n[🎉 SUCCÈS] Vous êtes connecté en tant que SUPER-UTILISATEUR (root) ! (+15 XP)'
     },
     {
         id: 'mission_2',
@@ -22,9 +22,9 @@ const BEGINNER_MISSIONS = [
         hint: 'Tapez `ls` (ou `ls -la` pour voir les fichiers cachés).',
         expectedCommand: 'ls',
         commandCategory: 'Fichiers',
-        xpReward: 120,
+        xpReward: 20,
         initialOutput: '[+] Répertoire courant : /var/secret_data/\n[+] Tapez "ls" pour afficher les fichiers présent dans ce dossier.',
-        successOutput: 'passwords.txt  config.env  flag.txt  firewall.log\n[🎉 SUCCÈS] Fichiers découverts ! Vous avez repéré "flag.txt". (+120 XP)'
+        successOutput: 'passwords.txt  config.env  flag.txt  firewall.log\n[🎉 SUCCÈS] Fichiers découverts ! Vous avez repéré "flag.txt". (+20 XP)'
     },
     {
         id: 'mission_3',
@@ -33,9 +33,9 @@ const BEGINNER_MISSIONS = [
         hint: 'Exécutez `cat flag.txt` pour afficher ce qui est écrit à l\'intérieur du fichier.',
         expectedCommand: 'cat flag.txt',
         commandCategory: 'Fichiers',
-        xpReward: 150,
+        xpReward: 25,
         initialOutput: '[+] Le fichier "flag.txt" est dans le dossier courant.\n[+] Utilisez "cat flag.txt" pour extraire la clef secrète.',
-        successOutput: 'FLAG{MYSTERIOUS_CLI_MASTER_2026}\n[🎉 SUCCÈS] Flag déchiffré avec succès ! (+150 XP)'
+        successOutput: 'FLAG{MYSTERIOUS_CLI_MASTER_2026}\n[🎉 SUCCÈS] Flag déchiffré avec succès ! (+25 XP)'
     },
     {
         id: 'mission_4',
@@ -44,9 +44,9 @@ const BEGINNER_MISSIONS = [
         hint: 'Exécutez `scan 10.0.0.5` pour effectuer l\'audit des ports.',
         expectedCommand: 'scan 10.0.0.5',
         commandCategory: 'Réseau',
-        xpReward: 200,
+        xpReward: 30,
         initialOutput: '[+] Préparation de l\'audit réseau sur 10.0.0.5...\n[+] Tapez "scan 10.0.0.5" pour démarrer l\'analyse.',
-        successOutput: '[+] PORT 80/TCP   : OPEN (HTTP Nginx)\n[+] PORT 8080/TCP : OPEN (Spring Boot Vuln)\n[🎉 SUCCÈS] Ports ouverts identifiés ! (+200 XP)'
+        successOutput: '[+] PORT 80/TCP   : OPEN (HTTP Nginx)\n[+] PORT 8080/TCP : OPEN (Spring Boot Vuln)\n[🎉 SUCCÈS] Ports ouverts identifiés ! (+30 XP)'
     },
     {
         id: 'mission_5',
@@ -55,9 +55,11 @@ const BEGINNER_MISSIONS = [
         hint: 'Exécutez `decode TXlzdGVyaW91c1Bhc3M2NzA=`.',
         expectedCommand: 'decode TXlzdGVyaW91c1Bhc3M2NzA=',
         commandCategory: 'Cryptographie',
-        xpReward: 250,
+        xpReward: 40,
         initialOutput: '[+] Donnée encodée reçue : TXlzdGVyaW91c1Bhc3M2NzA=\n[+] Tapez "decode TXlzdGVyaW91c1Bhc3M2NzA=" pour la décoder.',
-        successOutput: 'Mot de passe décodé : MysteriousPass670\n[🎉 SUCCÈS] Mot de passe déchiffré ! Vous maîtrisez les bases du CLI ! (+250 XP)'
+        successOutput: 'Mot de passe décodé : MysteriousPass670\n[🎉 SUCCÈS] Mot de passe déchiffré ! Vous maîtrisez les bases du CLI ! (+40 XP)'
+    }
+];se déchiffré ! Vous maîtrisez les bases du CLI ! (+250 XP)'
     }
 ];
 
@@ -213,7 +215,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 const isCompleted = data.isMissionCompleted || (expected && (lower === expected || lower.startsWith(expected)));
 
                 if (isCompleted && !completedMissions.includes(activeMission.id)) {
-                    const gained = activeMission.xpReward || 150;
+                    const gained = activeMission.xpReward || 20;
                     const newScore = score + gained;
                     setScore(newScore);
                     setCompletedMissions(prev => [...prev, activeMission.id]);
