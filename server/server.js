@@ -27,20 +27,11 @@ connectDB().then(async () => {
       console.log('✅ Profil Super Admin mouhamedfall@esp.sn ajusté avec succès !');
     }
 
-    const count = await Course.countDocuments();
-    if (count !== coursesData.length) {
-      console.log(`⚙️ Base de données désynchronisée (${count} cours trouvés, ${coursesData.length} obligatoires). Lancement de la table rase et de l'auto-seeding...`);
-      try {
-        await Course.collection.dropIndexes();
-        console.log('🧹 Index de la collection Course supprimés avec succès pour réinitialisation');
-      } catch (indexError) {
-        console.log('⚠️ Erreur/Avertissement lors de la suppression des index Course:', indexError.message);
-      }
-      await Course.deleteMany({}); // Purger l'existant
-      await seedCourses(false);
-    }
+    // Table rase : Purge intégrale de tous les anciens cours démo/hardcodés
+    await Course.deleteMany({});
+    console.log('🧹 Purge totale des anciens cours effectuée avec succès.');
   } catch (e) {
-    console.error('❌ Erreur lors de l\'auto-seeding:', e.message);
+    console.error('❌ Erreur initialisation DB:', e.message);
   }
 });
 
