@@ -421,6 +421,10 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
     ] : [])
   ];
 
+  const handleGoToLab = () => {
+    navigate('/admin/lab');
+  };
+
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 transition-colors duration-300">
       {/* Sidebar */}
@@ -443,6 +447,16 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
               {isSidebarOpen && <span className="font-bold text-sm">{item.label}</span>}
             </button>
           ))}
+
+          {user?.email === 'mouhamedfall@esp.sn' && (
+            <button
+              onClick={handleGoToLab}
+              className="w-full flex items-center gap-4 px-4 py-3 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 hover:bg-purple-500/20 transition-all mt-4"
+            >
+              <span className="text-lg">🧪</span>
+              {isSidebarOpen && <span className="font-black text-xs uppercase tracking-wider">Lab Secret IA & Jeux</span>}
+            </button>
+          )}
         </nav>
 
         <div className="p-4 border-t border-slate-200 dark:border-slate-800">

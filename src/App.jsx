@@ -20,6 +20,7 @@ import CoursePage from './pages/CoursePage';
 import ChapterPage from './pages/ChapterPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminPage from './pages/AdminPage';
+import AdminLabPage from './pages/AdminLabPage';
 import TwoFactorSetupPage from './pages/TwoFactorSetupPage';
 import Leaderboard from './pages/Leaderboard';
 import ProjectsList from './pages/ProjectsList';
@@ -244,6 +245,7 @@ function App() {
                 <Route element={<MainLayout user={user} progressions={progressions} onLogout={handleLogout} onSearch={setSearchQuery} />}>
                   <Route index element={user ? <Navigate to="/dashboard" replace /> : <HomePage API_URL={API_URL} />} />
                   <Route path="/admin" element={<AdminPage user={user} onUpdateUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />} />
+                  <Route path="/admin/lab" element={<AdminLabPage user={user} API_URL={API_URL} setToast={setToast} />} />
                   <Route path="dashboard" element={
                     user ? (
                       user.hasCompletedOnboarding ? (
