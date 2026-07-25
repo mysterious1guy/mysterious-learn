@@ -339,15 +339,56 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     text: `[+] Authentification réussie. Session basculée sur '${auth.targetUser}'.`
                 });
             } else if (auth.type === 'ssh') {
-                setSshSession({ user: auth.targetUser, host: auth.host, password: cmd });
-                newHistory.push({
-                    type: 'output',
-                    text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
-                });
-            }
+                const targetSsh = { user: auth.targetUser, host: auth.host, password: cmd };
+                setExecutingCmd(true);
+                setHistory(newHistory);
 
-            setHistory(newHistory);
-            return;
+                try {
+                    const token = user?.token || localStorage.getItem('token');
+                    const res = await fetch(`${API_URL}/ai/execute-terminal-command`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            command: 'whoami',
+                            currentPath: currentPath,
+                            currentUser: activeUser,
+                            vfs: vfs,
+                            sshSession: targetSsh,
+                            mission: activeMission,
+                            history: newHistory
+                        })
+                    });
+
+                    const data = await res.json();
+                    if (res.ok && data.isRealSsh && !data.output.toLowerCase().includes('connection') && !data.output.toLowerCase().includes('permission denied')) {
+                        setSshSession(targetSsh);
+                        setHistory(prev => [
+                            ...prev,
+                            {
+                                type: 'output',
+                                text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
+                            }
+                        ]);
+                    } else {
+                        const errMsg = data.output || data.message || `ssh: connect to host ${auth.host}: Connection failed`;
+                        setHistory(prev => [
+                            ...prev,
+                            { type: 'error', text: errMsg }
+                        ]);
+                    }
+                } catch (err) {
+                    setHistory(prev => [
+                        ...prev,
+                        { type: 'error', text: `ssh: connect to host ${auth.host} port 22: Connection timed out` }
+                    ]);
+                } finally {
+                    setExecutingCmd(false);
+                }
+                return;
+            }
         }
 
         if (!cmd || executingCmd) return;
