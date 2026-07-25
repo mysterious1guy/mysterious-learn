@@ -413,7 +413,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     });
 
                     const data = await res.json();
-                    if (res.ok && data.isRealSsh && !data.output.toLowerCase().includes('connection') && !data.output.toLowerCase().includes('permission denied')) {
+                    if (res.ok && data.isRealSsh && data.sshSuccess) {
                         setSshSession(targetSsh);
                         setHistory(prev => [
                             ...prev,
@@ -422,11 +422,20 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
                             }
                         ]);
-                    } else {
-                        const errMsg = data.output || data.message || `ssh: connect to host ${auth.host}: Connection failed`;
+                    } else if (data.isRealSsh && data.sshSuccess === false) {
                         setHistory(prev => [
                             ...prev,
-                            { type: 'error', text: errMsg }
+                            { type: 'error', text: data.output || `ssh: connect to host ${auth.host} port 22: Connection failed` }
+                        ]);
+                    } else {
+                        // En mode simulation ou mission d'apprentissage
+                        setSshSession(targetSsh);
+                        setHistory(prev => [
+                            ...prev,
+                            {
+                                type: 'output',
+                                text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
+                            }
                         ]);
                     }
                 } catch (err) {

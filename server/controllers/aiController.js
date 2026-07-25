@@ -870,17 +870,12 @@ const executeTerminalCommand = async (req, res) => {
                     });
                 });
 
-                if (sshResult && sshResult.success) {
+                if (sshResult) {
                     return res.json({
-                        output: sshResult.output || '',
+                        output: sshResult.success ? (sshResult.output || '') : (sshResult.error || 'SSH execution error'),
                         newPath: path,
-                        isRealSsh: true
-                    });
-                } else if (sshResult && sshResult.error && (sshResult.error.includes('Permission denied') || sshResult.error.includes('Connection refused') || sshResult.error.includes('timed out'))) {
-                    return res.json({
-                        output: sshResult.error,
-                        newPath: path,
-                        isRealSsh: true
+                        isRealSsh: true,
+                        sshSuccess: sshResult.success
                     });
                 }
             } catch (err) {
