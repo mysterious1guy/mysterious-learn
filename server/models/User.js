@@ -115,7 +115,7 @@ const userSchema = new mongoose.Schema(
     },
     onboardingProfile: {
       goal: { type: String, default: null },
-      startingLevel: { type: String, enum: ['Débutant', 'Intermédiaire', 'Avancé'], default: null },
+      startingLevel: { type: String, default: null },
     },
     // Email Change Verification
     pendingEmail: {
@@ -157,7 +157,6 @@ const userSchema = new mongoose.Schema(
     // Personalization
     programmingLevel: {
       type: String,
-      enum: ['Débutant', 'Intermédiaire', 'Avancé'],
       default: null,
     },
     // NEW: UI/UX Persistence

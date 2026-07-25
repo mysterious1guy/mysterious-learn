@@ -48,11 +48,9 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
         }
     }, [user, step]);
 
-    const handleCompleteOnboarding = async (forcedLevel = null) => {
+    const handleCompleteOnboarding = async () => {
         setIsLoading(true);
         setError('');
-
-        const finalLevel = forcedLevel || formData.startingLevel;
 
         try {
             const response = await fetch(`${API_URL}/auth/profile`, {
@@ -67,8 +65,7 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                     password: formData.password,
                     hasCompletedOnboarding: true,
                     onboardingProfile: {
-                        goal: formData.goal,
-                        startingLevel: finalLevel
+                        goal: formData.goal
                     }
                 })
             });
@@ -77,30 +74,17 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
             if (response.ok) {
                 setUser({ ...user, ...data, token: user.token });
                 setToast({
-                    message: forcedLevel 
-                        ? (t('onboardingFlow.forced_beginner') || "On t'a mis en Débutant pour commencer sereinement !") 
-                        : (t('onboardingFlow.welcome_interface') || "Bienvenue dans l'Académie Mysterious Classroom !"),
-                    type: forcedLevel ? 'info' : 'success'
+                    message: t('onboardingFlow.welcome_interface') || "Bienvenue dans l'Académie Mysterious Classroom !",
+                    type: 'success'
                 });
                 navigate('/dashboard');
             } else {
                 setError(data.message || t('onboardingFlow.save_error') || "Erreur lors de la sauvegarde.");
                 setIsLoading(false);
-                setShowPlacementTest(false);
             }
         } catch (err) {
             setError(t('onboardingFlow.network_error') || "Erreur réseau");
             setIsLoading(false);
-            setShowPlacementTest(false);
-        }
-    };
-
-    const handleOnboardingSubmit = (e) => {
-        e.preventDefault();
-        if (formData.startingLevel === 'Débutant') {
-            handleCompleteOnboarding();
-        } else {
-            setShowPlacementTest(true);
         }
     };
 
@@ -141,18 +125,10 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-transparent overflow-hidden relative">
-            {showPlacementTest && (
-                <GlobalPlacementTest
-                    level={formData.startingLevel}
-                    onPass={() => handleCompleteOnboarding()}
-                    onFail={() => handleCompleteOnboarding('Débutant')}
-                />
-            )}
-
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className={`w-full max-w-md relative z-10 ${showPlacementTest ? 'blur-md pointer-events-none' : ''}`}
+                className="w-full max-w-md relative z-10"
             >
                 <div className="bg-white/90 backdrop-blur-2xl border border-blue-500/20 p-8 rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(59,130,246,0.15)]">
                     <div className="flex justify-center mb-6">
@@ -164,10 +140,10 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                         {t('onboardingFlow.title') || "FINALISATION"}
                     </h2>
                     <p className="text-slate-500 text-center text-xs font-semibold mb-6">
-                        {t('onboardingFlow.subtitle') || "Configurez vos identifiants et votre profil d'apprentissage"}
+                        {t('onboardingFlow.subtitle') || "Configurez vos identifiants et votre objectif d'apprentissage"}
                     </p>
 
-                    <form onSubmit={step === 3 ? handleOnboardingSubmit : (e) => { e.preventDefault(); setStep(step + 1); }} className="space-y-4">
+                    <form onSubmit={(e) => { e.preventDefault(); if (step === 2) handleCompleteOnboarding(); else setStep(2); }} className="space-y-4">
                         <AnimatePresence mode="wait">
                             {step === 1 && (
                                 <motion.div key="step1" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} className="space-y-4">
@@ -260,61 +236,17 @@ const OnboardingPage = ({ user, setUser, API_URL, setToast }) => {
                                             );
                                         })}
                                     </div>
-                                    <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
-                                        <button type="button" onClick={() => setStep(1)} className="px-5 py-3 font-bold text-xs uppercase tracking-wider text-slate-400 hover:text-slate-700 transition">{t('onboardingFlow.back') || "Retour"}</button>
-                                        <button type="button" onClick={() => setStep(3)} disabled={!formData.goal} className={`flex-1 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-2xl flex items-center justify-center gap-2 transition shadow-lg shadow-blue-500/20 group ${!formData.goal ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}>{t('onboardingFlow.next') || "Suivant"} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></button>
-                                    </div>
-                                </motion.div>
-                            )}
-
-                            {step === 3 && (
-                                <motion.div key="step3" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 20, opacity: 0 }} className="space-y-4">
-                                    <h3 className="text-base font-extrabold text-center text-slate-800 tracking-tight">
-                                        {t('onboardingFlow.level_question') || "Quel est votre niveau actuel en sécurité ?"}
-                                    </h3>
-                                    <div className="grid grid-cols-1 gap-3">
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, startingLevel: 'Débutant' })}
-                                            className={`p-4 justify-between items-center rounded-2xl border flex transition-all ${formData.startingLevel === 'Débutant' ? 'border-2 border-blue-600 bg-blue-50/90 text-blue-900 shadow-md shadow-blue-500/10 scale-[1.01]' : 'border-slate-200 bg-slate-50/80 text-slate-700 hover:bg-slate-100 hover:border-slate-300'}`}
-                                        >
-                                            <div className="flex flex-col text-left">
-                                                <span className="font-bold text-slate-900">{t('onboardingFlow.level_beginner_title') || "🐣 Total Débutant"}</span>
-                                                <span className="text-xs text-slate-500 font-medium mt-0.5">{t('onboardingFlow.level_beginner_desc') || "Je démarre de zéro et je veux apprendre les bases"}</span>
-                                            </div>
-                                            {formData.startingLevel === 'Débutant' && <CheckCircle2 size={20} className="text-blue-600 shrink-0 ml-2" />}
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, startingLevel: 'Intermédiaire' })}
-                                            className={`p-4 justify-between items-center rounded-2xl border flex transition-all ${formData.startingLevel === 'Intermédiaire' ? 'border-2 border-blue-600 bg-blue-50/90 text-blue-900 shadow-md shadow-blue-500/10 scale-[1.01]' : 'border-slate-200 bg-slate-50/80 text-slate-700 hover:bg-slate-100 hover:border-slate-300'}`}
-                                        >
-                                            <div className="flex flex-col text-left">
-                                                <span className="font-bold text-slate-900">{t('onboardingFlow.level_inter_title') || "🚀 Intermédiaire"}</span>
-                                                <span className="text-xs text-slate-500 font-medium mt-0.5">{t('onboardingFlow.level_inter_desc') || "J'ai déjà des notions de réseau, Linux ou programmation"}</span>
-                                            </div>
-                                            {formData.startingLevel === 'Intermédiaire' && <CheckCircle2 size={20} className="text-blue-600 shrink-0 ml-2" />}
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, startingLevel: 'Avancé' })}
-                                            className={`p-4 justify-between items-center rounded-2xl border flex transition-all ${formData.startingLevel === 'Avancé' ? 'border-2 border-blue-600 bg-blue-50/90 text-blue-900 shadow-md shadow-blue-500/10 scale-[1.01]' : 'border-slate-200 bg-slate-50/80 text-slate-700 hover:bg-slate-100 hover:border-slate-300'}`}
-                                        >
-                                            <div className="flex flex-col text-left">
-                                                <span className="font-bold text-slate-900">{t('onboardingFlow.level_adv_title') || "💻 Avancé"}</span>
-                                                <span className="text-xs text-slate-500 font-medium mt-0.5">{t('onboardingFlow.level_adv_desc') || "Je pratique déjà et souhaite passer le test de positionnement"}</span>
-                                            </div>
-                                            {formData.startingLevel === 'Avancé' && <CheckCircle2 size={20} className="text-blue-600 shrink-0 ml-2" />}
-                                        </button>
-                                    </div>
-
                                     {error && <p className="text-red-500 text-xs text-center font-bold bg-red-500/10 py-2.5 rounded-xl border border-red-500/20">{error}</p>}
-
                                     <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
-                                        <button type="button" onClick={() => setStep(2)} className="px-5 py-3 font-bold text-xs uppercase tracking-wider text-slate-400 hover:text-slate-700 transition">{t('onboardingFlow.back') || "Retour"}</button>
-                                        <button type="submit" disabled={!formData.startingLevel || isLoading} className={`flex-1 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 transition shadow-lg shadow-blue-500/20 ${!formData.startingLevel || isLoading ? 'opacity-50 grayscale cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}>
+                                        {user && !user.googleId && (
+                                            <button type="button" onClick={() => setStep(1)} className="px-5 py-3 font-bold text-xs uppercase tracking-wider text-slate-400 hover:text-slate-700 transition">{t('onboardingFlow.back') || "Retour"}</button>
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={handleCompleteOnboarding}
+                                            disabled={!formData.goal || isLoading}
+                                            className={`flex-1 py-3.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2 transition shadow-lg shadow-blue-500/20 ${!formData.goal || isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02] active:scale-95'}`}
+                                        >
                                             {isLoading ? (t('onboardingFlow.creating') || 'Création...') : (t('onboardingFlow.validate_create') || 'Valider & Accéder au Tableau de Bord 🚀')}
                                         </button>
                                     </div>

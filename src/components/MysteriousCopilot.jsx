@@ -414,7 +414,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                                         <>
                                             <p><span className="text-slate-500">Action:</span> CRÉATION ET PUBLICATION DE COURS</p>
                                             <p><span className="text-slate-500">Titre:</span> <span className="text-blue-400 font-bold">{actionData.payload.title}</span></p>
-                                            <p><span className="text-slate-500">Catégorie:</span> <span className="text-emerald-400 font-bold">{actionData.payload.category || 'Web'}</span> | Niveau: {actionData.payload.level || 'Débutant'}</p>
+                                            <p><span className="text-slate-500">Catégorie:</span> <span className="text-emerald-400 font-bold">{actionData.payload.category || 'Web'}</span></p>
                                             <p><span className="text-slate-500">Chapitres:</span> {actionData.payload.chapters?.length || 1} module(s)</p>
                                         </>
                                     )}

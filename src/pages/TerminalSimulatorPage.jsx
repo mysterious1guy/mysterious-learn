@@ -11,66 +11,66 @@ import AIAssistant from '../components/AIAssistant';
 export const ALL_PROJECT_MISSIONS = [
     {
         id: 'mission_1',
-        title: 'Projet 1 : Hacker un Site Web (Infiltration & Privilèges)',
+        title: 'Projet 1 : Hacker un Site Web (Identification & Privilèges)',
         category: 'INFILTRATION WEB',
         xpReward: 25,
         targetHost: '192.168.1.10',
-        scenario: 'Infiltrez le serveur d\'hébergement d\'un site Web d\'entreprise. Votre objectif est d\'identifier le nom de l\'utilisateur actuellement connecté et de prendre le contrôle des accès root.',
+        scenario: 'Bienvenue Agent ! Vous venez d\'ouvrir un canal SSH sur le serveur Web d\'une entreprise. Votre tout premier réflexe d\'hacker éthique est de vérifier quel utilisateur vous incarnez et si vous possédez les droits super-utilisateur (root).',
         objectives: [
             'Ouvrir la console SSH du serveur Web cible',
-            'Exécuter la commande whoami pour vérifier votre niveau de privilège'
+            'Exécuter la commande "whoami" pour identifier votre compte'
         ],
-        hint: 'Tapez la commande `whoami` et appuyez sur Entrée.',
+        hint: '💡 CONSEIL DÉBUTANT : Tapez `whoami` et appuyez sur Entrée pour connaître votre identité sur le système.',
         expectedCommand: 'whoami',
-        initialOutput: '[+] Session SSH ouverte sur webserver@192.168.1.10\n[+] Tapez "whoami" pour vérifier votre niveau de privilège.',
+        initialOutput: '[+] Session SSH ouverte sur webserver@192.168.1.10\n[+] Tapez "whoami" pour vérifier votre identité.',
         successOutput: 'root\n[🎉 SUCCÈS] Infiltration réussie ! Vous êtes connecté en tant que SUPER-UTILISATEUR (root) ! (+25 XP)'
     },
     {
         id: 'mission_2',
-        title: 'Projet 2 : Hacker une Banque (Exploration & Mots de Passe)',
+        title: 'Projet 2 : Hacker une Banque (Exploration du Système)',
         category: 'INFILTRATION BANCAIRE',
         xpReward: 35,
         targetHost: '10.0.4.15',
-        scenario: 'Accédez au répertoire secret des serveurs d\'une banque centrale (/var/secret_bank/). Inspectez la liste des fichiers sensibles et repérez les données d\'accès.',
+        scenario: 'Maintenant que vous savez vous identifier (projet 1), vous devez explorer le serveur d\'une banque (/var/secret_bank/). Quelle commande permet de lister tous les fichiers et dossiers secrets présents dans ce répertoire ?',
         objectives: [
-            'Lister l\'intégralité des fichiers secrets avec la commande ls',
-            'Identifier le fichier d\'accès ultra-confidentiel flag.txt'
+            'Lister l\'intégralité des fichiers secrets avec la commande "ls"',
+            'Repérer le fichier d\'accès ultra-confidentiel flag.txt'
         ],
-        hint: 'Tapez `ls` pour afficher la liste des fichiers du répertoire bancaire.',
+        hint: '💡 CONSEIL DÉBUTANT : La commande `ls` (pour List) affiche tous les fichiers du dossier courant.',
         expectedCommand: 'ls',
-        initialOutput: '[+] Répertoire courant : /var/secret_bank/\n[+] Tapez "ls" pour afficher les données bancaires confidentielles.',
-        successOutput: 'accounts.db  bank_passwords.env  flag.txt  audit.log\n[🎉 SUCCÈS] Fichiers bancaires découverts ! Fichier "flag.txt" repéré. (+35 XP)'
+        initialOutput: '[+] Répertoire courant : /var/secret_bank/\n[+] Tapez "ls" pour afficher le contenu du répertoire bancaire.',
+        successOutput: 'accounts.db  bank_passwords.env  flag.txt  audit.log\n[🎉 SUCCÈS] Fichiers bancaires découverts ! Le fichier "flag.txt" a été repéré. (+35 XP)'
     },
     {
         id: 'mission_3',
-        title: 'Projet 3 : Vol de Données Confidentielles (Extraction du Flag)',
+        title: 'Projet 3 : Vol de Données Confidentielles (Lecture avec cat)',
         category: 'EXFILTRATION CYBER',
         xpReward: 45,
         targetHost: '10.0.4.15',
-        scenario: 'Extrayez le flag d\'accès secret contenu dans le fichier flag.txt pour valider l\'opération d\'exfiltration et prouver la prise de contrôle.',
+        scenario: 'Dans le projet précédent, votre commande "ls" a révélé l\'existence du fichier secret "flag.txt". Utilisez à présent la commande de lecture de texte "cat" pour afficher et exfiltrer la clé secrète.',
         objectives: [
-            'Utiliser la commande cat pour lire le fichier confidentiel flag.txt',
-            'Extraire la clef secrète sous forme de FLAG{...}'
+            'Utiliser la commande "cat flag.txt" pour lire le fichier repéré au projet 2',
+            'Extraire le flag d\'accès sous la forme FLAG{...}'
         ],
-        hint: 'Exécutez `cat flag.txt` pour afficher la clef d\'accès.',
+        hint: '💡 CONSEIL DÉBUTANT : La commande `cat <nom_du_fichier>` permet de lire directement le contenu d\'un fichier texte.',
         expectedCommand: 'cat flag.txt',
-        initialOutput: '[+] Le fichier "flag.txt" est verrouillé dans le système.\n[+] Utilisez "cat flag.txt" pour lire et exfiltrer la clé.',
-        successOutput: 'FLAG{MYSTERIOUS_BANK_HACK_2026}\n[🎉 SUCCÈS] Données confidentielles exfiltrées avec succès ! (+45 XP)'
+        initialOutput: '[+] Le fichier "flag.txt" est présent dans le répertoire.\n[+] Utilisez "cat flag.txt" pour lire et exfiltrer la clé.',
+        successOutput: 'FLAG{MYSTERIOUS_BANK_HACK_2026}\n[🎉 SUCCÈS] Données bancaires confidentielles exfiltrées avec succès ! (+45 XP)'
     },
     {
         id: 'mission_4',
-        title: 'Projet 4 : Hacker un Jeu Vidéo (Audit Serveur & Scan de Ports)',
+        title: 'Projet 4 : Hacker un Jeu Vidéo (Audit & Connexion Réseau)',
         category: 'SERVEURS DE JEU',
         xpReward: 50,
         targetHost: '10.0.0.5',
-        scenario: 'Auditez les serveurs dédiés d\'un jeu vidéo multijoueur. Lancez un scan de ports réseau pour détecter les failles d\'hébergement et les portes dérobées.',
+        scenario: 'Vous devez auditer les serveurs d\'un jeu vidéo. Avant d\'explorer des fichiers (projet 2 & 3), vous devez scanner le réseau pour vérifier quels ports et services sont ouverts sur la cible 10.0.0.5.',
         objectives: [
-            'Exécuter un scan de ports réseau sur la cible 10.0.0.5',
-            'Détecter les services et failles ouvertes sur le serveur de jeu'
+            'Exécuter un scan de ports sur le serveur hôte 10.0.0.5',
+            'Découvrir les failles et portes dérobées actives'
         ],
-        hint: 'Exécutez `scan 10.0.0.5` (ou `nmap 10.0.0.5`).',
+        hint: '💡 CONSEIL DÉBUTANT : Tapez `scan 10.0.0.5` pour analyser les ports réseau ouverts sur la machine cible.',
         expectedCommand: 'scan 10.0.0.5',
-        initialOutput: '[+] Analyse du serveur de jeu 10.0.0.5...\n[+] Tapez "scan 10.0.0.5" pour lancer le scan de vulnérabilités.',
+        initialOutput: '[+] Connexion réseau établie vers le serveur de jeu 10.0.0.5...\n[+] Tapez "scan 10.0.0.5" pour analyser les ports ouverts.',
         successOutput: '[+] PORT 80/TCP   : OPEN (HTTP Nginx Game API)\n[+] PORT 8080/TCP : OPEN (Spring Boot Vuln)\n[🎉 SUCCÈS] Ports et failles du serveur de jeu identifiés ! (+50 XP)'
     },
     {
@@ -79,15 +79,95 @@ export const ALL_PROJECT_MISSIONS = [
         category: 'CRYPTANALYSE SECRÈTE',
         xpReward: 60,
         targetHost: '172.16.0.8',
-        scenario: 'Interceptez un paquet de données crypté transmis entre deux serveurs d\'élite. Décodez la chaîne Base64 pour obtenir le mot de passe maître du système.',
+        scenario: 'Vous avez intercepté un message chiffré transmis en Base64. Pour ouvrir les accès du système d\'élite, utilisez la commande "decode" suivie du mot de passe encodé.',
         objectives: [
-            'Décoder le paquet d\'accès encodé en Base64 : TXlzdGVyaW91c1Bhc3M2NzA=',
+            'Décoder la chaîne chiffrée Base64 : TXlzdGVyaW91c1Bhc3M2NzA=',
             'Récupérer le mot de passe maître en clair'
         ],
-        hint: 'Exécutez `decode TXlzdGVyaW91c1Bhc3M2NzA=`.',
+        hint: '💡 CONSEIL DÉBUTANT : Tapez `decode TXlzdGVyaW91c1Bhc3M2NzA=` pour déchiffrer le mot de passe secret.',
         expectedCommand: 'decode TXlzdGVyaW91c1Bhc3M2NzA=',
         initialOutput: '[+] Paquet chiffré intercepté : TXlzdGVyaW91c1Bhc3M2NzA=\n[+] Tapez "decode TXlzdGVyaW91c1Bhc3M2NzA=" pour déchiffrer le mot de passe.',
-        successOutput: 'Mot de passe maître : MysteriousPass670\n[🎉 SUCCÈS] Mot de passe maître déchiffré ! Vous êtes un maître du Terminal CLI ! (+60 XP)'
+        successOutput: 'Mot de passe maître : MysteriousPass670\n[🎉 SUCCÈS] Mot de passe maître déchiffré ! (+60 XP)'
+    },
+    {
+        id: 'mission_6',
+        title: 'Projet 6 : Infiltration d\'un Serveur VNC (Vérification Ping)',
+        category: 'PRISE DE CONTRÔLE A DISTANCE',
+        xpReward: 70,
+        targetHost: '192.168.1.50',
+        scenario: 'Rappelez-vous le projet 4 (analyse réseau). Pour vérifier si un serveur distant répond avant une attaque VNC, on envoie des paquets ICMP avec la commande "ping".',
+        objectives: [
+            'Tester la réactivité du serveur 192.168.1.50 avec la commande "ping"',
+            'Confirmer l\'ouverture du canal d\'accès à distance'
+        ],
+        hint: '💡 CONSEIL DÉBUTANT : Tapez `ping 192.168.1.50` pour envoyer des requêtes de vérification réseau.',
+        expectedCommand: 'ping 192.168.1.50',
+        initialOutput: '[+] Analyse de la joignabilité de l\'hôte VNC 192.168.1.50...\n[+] Tapez "ping 192.168.1.50" pour envoyer les paquets de test.',
+        successOutput: '64 bytes from 192.168.1.50: icmp_seq=1 ttl=64 time=0.42 ms\n[🎉 SUCCÈS] Canal VNC réactif ! Le serveur répond aux pings ! (+70 XP)'
+    },
+    {
+        id: 'mission_7',
+        title: 'Projet 7 : Injection SQL & Recherche Furtive (Commande grep)',
+        category: 'EXPLOITATION SQL',
+        xpReward: 80,
+        targetHost: '10.0.8.20',
+        scenario: 'Vous avez appris à utiliser "cat" (projet 3) pour lire des fichiers. Mais dans un grand fichier comme db_config.php, la commande "grep" permet de filtrer uniquement la ligne contenant le mot "admin" !',
+        objectives: [
+            'Utiliser "grep admin db_config.php" pour chercher le mot admin dans le fichier',
+            'Isoler immédiatement les identifiants administrateurs'
+        ],
+        hint: '💡 CONSEIL DÉBUTANT : La commande `grep <recherche> <fichier>` extrait les lignes contenant le mot recherché.',
+        expectedCommand: 'grep admin db_config.php',
+        initialOutput: '[+] Fichier de configuration "db_config.php" accessible sur le serveur SQL.\n[+] Tapez "grep admin db_config.php" pour filtrer le mot de passe admin.',
+        successOutput: 'DB_USER=admin DB_PASS=SuperSecretSQLPass2026!\n[🎉 SUCCÈS] Identifiants SQL Administrateur exfiltrés grâce à grep ! (+80 XP)'
+    },
+    {
+        id: 'mission_8',
+        title: 'Projet 8 : Keylogger Stealth & Relecture de Logs',
+        category: 'CYBER-ANALYSE & STEALTH',
+        xpReward: 90,
+        targetHost: '172.20.1.1',
+        scenario: 'Une sonde enregistre les frappes au clavier dans un fichier journal "keylog.txt". Réutilisez la commande "cat" (découverte au projet 3) pour lire et exfiltrer les dernières données saisies par la cible.',
+        objectives: [
+            'Réutiliser la commande "cat keylog.txt" pour inspecter les frappes capturées',
+            'Valider la saisie de la clé confidentielle'
+        ],
+        hint: '💡 CONSEIL DÉBUTANT : Réutilisez `cat keylog.txt` (comme au projet 3) pour afficher le journal de frappes.',
+        expectedCommand: 'cat keylog.txt',
+        initialOutput: '[+] Sonde furtive active. Journal "keylog.txt" prêt à être relu.\n[+] Tapez "cat keylog.txt" pour lire les frappes capturées.',
+        successOutput: '[LOG] User: chief_officer | KeyTyped: FLAG{STEALTH_KEYLOG_CAPTURED}\n[🎉 SUCCÈS] Frappes réseau lues et analysées avec succès ! (+90 XP)'
+    },
+    {
+        id: 'mission_9',
+        title: 'Projet 9 : Hijacking Botnet & Permissions Linux (chmod)',
+        category: 'CYBERDÉFENSE & BOTNET',
+        xpReward: 100,
+        targetHost: '10.100.0.1',
+        scenario: 'Pour neutraliser un réseau Botnet, vous devez exécuter un script de pare-feu "firewall.sh". Sous Linux, un fichier doit être rendu exécutable avec la commande "chmod 777".',
+        objectives: [
+            'Modifier les droits du script avec la commande "chmod 777 firewall.sh"',
+            'Activer la neutralisation du flux malveillant'
+        ],
+        hint: '💡 CONSEIL DÉBUTANT : La commande `chmod 777 <fichier>` accorde tous les droits d\'exécution à un script.',
+        expectedCommand: 'chmod 777 firewall.sh',
+        initialOutput: '[+] Le script de secours "firewall.sh" est verrouillé en lecture seule.\n[+] Tapez "chmod 777 firewall.sh" pour lui accorder les droits d\'exécution.',
+        successOutput: 'Permissions mises à jour : -rwxrwxrwx 1 root root firewall.sh\n[🎉 SUCCÈS] Le pare-feu a neutralisé le réseau Botnet ! (+100 XP)'
+    },
+    {
+        id: 'mission_10',
+        title: 'Projet 10 : Infiltration Satellite & Audit Root Final (Commande id)',
+        category: 'INFILTRATION SPATIALE',
+        xpReward: 120,
+        targetHost: 'SAT-ORBIT-99',
+        scenario: 'Félicitations pour votre parcours ! Pour valider la mission ultime, rappelez-vous du projet 1 (whoami). Sur les serveurs haute sécurité, la commande "id root" confirme formellement l\'UID zero du super-utilisateur.',
+        objectives: [
+            'Exécuter la commande "id root" pour confirmer l\'accréditation UID 0',
+            'Valider l\'obtention du rang de Maître de Mysterious Classroom'
+        ],
+        hint: '💡 CONSEIL DÉBUTANT : Tapez `id root` pour afficher l\'identifiant UID 0 (root) du système.',
+        expectedCommand: 'id root',
+        initialOutput: '[+] Liaison montante vers le relais satellite SAT-ORBIT-99 établie.\n[+] Tapez "id root" pour valider l\'accréditation finale UID zéro.',
+        successOutput: 'uid=0(root) gid=0(root) groups=0(root),27(sudo)\n[🎉 SUCCÈS ULTIME] Accréditation Spatiale Validée ! Vous avez accompli les 10 Projets et maîtrisez les bases du Terminal Linux ! (+120 XP)'
     }
 ];
 
@@ -236,11 +316,11 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 if (activeMission) {
                     const isCompleted = data.isMissionCompleted || (expected && (lower === expected || lower.startsWith(expected)));
 
-                    if (isCompleted && !completedMissions.includes(activeMission.id)) {
-                        const gained = activeMission.xpReward || 20;
-                        const newScore = score + gained;
-                        setScore(newScore);
-                        setCompletedMissions(prev => [...prev, activeMission.id]);
+                        const updatedCompleted = [...completedMissions, activeMission.id];
+                        setCompletedMissions(updatedCompleted);
+                        try {
+                            localStorage.setItem('completed_missions', JSON.stringify(updatedCompleted));
+                        } catch (e) {}
 
                         setHistory(prev => [
                             ...prev,
@@ -248,7 +328,16 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                         ]);
 
                         if (setUser) {
-                            setUser(prev => prev ? ({ ...prev, xp: newScore }) : prev);
+                            setUser(prev => {
+                                if (!prev) return prev;
+                                const quests = prev.completedQuests || [];
+                                const hasQuest = quests.some(q => (typeof q === 'string' ? q : q.projectId) === activeMission.id);
+                                return {
+                                    ...prev,
+                                    xp: newScore,
+                                    completedQuests: hasQuest ? quests : [...quests, { projectId: activeMission.id, completedAt: new Date() }]
+                                };
+                            });
                         }
                         if (setToast) {
                             setToast({ message: `🎯 Projet complété ! +${gained} XP gagnés`, type: 'success' });
@@ -276,7 +365,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     return (
         <div className="flex-1 min-w-0 bg-slate-50 dark:bg-[#0B1120] relative flex flex-col min-h-screen">
             <div className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 mt-14 lg:mt-0 pb-20">
-                <div className="w-full max-w-[1750px] mx-auto space-y-6">
+                <div className="w-full max-w-full mx-auto space-y-6">
 
                     {/* Header Banner */}
                     <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

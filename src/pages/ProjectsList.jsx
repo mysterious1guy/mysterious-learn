@@ -126,60 +126,90 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
 
                         {/* Grille des Cartes de Projets */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {ALL_PROJECT_MISSIONS.map((m) => (
-                                <motion.div
-                                    key={m.id}
-                                    whileHover={{ y: -4 }}
-                                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between transition relative overflow-hidden group hover:border-indigo-500/40"
-                                >
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between">
-                                            <span className="px-3.5 py-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
-                                                ⚡ {m.category}
-                                            </span>
-                                            <span className="text-[11px] font-mono text-slate-400 font-bold">
-                                                Cible: {m.targetHost}
-                                            </span>
+                            {ALL_PROJECT_MISSIONS.map((m, index) => {
+                                const savedCompleted = JSON.parse(localStorage.getItem('completed_missions') || '[]');
+                                const userCompletedIds = (user?.completedQuests || []).map(q => typeof q === 'string' ? q : (q.projectId || q._id || q.id));
+                                const isCompleted = savedCompleted.includes(m.id) || userCompletedIds.includes(m.id);
+
+                                // Déblocage : Tout débloqué pour Admin/SuperAdmin/IA. Sinon déblocage étape par étape (projet N débloqué si N-1 validé).
+                                const isAdminOrAI = user?.role === 'admin' || user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn' || user?.isAI;
+                                const isUnlocked = index === 0 || isAdminOrAI || (savedCompleted.includes(ALL_PROJECT_MISSIONS[index - 1]?.id) || userCompletedIds.includes(ALL_PROJECT_MISSIONS[index - 1]?.id));
+
+                                return (
+                                    <motion.div
+                                        key={m.id}
+                                        whileHover={isUnlocked ? { y: -4 } : { scale: 1 }}
+                                        className={`bg-white dark:bg-slate-900 border ${isCompleted ? 'border-emerald-500/50' : 'border-slate-200 dark:border-slate-800'} rounded-3xl p-6 shadow-xl flex flex-col justify-between transition relative overflow-hidden group ${isUnlocked ? 'hover:border-indigo-500/40' : ''}`}
+                                    >
+                                        {/* Overlay Cadenas de Verrouillage Étape par Étape */}
+                                        {!isUnlocked && (
+                                            <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-md z-20 flex flex-col items-center justify-center p-6 text-center space-y-3">
+                                                <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/10">
+                                                    <Lock size={28} />
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-base font-black text-white uppercase tracking-wider">Projet Verrouillé 🔒</h4>
+                                                    <p className="text-xs text-slate-300 font-medium mt-1">Validez le projet précédent ({ALL_PROJECT_MISSIONS[index - 1]?.title.split(':')[0]}) pour débloquer cette mission.</p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <span className="px-3.5 py-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
+                                                    ⚡ {m.category}
+                                                </span>
+                                                {isCompleted ? (
+                                                    <span className="inline-flex items-center gap-1 text-[10px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                                                        <Check size={12} /> VALIDÉ
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[11px] font-mono text-slate-400 font-bold">
+                                                        Cible: {m.targetHost}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <h3 className="text-xl font-black text-slate-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
+                                                {m.title}
+                                            </h3>
+
+                                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+                                                {m.scenario}
+                                            </p>
+
+                                            {/* Objectifs du projet */}
+                                            <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                                <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Objectifs d'Infiltration :</p>
+                                                <ul className="space-y-2">
+                                                    {m.objectives.map((obj, i) => (
+                                                        <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2.5 font-medium">
+                                                            <CheckCircle size={15} className="text-emerald-500 shrink-0 mt-0.5" />
+                                                            <span>{obj}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
                                         </div>
 
-                                        <h3 className="text-xl font-black text-slate-900 dark:text-white leading-tight group-hover:text-indigo-500 transition-colors">
-                                            {m.title}
-                                        </h3>
+                                        <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
+                                            <div className="flex items-center gap-1.5 text-amber-500 font-black text-sm">
+                                                <Trophy size={18} />
+                                                <span>+{m.xpReward} XP</span>
+                                            </div>
 
-                                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-                                            {m.scenario}
-                                        </p>
-
-                                        {/* Objectifs du projet */}
-                                        <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                            <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Objectifs d'Infiltration :</p>
-                                            <ul className="space-y-2">
-                                                {m.objectives.map((obj, i) => (
-                                                    <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2.5 font-medium">
-                                                        <CheckCircle size={15} className="text-emerald-500 shrink-0 mt-0.5" />
-                                                        <span>{obj}</span>
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                            <button
+                                                onClick={() => navigate(`/terminal?mission=${m.id}`)}
+                                                disabled={!isUnlocked}
+                                                className={`px-5 py-2.5 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg flex items-center gap-2 transition ${isCompleted ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/20' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20'}`}
+                                            >
+                                                <Play size={14} />
+                                                {isCompleted ? 'Rejouer ⚡' : 'Lancer le Projet ⚡'}
+                                            </button>
                                         </div>
-                                    </div>
-
-                                    <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
-                                        <div className="flex items-center gap-1.5 text-amber-500 font-black text-sm">
-                                            <Trophy size={18} />
-                                            <span>+{m.xpReward} XP</span>
-                                        </div>
-
-                                        <button
-                                            onClick={() => navigate(`/terminal?mission=${m.id}`)}
-                                            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition"
-                                        >
-                                            <Play size={14} />
-                                            Lancer le Projet ⚡
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                    </motion.div>
+                                );
+                            })}
                         </div>
                     </div>
 

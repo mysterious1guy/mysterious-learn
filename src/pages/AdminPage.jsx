@@ -1231,17 +1231,8 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
 
                     <div className="col-span-2 bg-blue-600/5 dark:bg-blue-600/10 p-6 rounded-3xl border border-blue-500/10 dark:border-blue-500/20 flex items-center justify-between">
                       <div>
-                        <p className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 mb-1">Expertise (Modifier)</p>
-                        <select
-                          value={selectedUserStats.user?.programmingLevel || 'beginner'}
-                          onChange={(e) => handleUpdateLevel(selectedUserStats.user?._id, e.target.value)}
-                          className="bg-transparent text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter outline-none focus:text-blue-500 cursor-pointer border-none p-0"
-                        >
-                          <option value="beginner">Débutant</option>
-                          <option value="intermediate">Intermédiaire</option>
-                          <option value="advanced">Avancé</option>
-                          <option value="expert">Expert</option>
-                        </select>
+                        <p className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 mb-1">Rôle Accrédité</p>
+                        <p className="text-xl font-black text-slate-800 dark:text-white uppercase tracking-tighter">{selectedUserStats.user?.role || 'Membre'}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-[10px] font-black uppercase text-slate-400 dark:text-white/40 mb-1">Dernière activité</p>

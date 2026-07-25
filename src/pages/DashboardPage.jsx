@@ -184,31 +184,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
         const itemId = item._id || item.id;
         if (user?.unlockedCourses?.includes(itemId)) return true;
         if (item.isPremium) return false;
-
-        // Unified level check
-        const userLevel = (user?.programmingLevel || user?.onboardingProfile?.startingLevel || 'Débutant');
-
-        // Débutant / beginner -> can access Débutant
-        if (item.level === 'Débutant') return true;
-
-        // Avancé -> can access everything
-        if (userLevel === 'Avancé') return true;
-
-        // Amateur / intermediate -> can access Intermédiaire
-        if (userLevel === 'Intermédiaire' && item.level === 'Intermédiaire') return true;
-
-        // Final check based on prerequisites
-        let targetLevelToCheck = '';
-        if (item.level === 'Intermédiaire') targetLevelToCheck = 'Débutant';
-        if (item.level === 'Avancé') targetLevelToCheck = 'Intermédiaire';
-        const subjectName = item.title.split(' - ')[0];
-        const reqCourse = courses.find(c => c.level === targetLevelToCheck && c.title.split(' - ')[0] === subjectName);
-        if (reqCourse) {
-            const reqId = reqCourse._id || reqCourse.id;
-            const reqProgress = progressions?.[reqId]?.progress || 0;
-            return reqProgress >= 100;
-        }
-        return false;
+        return true;
     };
 
     const handleOnboardingFinish = async () => {
@@ -299,13 +275,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
         categoriesMap[categoryName].subjects[subjectName].items.push(course);
     });
 
-    // Trier les items à l'intérieur de chaque sujet par niveau (Débutant -> Intermédiaire -> Avancé)
-    const levelOrder = { 'Débutant': 1, 'Intermédiaire': 2, 'Avancé': 3 };
-    Object.values(categoriesMap).forEach(category => {
-        Object.values(category.subjects).forEach(subject => {
-            subject.items.sort((a, b) => (levelOrder[a.level] || 99) - (levelOrder[b.level] || 99));
-        });
-    });
+
 
     const groupedCategories = Object.values(categoriesMap);
 
@@ -500,25 +470,8 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                 </motion.div>
             </div>
 
-            {/* Annonce Mysterious en Construction */}
-            <div className="max-w-7xl mx-auto px-6 lg:px-12 mb-8">
-                <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-6 text-amber-600 dark:text-amber-400 flex items-center gap-4 backdrop-blur-md shadow-xl">
-                    <div className="p-3.5 bg-amber-500/20 rounded-2xl shrink-0">
-                        <Sparkles size={28} className="text-amber-500" />
-                    </div>
-                    <div>
-                        <h4 className="font-black text-sm uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-2">
-                            <span>🚧</span> MYSTERIOUS CLASSROOM EST ACTUELLEMENT EN CONSTRUCTION
-                        </h4>
-                        <p className="text-xs mt-1 text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-                            {t('dashboard.new_modules_desc') || "La plateforme Mysterious Classroom prépare son nouvel écosystème de cours interactifs. L'infrastructure est prête et la Salle d'Entraînement au Terminal CLI est disponible directement ci-dessous !"}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Intégration Élargie du Terminal CLI Simulator dans le Tableau de Bord */}
-            <div id="tour-dashboard-terminal" className="max-w-7xl mx-auto px-6 lg:px-12 mb-16">
+            {/* Intégration Élargie du Terminal CLI Simulator Plein Écran */}
+            <div id="tour-dashboard-terminal" className="w-full px-2 sm:px-4 lg:px-8 mb-16">
                 <TerminalSimulatorPage user={user} API_URL={API_URL} />
             </div>
 
@@ -752,6 +705,23 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                     </motion.div>
                 </div>
             )}
+
+            {/* Annonce Mysterious en Construction (Placée tout en bas de la page) */}
+            <div className="max-w-7xl mx-auto px-6 lg:px-12 my-12">
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-6 text-amber-600 dark:text-amber-400 flex items-center gap-4 backdrop-blur-md shadow-xl">
+                    <div className="p-3.5 bg-amber-500/20 rounded-2xl shrink-0">
+                        <Sparkles size={28} className="text-amber-500" />
+                    </div>
+                    <div>
+                        <h4 className="font-black text-sm uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-2">
+                            <span>🚧</span> MYSTERIOUS CLASSROOM EST ACTUELLEMENT EN CONSTRUCTION
+                        </h4>
+                        <p className="text-xs mt-1 text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                            {t('dashboard.new_modules_desc') || "La plateforme Mysterious Classroom prépare son nouvel écosystème de cours interactifs. L'infrastructure est prête et les futurs modules arriveront très bientôt !"}
+                        </p>
+                    </div>
+                </div>
+            </div>
 
             {/* Certificate Modal Component */}
             <CertificateModal

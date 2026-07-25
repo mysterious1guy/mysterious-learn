@@ -353,8 +353,7 @@ const Dashboard = ({ user, courses, favorites, onSelectCourse, toggleFavorite, p
                                                 <h4 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">{item.name}</h4>
                                                 <p className="text-sm text-gray-400 line-clamp-2 mb-6 h-10">{item.desc}</p>
 
-                                                <div className="flex items-center justify-between text-xs font-medium text-gray-500">
-                                                    <span className="bg-gray-900/50 px-3 py-1 rounded-full border border-white/5">{item.level}</span>
+                                                <div className="flex items-center justify-end text-xs font-medium text-gray-500">
                                                     <span>{item.students} étudiants</span>
                                                 </div>
 

@@ -41,11 +41,11 @@ const HomePage = ({ API_URL }) => {
         },
         {
             id: "xp",
-            label: t('home.tab_xp') || "Niveaux XP",
+            label: t('home.tab_xp') || "Progression XP",
             badge: "XP & PROGRESSION",
             icon: Trophy,
             title: t('home.obj3_title') || "Gagner de l'Expérience",
-            desc: t('home.obj3_desc') || "Chaque mission réussie vous donne des points (XP). Débloquez de nouveaux niveaux et affrontez des défis plus complexes.",
+            desc: t('home.obj3_desc') || "Chaque mission réussie vous attribue des points d'expérience (XP). Débloquez les projets suivants étape par étape.",
             image: "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&q=80&w=1200"
         },
         {

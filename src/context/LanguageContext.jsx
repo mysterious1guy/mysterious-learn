@@ -164,7 +164,7 @@ export const translations = {
             obj2_title: "Devenir un as de la sécurité",
             obj2_desc: "Découvrez comment les pirates pensent pour mieux vous protéger. Apprenez à trouver les failles avant qu'elles ne soient exploitées.",
             obj3_title: "Progresser à votre rythme",
-            obj3_desc: "Chaque mission réussie vous donne des points d'expérience (XP). Débloquez de nouveaux niveaux et affrontez des défis de plus en plus complexes.",
+            obj3_desc: "Chaque mission réussie vous attribue des points d'expérience (XP). Débloquez les projets suivants étape par étape.",
             obj4_title: "Un mentor IA à vos côtés",
             obj4_desc: "Bloqué sur un problème ? Mysterious Copilot, notre IA intelligente, est là pour vous donner des indices précis sans faire le travail à votre place.",
             btn_create_agent: "CRÉER UN DOSSIER D'AGENT",
@@ -194,7 +194,7 @@ export const translations = {
             topic_rev_desc: "Démontez des programmes pour comprendre exactement comment ils ont été fabriqués à l'intérieur.",
             tab_practice: "Pratique",
             tab_security: "Hacking",
-            tab_xp: "Niveaux XP",
+            tab_xp: "Progression XP",
             tab_ai: "Mysterious Copilot"
         },
         resetPasswordPage: {
@@ -586,7 +586,7 @@ export const translations = {
             obj2_title: "Become a security ace",
             obj2_desc: "Discover how hackers think to better protect yourself. Learn to find flaws before they are exploited.",
             obj3_title: "Progress at your own pace",
-            obj3_desc: "Each successful mission grants you experience points (XP). Unlock new levels and face increasingly complex challenges.",
+            obj3_desc: "Each successful mission grants you experience points (XP). Unlock upcoming projects step by step.",
             obj4_title: "An AI mentor by your side",
             obj4_desc: "Stuck on a problem? Mysterious Copilot, our smart AI, is here to give you precise hints without doing the work for you.",
             btn_create_agent: "CREATE AN AGENT DOSSIER",
@@ -616,7 +616,7 @@ export const translations = {
             topic_rev_desc: "Take apart programs to understand exactly how they were built inside.",
             tab_practice: "Practice",
             tab_security: "Hacking",
-            tab_xp: "XP Levels",
+            tab_xp: "XP Progress",
             tab_ai: "Mysterious Copilot"
         },
         announcements: {
