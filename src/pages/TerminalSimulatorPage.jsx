@@ -633,7 +633,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 <textarea
                                     value={activeEditor.content}
                                     onChange={(e) => setActiveEditor({ ...activeEditor, content: e.target.value })}
-                                    placeholder={`# Saisissez votre script Linux ici (ex: Bash, Python)\n#!/bin/bash\necho "Exécution du script ${activeEditor.fileName}..."\necho "Succès !"`}
+                                    placeholder="Saisissez votre script Linux ici (ex: Bash, Python)..."
                                     className="flex-1 w-full p-4 bg-[#030910] text-emerald-400 font-mono text-xs sm:text-sm md:text-base resize-none focus:outline-none custom-scrollbar leading-relaxed"
                                     autoFocus
                                 />
