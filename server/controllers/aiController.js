@@ -110,6 +110,10 @@ const aiChat = async (req, res) => {
             \`\`\`json
             { "type": "admin_action", "action": "update_role", "payload": { "userId": "ID", "role": "admin" } }
             \`\`\`
+            RÈGLE CRITIQUE DES ACTIONS ADMIN:
+            Ne propose un bloc JSON `admin_action` QUE pour les actions de MODIFICATION (créer un cours, supprimer, purger, envoyer email/notif).
+            Pour les simples questions d'information (ex: XP, profil, questions, recherche), RÉPONDS DIRECTEMENT en texte clair SANS ajouter de bloc JSON !
+
             Format CRÉATION DE COURS (Si le Boss te demande d'intégrer ou de créer un cours):
             \`\`\`json
             { "type": "admin_action", "action": "create_course", "payload": { "id": "custom_course_id", "title": "Titre du cours", "description": "Description complète", "category": "Web", "level": "Débutant", "duration": "2h", "chapters": [{ "title": "1. Module Principal", "description": "Aperçu du module", "order": 1, "content": "Contenu détaillé en Markdown..." }] } }

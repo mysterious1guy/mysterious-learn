@@ -225,6 +225,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 method = 'GET';
                 body = null;
             }
+            else if (actionData.action === 'get_user_stats' || actionData.action === 'user_stats' || actionData.action === 'get_stats') {
+                endpoint = '/admin/stats';
+                method = 'GET';
+                body = null;
+            }
             else if (actionData.action === 'purge_courses' || actionData.action === 'delete_all_courses' || actionData.action === 'purge_all_courses') {
                 endpoint = '/courses/purge/all';
                 method = 'DELETE';
