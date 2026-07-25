@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Terminal, Shield, Sparkles, Trophy, HelpCircle, RefreshCw, CheckCircle2, 
@@ -7,7 +8,7 @@ import {
 } from 'lucide-react';
 import AIAssistant from '../components/AIAssistant';
 
-const INITIAL_PROJECT_MISSIONS = [
+export const ALL_PROJECT_MISSIONS = [
     {
         id: 'mission_1',
         title: 'Projet 1 : Premier Contact & Exploration Système',
@@ -109,48 +110,56 @@ const CHEATSHEET = [
 ];
 
 const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
-    // Mode Active: 'missions' (Cartes de Projets) vs 'sandbox' (Terminal Libre)
-    const [activeTab, setActiveTab] = useState('missions');
-    
-    // Projets & Mission Active
-    const [projectMissions, setProjectMissions] = useState(INITIAL_PROJECT_MISSIONS);
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const missionIdParam = searchParams.get('mission');
+
     const [activeMission, setActiveMission] = useState(null);
-    
-    // Terminal state
     const [input, setInput] = useState('');
     const [history, setHistory] = useState([]);
     const [currentPath, setCurrentPath] = useState('/root');
     const [executingCmd, setExecutingCmd] = useState(false);
     const [showHint, setShowHint] = useState(false);
-    const [loadingAI, setLoadingAI] = useState(false);
     const [completedMissions, setCompletedMissions] = useState([]);
     const [score, setScore] = useState(user?.xp || 0);
 
     const outputContainerRef = useRef(null);
     const inputRef = useRef(null);
 
-    // Initialisation du terminal lors du lancement d'une mission ou du Sandbox
+    // Charger la mission active si spécifiée via query param (?mission=mission_1)
     useEffect(() => {
-        if (activeTab === 'sandbox') {
+        if (missionIdParam) {
+            const found = ALL_PROJECT_MISSIONS.find(m => m.id === missionIdParam);
+            if (found) {
+                setActiveMission(found);
+            }
+        } else {
+            setActiveMission(null);
+        }
+    }, [missionIdParam]);
+
+    // Initialisation du terminal lors du lancement d'une mission ou du Sandbox libre
+    useEffect(() => {
+        if (activeMission) {
             setHistory([
-                { type: 'sys', text: '=== MYSTERIOUS TERMINAL SANDBOX v4.0 (Noyau Linux Universel) ===' },
-                { type: 'sys', text: 'Mode d\'entraînement libre activé. Vous disposez d\'un accès root complet.' },
-                { type: 'sys', text: 'Tapez n\'importe quelle commande Linux réelle (ex: whoami, ls, useradd, grep, python3, etc.).' },
-                { type: 'output', text: '[+] Shell interactif prêt sur root@mysterious-lab.' }
-            ]);
-        } else if (activeMission) {
-            setHistory([
-                { type: 'sys', text: `=== ${activeMission.title.toUpperCase()} ===` },
+                { type: 'sys', text: `=== PROJET : ${activeMission.title.toUpperCase()} ===` },
                 { type: 'sys', text: `Catégorie : ${activeMission.category} | Cible : ${activeMission.targetHost}` },
                 { type: 'mission', text: `🎯 OBJECTIF DE L'OPÉRATION :\n${activeMission.scenario}` },
-                { type: 'output', text: activeMission.initialOutput || '[+] Connexion réseau établie.' }
+                { type: 'output', text: activeMission.initialOutput || '[+] Session de projet ouverte sur target.' }
             ]);
             setShowHint(false);
+        } else {
+            setHistory([
+                { type: 'sys', text: '=== MYSTERIOUS TERMINAL CLI (Salle d\'Entraînement Libre) ===' },
+                { type: 'sys', text: 'Bienvenue dans la Salle d\'Entraînement au Terminal Linux.' },
+                { type: 'sys', text: 'Toutes les commandes Linux réelles sont désormais supportées sans restriction (accès root).' },
+                { type: 'output', text: '[+] Interprète bash prêt. Tapez une commande ou utilisez le guide de droite.' }
+            ]);
         }
         setTimeout(() => {
             inputRef.current?.focus();
         }, 100);
-    }, [activeMission, activeTab]);
+    }, [activeMission]);
 
     // Scroll automatique du terminal & maintien du focus
     useEffect(() => {
@@ -158,49 +167,6 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             outputContainerRef.current.scrollTop = outputContainerRef.current.scrollHeight;
         }
     }, [history, executingCmd]);
-
-    // Générer une mission aléatoire via l'IA
-    const fetchAIMission = async () => {
-        try {
-            setLoadingAI(true);
-            const token = user?.token || localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/ai/generate-terminal-mission`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ level: 'Débutant' })
-            });
-
-            if (!res.ok) throw new Error('Échec génération IA');
-            const data = await res.json();
-
-            const newMission = {
-                id: data.id || `mission_${Date.now()}`,
-                title: data.title || "Mission Spéciale IA",
-                category: data.commandCategory || "Cyber Hacking",
-                level: "Débutant",
-                xpReward: data.xpReward || 25,
-                targetHost: data.targetHost || "192.168.1.42",
-                scenario: data.description || "Infiltration système par IA",
-                objectives: [data.description],
-                hint: data.hint || "Utilisez les commandes Linux de base.",
-                expectedCommand: data.expectedCommand || "whoami",
-                initialOutput: data.initialOutput || "[+] Mission IA chargée.",
-                successOutput: data.successOutput || "[+] Mission accomplie !"
-            };
-
-            setProjectMissions(prev => [newMission, ...prev]);
-            setActiveMission(newMission);
-            if (setToast) setToast({ message: 'Nouveau Projet IA généré avec succès ! ⚡', type: 'success' });
-        } catch (err) {
-            console.error(err);
-            if (setToast) setToast({ message: 'Erreur lors de la génération IA', type: 'error' });
-        } finally {
-            setLoadingAI(false);
-        }
-    };
 
     const handleCommand = async (e) => {
         e.preventDefault();
@@ -226,7 +192,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 - whoami, ls, pwd, cat, cd, mkdir, touch, rm, chmod, chown
 - useradd, id, grep, find, ps aux, netstat, nmap, python3, curl, ping, uname -a
 - clear               : Effacer l'écran
-- hint                : Obtenir un indice sur la mission actuelle`
+- hint                : Obtenir un indice sur le projet actuel`
             });
             setHistory(newHistory);
             return;
@@ -271,7 +237,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     { type: 'output', text: data.output }
                 ]);
 
-                // Vérifier si la mission est accomplie (si en mode mission)
+                // Vérifier si le projet est accompli (si en mode projet)
                 if (activeMission) {
                     const isCompleted = data.isMissionCompleted || (expected && (lower === expected || lower.startsWith(expected)));
 
@@ -283,7 +249,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
                         setHistory(prev => [
                             ...prev,
-                            { type: 'success', text: data.completionMessage || activeMission.successOutput || '[+] Mission accomplie avec succès !' }
+                            { type: 'success', text: data.completionMessage || activeMission.successOutput || '[+] Projet accompli avec succès !' }
                         ]);
 
                         if (setUser) {
@@ -317,7 +283,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             <div className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 mt-14 lg:mt-0 pb-20">
                 <div className="w-full max-w-[1750px] mx-auto space-y-6">
 
-                    {/* Header Banner & Mode Selector */}
+                    {/* Header Banner */}
                     <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                         <div className="flex items-center gap-4">
                             <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
@@ -326,19 +292,19 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             <div>
                                 <div className="flex items-center gap-2">
                                     <span className="px-3 py-1 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-black uppercase tracking-wider">
-                                        Mysterious Lab v4.0
+                                        {activeMission ? `Projet Actif : ${activeMission.level}` : 'Salle d\'Entraînement'}
                                     </span>
                                     <span className="px-3 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 rounded-full text-xs font-black uppercase tracking-wider flex items-center gap-1">
-                                        <Bot size={12} /> Copilot Accompagnateur
+                                        <Bot size={12} /> Copilot Assistant
                                     </span>
                                 </div>
                                 <h1 className="text-2xl lg:text-3xl font-black text-slate-900 dark:text-white mt-1">
-                                    {activeTab === 'missions' ? 'Projets & Cartes de Missions Hacking' : 'Terminal Sandbox d\'Entraînement Libre'}
+                                    {activeMission ? activeMission.title : 'Terminal CLI & Noyau Linux Universel'}
                                 </h1>
                             </div>
                         </div>
 
-                        {/* Stats & Actions */}
+                        {/* Stats & Navigation */}
                         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                             <div className="px-4 py-3 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/50 flex items-center gap-2">
                                 <Trophy size={18} className="text-amber-500" />
@@ -348,312 +314,190 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 </div>
                             </div>
 
-                            {activeTab === 'missions' && !activeMission && (
+                            {activeMission ? (
                                 <button
-                                    onClick={fetchAIMission}
-                                    disabled={loadingAI}
-                                    className="px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition"
-                                >
-                                    <RefreshCw size={16} className={loadingAI ? 'animate-spin' : ''} />
-                                    {loadingAI ? 'Génération IA...' : '⚡ Générer Projet IA'}
-                                </button>
-                            )}
-
-                            {activeMission && (
-                                <button
-                                    onClick={() => setActiveMission(null)}
-                                    className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-white font-black text-xs uppercase tracking-wider rounded-2xl border border-slate-700 flex items-center gap-2 transition"
+                                    onClick={() => navigate('/projects')}
+                                    className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-indigo-500/20 flex items-center gap-2 transition"
                                 >
                                     <ArrowLeft size={16} />
-                                    Retour aux Cartes
+                                    Retour à la Liste des Projets
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => navigate('/projects')}
+                                    className="px-5 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition"
+                                >
+                                    <Layers size={16} />
+                                    Voir les Cartes de Projets
                                 </button>
                             )}
                         </div>
                     </div>
 
-                    {/* Navigation Tabs (Missions vs Sandbox) */}
-                    <div className="flex items-center gap-3 bg-slate-200/60 dark:bg-slate-900/60 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 w-fit">
-                        <button
-                            onClick={() => { setActiveTab('missions'); }}
-                            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition flex items-center gap-2 ${
-                                activeTab === 'missions'
-                                    ? 'bg-emerald-600 text-white shadow-md'
-                                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                            }`}
-                        >
-                            <Layers size={16} />
-                            🚀 Cartes de Missions ({projectMissions.length})
-                        </button>
+                    {/* Conteneur Principal : Console Terminal + Copilot Mentor */}
+                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
 
-                        <button
-                            onClick={() => { setActiveTab('sandbox'); setActiveMission(null); }}
-                            className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition flex items-center gap-2 ${
-                                activeTab === 'sandbox'
-                                    ? 'bg-indigo-600 text-white shadow-md'
-                                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                            }`}
-                        >
-                            <Terminal size={16} />
-                            💻 Terminal Libre (Sandbox)
-                        </button>
-                    </div>
+                        {/* Console Terminal Principal (3 colonnes) */}
+                        <div className="xl:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 lg:p-6 shadow-xl space-y-4">
 
-                    {/* VUE 1: GALERIE DE CARTES DE MISSIONS (Si activeTab === 'missions' ET pas de mission ouverte) */}
-                    {activeTab === 'missions' && !activeMission && (
-                        <div className="space-y-6">
-                            <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 text-white rounded-3xl p-6 lg:p-8 border border-slate-800 shadow-xl relative overflow-hidden">
-                                <div className="relative z-10 space-y-2">
-                                    <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-widest">
-                                        <Sparkles size={16} /> PROJETS & INFILTRATION GUIDÉE PAR L'IA
-                                    </div>
-                                    <h2 className="text-xl lg:text-2xl font-black text-white">
-                                        Choisissez un Projet et Laissez Mysterious Copilot vous Guider
-                                    </h2>
-                                    <p className="text-slate-300 text-sm leading-relaxed max-w-4xl">
-                                        Chaque carte représente une opération complète. Lisez les objectifs, la cible et les récompenses XP. Une fois l'opération lancée, **Mysterious Copilot** vous assistera dans le terminal pour vous expliquer pas à pas quelle commande exécuter et pourquoi.
-                                    </p>
+                            {/* Header de Console */}
+                            <div className="flex items-center justify-between bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 text-xs font-mono">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                    <span className="text-slate-400 font-bold ml-2">bash - root@mysterious-lab:{currentPath}</span>
                                 </div>
+                                <span className="text-emerald-400 font-bold hidden sm:inline">
+                                    {activeMission ? `PROJET : ${activeMission.title.substring(0, 30)}...` : 'NOYAU LINUX UNIVERSEL [ENTRAÎNEMENT LIBRE]'}
+                                </span>
                             </div>
 
-                            {/* Grille des Cartes de Briefing */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                {projectMissions.map((m) => {
-                                    const isDone = completedMissions.includes(m.id);
-                                    return (
-                                        <motion.div
-                                            key={m.id}
-                                            whileHover={{ y: -4 }}
-                                            className={`bg-white dark:bg-slate-900 border rounded-3xl p-6 shadow-xl flex flex-col justify-between transition relative overflow-hidden ${
-                                                isDone 
-                                                    ? 'border-emerald-500/50 dark:border-emerald-500/30' 
-                                                    : 'border-slate-200 dark:border-slate-800'
+                            {/* Banner d'Information si Projet Actif */}
+                            {activeMission && (
+                                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-300 space-y-2">
+                                    <div className="flex items-center justify-between text-emerald-400 font-bold">
+                                        <span>🎯 CIBLE : {activeMission.targetHost}</span>
+                                        <span className="text-amber-400">+{activeMission.xpReward} XP</span>
+                                    </div>
+                                    <p className="text-slate-300 leading-relaxed">{activeMission.scenario}</p>
+                                </div>
+                            )}
+
+                            {/* Output Terminal & Inline Command Line (Authentic Linux Shell) */}
+                            <div
+                                ref={outputContainerRef}
+                                onClick={() => inputRef.current?.focus()}
+                                className="bg-slate-950 border border-slate-800 rounded-2xl p-5 font-mono text-xs md:text-sm h-[580px] lg:h-[660px] xl:h-[720px] overflow-y-auto space-y-3 shadow-inner custom-scrollbar cursor-text relative flex flex-col justify-between"
+                            >
+                                <div className="space-y-3">
+                                    {history.map((h, i) => (
+                                        <div
+                                            key={i}
+                                            className={`leading-relaxed whitespace-pre-wrap ${
+                                                h.type === 'user'
+                                                    ? 'text-amber-300 font-bold'
+                                                    : h.type === 'success'
+                                                    ? 'text-emerald-400 font-bold bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-500/20'
+                                                    : h.type === 'error'
+                                                    ? 'text-red-400 font-semibold'
+                                                    : h.type === 'mission'
+                                                    ? 'text-purple-300 font-semibold bg-purple-500/20 p-3.5 rounded-xl border border-purple-500/30'
+                                                    : 'text-slate-300'
                                             }`}
                                         >
-                                            {isDone && (
-                                                <div className="absolute top-4 right-4 bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1">
-                                                    <Check size={12} /> Complété
-                                                </div>
-                                            )}
+                                            {h.text}
+                                        </div>
+                                    ))}
+                                    {executingCmd && (
+                                        <div className="text-emerald-400 animate-pulse font-bold text-xs flex items-center gap-2">
+                                            <RefreshCw size={14} className="animate-spin" />
+                                            <span>⚡ [Noyau Linux] Traitement de la commande en cours...</span>
+                                        </div>
+                                    )}
+                                </div>
 
-                                            <div className="space-y-4">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="px-3 py-1 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 rounded-full text-[10px] font-black uppercase tracking-wider">
-                                                        {m.category}
-                                                    </span>
-                                                    <span className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-full text-[10px] font-bold">
-                                                        {m.level}
-                                                    </span>
-                                                </div>
-
-                                                <h3 className="text-lg font-black text-slate-900 dark:text-white leading-tight">
-                                                    {m.title}
-                                                </h3>
-
-                                                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                                                    {m.scenario}
-                                                </p>
-
-                                                {/* Objectifs de la mission */}
-                                                <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                                                    <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Objectifs du projet :</p>
-                                                    <ul className="space-y-1.5">
-                                                        {m.objectives.map((obj, i) => (
-                                                            <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
-                                                                <CheckCircle2 size={14} className="text-emerald-500 shrink-0 mt-0.5" />
-                                                                <span>{obj}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            </div>
-
-                                            <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4">
-                                                <div className="flex items-center gap-1.5 text-amber-500 font-black text-xs">
-                                                    <Trophy size={16} />
-                                                    <span>+{m.xpReward} XP</span>
-                                                </div>
-
-                                                <button
-                                                    onClick={() => setActiveMission(m)}
-                                                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition"
-                                                >
-                                                    <Play size={14} />
-                                                    Lancer l'Opération
-                                                </button>
-                                            </div>
-                                        </motion.div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* VUE 2: TERMINAL INTERACTIF (Si activeTab === 'sandbox' OU si activeMission est sélectionnée) */}
-                    {(activeTab === 'sandbox' || activeMission) && (
-                        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
-
-                            {/* Console Terminal Principal (3 colonnes) */}
-                            <div className="xl:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 lg:p-6 shadow-xl space-y-4">
-
-                                {/* Header de Console */}
-                                <div className="flex items-center justify-between bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 text-xs font-mono">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                                        <span className="text-slate-400 font-bold ml-2">bash - root@mysterious-lab:{currentPath}</span>
-                                    </div>
-                                    <span className="text-emerald-400 font-bold hidden sm:inline">
-                                        {activeMission ? `MISSION : ${activeMission.title.substring(0, 30)}...` : 'NOYAU LINUX UNIVERSEL [LIBRE]'}
+                                {/* Invite de Commande Intégrée au Terminal */}
+                                <form onSubmit={handleCommand} className="flex items-center gap-2 pt-4 border-t border-slate-800/80 mt-4 shrink-0">
+                                    <span className="text-emerald-400 font-mono text-xs md:text-sm font-black shrink-0">
+                                        root@mysterious-lab:{currentPath}#
                                     </span>
-                                </div>
-
-                                {/* Banner d'Information si Mission Active */}
-                                {activeMission && (
-                                    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs font-mono text-slate-300 space-y-2">
-                                        <div className="flex items-center justify-between text-emerald-400 font-bold">
-                                            <span>🎯 CIBLE : {activeMission.targetHost}</span>
-                                            <span className="text-amber-400">+{activeMission.xpReward} XP</span>
-                                        </div>
-                                        <p className="text-slate-300 leading-relaxed">{activeMission.scenario}</p>
-                                    </div>
-                                )}
-
-                                {/* Output Terminal & Inline Command Line (Authentic Linux Shell) */}
-                                <div
-                                    ref={outputContainerRef}
-                                    onClick={() => inputRef.current?.focus()}
-                                    className="bg-slate-950 border border-slate-800 rounded-2xl p-5 font-mono text-xs md:text-sm h-[580px] lg:h-[660px] xl:h-[720px] overflow-y-auto space-y-3 shadow-inner custom-scrollbar cursor-text relative flex flex-col justify-between"
-                                >
-                                    <div className="space-y-3">
-                                        {history.map((h, i) => (
-                                            <div
-                                                key={i}
-                                                className={`leading-relaxed whitespace-pre-wrap ${
-                                                    h.type === 'user'
-                                                        ? 'text-amber-300 font-bold'
-                                                        : h.type === 'success'
-                                                        ? 'text-emerald-400 font-bold bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-500/20'
-                                                        : h.type === 'error'
-                                                        ? 'text-red-400 font-semibold'
-                                                        : h.type === 'mission'
-                                                        ? 'text-purple-300 font-semibold bg-purple-500/20 p-3.5 rounded-xl border border-purple-500/30'
-                                                        : 'text-slate-300'
-                                                }`}
-                                            >
-                                                {h.text}
-                                            </div>
-                                        ))}
-                                        {executingCmd && (
-                                            <div className="text-emerald-400 animate-pulse font-bold text-xs flex items-center gap-2">
-                                                <RefreshCw size={14} className="animate-spin" />
-                                                <span>⚡ [Noyau Linux] Traitement de la commande en cours...</span>
-                                            </div>
+                                    <input
+                                        ref={inputRef}
+                                        type="text"
+                                        value={input}
+                                        onChange={(e) => setInput(e.target.value)}
+                                        disabled={executingCmd}
+                                        autoFocus
+                                        placeholder={executingCmd ? "Exécution en cours..." : "Tapez votre commande Linux..."}
+                                        className="w-full bg-transparent text-slate-100 font-mono text-xs md:text-sm focus:outline-none placeholder:text-slate-600 disabled:opacity-50"
+                                    />
+                                    <button
+                                        type="submit"
+                                        disabled={executingCmd}
+                                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-emerald-600/30 transition shrink-0 flex items-center gap-1.5"
+                                    >
+                                        {executingCmd ? (
+                                            <RefreshCw size={14} className="animate-spin" />
+                                        ) : (
+                                            'Exécuter ↵'
                                         )}
-                                    </div>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
 
-                                    {/* Invite de Commande Intégrée au Terminal */}
-                                    <form onSubmit={handleCommand} className="flex items-center gap-2 pt-4 border-t border-slate-800/80 mt-4 shrink-0">
-                                        <span className="text-emerald-400 font-mono text-xs md:text-sm font-black shrink-0">
-                                            root@mysterious-lab:{currentPath}#
-                                        </span>
-                                        <input
-                                            ref={inputRef}
-                                            type="text"
-                                            value={input}
-                                            onChange={(e) => setInput(e.target.value)}
-                                            disabled={executingCmd}
-                                            autoFocus
-                                            placeholder={executingCmd ? "Exécution en cours..." : "Tapez votre commande Linux..."}
-                                            className="w-full bg-transparent text-slate-100 font-mono text-xs md:text-sm focus:outline-none placeholder:text-slate-600 disabled:opacity-50"
-                                        />
-                                        <button
-                                            type="submit"
-                                            disabled={executingCmd}
-                                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-emerald-600/30 transition shrink-0 flex items-center gap-1.5"
-                                        >
-                                            {executingCmd ? (
-                                                <RefreshCw size={14} className="animate-spin" />
-                                            ) : (
-                                                'Exécuter ↵'
-                                            )}
-                                        </button>
-                                    </form>
+                        {/* Panneau de Guidage & Copilot Mentor (1 Colonne) */}
+                        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
+                            
+                            {/* Header Copilot */}
+                            <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+                                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
+                                    <Bot size={22} />
+                                </div>
+                                <div>
+                                    <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                                        Mysterious Copilot
+                                    </h3>
+                                    <p className="text-xs text-purple-500 font-bold">Mentor Cyber & Terminal</p>
                                 </div>
                             </div>
 
-                            {/* Panneau de Guidage & Copilot Mentor (1 Colonne) */}
-                            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-                                
-                                {/* Header Copilot */}
-                                <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
-                                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
-                                        <Bot size={22} />
+                            {/* Guidance contextualisée */}
+                            {activeMission ? (
+                                <div className="space-y-4 bg-purple-500/10 border border-purple-500/20 p-4 rounded-2xl">
+                                    <div className="flex items-center gap-2 text-purple-400 text-xs font-black uppercase">
+                                        <Sparkles size={14} /> Guidage de Projet Pas-à-Pas
                                     </div>
-                                    <div>
-                                        <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                                            Mysterious Copilot
-                                        </h3>
-                                        <p className="text-xs text-purple-500 font-bold">Mentor Cyber & Terminal</p>
-                                    </div>
+                                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                                        Pour ce projet, votre objectif est : <br/>
+                                        <strong className="text-purple-600 dark:text-purple-300">{activeMission.hint}</strong>
+                                    </p>
+                                    <button
+                                        onClick={() => setInput(activeMission.expectedCommand)}
+                                        className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition text-center"
+                                    >
+                                        ⚡ Pré-remplir la commande suggérée
+                                    </button>
                                 </div>
+                            ) : (
+                                <div className="space-y-4 bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-2xl">
+                                    <div className="flex items-center gap-2 text-indigo-400 text-xs font-black uppercase">
+                                        <Compass size={14} /> Salle d'Entraînement Libre
+                                    </div>
+                                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
+                                        Testez toutes les commandes Linux réelles. Cliquez sur n'importe quelle suggestion pour l'essayer directement dans le terminal !
+                                    </p>
+                                </div>
+                            )}
 
-                                {/* Guidance contextualisée */}
-                                {activeMission ? (
-                                    <div className="space-y-4 bg-purple-500/10 border border-purple-500/20 p-4 rounded-2xl">
-                                        <div className="flex items-center gap-2 text-purple-400 text-xs font-black uppercase">
-                                            <Sparkles size={14} /> Guidage de Mission Pas-à-Pas
-                                        </div>
-                                        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                                            Pour cette mission, votre but est : <br/>
-                                            <strong className="text-purple-600 dark:text-purple-300">{activeMission.hint}</strong>
-                                        </p>
-                                        <button
-                                            onClick={() => setInput(activeMission.expectedCommand)}
-                                            className="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition text-center"
+                            {/* Guide & Aide-Mémoire Commandes */}
+                            <div className="space-y-3">
+                                <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Guide & Commandes Linux :</p>
+                                <div className="space-y-2.5 h-[340px] lg:h-[420px] overflow-y-auto pr-1 custom-scrollbar">
+                                    {CHEATSHEET.map((item, index) => (
+                                        <div
+                                            key={index}
+                                            onClick={() => setInput(item.cmd.split(' ')[0])}
+                                            className="p-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/50 rounded-2xl cursor-pointer transition group"
                                         >
-                                            ⚡ Pré-remplir la commande suggérée
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-4 bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-2xl">
-                                        <div className="flex items-center gap-2 text-indigo-400 text-xs font-black uppercase">
-                                            <Compass size={14} /> Mode Bac à Sable Libre
-                                        </div>
-                                        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                                            Testez toutes les commandes Linux réelles. Cliquez sur une suggestion ci-dessous pour l'essayer et voir son fonctionnement en direct !
-                                        </p>
-                                    </div>
-                                )}
-
-                                {/* Guide & Aide-Mémoire Commandes */}
-                                <div className="space-y-3">
-                                    <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Raccourcis & Commandes Courantes :</p>
-                                    <div className="space-y-2.5 h-[340px] lg:h-[420px] overflow-y-auto pr-1 custom-scrollbar">
-                                        {CHEATSHEET.map((item, index) => (
-                                            <div
-                                                key={index}
-                                                onClick={() => setInput(item.cmd.split(' ')[0])}
-                                                className="p-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-indigo-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/50 rounded-2xl cursor-pointer transition group"
-                                            >
-                                                <div className="flex items-center justify-between mb-1">
-                                                    <span className="font-mono text-xs font-black text-indigo-600 dark:text-indigo-400 group-hover:underline">
-                                                        {item.cmd}
-                                                    </span>
-                                                    <span className="text-[10px] font-bold text-slate-400 uppercase">Tester</span>
-                                                </div>
-                                                <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
-                                                    {item.desc}
-                                                </p>
+                                            <div className="flex items-center justify-between mb-1">
+                                                <span className="font-mono text-xs font-black text-indigo-600 dark:text-indigo-400 group-hover:underline">
+                                                    {item.cmd}
+                                                </span>
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase">Tester</span>
                                             </div>
-                                        ))}
-                                    </div>
+                                            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+                                                {item.desc}
+                                            </p>
+                                        </div>
+                                    ))}
                                 </div>
-
                             </div>
 
                         </div>
-                    )}
+
+                    </div>
 
                 </div>
             </div>
