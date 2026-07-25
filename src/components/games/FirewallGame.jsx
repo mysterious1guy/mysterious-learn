@@ -102,40 +102,37 @@ const FirewallGame = () => {
     };
 
     return (
-        <div className="bg-slate-950 border border-slate-800 rounded-[2.5rem] p-6 md:p-8 text-white relative overflow-hidden shadow-2xl space-y-6">
-            {/* Background Glow */}
-            <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 blur-[120px] pointer-events-none" />
-
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 text-slate-900 relative overflow-hidden shadow-xl space-y-6">
             {/* Header / Stats */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-6">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                    <div className="w-12 h-12 rounded-2xl bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-600 font-bold">
                         <Shield size={24} />
                     </div>
                     <div>
-                        <h2 className="text-xl font-black tracking-tight">FIREWALL DEFENSE MATRIX</h2>
-                        <p className="text-xs text-slate-400 font-mono">Défends le serveur central contre les menaces</p>
+                        <h2 className="text-lg font-black tracking-tight text-slate-900 uppercase">FIREWALL DEFENSE MATRIX</h2>
+                        <p className="text-xs text-slate-500 font-medium">Défends le serveur central contre les menaces</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-6 text-sm font-mono">
+                <div className="flex items-center gap-6 text-xs font-bold">
                     <div className="flex items-center gap-2">
-                        <Server size={16} className="text-emerald-400" />
-                        <span>PV Serveur : <strong className={health > 50 ? 'text-emerald-400' : 'text-red-400'}>{health}%</strong></span>
+                        <Server size={16} className="text-emerald-600" />
+                        <span>PV Serveur : <strong className={health > 50 ? 'text-emerald-600 font-black' : 'text-red-600 font-black'}>{health}%</strong></span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Trophy size={16} className="text-amber-400" />
-                        <span>Score : <strong className="text-amber-400">{score} XP</strong></span>
+                        <Trophy size={16} className="text-amber-600" />
+                        <span>Score : <strong className="text-amber-600 font-black">{score} XP</strong></span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Flame size={16} className="text-purple-400" />
-                        <span>Vague : <strong className="text-purple-400">{wave}</strong></span>
+                        <Flame size={16} className="text-purple-600" />
+                        <span>Vague : <strong className="text-purple-600 font-black">{wave}</strong></span>
                     </div>
                 </div>
             </div>
 
             {/* Game Canvas Arena */}
-            <div className="relative min-h-[320px] bg-slate-900/80 border border-slate-800 rounded-2xl p-6 overflow-hidden flex flex-col justify-between">
+            <div className="relative min-h-[320px] bg-slate-900 border border-slate-800 rounded-2xl p-6 overflow-hidden flex flex-col justify-between shadow-inner">
                 {/* Visual DB Target */}
                 <div className="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 z-10">
                     <div className={`w-24 h-24 rounded-3xl border-2 ${health > 30 ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400' : 'border-red-500/80 bg-red-500/20 text-red-400'} flex items-center justify-center shadow-2xl transition-all`}>
@@ -146,7 +143,7 @@ const FirewallGame = () => {
 
                 {/* Packets Stream */}
                 <div className="space-y-3 relative z-10 max-w-xl">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 block mb-2">Flux de Paquets Réseau Entrants :</span>
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-2">Flux de Paquets Réseau Entrants :</span>
                     <AnimatePresence>
                         {packets.map(packet => (
                             <motion.div
@@ -164,7 +161,7 @@ const FirewallGame = () => {
                         ))}
                     </AnimatePresence>
                     {packets.length === 0 && !gameOver && (
-                        <p className="text-xs text-slate-500 font-mono italic">Analyse du trafic réseau en cours...</p>
+                        <p className="text-xs text-slate-400 font-mono italic">Analyse du trafic réseau en cours...</p>
                     )}
                 </div>
 
@@ -176,7 +173,7 @@ const FirewallGame = () => {
                         <p className="text-sm text-slate-400 mb-6">Le pare-feu a cédé sous les attaques réseau. Score final : <strong className="text-amber-400">{score} XP</strong></p>
                         <button
                             onClick={resetGame}
-                            className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-widest rounded-2xl transition-all flex items-center gap-2 shadow-xl"
+                            className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider rounded-2xl transition-all flex items-center gap-2 shadow-xl"
                         >
                             <RefreshCw size={16} /> Relancer la Matrice
                         </button>
@@ -186,29 +183,29 @@ const FirewallGame = () => {
 
             {/* Controls / Filter Toggle Buttons */}
             <div>
-                <span className="text-xs font-black uppercase tracking-widest text-slate-400 block mb-3">Activer les Filtres de Protection Active :</span>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-3">Activer les Filtres de Protection Active :</span>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <button
                         onClick={() => toggleFilter('sqli')}
-                        className={`p-4 rounded-2xl border text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${activeFilters.sqli ? 'bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/30' : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800'}`}
+                        className={`p-4 rounded-2xl border text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${activeFilters.sqli ? 'bg-red-600 border-red-600 text-white shadow-md' : 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200'}`}
                     >
                         <ShieldCheck size={16} /> Filtre SQLi {activeFilters.sqli ? '[ACTIF]' : ''}
                     </button>
                     <button
                         onClick={() => toggleFilter('malware')}
-                        className={`p-4 rounded-2xl border text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${activeFilters.malware ? 'bg-amber-600 border-amber-500 text-white shadow-lg shadow-amber-600/30' : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800'}`}
+                        className={`p-4 rounded-2xl border text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${activeFilters.malware ? 'bg-amber-600 border-amber-600 text-white shadow-md' : 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200'}`}
                     >
                         <ShieldCheck size={16} /> Anti-Malware {activeFilters.malware ? '[ACTIF]' : ''}
                     </button>
                     <button
                         onClick={() => toggleFilter('ddos')}
-                        className={`p-4 rounded-2xl border text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${activeFilters.ddos ? 'bg-purple-600 border-purple-500 text-white shadow-lg shadow-purple-600/30' : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800'}`}
+                        className={`p-4 rounded-2xl border text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${activeFilters.ddos ? 'bg-purple-600 border-purple-600 text-white shadow-md' : 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200'}`}
                     >
                         <ShieldCheck size={16} /> Anti-DDoS {activeFilters.ddos ? '[ACTIF]' : ''}
                     </button>
                     <button
                         onClick={() => toggleFilter('xss')}
-                        className={`p-4 rounded-2xl border text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${activeFilters.xss ? 'bg-pink-600 border-pink-500 text-white shadow-lg shadow-pink-600/30' : 'bg-slate-900 border-slate-800 text-slate-400 hover:bg-slate-800'}`}
+                        className={`p-4 rounded-2xl border text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 ${activeFilters.xss ? 'bg-pink-600 border-pink-600 text-white shadow-md' : 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200'}`}
                     >
                         <ShieldCheck size={16} /> Filtre XSS {activeFilters.xss ? '[ACTIF]' : ''}
                     </button>
@@ -216,8 +213,8 @@ const FirewallGame = () => {
             </div>
 
             {/* Live Logs Terminal */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 font-mono text-xs text-slate-400 space-y-1">
-                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block mb-1">Logs du Serveur en Temps Réel :</span>
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 font-mono text-xs text-slate-300 space-y-1">
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block mb-1">Logs du Serveur en Temps Réel :</span>
                 {logs.map((log, idx) => (
                     <div key={idx} className="truncate">{log}</div>
                 ))}

@@ -85,43 +85,43 @@ Contenu : TXlzdGVyaW91c0NsYXNzcm9vbTIwMjY=`
     };
 
     return (
-        <div className="bg-slate-950 border border-slate-800 rounded-[2.5rem] p-6 md:p-8 text-white relative overflow-hidden shadow-2xl space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 text-slate-900 relative overflow-hidden shadow-xl space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 font-bold">
                         <Terminal size={20} />
                     </div>
                     <div>
-                        <h2 className="text-lg font-black">TERMINAL HACKING SIMULATOR</h2>
-                        <p className="text-xs text-slate-400 font-mono">Infiltration & Résolution d'énigmes CLI</p>
+                        <h2 className="text-lg font-black tracking-tight text-slate-900 uppercase">TERMINAL HACKING SIMULATOR</h2>
+                        <p className="text-xs text-slate-500 font-medium">Infiltration & Résolution d'énigmes CLI</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-amber-400 text-xs font-mono font-bold">
+                <div className="flex items-center gap-2 text-amber-600 text-xs font-bold">
                     <Trophy size={16} /> Score : {score} XP
                 </div>
             </div>
 
             {/* Terminal Window */}
-            <div className="bg-[#0c1017] border border-slate-800 rounded-2xl p-4 md:p-6 font-mono text-xs md:text-sm min-h-[350px] max-h-[450px] overflow-y-auto space-y-2">
+            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-4 md:p-6 font-mono text-xs md:text-sm min-h-[320px] max-h-[420px] overflow-y-auto space-y-2 shadow-inner">
                 {history.map((h, i) => (
-                    <div key={i} className={`leading-relaxed ${h.type === 'user' ? 'text-amber-300 font-bold' : h.type === 'success' ? 'text-emerald-400 font-bold' : h.type === 'error' ? 'text-red-400' : h.type === 'mission' ? 'text-purple-400 font-semibold bg-purple-500/10 p-2 rounded-xl border border-purple-500/20' : 'text-slate-300'}`}>
+                    <div key={i} className={`leading-relaxed ${h.type === 'user' ? 'text-amber-300 font-bold' : h.type === 'success' ? 'text-emerald-400 font-bold' : h.type === 'error' ? 'text-red-400' : h.type === 'mission' ? 'text-purple-300 font-semibold bg-purple-500/20 p-3 rounded-xl border border-purple-500/30' : 'text-slate-300'}`}>
                         {h.text}
                     </div>
                 ))}
             </div>
 
             {/* Input Line */}
-            <form onSubmit={handleCommand} className="flex items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3">
-                <span className="text-emerald-400 font-mono text-xs font-bold shrink-0">root@mysterious-terminal:~#</span>
+            <form onSubmit={handleCommand} className="flex items-center gap-3 bg-slate-100 border border-slate-300 rounded-2xl px-4 py-3">
+                <span className="text-emerald-600 font-mono text-xs font-bold shrink-0">root@mysterious-terminal:~#</span>
                 <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Entrez une commande (ex: help, scan 192.168.1.10)..."
-                    className="w-full bg-transparent text-white font-mono text-xs focus:outline-none placeholder:text-slate-600"
+                    className="w-full bg-transparent text-slate-900 font-mono text-xs focus:outline-none placeholder:text-slate-500"
                 />
-                <button type="submit" className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition">
+                <button type="submit" className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
                     Exécuter
                 </button>
             </form>
