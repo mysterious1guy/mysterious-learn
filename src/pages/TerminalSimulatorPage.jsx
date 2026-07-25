@@ -650,7 +650,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                             onClick={() => {
                                                 const savedContent = activeEditor.content;
                                                 const fileName = activeEditor.fileName;
-                                                const filePath = fileName.startsWith('/') ? fileName : `${currentPath}/${fileName}`.replace(/\/+/g, '/');
+                                                const filePath = (fileName.startsWith('/') ? fileName : `${currentPath}/${fileName}`).replace(new RegExp('/+', 'g'), '/');
 
                                                 const updatedVfs = { ...vfs, [filePath]: savedContent };
                                                 setVfs(updatedVfs);
