@@ -137,7 +137,7 @@ const aiChat = async (req, res) => {
                 adminGreeting += `\n[LISTE UTILISATEURS - Total: ${totalUsersCount}]\n${usersListText}${totalUsersCount > 10 ? '\n... et autres utilisateurs.' : ''}`;
 
                 adminGreeting += `\n\n[POUVOIR DE MÉMORISATION]
-                Si le Boss te demande de mémoriser une information, propose ce JSON à la fin:
+                RÈGLE STRICTE: Ne propose le JSON 'add_knowledge' QUE SI le Boss demande EXPLICITEMENT de mémoriser, retenir ou sauvegarder une note (ex: 'mémorise ceci', 'enregistre cette note'). Ne le propose JAMAIS pour de simples remarques, politesses ou conversations ordinaires !
                 \`\`\`json
                 { "type": "admin_action", "action": "add_knowledge", "payload": { "title": "Titre", "content": "Contenu", "category": "general", "tags": ["tag"] } }
                 \`\`\``;

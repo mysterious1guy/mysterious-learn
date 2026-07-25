@@ -453,7 +453,6 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: '100%', opacity: 0 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    onClick={() => inputRef.current?.focus()}
                     className={`fixed transition-all duration-300 backdrop-blur-2xl flex flex-col shadow-[-10px_0_50px_rgba(0,0,0,0.15)] ${
                         copilotTheme === 'light'
                             ? 'bg-slate-50 text-slate-900 border-l border-slate-300'
