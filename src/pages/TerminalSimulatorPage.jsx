@@ -210,6 +210,10 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const [completedMissions, setCompletedMissions] = useState([]);
     const [score, setScore] = useState(user?.xp || 0);
 
+    // Mode Authentification par mot de passe & Session SSH interactive
+    const [pendingAuth, setPendingAuth] = useState(null);
+    const [sshSession, setSshSession] = useState(null);
+
     // Système de fichiers virtuel VFS persistant
     const [vfs, setVfs] = useState(() => {
         try {
@@ -312,10 +316,43 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const handleCommand = async (e) => {
         e.preventDefault();
         const cmd = input.trim();
+
+        // 1. Saisie de mot de passe en cours (mode d'attente de mot de passe)
+        if (pendingAuth) {
+            const auth = pendingAuth;
+            setPendingAuth(null);
+            setInput('');
+
+            const masked = '•'.repeat(Math.max(cmd.length, 6));
+            const newHistory = [
+                ...history,
+                { type: 'user', text: `${auth.promptLabel}${masked}` }
+            ];
+
+            if (auth.type === 'su') {
+                setActiveUser(auth.targetUser);
+                newHistory.push({
+                    type: 'output',
+                    text: `[+] Authentification réussie. Session basculée sur '${auth.targetUser}'.`
+                });
+            } else if (auth.type === 'ssh') {
+                setSshSession({ user: auth.targetUser, host: auth.host });
+                newHistory.push({
+                    type: 'output',
+                    text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
+                });
+            }
+
+            setHistory(newHistory);
+            return;
+        }
+
         if (!cmd || executingCmd) return;
 
-        const promptSymbol = activeUser === 'root' ? '#' : '$';
-        const promptText = `${activeUser}@MYSTERIOUS:${formattedPath}${promptSymbol} ${cmd}`;
+        const activePromptUser = sshSession ? sshSession.user : activeUser;
+        const activeHost = sshSession ? sshSession.host : 'MYSTERIOUS';
+        const promptSymbol = activePromptUser === 'root' ? '#' : '$';
+        const promptText = `${activePromptUser}@${activeHost}:${formattedPath}${promptSymbol} ${cmd}`;
         const newHistory = [...history, { type: 'user', text: promptText }];
         setInput('');
 
@@ -347,30 +384,54 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
         // Commande whoami directe
         if (lower === 'whoami') {
-            newHistory.push({ type: 'output', text: activeUser });
+            newHistory.push({ type: 'output', text: activePromptUser });
             setHistory(newHistory);
             return;
         }
 
-        // Gestion de su root / su / sudo -i / sudo su
-        if (['su', 'su root', 'su -', 'su - root', 'sudo su', 'sudo -i', 'sudo bash', 'sudo sh'].includes(lower)) {
-            setActiveUser('root');
-            newHistory.push({
-                type: 'output',
-                text: 'Password:\n[+] Authentification réussie. Session basculée en Super-Utilisateur (root).'
+        // Interception de su root / su / sudo -i / sudo su / sudo
+        if (['su', 'su root', 'su -', 'su - root', 'sudo su', 'sudo -i', 'sudo bash', 'sudo sh'].includes(lower) || lower.startsWith('sudo ')) {
+            setPendingAuth({
+                type: 'su',
+                targetUser: 'root',
+                promptLabel: 'Password: '
             });
             setHistory(newHistory);
             return;
         }
 
-        // Gestion de su <nom_utilisateur>
+        // Interception de su <nom_utilisateur>
         if (lower.startsWith('su ')) {
             const targetUser = cmd.split(/\s+/)[1];
             if (targetUser) {
-                setActiveUser(targetUser);
-                newHistory.push({
-                    type: 'output',
-                    text: `Password:\n[+] Authentification réussie. Session basculée sur '${targetUser}'.`
+                setPendingAuth({
+                    type: 'su',
+                    targetUser: targetUser,
+                    promptLabel: 'Password: '
+                });
+                setHistory(newHistory);
+                return;
+            }
+        }
+
+        // Interception de ssh <user>@<host> ou ssh <host>
+        if (lower.startsWith('ssh ')) {
+            const targetArg = cmd.split(/\s+/)[1] || '';
+            let targetUser = activeUser;
+            let host = targetArg;
+
+            if (targetArg.includes('@')) {
+                const parts = targetArg.split('@');
+                targetUser = parts[0];
+                host = parts[1];
+            }
+
+            if (host) {
+                setPendingAuth({
+                    type: 'ssh',
+                    targetUser: targetUser,
+                    host: host,
+                    promptLabel: `${targetUser}@${host}'s password: `
                 });
                 setHistory(newHistory);
                 return;
@@ -379,6 +440,12 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
         // Gestion de exit / logout
         if (lower === 'exit' || lower === 'logout') {
+            if (sshSession) {
+                newHistory.push({ type: 'output', text: `Connection to ${sshSession.host} closed.` });
+                setSshSession(null);
+                setHistory(newHistory);
+                return;
+            }
             if (activeUser !== displayUsername) {
                 setActiveUser(displayUsername);
                 newHistory.push({ type: 'output', text: 'exit' });
@@ -661,22 +728,37 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
                                 {/* Ligne d'invité de commande active et fluide (Directement intégrée au flux du texte) */}
                                 <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
-                                    <span className={activeUser === 'root' ? 'text-red-400 font-bold shrink-0' : 'text-[#eab308] font-bold shrink-0'}>
-                                        {activeUser}@MYSTERIOUS
-                                    </span>
-                                    <span className="text-slate-400 font-bold shrink-0">:</span>
-                                    <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
-                                    <span className="text-white font-bold shrink-0">{activeUser === 'root' ? '#' : '$'}</span>
-                                <input
-                                    ref={inputRef}
-                                    type="text"
-                                    value={input}
-                                    onChange={(e) => setInput(e.target.value)}
-                                    disabled={executingCmd}
-                                    autoFocus
-                                    className="flex-1 bg-transparent text-white font-mono text-xs sm:text-sm md:text-base focus:outline-none border-none p-0 m-0 caret-emerald-400 disabled:opacity-50"
-                                />
-                            </form>
+                                    {pendingAuth ? (
+                                        <span className="text-slate-300 font-bold shrink-0">{pendingAuth.promptLabel}</span>
+                                    ) : sshSession ? (
+                                        <>
+                                            <span className="text-emerald-400 font-bold shrink-0">
+                                                {sshSession.user}@{sshSession.host}
+                                            </span>
+                                            <span className="text-slate-400 font-bold shrink-0">:</span>
+                                            <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
+                                            <span className="text-white font-bold shrink-0">{sshSession.user === 'root' ? '#' : '$'}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <span className={activeUser === 'root' ? 'text-red-400 font-bold shrink-0' : 'text-[#eab308] font-bold shrink-0'}>
+                                                {activeUser}@MYSTERIOUS
+                                            </span>
+                                            <span className="text-slate-400 font-bold shrink-0">:</span>
+                                            <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
+                                            <span className="text-white font-bold shrink-0">{activeUser === 'root' ? '#' : '$'}</span>
+                                        </>
+                                    )}
+                                    <input
+                                        ref={inputRef}
+                                        type={pendingAuth ? "password" : "text"}
+                                        value={input}
+                                        onChange={(e) => setInput(e.target.value)}
+                                        disabled={executingCmd}
+                                        autoFocus
+                                        className="flex-1 bg-transparent text-white font-mono text-xs sm:text-sm md:text-base focus:outline-none border-none p-0 m-0 caret-emerald-400 disabled:opacity-50"
+                                    />
+                                </form>
                         </div>
 
                     </div>
