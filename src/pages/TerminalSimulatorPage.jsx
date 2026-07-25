@@ -202,6 +202,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
     const userHomePath = `/home/${displayUsername}`;
     const [activeUser, setActiveUser] = useState(displayUsername);
+    const [terminalMode, setTerminalMode] = useState('libre');
     const [activeEditor, setActiveEditor] = useState(null);
     const [activeMission, setActiveMission] = useState(null);
     const [input, setInput] = useState('');
@@ -589,18 +590,31 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                            <div className="px-3 py-2 bg-slate-800 rounded-xl border border-slate-700 flex items-center gap-2">
-                                <Trophy size={16} className="text-amber-400" />
-                                <span className="text-xs font-black text-white">{score} XP</span>
-                            </div>
+                        <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                            <button
+                                type="button"
+                                onClick={() => setTerminalMode('libre')}
+                                className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
+                                    terminalMode === 'libre'
+                                        ? 'bg-emerald-500 text-slate-950 shadow-lg font-bold'
+                                        : 'text-slate-400 hover:text-white'
+                                }`}
+                            >
+                                <Zap size={14} />
+                                Mode Libre
+                            </button>
 
                             <button
-                                onClick={() => navigate('/projects')}
-                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center gap-1.5"
+                                type="button"
+                                onClick={() => setTerminalMode('apprentissage')}
+                                className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
+                                    terminalMode === 'apprentissage'
+                                        ? 'bg-indigo-600 text-white shadow-lg font-bold'
+                                        : 'text-slate-400 hover:text-white'
+                                }`}
                             >
-                                <ArrowLeft size={14} />
-                                Cartes de Projets
+                                <BookOpen size={14} />
+                                Mode Apprentissage
                             </button>
                         </div>
                     </div>
