@@ -471,7 +471,7 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                  <ArrowRight size={14} /> {t('authPage.direct_login') || "Se connecter directement avec cet email"}
                                                              </button>
                                                          )}
-                                                         {authError.includes("lié à Google") && (
+                                                         {(authError.includes("lié à Google") || authError.includes("Google")) && (
                                                              <div className="flex flex-col gap-2 pt-1">
                                                                  <button
                                                                      type="button"
@@ -480,34 +480,6 @@ const AuthPage = ({ user, setUser, API_URL, setToast }) => {
                                                                  >
                                                                      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-4 h-4" />
                                                                      {t('authPage.google_login') || "Se connecter avec Google"}
-                                                                 </button>
-                                                                 <button
-                                                                     type="button"
-                                                                     onClick={async () => {
-                                                                         if (!formData.email) return;
-                                                                         setIsLoading(true);
-                                                                         try {
-                                                                             const res = await fetch(`${API_URL}/auth/forgot-password`, {
-                                                                                 method: 'POST',
-                                                                                 headers: { 'Content-Type': 'application/json' },
-                                                                                 body: JSON.stringify({ email: formData.email }),
-                                                                             });
-                                                                             const data = await res.json();
-                                                                             if (res.ok) {
-                                                                                 setResetModalData({ open: true, email: formData.email });
-                                                                                 setAuthError('');
-                                                                             } else {
-                                                                                 setToast({ message: data.message || t('authPage.error') || 'Erreur', type: 'error' });
-                                                                             }
-                                                                         } catch (err) {
-                                                                             setToast({ message: t('authPage.network_error') || 'Erreur réseau', type: 'error' });
-                                                                         } finally {
-                                                                             setIsLoading(false);
-                                                                         }
-                                                                     }}
-                                                                     className="text-xs text-blue-600 font-semibold hover:underline text-center py-1"
-                                                                 >
-                                                                     {t('authPage.set_local_password') || "🔑 Définir un mot de passe local pour ce compte"}
                                                                  </button>
                                                              </div>
                                                          )}

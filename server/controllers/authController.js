@@ -218,7 +218,7 @@ const login = async (req, res) => {
     // La restriction Google est supprimée pour permettre la connexion par mot de passe si disponible
     if (user.googleId && !user.password) {
       return res.status(401).json({
-        message: 'Ce compte est lié à Google et n\'a pas encore de mot de passe local. Connecte-toi avec Google une fois pour en définir un.'
+        message: 'Ce compte utilise la connexion Google. Veuillez vous connecter avec Google.'
       });
     }
 

@@ -560,84 +560,91 @@ ${JSON.stringify(exportObj, null, 2)}
     </div>
   );
 
-  const renderSecurityTab = () => (
-    <div className="space-y-6">
-      <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
-        <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-6 flex items-center gap-2">
-          <Shield size={22} className="text-blue-600" /> {t('profile_fields.security_tab') || 'Sécurité du compte'}
-        </h4>
-        <div className="space-y-4">
-          <button
-            onClick={() => setShowPasswordChange(!showPasswordChange)}
-            className="w-full flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-500/50 transition-all group shadow-sm"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
-                <Lock size={20} />
-              </div>
-              <div className="text-left">
-                <p className="text-base font-black text-slate-900 dark:text-white">{t('profile_fields.change_password') || 'Changer le mot de passe'}</p>
-                <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sécurité renforcée</p>
-              </div>
-            </div>
-            <ChevronRight className={`text-slate-400 dark:text-slate-400 transition-transform duration-300 ${showPasswordChange ? 'rotate-90 text-blue-600' : ''}`} size={20} />
-          </button>
+  const renderSecurityTab = () => {
+    const isGoogleOrSuperAdmin = user?.email === 'mouhamedfall@esp.sn' || Boolean(user?.googleId) || user?.authProvider === 'google';
 
-          <AnimatePresence>
-            {showPasswordChange && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <form onSubmit={handleChangePassword} className="p-6 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-5 mt-3 shadow-inner">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.current_password') || 'Mot de passe actuel'}</label>
-                    <input
-                      type="password"
-                      required
-                      placeholder={t('profile_fields.current_password') || 'Entrez votre mot de passe actuel'}
-                      value={passwordForm.currentPassword}
-                      onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.new_password') || 'Nouveau mot de passe'}</label>
-                      <input
-                        type="password"
-                        required
-                        placeholder={t('profile_fields.new_password') || 'Au moins 6 caractères'}
-                        value={passwordForm.newPassword}
-                        onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                        className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
-                      />
+    return (
+      <div className="space-y-6">
+        <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-sm">
+          <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-6 flex items-center gap-2">
+            <Shield size={22} className="text-blue-600" /> {t('profile_fields.security_tab') || 'Sécurité du compte'}
+          </h4>
+          <div className="space-y-4">
+            {!isGoogleOrSuperAdmin && (
+              <>
+                <button
+                  onClick={() => setShowPasswordChange(!showPasswordChange)}
+                  className="w-full flex items-center justify-between p-5 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-500/50 transition-all group shadow-sm"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
+                      <Lock size={20} />
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.confirm_password') || 'Confirmer le nouveau'}</label>
-                      <input
-                        type="password"
-                        required
-                        placeholder={t('profile_fields.confirm_password') || 'Répétez le nouveau mot de passe'}
-                        value={passwordForm.confirmPassword}
-                        onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                        className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
-                      />
+                    <div className="text-left">
+                      <p className="text-base font-black text-slate-900 dark:text-white">{t('profile_fields.change_password') || 'Changer le mot de passe'}</p>
+                      <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sécurité renforcée</p>
                     </div>
                   </div>
-                  <button
-                    type="submit"
-                    disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
-                    className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/20 hover:shadow-lg disabled:opacity-50"
-                  >
-                    {isLoading ? t('profile_fields.updating') || 'Mise à jour en cours...' : t('profile_fields.update_password') || 'Mettre à jour le mot de passe'}
-                  </button>
-                </form>
-              </motion.div>
+                  <ChevronRight className={`text-slate-400 dark:text-slate-400 transition-transform duration-300 ${showPasswordChange ? 'rotate-90 text-blue-600' : ''}`} size={20} />
+                </button>
+
+                <AnimatePresence>
+                  {showPasswordChange && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <form onSubmit={handleChangePassword} className="p-6 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-5 mt-3 shadow-inner">
+                        <div className="space-y-2">
+                          <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.current_password') || 'Mot de passe actuel'}</label>
+                          <input
+                            type="password"
+                            required
+                            placeholder={t('profile_fields.current_password') || 'Entrez votre mot de passe actuel'}
+                            value={passwordForm.currentPassword}
+                            onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                            className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.new_password') || 'Nouveau mot de passe'}</label>
+                            <input
+                              type="password"
+                              required
+                              placeholder={t('profile_fields.new_password') || 'Au moins 6 caractères'}
+                              value={passwordForm.newPassword}
+                              onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                              className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">{t('profile_fields.confirm_password') || 'Confirmer le nouveau'}</label>
+                            <input
+                              type="password"
+                              required
+                              placeholder={t('profile_fields.confirm_password') || 'Répétez le nouveau mot de passe'}
+                              value={passwordForm.confirmPassword}
+                              onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                              className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          type="submit"
+                          disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+                          className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all shadow-md shadow-blue-500/20 hover:shadow-lg disabled:opacity-50"
+                        >
+                          {isLoading ? t('profile_fields.updating') || 'Mise à jour en cours...' : t('profile_fields.update_password') || 'Mettre à jour le mot de passe'}
+                        </button>
+                      </form>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </>
             )}
-          </AnimatePresence>
 
           <button
             onClick={() => navigate('/two-factor-setup')}
