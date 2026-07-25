@@ -194,7 +194,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         if (!user) return 'agent';
         if (user.username) return user.username.toLowerCase();
         if (user.email) return user.email.split('@')[0].toLowerCase();
-        if (user.name) return user.name.toLowerCase().replace(/\s+/g, '');
+        if (user.name) return user.name.toLowerCase().replace(new RegExp('\\s+', 'g'), '');
         return 'agent';
     }, [user]);
 
@@ -371,7 +371,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
         // Interception des éditeurs de texte (nano, vim, vi)
         if (lower.startsWith('nano') || lower.startsWith('vim') || lower.startsWith('vi')) {
-            const parts = cmd.split(/\s+/);
+            const parts = cmd.split(new RegExp('\\s+'));
             const editorName = parts[0].toLowerCase();
             const fileName = parts[1] || 'script.sh';
             setActiveEditor({
@@ -402,7 +402,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
         // Interception de su <nom_utilisateur>
         if (lower.startsWith('su ')) {
-            const targetUser = cmd.split(/\s+/)[1];
+            const targetUser = cmd.split(new RegExp('\\s+'))[1];
             if (targetUser) {
                 setPendingAuth({
                     type: 'su',
@@ -416,7 +416,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
         // Interception de ssh <user>@<host> ou ssh <host>
         if (lower.startsWith('ssh ')) {
-            const targetArg = cmd.split(/\s+/)[1] || '';
+            const targetArg = cmd.split(new RegExp('\\s+'))[1] || '';
             let targetUser = activeUser;
             let host = targetArg;
 
