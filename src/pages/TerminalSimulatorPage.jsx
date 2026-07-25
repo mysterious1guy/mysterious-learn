@@ -84,6 +84,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const [loadingAI, setLoadingAI] = useState(false);
     const [completedMissions, setCompletedMissions] = useState([]);
     const terminalEndRef = useRef(null);
+    const outputContainerRef = useRef(null);
 
     // Initialiser l'historique lors du changement de mission
     useEffect(() => {
@@ -99,8 +100,11 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         }
     }, [activeMission]);
 
+    // Scroll interne à la console SANS faire défiler la page web globale
     useEffect(() => {
-        terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        if (outputContainerRef.current) {
+            outputContainerRef.current.scrollTop = outputContainerRef.current.scrollHeight;
+        }
     }, [history]);
 
     // Générer une mission aléatoire via l'IA
@@ -217,13 +221,13 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
     return (
         <div className="flex-1 min-w-0 bg-slate-50 dark:bg-[#0B1120] relative flex flex-col min-h-screen">
-            <div className="flex-1 overflow-y-auto p-4 lg:p-10 mt-16 lg:mt-0 pb-32">
-                <div className="max-w-7xl mx-auto space-y-8">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-6 lg:p-8 mt-14 lg:mt-0 pb-20">
+                <div className="w-full max-w-[1750px] mx-auto space-y-6">
 
                     {/* Header Banner */}
                     <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                         <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                            <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
                                 <Terminal size={30} />
                             </div>
                             <div>
@@ -271,9 +275,9 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     </div>
 
                     {/* Mission Active Card */}
-                    <div className="bg-gradient-to-r from-slate-900 to-slate-950 text-white rounded-3xl p-6 lg:p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 blur-[100px] rounded-full"></div>
-                        <div className="relative z-10 space-y-4">
+                    <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 text-white rounded-3xl p-6 lg:p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+                        <div className="relative z-10 space-y-3">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-widest">
                                     <Sparkles size={16} /> OBJECTIF COURANT
@@ -287,11 +291,11 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 {activeMission?.title}
                             </h2>
 
-                            <p className="text-slate-300 text-sm lg:text-base leading-relaxed max-w-4xl">
+                            <p className="text-slate-300 text-sm lg:text-base leading-relaxed max-w-5xl">
                                 {activeMission?.description}
                             </p>
 
-                            <div className="flex flex-wrap items-center gap-4 pt-2">
+                            <div className="flex flex-wrap items-center gap-4 pt-1">
                                 <button
                                     onClick={() => setShowHint(!showHint)}
                                     className="px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 rounded-xl text-xs font-bold flex items-center gap-2 transition"
@@ -314,10 +318,10 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     </div>
 
                     {/* Main Layout: Terminal Console + Cheatsheet */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-start">
 
-                        {/* Terminal Console (2 Columns) */}
-                        <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 lg:p-6 shadow-xl space-y-4">
+                        {/* Terminal Console (3 Columns out of 4 on XL screens) */}
+                        <div className="xl:col-span-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 lg:p-6 shadow-xl space-y-4">
 
                             {/* Console Header Bar */}
                             <div className="flex items-center justify-between bg-slate-950 px-4 py-3 rounded-2xl border border-slate-800 text-xs font-mono">
@@ -331,7 +335,10 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             </div>
 
                             {/* Terminal Window Output */}
-                            <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 font-mono text-xs md:text-sm min-h-[380px] max-h-[480px] overflow-y-auto space-y-3 shadow-inner">
+                            <div
+                                ref={outputContainerRef}
+                                className="bg-slate-950 border border-slate-800 rounded-2xl p-5 font-mono text-xs md:text-sm h-[520px] lg:h-[620px] xl:h-[680px] overflow-y-auto space-y-3 shadow-inner custom-scrollbar"
+                            >
                                 {history.map((h, i) => (
                                     <div
                                         key={i}
@@ -339,18 +346,17 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                             h.type === 'user'
                                                 ? 'text-amber-300 font-bold'
                                                 : h.type === 'success'
-                                                ? 'text-emerald-400 font-bold bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20'
+                                                ? 'text-emerald-400 font-bold bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-500/20'
                                                 : h.type === 'error'
-                                                ? 'text-red-400'
+                                                ? 'text-red-400 font-semibold'
                                                 : h.type === 'mission'
-                                                ? 'text-purple-300 font-semibold bg-purple-500/20 p-3 rounded-xl border border-purple-500/30'
+                                                ? 'text-purple-300 font-semibold bg-purple-500/20 p-3.5 rounded-xl border border-purple-500/30'
                                                 : 'text-slate-300'
                                         }`}
                                     >
                                         {h.text}
                                     </div>
                                 ))}
-                                <div ref={terminalEndRef} />
                             </div>
 
                             {/* Command Input Form */}
@@ -365,28 +371,28 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 />
                                 <button
                                     type="submit"
-                                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/30 transition shrink-0"
+                                    className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/30 transition shrink-0"
                                 >
                                     Exécuter
                                 </button>
                             </form>
                         </div>
 
-                        {/* Cheatsheet Panel (1 Column) */}
+                        {/* Cheatsheet Panel (1 Column out of 4) */}
                         <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
                             <div className="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
-                                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
                                     <BookOpen size={20} />
                                 </div>
                                 <div>
                                     <h3 className="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                                        Guide des Commandes
+                                        Guide Commandes
                                     </h3>
                                     <p className="text-xs text-slate-500 font-medium">Aide-mémoire Débutant</p>
                                 </div>
                             </div>
 
-                            <div className="space-y-3 max-h-[440px] overflow-y-auto pr-1">
+                            <div className="space-y-3 h-[520px] lg:h-[620px] xl:h-[680px] overflow-y-auto pr-1 custom-scrollbar">
                                 {CHEATSHEET.map((item, index) => (
                                     <div
                                         key={index}
