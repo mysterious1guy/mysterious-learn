@@ -336,7 +336,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     text: `[+] Authentification réussie. Session basculée sur '${auth.targetUser}'.`
                 });
             } else if (auth.type === 'ssh') {
-                setSshSession({ user: auth.targetUser, host: auth.host });
+                setSshSession({ user: auth.targetUser, host: auth.host, password: cmd });
                 newHistory.push({
                     type: 'output',
                     text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
@@ -492,6 +492,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     currentPath: currentPath,
                     currentUser: activeUser,
                     vfs: vfs,
+                    sshSession: sshSession,
                     mission: activeMission,
                     history: newHistory
                 })

@@ -836,7 +836,7 @@ const generateTerminalMission = async (req, res) => {
 // @access  Private
 const executeTerminalCommand = async (req, res) => {
     try {
-        const { command, currentPath = '/root', currentUser = 'root', vfs = {}, mission, history = [] } = req.body;
+        const { command, currentPath = '/root', currentUser = 'root', vfs = {}, mission, history = [], sshSession = null } = req.body;
         if (!command) {
             return res.status(400).json({ message: 'Commande requise' });
         }
@@ -848,6 +848,44 @@ const executeTerminalCommand = async (req, res) => {
         // Commande clear immédiate
         if (cleanCmd === 'clear') {
             return res.json({ output: '', newPath: path, isClear: true });
+        }
+
+        // TENTATIVE DE CONNEXION ET D'EXÉCUTION SSH RÉELLE
+        if (sshSession && sshSession.host && sshSession.password) {
+            const { spawn } = require('child_process');
+            const pathModule = require('path');
+            const pyScript = pathModule.join(__dirname, '../helpers/realSshExec.py');
+
+            try {
+                const sshResult = await new Promise((resolve) => {
+                    const py = spawn('python3', [pyScript, sshSession.host, sshSession.user || 'root', sshSession.password, cleanCmd]);
+                    let stdout = '';
+                    py.stdout.on('data', data => stdout += data.toString());
+                    py.on('close', () => {
+                        try {
+                            resolve(JSON.parse(stdout));
+                        } catch (e) {
+                            resolve({ success: false, error: stdout || 'SSH execution error' });
+                        }
+                    });
+                });
+
+                if (sshResult && sshResult.success) {
+                    return res.json({
+                        output: sshResult.output || '',
+                        newPath: path,
+                        isRealSsh: true
+                    });
+                } else if (sshResult && sshResult.error && (sshResult.error.includes('Permission denied') || sshResult.error.includes('Connection refused') || sshResult.error.includes('timed out'))) {
+                    return res.json({
+                        output: sshResult.error,
+                        newPath: path,
+                        isRealSsh: true
+                    });
+                }
+            } catch (err) {
+                console.error("Erreur lors de l'exécution SSH réelle:", err);
+            }
         }
 
         // Extraction du Virtual File System (VFS)
