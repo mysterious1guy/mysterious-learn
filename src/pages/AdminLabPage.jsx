@@ -14,7 +14,7 @@ const AdminLabPage = ({ user, API_URL, setToast }) => {
     const [activeTab, setActiveTab] = useState('games'); // 'games' | 'courseGen' | 'ctfGen'
 
     // AI Course Generator Test State
-    const [coursePrompt, setCoursePrompt] = useState('Créer un cours d'introduction à la Cryptographie Quantique avec 2 chapitres et des exemples Python.');
+    const [coursePrompt, setCoursePrompt] = useState("Créer un cours d'introduction à la Cryptographie Quantique avec 2 chapitres et des exemples Python.");
     const [isGeneratingCourse, setIsGeneratingCourse] = useState(false);
     const [generatedCourse, setGeneratedCourse] = useState(null);
 
