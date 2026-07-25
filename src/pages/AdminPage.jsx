@@ -1043,6 +1043,7 @@ const AdminPage = ({ user, onUpdateUser, API_URL, setToast }) => {
                     </button>
                   </div>
                 </div>
+              </motion.div>
             )}
 
             {activeTab === 'lab' && (
