@@ -192,7 +192,8 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 body: JSON.stringify({
                     command: cmd,
                     currentPath: currentPath,
-                    mission: activeMission
+                    mission: activeMission,
+                    history: newHistory
                 })
             });
 

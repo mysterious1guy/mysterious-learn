@@ -831,7 +831,7 @@ const generateTerminalMission = async (req, res) => {
 // @access  Private
 const executeTerminalCommand = async (req, res) => {
     try {
-        const { command, currentPath = '/root', mission } = req.body;
+        const { command, currentPath = '/root', mission, history = [] } = req.body;
         if (!command) {
             return res.status(400).json({ message: 'Commande requise' });
         }
@@ -844,20 +844,34 @@ const executeTerminalCommand = async (req, res) => {
             return res.json({ output: '', newPath: path, isClear: true });
         }
 
+        // Extraction de l'historique de la session pour la persistance de l'état
+        let sessionHistoryText = "";
+        if (Array.isArray(history) && history.length > 0) {
+            sessionHistoryText = history
+                .filter(h => h.type === 'user' || h.type === 'output' || h.type === 'success')
+                .slice(-12)
+                .map(h => `${h.type === 'user' ? 'CMD: ' + h.text : 'OUT: ' + h.text}`)
+                .join('\n');
+        }
+
         const systemPrompt = `Tu es le Noyau Système et l'Interpréteur Bash d'un terminal Linux Ubuntu 24.04 LTS.
 L'utilisateur a le statut 'root' (UID 0, GID 0, privilèges administrateur complets).
 Répertoire courant : '${path}'.
 
-COMMANDE EXÉCUTÉE : "${cleanCmd}"
+${sessionHistoryText ? `[HISTORIQUE ET ÉTAT PERSISTANT DE LA SESSION EN COURS]\n${sessionHistoryText}\n` : ''}
 
-RÈGLES STRICTES DU NOYAU LINUX :
-1. L'utilisateur est ROOT (super-utilisateur). Des commandes d'administration comme 'useradd', 'userdel', 'mkdir', 'chmod', 'chown', 'rm', 'touch', 'systemctl', 'apt' RÉUSSISSENT TOUJOURS avec les privilèges root sans aucune erreur de permission !
-2. Si une commande s'exécute avec succès sans produire de texte sur stdout (comme 'useradd', 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "" (ou un bref message si nécessaire).
-3. Si l'utilisateur crée un utilisateur avec 'useradd <nom>' puis fait 'su - <nom>' ou 'su <nom>', la commande 'su' doit réussir.
-4. Si la commande est 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
+COMMANDE ACTUELLE À EXÉCUTER : "${cleanCmd}"
+
+RÈGLES STRICTES DE PERSISTANCE DE L'ÉTAT LINUX :
+1. MAINTIENS LA PERSISTANCE TOTALE DU SYSTÈME DE FICHIERS ET DES UTILISATEURS :
+   - Si l'historique ci-dessus montre que l'utilisateur a créé un compte (ex: 'useradd mouhamed'), la commande suivante (ex: 'id mouhamed', 'su - mouhamed', 'cat /etc/passwd') DOIT RECONNAÎTRE cet utilisateur !
+   - Si un fichier ou dossier a été créé (ex: 'touch secret.txt', 'mkdir lab'), 'ls' DOIT lister ce fichier/dossier.
+2. L'utilisateur est ROOT. Des commandes comme 'useradd', 'userdel', 'mkdir', 'chmod', 'chown', 'rm', 'touch', 'systemctl', 'apt' RÉUSSISSENT TOUJOURS avec les privilèges root sans erreur de permission.
+3. Si une commande s'exécute avec succès sans produire de texte sur stdout (comme 'useradd', 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "".
+4. Si l'utilisateur exécute 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
 ${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.description}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}
 
-RÉPONDS EXCLUSIVEMENT PAR UN OBJET JSON STRICT SANS AUCUN AUTRE TEXTE NI EXPLICATION :
+RÉPONDS EXCLUSIVEMENT PAR UN OBJET JSON STRICT SANS AUCUN AUTRE TEXTE :
 \`\`\`json
 {
   "output": "texte de la console (stderr ou stdout)",
