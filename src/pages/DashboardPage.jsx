@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft, HelpCircle, Sparkles } from 'lucide-react';
+import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft, HelpCircle, Sparkles, Target, Cpu, Zap, RefreshCw, Compass, Award, TrendingUp } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
 import OnboardingTour from '../components/OnboardingTour';
 import CertificateModal from '../components/CertificateModal';
@@ -656,39 +656,73 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
             {roadmap && (
                 <div className="max-w-7xl mx-auto px-6 lg:px-12 mb-12">
                     <motion.div
-                        initial={{ opacity: 0, y: 15 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 text-slate-900 relative overflow-hidden shadow-xl"
+                        className="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white rounded-[2.5rem] p-8 lg:p-10 border border-indigo-500/30 shadow-[0_20px_60px_rgba(30,27,75,0.4)] relative overflow-hidden group"
                     >
-                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
-                            <div className="space-y-2 max-w-2xl">
-                                <div className="flex items-center gap-2 text-blue-600 text-xs font-extrabold uppercase tracking-wider">
-                                    <Sparkles size={16} className="text-amber-500" /> Recommandations Copilot & Diagnostic d'Élite
+                        {/* Background Ambient Glows */}
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/15 blur-[120px] rounded-full pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/15 blur-[120px] rounded-full pointer-events-none" />
+                        <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
+
+                        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+                            <div className="space-y-3 max-w-3xl">
+                                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 rounded-full text-xs font-black uppercase tracking-wider backdrop-blur-md">
+                                    <Sparkles size={15} className="text-amber-400 animate-pulse" /> Recommandations Copilot & Diagnostic d'Élite
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900">
-                                    Objectif : {roadmap.nextLevel}
-                                </h3>
-                                <p className="text-sm text-slate-600 font-medium leading-relaxed">
+
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                                        <Target size={22} />
+                                    </div>
+                                    <h3 className="text-2xl lg:text-3xl font-black tracking-tight text-white">
+                                        Objectif : <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">{roadmap.nextLevel}</span>
+                                    </h3>
+                                </div>
+
+                                <p className="text-sm lg:text-base text-slate-300 font-medium leading-relaxed pt-1">
                                     {roadmap.summary}
                                 </p>
                             </div>
+
                             <button
                                 onClick={fetchRoadmap}
                                 disabled={isRoadmapLoading}
-                                className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase tracking-wider rounded-2xl transition-all shrink-0 flex items-center gap-2 shadow-md"
+                                className="px-6 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 hover:from-indigo-400 hover:to-pink-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-2xl transition-all duration-300 shrink-0 flex items-center gap-2.5 shadow-lg shadow-purple-500/25 active:scale-95 group/btn"
                             >
-                                <Sparkles size={14} /> Réactualiser Diagnostic
+                                <RefreshCw size={16} className={`text-white transition-transform ${isRoadmapLoading ? 'animate-spin' : 'group-hover/btn:rotate-180 duration-500'}`} />
+                                <span>{isRoadmapLoading ? 'Analyse...' : 'Réactualiser Diagnostic'}</span>
                             </button>
                         </div>
 
                         {roadmap.recommendations && roadmap.recommendations.length > 0 && (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-100 relative z-10">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8 pt-8 border-t border-white/10 relative z-10">
                                 {roadmap.recommendations.map((rec, rIdx) => (
-                                    <div key={rIdx} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-2 shadow-sm">
-                                        <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200/80 inline-block">{rec.focusArea}</span>
-                                        <h4 className="text-base font-bold text-slate-900">{rec.title}</h4>
-                                        <p className="text-sm text-slate-600 font-normal leading-normal">{rec.description}</p>
-                                    </div>
+                                    <motion.div
+                                        key={rIdx}
+                                        initial={{ opacity: 0, y: 15 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: rIdx * 0.1 }}
+                                        className="bg-slate-900/80 backdrop-blur-xl border border-white/10 hover:border-indigo-500/40 rounded-2xl p-6 space-y-3 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-indigo-500/10 group/card relative overflow-hidden"
+                                    >
+                                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-indigo-500/10 to-transparent blur-xl opacity-0 group-hover/card:opacity-100 transition-opacity" />
+
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-[11px] font-black uppercase tracking-wider text-cyan-300 bg-cyan-500/10 px-3 py-1 rounded-xl border border-cyan-500/30 inline-flex items-center gap-1.5">
+                                                <TrendingUp size={13} className="text-cyan-400" />
+                                                {rec.focusArea}
+                                            </span>
+                                            <span className="text-xs font-mono font-bold text-slate-500">#0{rIdx + 1}</span>
+                                        </div>
+
+                                        <h4 className="text-base font-black text-white group-hover/card:text-indigo-300 transition-colors">
+                                            {rec.title}
+                                        </h4>
+
+                                        <p className="text-xs text-slate-300 font-normal leading-relaxed">
+                                            {rec.description}
+                                        </p>
+                                    </motion.div>
                                 ))}
                             </div>
                         )}
