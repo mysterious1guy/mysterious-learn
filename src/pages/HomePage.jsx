@@ -50,11 +50,11 @@ const HomePage = ({ API_URL }) => {
         },
         {
             id: "ai",
-            label: t('home.tab_ai') || "IA Oracle",
+            label: t('home.tab_ai') || "Mysterious Copilot",
             badge: "IA MENTOR",
             icon: Bot,
             title: t('home.obj4_title') || "Une IA pour vous Guider",
-            desc: t('home.obj4_desc') || "Bloqué sur un problème ? Oracle Mentor, notre IA intelligente, est là pour vous donner des indices précis sans faire le travail à votre place.",
+            desc: t('home.obj4_desc') || "Bloqué sur un problème ? Mysterious Copilot, notre IA intelligente, est là pour vous donner des indices précis sans faire le travail à votre place.",
             image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=1200"
         }
     ];

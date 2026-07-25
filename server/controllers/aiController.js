@@ -516,7 +516,7 @@ Tu peux les explorer directement depuis ton **Tableau de bord** !`;
     } catch (error) {
         console.error("CRITICAL AI Relay Error:", error);
         res.status(500).json({
-            message: 'Le cerveau de l\'Oracle est momentanément saturé.',
+            message: 'Le cerveau de Mysterious Copilot est momentanément saturé.',
             error: error.message
         });
     }

@@ -6,7 +6,7 @@
 - **Site Officiel** : https://mysterious-classroom.com
 - **Fondateur & Architecte Système** : Mouhamed FALL
 - **Modèle** : 100% Gratuit (Accès libre à tous les modules)
-- **Assistant IA** : Oracle Mentor / Mysterious Copilot (Assistant IA interactif 24/7)
+- **Assistant IA** : Mysterious Copilot (Assistant IA interactif 24/7)
 
 ## Piliers & Cours Proposés
 - **Cybersécurité & Hacking Éthique** : Attaques web, pentesting, sécurité réseau, cryptographie.

@@ -426,7 +426,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-mono font-black text-white tracking-[0.2em] text-xs uppercase opacity-90">
-                                    Oracle Mentor
+                                    Mysterious Copilot
                                 </span>
                                 <span className="text-[10px] text-blue-400 font-bold opacity-60">
                                     {t('copilot.advanced_logic') || 'Système de Logique Avancé'}

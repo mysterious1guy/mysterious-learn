@@ -166,7 +166,7 @@ export const translations = {
             obj3_title: "Progresser à votre rythme",
             obj3_desc: "Chaque mission réussie vous donne des points d'expérience (XP). Débloquez de nouveaux niveaux et affrontez des défis de plus en plus complexes.",
             obj4_title: "Un mentor IA à vos côtés",
-            obj4_desc: "Bloqué sur un problème ? Oracle Mentor, notre IA intelligente, est là pour vous donner des indices précis sans faire le travail à votre place.",
+            obj4_desc: "Bloqué sur un problème ? Mysterious Copilot, notre IA intelligente, est là pour vous donner des indices précis sans faire le travail à votre place.",
             btn_create_agent: "CRÉER UN DOSSIER D'AGENT",
             stats_registered: "Agents Inscrits",
             stats_active: "Opérationnels",
@@ -195,7 +195,7 @@ export const translations = {
             tab_practice: "Pratique",
             tab_security: "Hacking",
             tab_xp: "Niveaux XP",
-            tab_ai: "IA Oracle"
+            tab_ai: "Mysterious Copilot"
         },
         resetPasswordPage: {
             title: "Réinitialisation du mot de passe",
@@ -588,7 +588,7 @@ export const translations = {
             obj3_title: "Progress at your own pace",
             obj3_desc: "Each successful mission grants you experience points (XP). Unlock new levels and face increasingly complex challenges.",
             obj4_title: "An AI mentor by your side",
-            obj4_desc: "Stuck on a problem? Oracle Mentor, our smart AI, is here to give you precise hints without doing the work for you.",
+            obj4_desc: "Stuck on a problem? Mysterious Copilot, our smart AI, is here to give you precise hints without doing the work for you.",
             btn_create_agent: "CREATE AN AGENT DOSSIER",
             stats_registered: "Registered Agents",
             stats_active: "Operational",
@@ -617,7 +617,7 @@ export const translations = {
             tab_practice: "Practice",
             tab_security: "Hacking",
             tab_xp: "XP Levels",
-            tab_ai: "AI Oracle"
+            tab_ai: "Mysterious Copilot"
         },
         announcements: {
             title: "Announcements",

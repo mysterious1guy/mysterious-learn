@@ -7,7 +7,7 @@ const CourseClassroom = ({ courseTitle, courseDescription, onEnter }) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             const event = new CustomEvent('mysterious-ai-suggest', {
-                detail: { text: "Initialisation... Connexion au réseau neuronal établie. L'Oracle t'attend." }
+                detail: { text: "Initialisation... Connexion au réseau neuronal établie. Mysterious Copilot t'attend." }
             });
             window.dispatchEvent(event);
         }, 1500);
@@ -103,7 +103,7 @@ const CourseClassroom = ({ courseTitle, courseDescription, onEnter }) => {
                 className="absolute bottom-12 text-emerald-500/60 font-mono text-xs tracking-[0.3em] uppercase flex items-center gap-2"
             >
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
-                L'Oracle est en ligne
+                Mysterious Copilot est en ligne
             </motion.p>
         </motion.div>
     );
