@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Sparkles, Gamepad2, Terminal, BookOpen, Flag, Loader2, CheckCircle2, Lock, Cpu, Play } from 'lucide-react';
+import { Shield, Sparkles, Gamepad2, Terminal, BookOpen, Flag, Loader2, CheckCircle2, Lock, Cpu, Play, ArrowRight } from 'lucide-react';
 import FirewallGame from '../components/games/FirewallGame';
 import TerminalGame from '../components/games/TerminalGame';
 
@@ -154,6 +154,27 @@ const AdminLabPage = ({ user, API_URL, setToast }) => {
                 {/* TAB 1: CYBER GAMES */}
                 {activeTab === 'games' && (
                     <div className="space-y-6">
+                        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-3xl p-6 lg:p-8 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                            <div className="space-y-2 max-w-2xl">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-black uppercase tracking-wider text-emerald-100 border border-white/20">
+                                    <Terminal size={14} /> MODE PLEIN ÉCRAN
+                                </div>
+                                <h2 className="text-2xl lg:text-3xl font-black">
+                                    Terminal & Hacking Simulator (Plein Écran)
+                                </h2>
+                                <p className="text-emerald-100 text-sm leading-relaxed font-medium">
+                                    Découvrez le nouveau simulateur CLI grand format pour maîtriser les commandes Linux et Cybersécurité avec des défis générés en temps réel par l'IA.
+                                </p>
+                            </div>
+                            <Link
+                                to="/terminal-simulator"
+                                className="px-6 py-4 bg-white hover:bg-emerald-50 text-emerald-900 font-black text-sm uppercase tracking-wider rounded-2xl shadow-xl flex items-center gap-2 transition shrink-0 group"
+                            >
+                                Ouvrir le Simulateur Plein Écran
+                                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
+
                         <div className="bg-blue-50/80 border border-blue-200/80 rounded-2xl p-5 text-blue-950 text-sm">
                             <strong className="font-bold flex items-center gap-2 text-blue-900 mb-1">
                                 🎮 Mode d'emploi des Jeux :

@@ -8,7 +8,8 @@ const {
     reviewCode,
     generateChallenge,
     adaptiveRoadmap,
-    generateCertificate
+    generateCertificate,
+    generateTerminalMission
 } = require('../controllers/aiController');
 
 const router = express.Router();
@@ -27,5 +28,6 @@ router.route('/review-code').post(protect, reviewCode);
 router.route('/generate-challenge').post(protect, generateChallenge);
 router.route('/adaptive-roadmap').post(protect, adaptiveRoadmap);
 router.route('/generate-certificate').post(protect, generateCertificate);
+router.route('/generate-terminal-mission').post(protect, generateTerminalMission);
 
 module.exports = router;

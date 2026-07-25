@@ -25,6 +25,7 @@ import TwoFactorSetupPage from './pages/TwoFactorSetupPage';
 import Leaderboard from './pages/Leaderboard';
 import ProjectsList from './pages/ProjectsList';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import TerminalSimulatorPage from './pages/TerminalSimulatorPage';
 
 // Hooks et composants
 import { useLocalStorage } from './hooks/useLocalStorage';
@@ -304,6 +305,18 @@ function App() {
                     user ? (
                       user.hasCompletedOnboarding ? (
                         <ProjectsList user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
+                      ) : (
+                        <Navigate to="/onboarding" replace />
+                      )
+                    ) : (
+                      <Navigate to="/auth" replace />
+                    )
+                  } />
+
+                  <Route path="/terminal-simulator" element={
+                    user ? (
+                      user.hasCompletedOnboarding ? (
+                        <TerminalSimulatorPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />
                       ) : (
                         <Navigate to="/onboarding" replace />
                       )

@@ -745,9 +745,57 @@ const generateCertificate = async (req, res) => {
             appreciation: appreciation || `Félicitations à ${user.name} pour sa détermination exemplaire et sa réussite remarquable dans le module "${courseTitle}". La maîtrise technique et la rigueur dont vous avez fait preuve honorent la communauté Mysterious Classroom.\n\n— Mouhamed FALL (Fondateur) & Mysterious Copilot`,
             certificateId: `MC-CERT-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
         });
+// @desc    Générer une mission de terminal/CLI interactive
+// @route   POST /api/ai/generate-terminal-mission
+// @access  Private
+const generateTerminalMission = async (req, res) => {
+    try {
+        const { level = 'Débutant' } = req.body;
+        const systemPrompt = `Tu es le Générateur de Simulations CLI de Mysterious Classroom.
+        Crée un exercice pratique amusant et éducatif pour le terminal Linux/Hacking pour un niveau "${level}".
+        Renvoie EXCLUSIVEMENT un objet JSON valide suivant cette structure exacte:
+        {
+          "id": "mission_${Date.now()}",
+          "title": "Titre explicite de la mission",
+          "description": "Description claire de la situation et de ce que l'utilisateur doit faire",
+          "targetHost": "192.168.1.42",
+          "hint": "Indice pédagogique donnant la commande de départ",
+          "expectedCommand": "la commande exacte ou pattern principal à exécuter (ex: cat flag.txt ou scan 192.168.1.42)",
+          "commandCategory": "Fichiers / Réseau / Infiltration",
+          "xpReward": 150,
+          "initialOutput": "Message initial ou contextuel affiché au démarrage dans le terminal",
+          "successOutput": "Message de victoire affiché quand l'utilisateur réussit la commande"
+        }`;
+
+        const aiResponse = await callDeepSeekAPI(systemPrompt, `Génère une nouvelle mission de niveau ${level}`);
+        let parsed = null;
+
+        try {
+            const cleanJson = aiResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+            parsed = JSON.parse(cleanJson);
+        } catch (e) {
+            console.error("Échec parse JSON mission IA:", e.message);
+        }
+
+        if (!parsed) {
+            parsed = {
+                id: `mission_${Date.now()}`,
+                title: "Infiltration Réseau : Premier Contact",
+                description: "Le serveur 10.0.4.12 répond sur le réseau. Analysez les ports ouverts avec 'scan 10.0.4.12'.",
+                targetHost: "10.0.4.12",
+                hint: "Tapez 'scan 10.0.4.12' pour lancer le balayage de la cible.",
+                expectedCommand: "scan 10.0.4.12",
+                commandCategory: "Réseau & Scan",
+                xpReward: 150,
+                initialOutput: "[+] Connexion réseau établie. Cible identifiée : 10.0.4.12",
+                successOutput: "[+] PORT 80/TCP OPEN - Faille Web détectée ! Mission accomplie."
+            };
+        }
+
+        res.json(parsed);
     } catch (err) {
-        console.error("Erreur generateCertificate:", err);
-        res.status(500).json({ message: "Erreur lors de la génération du certificat" });
+        console.error("Erreur generateTerminalMission:", err);
+        res.status(500).json({ message: "Erreur lors de la génération de la mission terminal" });
     }
 };
 
@@ -759,5 +807,6 @@ module.exports = {
     reviewCode,
     generateChallenge,
     adaptiveRoadmap,
-    generateCertificate
+    generateCertificate,
+    generateTerminalMission
 };
