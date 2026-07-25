@@ -526,9 +526,226 @@ Tu peux les explorer directement depuis ton **Tableau de bord** !`;
     }
 };
 
+// Helper for calling OpenRouter DeepSeek
+const callDeepSeekAPI = async (systemPrompt, userPrompt) => {
+    const openrouterKey = process.env.OPENROUTER_API_KEY;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://mysterious-classroom.com',
+                'X-Title': 'Mysterious Classroom',
+                ...(openrouterKey ? { 'Authorization': `Bearer ${openrouterKey.trim()}` } : {})
+            },
+            body: JSON.stringify({
+                model: 'deepseek/deepseek-chat',
+                messages: [
+                    { role: "system", content: systemPrompt },
+                    { role: "user", content: userPrompt }
+                ],
+                max_tokens: 1200
+            }),
+            signal: controller.signal
+        });
+        clearTimeout(timeout);
+        if (res.ok) {
+            const data = await res.json();
+            return data.choices?.[0]?.message?.content || null;
+        }
+    } catch (err) {
+        console.error("OpenRouter API error in helper:", err.message);
+    }
+    return null;
+};
+
+// @desc    Analyse socratique de code en direct (Code Reviewer)
+// @route   POST /api/ai/review-code
+// @access  Private
+const reviewCode = async (req, res) => {
+    try {
+        const { code, exerciseTitle, language } = req.body;
+        if (!code) {
+            return res.status(400).json({ message: 'Code requis pour analyse' });
+        }
+
+        const systemPrompt = `Tu es l'Inspecteur & Mentor de Code de Mysterious Classroom.
+        Ta mission : Effectuer une revue socratique du code soumis par l'élève pour l'exercice "${exerciseTitle || 'Exercice'}".
+        RÈGLES STRICTES :
+        1. Ne donne JAMAIS la solution complète ou le code corrigé d'un coup.
+        2. Donne 2 ou 3 indices stimulants, explique s'il y a des vulnérabilités ou failles de logique, et guide l'élève.
+        3. Sois constructif, enthousiaste et rédiges en Français élégant sans balises système inutiles.`;
+
+        const userPrompt = `Voici mon code (${language || 'javascript'}) :\n\`\`\`${language || 'javascript'}\n${code}\n\`\`\``;
+
+        const feedback = await callDeepSeekAPI(systemPrompt, userPrompt);
+
+        if (feedback) {
+            res.json({ feedback });
+        } else {
+            res.json({
+                feedback: "🔍 **Diagnostic Copilot** : Ton approche globale est intéressante ! Vérifie bien la déclaration de tes variables et la condition de sortie. Tu es très proche de la solution !"
+            });
+        }
+    } catch (err) {
+        console.error("Erreur reviewCode:", err);
+        res.status(500).json({ message: "Erreur lors de l'analyse du code" });
+    }
+};
+
+// @desc    Générer un défi CTF dynamique
+// @route   POST /api/ai/generate-challenge
+// @access  Private
+const generateChallenge = async (req, res) => {
+    try {
+        const { category, level } = req.body;
+        const targetCategory = category || 'Web';
+        const targetLevel = level || 'Intermédiaire';
+
+        const systemPrompt = `Tu es le Maître des Énigmes & CTFs de Mysterious Classroom.
+        Génère un challenge CTF / Hacking Éthique stimulant pour le domaine "${targetCategory}" et le niveau "${targetLevel}".
+        Tu dois répondre STRICTEMENT au format JSON encadré par \`\`\`json et \`\`\` avec la structure :
+        {
+          "title": "Titre du challenge",
+          "points": 100,
+          "category": "${targetCategory}",
+          "level": "${targetLevel}",
+          "description": "Explication du scénario et de la cible",
+          "codeSnippet": "Code source ou payload à analyser",
+          "hint": "Indice subtil",
+          "flag": "MYSTERIOUS{flag_secret}"
+        }`;
+
+        const userPrompt = `Génère un challenge CTF captivant en ${targetCategory}.`;
+
+        const responseText = await callDeepSeekAPI(systemPrompt, userPrompt);
+        let challengeData = null;
+
+        if (responseText) {
+            const match = responseText.match(/```json\s*(\{[\s\S]*?\})\s*```/) || responseText.match(/(\{[\s\S]*?\})/);
+            if (match) {
+                try {
+                    challengeData = JSON.parse(match[1]);
+                } catch (e) {}
+            }
+        }
+
+        if (!challengeData) {
+            challengeData = {
+                title: `Injection & Bypass ${targetCategory}`,
+                points: 150,
+                category: targetCategory,
+                level: targetLevel,
+                description: `Un serveur cible filtre mal les entrées utilisateurs. Trouve la séquence magique pour contourner le filtre !`,
+                codeSnippet: `function authenticate(user) {\n  if (user.includes("' OR '1'='1")) return true;\n  return false;\n}`,
+                hint: `Explore les opérateurs logiques en SQL.`,
+                flag: `MYSTERIOUS{sql_injection_mastered}`
+            };
+        }
+
+        res.json(challengeData);
+    } catch (err) {
+        console.error("Erreur generateChallenge:", err);
+        res.status(500).json({ message: "Erreur lors de la génération du CTF" });
+    }
+};
+
+// @desc    Diagnostic de compétences et Roadmap adaptative
+// @route   POST /api/ai/adaptive-roadmap
+// @access  Private
+const adaptiveRoadmap = async (req, res) => {
+    try {
+        const user = req.user;
+        const Progress = require('../models/Progress');
+        const progresses = await Progress.find({ user: user._id });
+
+        const completedCount = progresses.filter(p => p.progress === 100).length;
+        const totalXP = user.xp || 0;
+
+        const systemPrompt = `Tu es le Conseiller d'Orientation Pédagogique de Mysterious Classroom.
+        Analyse le profil de l'élève :
+        Nom : ${user.name}
+        Niveau Actuel : ${user.programmingLevel || 'Débutant'}
+        XP Total : ${totalXP}
+        Cours terminés : ${completedCount}
+
+        Fournis un diagnostic constructif et 3 recommandations prioritaires.
+        Réponds au format JSON strict :
+        {
+          "summary": "Synthèse rapide des compétences",
+          "nextLevel": "Prochain niveau suggéré",
+          "recommendations": [
+             { "title": "Titre du focus", "description": "Pourquoi travailler ce domaine", "focusArea": "Web/Réseau/C" }
+          ]
+        }`;
+
+        const responseText = await callDeepSeekAPI(systemPrompt, "Génère mon diagnostic personnalisé.");
+        let roadmapData = null;
+
+        if (responseText) {
+            const match = responseText.match(/```json\s*(\{[\s\S]*?\})\s*```/) || responseText.match(/(\{[\s\S]*?\})/);
+            if (match) {
+                try {
+                    roadmapData = JSON.parse(match[1]);
+                } catch (e) {}
+            }
+        }
+
+        if (!roadmapData) {
+            roadmapData = {
+                summary: `Excellente assiduité ! Tu as accumulé ${totalXP} XP. Tes bases logiques sont solides.`,
+                nextLevel: `Spécialiste Hacking Éthique`,
+                recommendations: [
+                    { title: "Securité des APIs Web", description: "Découvre les failles OWASP Top 10 sur les endpoints REST.", focusArea: "Web" },
+                    { title: "Algorithmique Avancée", description: "Consolide tes structures de données et complexité.", focusArea: "Programmation" },
+                    { title: "Analyse Réseau", description: "Maîtrise la capture de paquets et Wireshark.", focusArea: "Réseau" }
+                ]
+            };
+        }
+
+        res.json(roadmapData);
+    } catch (err) {
+        console.error("Erreur adaptiveRoadmap:", err);
+        res.status(500).json({ message: "Erreur lors de la génération de la roadmap" });
+    }
+};
+
+// @desc    Générer une appréciation et un certificat d'accomplissement
+// @route   POST /api/ai/generate-certificate
+// @access  Private
+const generateCertificate = async (req, res) => {
+    try {
+        const { courseTitle } = req.body;
+        const user = req.user;
+
+        const systemPrompt = `Tu es le Jury et Directeur de Mysterious Classroom.
+        Rédige une appréciation d'excellence officielle et inspirante pour ${user.name} qui vient d'accomplir avec succès le cours "${courseTitle || 'Cybersécurité & Hacking Éthique'}".
+        L'appréciation doit faire 3 phrases motivantes et être signée par "Mouhamed FALL (Fondateur) & Mysterious Copilot".`;
+
+        const appreciation = await callDeepSeekAPI(systemPrompt, `Rédige l'appréciation pour ${user.name}`);
+
+        res.json({
+            userName: user.name,
+            courseTitle: courseTitle || 'Cybersécurité & Hacking Éthique',
+            issueDate: new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' }),
+            appreciation: appreciation || `Félicitations à ${user.name} pour sa détermination exemplaire et sa réussite remarquable dans le module "${courseTitle}". La maîtrise technique et la rigueur dont vous avez fait preuve honorent la communauté Mysterious Classroom.\n\n— Mouhamed FALL (Fondateur) & Mysterious Copilot`,
+            certificateId: `MC-CERT-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
+        });
+    } catch (err) {
+        console.error("Erreur generateCertificate:", err);
+        res.status(500).json({ message: "Erreur lors de la génération du certificat" });
+    }
+};
+
 module.exports = {
     getGlobalKnowledge,
     upsertGlobalKnowledge,
     deleteGlobalKnowledge,
-    aiChat
+    aiChat,
+    reviewCode,
+    generateChallenge,
+    adaptiveRoadmap,
+    generateCertificate
 };

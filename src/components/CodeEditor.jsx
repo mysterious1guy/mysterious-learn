@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Editor from '@monaco-editor/react';
-import { Play, Loader2, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Play, Loader2, CheckCircle, AlertCircle, RefreshCw, Sparkles, HelpCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Piston API configuration
 const PISTON_API_URL = "https://emkc.org/api/v2/piston/execute";
@@ -16,14 +16,49 @@ const LANGUAGE_MAP = {
     php: { language: 'php', version: '8.2.3' },
 };
 
-const CodeEditor = ({ initialCode, language, expectedRegex, onRunSuccess, disabled }) => {
+const CodeEditor = ({ initialCode, language, expectedRegex, onRunSuccess, disabled, exerciseTitle }) => {
     const [code, setCode] = useState(initialCode || '');
     const [output, setOutput] = useState('');
     const [isRunning, setIsRunning] = useState(false);
     const [error, setError] = useState(null);
     const [testPassed, setTestPassed] = useState(false);
 
+    // AI Reviewer states
+    const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
+    const [aiFeedback, setAiFeedback] = useState(null);
+
     const monacoLanguage = language === 'c' || language === 'cpp' ? 'cpp' : language;
+
+    const askAiHelp = async () => {
+        setIsAiAnalyzing(true);
+        setAiFeedback(null);
+        try {
+            const API_URL = import.meta.env.VITE_API_URL || 'https://mysterious-classroom.com/api';
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/ai/review-code`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
+                body: JSON.stringify({
+                    code,
+                    language: monacoLanguage,
+                    exerciseTitle: exerciseTitle || 'Exercice de programmation'
+                })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setAiFeedback(data.feedback);
+            } else {
+                setAiFeedback("🔍 **Diagnostic Copilot** : Réessaie de relire les instructions et de vérifier la structure de tes fonctions.");
+            }
+        } catch (e) {
+            setAiFeedback("🔍 **Diagnostic Copilot** : Vérifie si ton code est complet et sans fautes de frappe !");
+        } finally {
+            setIsAiAnalyzing(false);
+        }
+    };
 
     const executeCode = async () => {
         setIsRunning(true);
@@ -82,8 +117,6 @@ const CodeEditor = ({ initialCode, language, expectedRegex, onRunSuccess, disabl
                 return;
             }
 
-            // Vérifier la regex attendue sur le code source OU sur le résultat
-            // Ici on vérifie le code source comme dans l'ancienne logique pour s'assurer des bonnes pratiques
             const regex = new RegExp(expectedRegex);
             if (regex.test(code) || regex.test(executionOutput)) {
                 setTestPassed(true);
@@ -91,7 +124,7 @@ const CodeEditor = ({ initialCode, language, expectedRegex, onRunSuccess, disabl
             } else {
                 setError("Le code compile, mais il ne résout pas la consigne demandée. Vérifie ce que tu as écrit.");
                 window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
-                    detail: { text: "Le code s'exécute bien, mais le rendu ne correspond pas exactement à l'exercice. As-tu oublié quelque chose ?" }
+                    detail: { text: "Le code s'exécute bien, mais le rendu ne correspond pas exactement à l'exercice. As-tu oublié quelque شيء ?" }
                 }));
             }
 
@@ -111,6 +144,7 @@ const CodeEditor = ({ initialCode, language, expectedRegex, onRunSuccess, disabl
         setOutput('');
         setError(null);
         setTestPassed(false);
+        setAiFeedback(null);
     };
 
     return (
@@ -156,7 +190,7 @@ const CodeEditor = ({ initialCode, language, expectedRegex, onRunSuccess, disabl
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-3">
                 <button
                     onClick={executeCode}
                     disabled={disabled || isRunning || testPassed || code.trim() === ''}
@@ -165,7 +199,38 @@ const CodeEditor = ({ initialCode, language, expectedRegex, onRunSuccess, disabl
                     {isRunning ? <Loader2 className="animate-spin w-5 h-5" /> : <Play className="w-5 h-5" />}
                     {isRunning ? "Compilation..." : "Exécuter le code"}
                 </button>
+
+                <button
+                    onClick={askAiHelp}
+                    disabled={disabled || isAiAnalyzing || code.trim() === ''}
+                    className="px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20 active:scale-95"
+                >
+                    {isAiAnalyzing ? <Loader2 className="animate-spin w-4 h-4" /> : <Sparkles className="w-4 h-4 text-amber-300" />}
+                    {isAiAnalyzing ? "Analyse Copilot..." : "Demander l'aide du Copilot 🔍"}
+                </button>
             </div>
+
+            {/* Panel Diagnostic Copilot Socratique */}
+            <AnimatePresence>
+                {aiFeedback && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="rounded-2xl border border-purple-500/30 bg-slate-900/90 backdrop-blur-md p-5 text-slate-200 space-y-3 relative overflow-hidden shadow-xl"
+                    >
+                        <div className="flex items-center justify-between text-purple-400 text-xs font-black uppercase tracking-widest border-b border-slate-800 pb-2">
+                            <span className="flex items-center gap-2">
+                                <Sparkles size={14} className="text-amber-400" /> Diagnostic & Indices du Copilot
+                            </span>
+                            <button onClick={() => setAiFeedback(null)} className="text-slate-400 hover:text-white">✕</button>
+                        </div>
+                        <div className="text-xs leading-relaxed font-sans space-y-2 whitespace-pre-wrap">
+                            {aiFeedback}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Terminal de Sortie */}
             {(output || error) && (

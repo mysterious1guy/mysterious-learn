@@ -4,7 +4,11 @@ const {
     getGlobalKnowledge,
     upsertGlobalKnowledge,
     deleteGlobalKnowledge,
-    aiChat
+    aiChat,
+    reviewCode,
+    generateChallenge,
+    adaptiveRoadmap,
+    generateCertificate
 } = require('../controllers/aiController');
 
 const router = express.Router();
@@ -19,5 +23,9 @@ router.route('/knowledge/:id')
 
 // AI Interaction
 router.route('/chat').post(protect, aiChat);
+router.route('/review-code').post(protect, reviewCode);
+router.route('/generate-challenge').post(protect, generateChallenge);
+router.route('/adaptive-roadmap').post(protect, adaptiveRoadmap);
+router.route('/generate-certificate').post(protect, generateCertificate);
 
 module.exports = router;

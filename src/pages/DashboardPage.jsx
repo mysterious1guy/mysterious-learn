@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft, HelpCircle, Sparkles } from 'lucide-react';
 import PlacementTestModal from '../components/PlacementTestModal';
 import OnboardingTour from '../components/OnboardingTour';
+import CertificateModal from '../components/CertificateModal';
 import { useLanguage } from '../context/LanguageContext';
 
 const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, progressions = {}, API_URL }) => {
@@ -17,6 +18,13 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
     const [recentlyUnlocked, setRecentlyUnlocked] = useState(null);
     const [courseStats, setCourseStats] = useState({});
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+    // AI Adaptive Roadmap & Certificate states
+    const [roadmap, setRoadmap] = useState(null);
+    const [isRoadmapLoading, setIsRoadmapLoading] = useState(false);
+    const [certificateData, setCertificateData] = useState(null);
+    const [isCertificateOpen, setIsCertificateOpen] = useState(false);
+    const [isGeneratingCert, setIsGeneratingCert] = useState(false);
     const [showTour, setShowTour] = useState(
         Boolean(user && Array.isArray(user.seenGuides) && !user.seenGuides.includes('main_onboarding'))
     );
@@ -69,8 +77,55 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
         }
     };
 
+    const fetchRoadmap = async () => {
+        if (!user?.token) return;
+        setIsRoadmapLoading(true);
+        try {
+            const res = await fetch(`${API_URL}/ai/adaptive-roadmap`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setRoadmap(data);
+            }
+        } catch (e) {
+            console.error("Erreur roadmap AI:", e);
+        } finally {
+            setIsRoadmapLoading(false);
+        }
+    };
+
+    const handleGenerateCertificate = async (courseTitle) => {
+        if (!user?.token) return;
+        setIsGeneratingCert(true);
+        try {
+            const res = await fetch(`${API_URL}/ai/generate-certificate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify({ courseTitle })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setCertificateData(data);
+                setIsCertificateOpen(true);
+            }
+        } catch (e) {
+            console.error("Erreur certificat AI:", e);
+        } finally {
+            setIsGeneratingCert(false);
+        }
+    };
+
     useEffect(() => {
         fetchCourses();
+        if (user?.token) fetchRoadmap();
         if (user?.role === 'admin') fetchStats();
     }, [API_URL, user]);
 
@@ -596,6 +651,58 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                     </motion.div>
                 ))}
             </div>
+
+            {/* AI Adaptive Roadmap Banner */}
+            {roadmap && (
+                <div className="max-w-7xl mx-auto px-6 lg:px-12 mb-12">
+                    <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl"
+                    >
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 blur-[100px] pointer-events-none -mr-32 -mt-32" />
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+                            <div className="space-y-2 max-w-2xl">
+                                <div className="flex items-center gap-2 text-indigo-400 text-xs font-black uppercase tracking-widest">
+                                    <Sparkles size={16} className="text-amber-400" /> Recommandations Copilot & Diagnostic d'Élite
+                                </div>
+                                <h3 className="text-2xl font-black text-white">
+                                    Objectif : {roadmap.nextLevel}
+                                </h3>
+                                <p className="text-sm text-slate-300 font-medium leading-relaxed">
+                                    {roadmap.summary}
+                                </p>
+                            </div>
+                            <button
+                                onClick={fetchRoadmap}
+                                disabled={isRoadmapLoading}
+                                className="px-5 py-3 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/30 text-indigo-200 text-xs font-black uppercase tracking-widest rounded-2xl transition-all shrink-0 flex items-center gap-2"
+                            >
+                                <Sparkles size={14} /> Réactualiser Diagnostic
+                            </button>
+                        </div>
+
+                        {roadmap.recommendations && roadmap.recommendations.length > 0 && (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 pt-6 border-t border-indigo-500/20 relative z-10">
+                                {roadmap.recommendations.map((rec, rIdx) => (
+                                    <div key={rIdx} className="bg-slate-950/60 border border-indigo-500/20 rounded-2xl p-4 space-y-1">
+                                        <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-400 font-bold">{rec.focusArea}</span>
+                                        <h4 className="text-sm font-bold text-white">{rec.title}</h4>
+                                        <p className="text-xs text-slate-400">{rec.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </motion.div>
+                </div>
+            )}
+
+            {/* Certificate Modal Component */}
+            <CertificateModal
+                isOpen={isCertificateOpen}
+                onClose={() => setIsCertificateOpen(false)}
+                certificateData={certificateData}
+            />
 
             <style jsx>{`
                 .custom-horizontal-scrollbar::-webkit-scrollbar {

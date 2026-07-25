@@ -215,6 +215,11 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 method = 'POST';
                 body = JSON.stringify(actionData.payload);
             }
+            else if (actionData.action === 'generate_ctf') {
+                endpoint = '/ai/generate-challenge';
+                method = 'POST';
+                body = JSON.stringify(actionData.payload);
+            }
             else if (actionData.action === 'add_knowledge') {
                 endpoint = '/ai/knowledge';
                 method = 'POST';
