@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Terminal, Shield, Sparkles, Trophy, HelpCircle, RefreshCw, CheckCircle2, 
     ArrowRight, BookOpen, Code2, Cpu, Zap, Lock, Eye, AlertCircle, Play, 
-    ArrowLeft, Compass, Bot, Check, Layers
+    ArrowLeft, Compass, Bot, Check, Layers, Lightbulb, Key
 } from 'lucide-react';
 import AIAssistant from '../components/AIAssistant';
 import NanoEditor from '../components/terminal/NanoEditor';
@@ -333,11 +333,61 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             ];
 
             if (auth.type === 'su') {
-                setActiveUser(auth.targetUser);
+                setActiveUser(auth.targetUser || 'root');
                 newHistory.push({
                     type: 'output',
-                    text: `[+] Authentification réussie. Session basculée sur '${auth.targetUser}'.`
+                    text: `[+] Authentification réussie. Session basculée sur '${auth.targetUser || 'root'}'.`
                 });
+                setHistory(newHistory);
+                return;
+            } else if (auth.type === 'sudo') {
+                setActiveUser('root');
+                newHistory.push({
+                    type: 'output',
+                    text: `[+] Authentification sudo réussie. Exécution de "${auth.pendingCmd || ''}" en tant que root...`
+                });
+                if (auth.pendingCmd) {
+                    // Si une sous-commande était associée à sudo, l'exécuter sous privilège root
+                    const pendingCmd = auth.pendingCmd;
+                    setExecutingCmd(true);
+                    setHistory(newHistory);
+                    try {
+                        const token = user?.token || localStorage.getItem('token');
+                        const res = await fetch(`${API_URL}/ai/execute-terminal-command`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                command: pendingCmd,
+                                currentPath: currentPath,
+                                currentUser: 'root',
+                                vfs: vfs,
+                                sshSession: sshSession,
+                                mission: activeMission,
+                                history: newHistory
+                            })
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            setHistory(prev => [
+                                ...prev,
+                                { type: 'output', text: data.output }
+                            ]);
+                        }
+                    } catch (e) {
+                        setHistory(prev => [
+                            ...prev,
+                            { type: 'error', text: `bash: ${pendingCmd}: erreur d'exécution sudo.` }
+                        ]);
+                    } finally {
+                        setExecutingCmd(false);
+                    }
+                    return;
+                }
+                setHistory(newHistory);
+                return;
             } else if (auth.type === 'ssh') {
                 const targetSsh = { user: auth.targetUser, host: auth.host, password: cmd };
                 setExecutingCmd(true);
@@ -433,15 +483,33 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             return;
         }
 
-        // Interception de su root / su / sudo -i / sudo su / sudo
-        if (['su', 'su root', 'su -', 'su - root', 'sudo su', 'sudo -i', 'sudo bash', 'sudo sh'].includes(lower) || lower.startsWith('sudo ')) {
+        // Interception de su root / su / sudo -i / sudo su
+        if (['su', 'su root', 'su -', 'su - root', 'sudo su', 'sudo -i', 'sudo bash', 'sudo sh'].includes(lower)) {
             setPendingAuth({
                 type: 'su',
                 targetUser: 'root',
-                promptLabel: 'Password: '
+                promptLabel: '[sudo] Password for root (mot de passe: root) : '
             });
             setHistory(newHistory);
             return;
+        }
+
+        // Interception de sudo <commande>
+        if (lower.startsWith('sudo ')) {
+            const subCmd = cmd.substring(5).trim();
+            if (activeUser === 'root') {
+                // Déjà root, pas besoin de redemander le mot de passe, modifier la commande
+                cmd = subCmd;
+            } else {
+                setPendingAuth({
+                    type: 'sudo',
+                    targetUser: 'root',
+                    pendingCmd: subCmd,
+                    promptLabel: '[sudo] Password for root (mot de passe: root) : '
+                });
+                setHistory(newHistory);
+                return;
+            }
         }
 
         // Interception de su <nom_utilisateur>
@@ -451,7 +519,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 setPendingAuth({
                     type: 'su',
                     targetUser: targetUser,
-                    promptLabel: 'Password: '
+                    promptLabel: `Password for ${targetUser}: `
                 });
                 setHistory(newHistory);
                 return;
@@ -693,6 +761,20 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                         <div className="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
                             <button
                                 type="button"
+                                onClick={() => setShowHint(!showHint)}
+                                className={`px-3 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 ${
+                                    showHint
+                                        ? 'bg-amber-400 text-slate-950 shadow-[0_0_15px_rgba(251,191,36,0.6)] font-bold scale-105'
+                                        : 'bg-amber-500/10 text-amber-400 border border-amber-500/30 hover:bg-amber-500/20'
+                                }`}
+                                title="Afficher l'indice du projet"
+                            >
+                                <Lightbulb size={15} className="animate-pulse" />
+                                <span>Indice</span>
+                            </button>
+
+                            <button
+                                type="button"
                                 onClick={() => setTerminalMode('libre')}
                                 className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
                                     terminalMode === 'libre'
@@ -718,6 +800,64 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             </button>
                         </div>
                     </div>
+
+                    {/* Carte d'indice interactive et informations utiles */}
+                    {showHint && (
+                        <div className="bg-gradient-to-r from-amber-950/90 via-slate-900 to-slate-900 border border-amber-500/40 rounded-2xl p-4 text-amber-200 shadow-2xl transition-all font-mono space-y-3">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2 font-black text-amber-400 text-sm tracking-wide uppercase">
+                                    <Lightbulb size={18} className="text-amber-400 animate-bounce" />
+                                    <span>💡 Indice du Projet & Aide Linux</span>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowHint(false)}
+                                    className="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 border border-slate-700"
+                                >
+                                    ✕ Fermer
+                                </button>
+                            </div>
+
+                            {activeMission ? (
+                                <div className="space-y-1">
+                                    <p className="text-xs sm:text-sm text-amber-100 font-semibold leading-relaxed">
+                                        {activeMission.hint || `Tapez "${activeMission.expectedCommand}" pour valider ce projet.`}
+                                    </p>
+                                    {activeMission.scenario && (
+                                        <p className="text-xs text-slate-400">
+                                            🎯 Objectif : {activeMission.scenario}
+                                        </p>
+                                    )}
+                                </div>
+                            ) : (
+                                <p className="text-xs sm:text-sm text-amber-100 font-semibold leading-relaxed">
+                                    💡 Vous êtes actuellement en Mode Libre. Utilisez les commandes standard (`ls`, `cd`, `whoami`, `cat`, `sudo`, `ssh`).
+                                </p>
+                            )}
+
+                            <div className="pt-2 border-t border-amber-500/20 flex flex-wrap items-center justify-between gap-3 text-xs">
+                                <div className="flex items-center gap-2 text-emerald-400 font-bold bg-emerald-950/80 px-3 py-1.5 rounded-lg border border-emerald-500/30">
+                                    <Key size={14} className="text-emerald-400 shrink-0" />
+                                    <span>Mot de passe super-utilisateur (root) par défaut : <code className="bg-slate-950 px-2 py-0.5 rounded text-white border border-emerald-500/50 font-black">root</code></span>
+                                </div>
+
+                                {activeMission?.expectedCommand && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setInput(activeMission.expectedCommand);
+                                            setShowHint(false);
+                                            inputRef.current?.focus();
+                                        }}
+                                        className="px-4 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-lg text-xs transition flex items-center gap-1.5 shadow-lg active:scale-95"
+                                    >
+                                        <Sparkles size={14} />
+                                        <span>Insérer "{activeMission.expectedCommand}" dans le terminal</span>
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Console Terminal Linux Authentique (100% Plein Écran) */}
                     <div className="w-full bg-[#06141d] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden font-mono">
