@@ -189,6 +189,15 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const navigate = useNavigate();
     const missionIdParam = searchParams.get('mission');
 
+    // Nom d'utilisateur dynamique selon l'élève connecté
+    const displayUsername = useMemo(() => {
+        if (!user) return 'agent';
+        if (user.username) return user.username.toLowerCase();
+        if (user.email) return user.email.split('@')[0].toLowerCase();
+        if (user.name) return user.name.toLowerCase().replace(/\s+/g, '');
+        return 'agent';
+    }, [user]);
+
     const [activeMission, setActiveMission] = useState(null);
     const [input, setInput] = useState('');
     const [history, setHistory] = useState([]);
@@ -412,7 +421,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50"></div>
                             </div>
                             <div className="text-xs font-bold text-slate-300 tracking-wide font-mono flex items-center gap-2">
-                                <span>mouhamed@MYSTERIOUS: ~</span>
+                                <span>{displayUsername}@MYSTERIOUS: ~</span>
                             </div>
                             <div className="w-12"></div>
                         </div>
@@ -429,7 +438,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 <div key={i} className="whitespace-pre-wrap">
                                     {h.type === 'user' ? (
                                         <div className="flex items-center gap-2 py-0.5">
-                                            <span className="text-[#eab308] font-bold">mouhamed@MYSTERIOUS</span>
+                                            <span className="text-[#eab308] font-bold">{displayUsername}@MYSTERIOUS</span>
                                             <span className="text-slate-400">:</span>
                                             <span className="text-[#38bdf8] font-bold">{currentPath}</span>
                                             <span className="text-white font-bold">$</span>
@@ -464,7 +473,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
                             {/* Ligne d'invité de commande active et fluide (Directement intégrée au flux du texte) */}
                             <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
-                                <span className="text-[#eab308] font-bold shrink-0">mouhamed@MYSTERIOUS</span>
+                                <span className="text-[#eab308] font-bold shrink-0">{displayUsername}@MYSTERIOUS</span>
                                 <span className="text-slate-400 font-bold shrink-0">:</span>
                                 <span className="text-[#38bdf8] font-bold shrink-0">{currentPath}</span>
                                 <span className="text-white font-bold shrink-0">$</span>
