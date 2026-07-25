@@ -211,6 +211,7 @@ const getCategoriesFallback = async (req, res) => {
 };
 
 module.exports = {
+  FALLBACK_COURSES,
   getAllCoursesFallback,
   getCourseByIdFallback,
   getCategoriesFallback

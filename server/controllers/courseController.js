@@ -27,10 +27,11 @@ const getAllCourses = async (req, res) => {
       console.error('Erreur lecture MongoDB courses:', dbErr.message);
     }
 
+    const fallbackList = Array.isArray(FALLBACK_COURSES) ? FALLBACK_COURSES : [];
     const combinedMap = new Map();
-    [...FALLBACK_COURSES, ...dbCourses].forEach(c => {
+    [...fallbackList, ...dbCourses].forEach(c => {
       const key = c.id || c._id?.toString();
-      combinedMap.set(key, c);
+      if (key) combinedMap.set(key, c);
     });
 
     let filteredCourses = Array.from(combinedMap.values());
