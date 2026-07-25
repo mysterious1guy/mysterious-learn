@@ -274,11 +274,40 @@ const getCourseStats = async (req, res) => {
   }
 };
 
+// @desc    Supprimer un cours par son ID
+// @route   DELETE /api/courses/:id
+// @access  Private/Admin
+const deleteCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Course.deleteOne({ id });
+    res.json({ message: `Cours ${id} supprimé avec succès` });
+  } catch (err) {
+    console.error('Erreur suppression cours:', err);
+    res.status(500).json({ message: 'Erreur lors de la suppression du cours' });
+  }
+};
+
+// @desc    Purger tous les cours
+// @route   DELETE /api/courses/purge/all
+// @access  Private/Admin
+const purgeCourses = async (req, res) => {
+  try {
+    await Course.deleteMany({});
+    res.json({ message: 'Tous les cours ont été supprimés avec succès.' });
+  } catch (err) {
+    console.error('Erreur purge cours:', err);
+    res.status(500).json({ message: 'Erreur lors de la purge des cours' });
+  }
+};
+
 module.exports = {
   getAllCourses,
   getCourseById,
   getCategories,
   createCourse,
+  deleteCourse,
+  purgeCourses,
   getProgress,
   updateProgress,
   getAllProgress,

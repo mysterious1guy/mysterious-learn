@@ -5,6 +5,8 @@ const {
   getCourseById,
   getCategories,
   createCourse,
+  deleteCourse,
+  purgeCourses,
   getProgress,
   updateProgress,
   getAllProgress,
@@ -21,6 +23,8 @@ router.get('/:id', getCourseById);
 
 // Routes protégées (nécessitent d'être authentifié)
 router.post('/', protect, createCourse);
+router.delete('/purge/all', protect, purgeCourses);
+router.delete('/:id', protect, deleteCourse);
 router.get('/progress/all', protect, getAllProgress);
 router.get('/:courseId/progress', protect, getProgress);
 router.post('/:courseId/progress', protect, updateProgress);

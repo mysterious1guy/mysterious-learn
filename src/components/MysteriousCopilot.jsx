@@ -215,6 +215,27 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 method = 'POST';
                 body = JSON.stringify(actionData.payload);
             }
+            else if (actionData.action === 'list_courses') {
+                endpoint = '/courses';
+                method = 'GET';
+                body = null;
+            }
+            else if (actionData.action === 'list_users') {
+                endpoint = '/admin/users';
+                method = 'GET';
+                body = null;
+            }
+            else if (actionData.action === 'purge_courses' || actionData.action === 'delete_all_courses' || actionData.action === 'purge_all_courses') {
+                endpoint = '/courses/purge/all';
+                method = 'DELETE';
+                body = null;
+            }
+            else if (actionData.action === 'delete_course') {
+                const targetCourseId = actionData.payload?.courseId || actionData.payload?.id;
+                endpoint = `/courses/${targetCourseId}`;
+                method = 'DELETE';
+                body = null;
+            }
             else if (actionData.action === 'generate_ctf') {
                 endpoint = '/ai/generate-challenge';
                 method = 'POST';
@@ -226,13 +247,13 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                 body = JSON.stringify(actionData.payload);
             }
             else if (actionData.action === 'delete_user') {
-                endpoint = `/admin/users/${actionData.payload.userId}`;
+                endpoint = `/admin/users/${actionData.payload?.userId || actionData.payload?.id}`;
                 method = 'DELETE';
                 body = null;
             } else if (actionData.action === 'update_role') {
-                endpoint = `/admin/users/${actionData.payload.userId}/role`;
+                endpoint = `/admin/users/${actionData.payload?.userId || actionData.payload?.id}/role`;
                 method = 'PUT';
-                body = JSON.stringify({ role: actionData.payload.role });
+                body = JSON.stringify({ role: actionData.payload?.role });
             } else {
                 throw new Error("Action non reconnue.");
             }

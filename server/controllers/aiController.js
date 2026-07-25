@@ -114,6 +114,14 @@ const aiChat = async (req, res) => {
             \`\`\`json
             { "type": "admin_action", "action": "create_course", "payload": { "id": "custom_course_id", "title": "Titre du cours", "description": "Description complète", "category": "Web", "level": "Débutant", "duration": "2h", "chapters": [{ "title": "1. Module Principal", "description": "Aperçu du module", "order": 1, "content": "Contenu détaillé en Markdown..." }] } }
             \`\`\`
+            Format LISTER LES COURS:
+            \`\`\`json
+            { "type": "admin_action", "action": "list_courses", "payload": {} }
+            \`\`\`
+            Format PURGER / SUPPRIMER TOUS LES COURS:
+            \`\`\`json
+            { "type": "admin_action", "action": "purge_courses", "payload": {} }
+            \`\`\`
             `;
 
             try {
