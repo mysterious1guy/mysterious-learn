@@ -366,6 +366,11 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 if (activeMission) {
                     const isCompleted = data.isMissionCompleted || (expected && (lower === expected || lower.startsWith(expected)));
 
+                    if (isCompleted && !completedMissions.includes(activeMission.id)) {
+                        const gained = activeMission.xpReward || 100;
+                        const newScore = score + gained;
+                        setScore(newScore);
+
                         const updatedCompleted = [...completedMissions, activeMission.id];
                         setCompletedMissions(updatedCompleted);
                         try {
@@ -394,7 +399,6 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                         }
                     }
                 }
-
             } else {
                 throw new Error("Erreur exécution");
             }
