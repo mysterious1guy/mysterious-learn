@@ -7,6 +7,8 @@ import {
     ArrowLeft, Compass, Bot, Check, Layers
 } from 'lucide-react';
 import AIAssistant from '../components/AIAssistant';
+import NanoEditor from '../components/terminal/NanoEditor';
+import TerminalConsole from '../components/terminal/TerminalConsole';
 
 export const ALL_PROJECT_MISSIONS = [
     {
@@ -621,142 +623,32 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
                         {/* Écran Terminal et Invite de Commande Directe ou Éditeur Nano */}
                         {activeEditor ? (
-                            <div className="flex flex-col h-[680px] lg:h-[760px] bg-[#050c14] text-slate-100 font-mono overflow-hidden">
-                                {/* En-tête Nano */}
-                                <div className="bg-slate-200 text-slate-900 px-4 py-2 font-bold text-xs flex justify-between items-center select-none shadow-md">
-                                    <span>  GNU nano 7.2</span>
-                                    <span>Fichier : {activeEditor.fileName}</span>
-                                    <span className="text-slate-600 font-normal">[ Édition de code ]</span>
-                                </div>
-
-                                {/* Editeur Textarea */}
-                                <textarea
-                                    value={activeEditor.content}
-                                    onChange={(e) => setActiveEditor({ ...activeEditor, content: e.target.value })}
-                                    placeholder="Saisissez votre script Linux ici (ex: Bash, Python)..."
-                                    className="flex-1 w-full p-4 bg-[#030910] text-emerald-400 font-mono text-xs sm:text-sm md:text-base resize-none focus:outline-none custom-scrollbar leading-relaxed"
-                                    autoFocus
-                                />
-
-                                {/* Barre de Contrôle et Raccourcis Nano */}
-                                <div className="bg-slate-950 border-t border-slate-800 p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-                                    <div className="flex items-center gap-3 text-slate-300">
-                                        <span className="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">^O Ecrire (Ctrl+O)</span>
-                                        <span className="bg-slate-800 px-2 py-1 rounded border border-slate-700 font-bold">^X Quitter (Ctrl+X)</span>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const savedContent = activeEditor.content;
-                                                const fileName = activeEditor.fileName;
-                                                const rawPath = fileName.startsWith('/') ? fileName : `${currentPath}/${fileName}`;
-                                                const filePath = '/' + rawPath.split('/').filter(Boolean).join('/');
-
-                                                const updatedVfs = { ...vfs, [filePath]: savedContent };
-                                                setVfs(updatedVfs);
-                                                try {
-                                                    localStorage.setItem(`terminal_vfs_${displayUsername}`, JSON.stringify(updatedVfs));
-                                                } catch (e) {}
-
-                                                const nanoPromptChar = activeUser === 'root' ? '#' : '$';
-                                                setHistory(prev => [
-                                                    ...prev,
-                                                    { type: 'user', text: activeUser + '@mysterious-classroom:' + formattedPath + nanoPromptChar + ' nano ' + fileName },
-                                                    { type: 'sys', text: `[nano] Fichier '${fileName}' écrit et sauvegardé.` },
-                                                    { type: 'output', text: `CMD: cat ${fileName}\n${savedContent}` }
-                                                ]);
-                                                setActiveEditor(null);
-                                            }}
-                                            className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded shadow transition-all text-xs flex items-center gap-1.5"
-                                        >
-                                            💾 Enregistrer & Quitter
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setActiveEditor(null)}
-                                            className="px-4 py-1.5 bg-rose-600 hover:bg-rose-600 text-white font-bold rounded shadow transition-all text-xs flex items-center gap-1.5"
-                                        >
-                                            ❌ Annuler
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            <NanoEditor
+                                activeEditor={activeEditor}
+                                setActiveEditor={setActiveEditor}
+                                currentPath={currentPath}
+                                vfs={vfs}
+                                setVfs={setVfs}
+                                displayUsername={displayUsername}
+                                activeUser={activeUser}
+                                formattedPath={formattedPath}
+                                setHistory={setHistory}
+                            />
                         ) : (
-                            <div
-                                ref={outputContainerRef}
-                                onClick={() => inputRef.current?.focus()}
-                                className="p-4 sm:p-6 text-xs sm:text-sm md:text-base h-[680px] lg:h-[760px] overflow-y-auto custom-scrollbar cursor-text space-y-2 leading-relaxed text-slate-200"
-                                style={{ backgroundColor: '#06141d' }}
-                            >
-                                {/* Historique des lignes de commande */}
-                                {history.map((h, i) => (
-                                    <div key={i} className="whitespace-pre-wrap">
-                                        {h.type === 'user' ? (
-                                            <div className="flex items-center gap-2 py-0.5 font-bold text-slate-100 font-mono">
-                                                {h.text}
-                                            </div>
-                                        ) : h.type === 'success' ? (
-                                            <div className="text-emerald-400 font-bold py-1 bg-emerald-950 px-3 rounded-lg border border-emerald-500 my-1">
-                                                {h.text}
-                                            </div>
-                                        ) : h.type === 'error' ? (
-                                            <div className="text-red-400 font-medium py-0.5">
-                                                {h.text}
-                                            </div>
-                                        ) : h.type === 'mission' ? (
-                                            <div className="text-purple-300 font-semibold py-1 bg-purple-950 px-3 rounded-lg border border-purple-500 my-1">
-                                                {h.text}
-                                            </div>
-                                        ) : (
-                                            <div className="text-slate-300 font-mono py-0.5">
-                                                {h.text}
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
-
-                                {executingCmd && (
-                                    <div className="text-emerald-400 animate-pulse font-bold text-xs flex items-center gap-2 py-1">
-                                        <RefreshCw size={14} className="animate-spin" />
-                                        <span>[Noyau Linux] Traitement de la commande...</span>
-                                    </div>
-                                )}
-
-                                {/* Ligne d'invité de commande active et fluide (Directement intégrée au flux du texte) */}
-                                <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
-                                    {pendingAuth ? (
-                                        <span className="text-slate-300 font-bold shrink-0">{pendingAuth.promptLabel}</span>
-                                    ) : sshSession ? (
-                                        <>
-                                            <span className="text-emerald-400 font-bold shrink-0">
-                                                {sshSession.user}@{sshSession.host}
-                                            </span>
-                                            <span className="text-slate-400 font-bold shrink-0">:</span>
-                                            <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
-                                            <span className="text-white font-bold shrink-0">{sshSession.user === 'root' ? '#' : '$'}</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <span className={activeUser === 'root' ? 'text-red-400 font-bold shrink-0' : 'text-[#eab308] font-bold shrink-0'}>
-                                                {activeUser}@mysterious-classroom
-                                            </span>
-                                            <span className="text-slate-400 font-bold shrink-0">:</span>
-                                            <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
-                                            <span className="text-white font-bold shrink-0">{activeUser === 'root' ? '#' : '$'}</span>
-                                        </>
-                                    )}
-                                    <input
-                                        ref={inputRef}
-                                        type={pendingAuth ? "password" : "text"}
-                                        value={input}
-                                        onChange={(e) => setInput(e.target.value)}
-                                        disabled={executingCmd}
-                                        autoFocus
-                                        className="flex-1 bg-transparent text-white font-mono text-xs sm:text-sm md:text-base focus:outline-none border-none p-0 m-0 caret-emerald-400 disabled:opacity-50"
-                                    />
-                                </form>
-                        </div>
+                            <TerminalConsole
+                                outputContainerRef={outputContainerRef}
+                                inputRef={inputRef}
+                                history={history}
+                                executingCmd={executingCmd}
+                                handleCommand={handleCommand}
+                                pendingAuth={pendingAuth}
+                                sshSession={sshSession}
+                                activeUser={activeUser}
+                                formattedPath={formattedPath}
+                                input={input}
+                                setInput={setInput}
+                            />
+                        )}
 
                     </div>
 
