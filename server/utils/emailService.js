@@ -59,15 +59,16 @@ const sendEmail = async ({ to, subject, html, text }) => {
   const transporter = createSmtpTransporter();
   if (transporter) {
     try {
+      const senderEmail = process.env.EMAIL_USER || 'mysteriousclassroom@gmail.com';
       const info = await transporter.sendMail({
-        from: process.env.EMAIL_FROM || `"Mysterious Classroom" <${process.env.EMAIL_USER}>`,
+        from: `"Mysterious Classroom" <${senderEmail}>`,
         to,
         subject: fullSubject,
         text: plainText,
         html,
         headers: {
           'X-Entity-Ref-ID': Date.now().toString(),
-          'List-Unsubscribe': `<mailto:${process.env.EMAIL_USER}?subject=unsubscribe>`
+          'List-Unsubscribe': `<mailto:${senderEmail}?subject=unsubscribe>`
         }
       });
       console.log(`✅ Email [${subject}] envoyé via SMTP à ${to}`);
