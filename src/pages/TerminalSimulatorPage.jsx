@@ -199,6 +199,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     }, [user]);
 
     const userHomePath = `/home/${displayUsername}`;
+    const [activeUser, setActiveUser] = useState(displayUsername);
     const [activeMission, setActiveMission] = useState(null);
     const [input, setInput] = useState('');
     const [history, setHistory] = useState([]);
@@ -210,6 +211,13 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
     const outputContainerRef = useRef(null);
     const inputRef = useRef(null);
+
+    // Mettre à jour activeUser quand displayUsername change (si pas en root)
+    useEffect(() => {
+        if (!activeUser || activeUser === 'agent') {
+            setActiveUser(displayUsername);
+        }
+    }, [displayUsername]);
 
     // Formater le chemin pour afficher ~ pour le répertoire home
     const formattedPath = useMemo(() => {
@@ -293,7 +301,8 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         const cmd = input.trim();
         if (!cmd || executingCmd) return;
 
-        const promptText = `${displayUsername}@MYSTERIOUS:${formattedPath}$ ${cmd}`;
+        const promptSymbol = activeUser === 'root' ? '#' : '$';
+        const promptText = `${activeUser}@MYSTERIOUS:${formattedPath}${promptSymbol} ${cmd}`;
         const newHistory = [...history, { type: 'user', text: promptText }];
         setInput('');
 
@@ -310,11 +319,54 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             return;
         }
 
+        // Commande whoami directe
+        if (lower === 'whoami') {
+            newHistory.push({ type: 'output', text: activeUser });
+            setHistory(newHistory);
+            return;
+        }
+
+        // Gestion de su root / su / sudo -i / sudo su
+        if (['su', 'su root', 'su -', 'su - root', 'sudo su', 'sudo -i', 'sudo bash', 'sudo sh'].includes(lower)) {
+            setActiveUser('root');
+            newHistory.push({
+                type: 'output',
+                text: 'Password:\n[+] Authentification réussie. Session basculée en Super-Utilisateur (root).'
+            });
+            setHistory(newHistory);
+            return;
+        }
+
+        // Gestion de su <nom_utilisateur>
+        if (lower.startsWith('su ')) {
+            const targetUser = cmd.split(/\s+/)[1];
+            if (targetUser) {
+                setActiveUser(targetUser);
+                newHistory.push({
+                    type: 'output',
+                    text: `Password:\n[+] Authentification réussie. Session basculée sur '${targetUser}'.`
+                });
+                setHistory(newHistory);
+                return;
+            }
+        }
+
+        // Gestion de exit / logout
+        if (lower === 'exit' || lower === 'logout') {
+            if (activeUser !== displayUsername) {
+                setActiveUser(displayUsername);
+                newHistory.push({ type: 'output', text: 'exit' });
+                setHistory(newHistory);
+                return;
+            }
+        }
+
         if (lower === 'help') {
             newHistory.push({
                 type: 'sys',
                 text: `📚 NOYAU LINUX UNIVERSEL (Toutes commandes supportées) :
 - whoami, ls, pwd, cat, cd, mkdir, touch, rm, chmod, chown
+- su root, sudo -i, exit : Basculer entre utilisateur et Super-Utilisateur (root)
 - useradd, id, grep, find, ps aux, netstat, nmap, python3, curl, ping, uname -a
 - clear               : Effacer l'écran
 - hint                : Obtenir un indice sur le projet actuel`
@@ -345,6 +397,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 body: JSON.stringify({
                     command: cmd,
                     currentPath: currentPath,
+                    currentUser: activeUser,
                     mission: activeMission,
                     history: newHistory
                 })
@@ -466,7 +519,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]/50"></div>
                             </div>
                             <div className="text-xs font-bold text-slate-300 tracking-wide font-mono flex items-center gap-2">
-                                <span>{displayUsername}@MYSTERIOUS: ~</span>
+                                <span>{activeUser}@MYSTERIOUS: ~</span>
                             </div>
                             <div className="w-12"></div>
                         </div>
@@ -482,12 +535,14 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             {history.map((h, i) => (
                                 <div key={i} className="whitespace-pre-wrap">
                                     {h.type === 'user' ? (
-                                        <div className="flex items-center gap-2 py-0.5">
-                                            <span className="text-[#eab308] font-bold">{displayUsername}@MYSTERIOUS</span>
+                                        <div className="flex items-center gap-2 py-0.5 font-bold">
+                                            <span className={activeUser === 'root' ? 'text-red-400 font-bold' : 'text-[#eab308] font-bold'}>
+                                                {h.text.split('@')[0] || activeUser}@MYSTERIOUS
+                                            </span>
                                             <span className="text-slate-400">:</span>
                                             <span className="text-[#38bdf8] font-bold">{formattedPath}</span>
-                                            <span className="text-white font-bold">$</span>
-                                            <span className="text-white font-bold ml-1">{h.text.split('$ ').pop() || h.text}</span>
+                                            <span className="text-white font-bold">{activeUser === 'root' ? '#' : '$'}</span>
+                                            <span className="text-white font-bold ml-1">{h.text.split(/[$#]\s/).pop() || h.text}</span>
                                         </div>
                                     ) : h.type === 'success' ? (
                                         <div className="text-emerald-400 font-bold py-1 bg-emerald-500/10 px-3 rounded-lg border border-emerald-500/20 my-1">
@@ -518,10 +573,12 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
                             {/* Ligne d'invité de commande active et fluide (Directement intégrée au flux du texte) */}
                             <form onSubmit={handleCommand} className="flex items-center gap-1.5 pt-1">
-                                <span className="text-[#eab308] font-bold shrink-0">{displayUsername}@MYSTERIOUS</span>
+                                <span className={activeUser === 'root' ? 'text-red-400 font-bold shrink-0' : 'text-[#eab308] font-bold shrink-0'}>
+                                    {activeUser}@MYSTERIOUS
+                                </span>
                                 <span className="text-slate-400 font-bold shrink-0">:</span>
                                 <span className="text-[#38bdf8] font-bold shrink-0">{formattedPath}</span>
-                                <span className="text-white font-bold shrink-0">$</span>
+                                <span className="text-white font-bold shrink-0">{activeUser === 'root' ? '#' : '$'}</span>
                                 <input
                                     ref={inputRef}
                                     type="text"

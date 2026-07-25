@@ -836,13 +836,14 @@ const generateTerminalMission = async (req, res) => {
 // @access  Private
 const executeTerminalCommand = async (req, res) => {
     try {
-        const { command, currentPath = '/root', mission, history = [] } = req.body;
+        const { command, currentPath = '/root', currentUser = 'root', mission, history = [] } = req.body;
         if (!command) {
             return res.status(400).json({ message: 'Commande requise' });
         }
 
         const cleanCmd = command.trim();
         const path = currentPath || '/root';
+        const activeUser = currentUser || 'root';
 
         // Commande clear immédiate
         if (cleanCmd === 'clear') {
@@ -860,7 +861,7 @@ const executeTerminalCommand = async (req, res) => {
         }
 
         const systemPrompt = `Tu es le Noyau Système et l'Interpréteur Bash d'un terminal Linux Ubuntu 24.04 LTS.
-L'utilisateur a le statut 'root' (UID 0, GID 0, privilèges administrateur complets).
+L'utilisateur actif est '${activeUser}' (statut : ${activeUser === 'root' ? 'ROOT super-utilisateur UID 0' : 'utilisateur standard'}).
 Répertoire courant : '${path}'.
 
 ${sessionHistoryText ? `[HISTORIQUE ET ÉTAT PERSISTANT DE LA SESSION EN COURS]\n${sessionHistoryText}\n` : ''}
@@ -868,11 +869,13 @@ ${sessionHistoryText ? `[HISTORIQUE ET ÉTAT PERSISTANT DE LA SESSION EN COURS]\
 COMMANDE ACTUELLE À EXÉCUTER : "${cleanCmd}"
 
 RÈGLES STRICTES DE PERSISTANCE DE L'ÉTAT LINUX :
-1. MAINTIENS LA PERSISTANCE TOTALE DU SYSTÈME DE FICHIERS ET DES UTILISATEURS :
-   - Si l'historique ci-dessus montre que l'utilisateur a créé un compte (ex: 'useradd mouhamed'), la commande suivante (ex: 'id mouhamed', 'su - mouhamed', 'cat /etc/passwd') DOIT RECONNAÎTRE cet utilisateur !
-   - Si un fichier ou dossier a été créé (ex: 'touch secret.txt', 'mkdir lab'), 'ls' DOIT lister ce fichier/dossier.
-2. L'utilisateur est ROOT. Des commandes comme 'useradd', 'userdel', 'mkdir', 'chmod', 'chown', 'rm', 'touch', 'systemctl', 'apt' RÉUSSISSENT TOUJOURS avec les privilèges root sans erreur de permission.
-3. Si une commande s'exécute avec succès sans produire de texte sur stdout (comme 'useradd', 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "".
+1. MAINTIENS LA PERSISTANCE TOTALE DU SYSTÈME DE FICHIERS ET DES UTILISATEURS.
+2. Si la commande est 'whoami', réponds exactement avec "${activeUser}".
+3. Si 'su root' ou 'sudo -i' ou 'su' est exécuté, simule le passage en root si l'utilisateur saisit le mot de passe ou bascule la session.
+4. Si un fichier/dossier a été créé (ex: 'touch secret.txt'), 'ls' DOIT lister ce fichier/dossier.
+5. Si une commande s'exécute avec succès sans produire de texte sur stdout (ex: 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "".
+6. Si l'utilisateur exécute 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
+${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.scenario}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}`;'exécute avec succès sans produire de texte sur stdout (comme 'useradd', 'mkdir', 'touch', 'cd', 'chmod'), le champ "output" dans le JSON DOIT ÊTRE UNE CHAÎNE VIDE "".
 4. Si l'utilisateur exécute 'cd <dossier>', renvoie le nouveau chemin absolu dans "newPath". Sinon conserve "${path}".
 ${mission ? `- MISSION ACTUELLE : "${mission.title}" (Objectif : ${mission.description}). Si cette commande accomplit la mission, mets "isMissionCompleted": true.` : ''}
 
