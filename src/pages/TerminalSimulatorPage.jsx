@@ -289,6 +289,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     { type: 'sys', text: '=== MYSTERIOUS TERMINAL CLI (Console Officielle) ===' },
                     { type: 'sys', text: `Bienvenue ${displayUsername} ! Répertoire personnel : ${userHomePath}` },
                     { type: 'sys', text: 'Toutes les commandes Linux réelles sont supportées. Votre historique est sauvegardé.' },
+                    { type: 'mission', text: '💡 Tapez "clear" pour effacer l\'historique et recommencer à zéro.' },
                     { type: 'output', text: '[+] Interprète bash prêt. Tapez votre commande...' }
                 ]);
             }
@@ -453,7 +454,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         if (!cmd || executingCmd) return;
 
         const activePromptUser = sshSession ? sshSession.user : activeUser;
-        const activeHost = sshSession ? sshSession.host : 'mysterious-classroom';
+        const activeHost = sshSession ? sshSession.host : 'classroom';
         const promptSymbol = activePromptUser === 'root' ? '#' : '$';
         const promptText = `${activePromptUser}@${activeHost}:${formattedPath}${promptSymbol} ${cmd}`;
         const newHistory = [...history, { type: 'user', text: promptText }];
@@ -879,7 +880,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
                             </div>
                             <div className="text-xs font-bold text-slate-300 tracking-wide font-mono flex items-center gap-2">
-                                <span>{activeUser}@mysterious-classroom: ~</span>
+                                <span>{activeUser}@{sshSession ? sshSession.host : 'classroom'}: ~</span>
                             </div>
                             <div className="w-12"></div>
                         </div>
