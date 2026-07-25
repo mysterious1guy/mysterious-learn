@@ -111,7 +111,7 @@ const aiChat = async (req, res) => {
             { "type": "admin_action", "action": "update_role", "payload": { "userId": "ID", "role": "admin" } }
             \`\`\`
             RÈGLE CRITIQUE DES ACTIONS ADMIN:
-            Ne propose un bloc JSON `admin_action` QUE pour les actions de MODIFICATION (créer un cours, supprimer, purger, envoyer email/notif).
+            Ne propose un bloc JSON "admin_action" QUE pour les actions de MODIFICATION (créer un cours, supprimer, purger, envoyer email/notif).
             Pour les simples questions d'information (ex: XP, profil, questions, recherche), RÉPONDS DIRECTEMENT en texte clair SANS ajouter de bloc JSON !
 
             Format CRÉATION DE COURS (Si le Boss te demande d'intégrer ou de créer un cours):
@@ -745,6 +745,12 @@ const generateCertificate = async (req, res) => {
             appreciation: appreciation || `Félicitations à ${user.name} pour sa détermination exemplaire et sa réussite remarquable dans le module "${courseTitle}". La maîtrise technique et la rigueur dont vous avez fait preuve honorent la communauté Mysterious Classroom.\n\n— Mouhamed FALL (Fondateur) & Mysterious Copilot`,
             certificateId: `MC-CERT-${Math.random().toString(36).substring(2, 9).toUpperCase()}`
         });
+    } catch (err) {
+        console.error("Erreur generateCertificate:", err);
+        res.status(500).json({ message: "Erreur lors de la génération du certificat" });
+    }
+};
+
 // @desc    Générer une mission de terminal/CLI interactive
 // @route   POST /api/ai/generate-terminal-mission
 // @access  Private
