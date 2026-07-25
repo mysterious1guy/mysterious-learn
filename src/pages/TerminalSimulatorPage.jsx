@@ -127,6 +127,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const [score, setScore] = useState(user?.xp || 0);
 
     const outputContainerRef = useRef(null);
+    const inputRef = useRef(null);
 
     // Initialisation du terminal lors du lancement d'une mission ou du Sandbox
     useEffect(() => {
@@ -146,9 +147,12 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             ]);
             setShowHint(false);
         }
+        setTimeout(() => {
+            inputRef.current?.focus();
+        }, 100);
     }, [activeMission, activeTab]);
 
-    // Scroll automatique du terminal
+    // Scroll automatique du terminal & maintien du focus
     useEffect(() => {
         if (outputContainerRef.current) {
             outputContainerRef.current.scrollTop = outputContainerRef.current.scrollHeight;
@@ -302,6 +306,9 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             ]);
         } finally {
             setExecutingCmd(false);
+            setTimeout(() => {
+                inputRef.current?.focus();
+            }, 50);
         }
     };
 
@@ -512,62 +519,67 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                     </div>
                                 )}
 
-                                {/* Output Terminal */}
+                                {/* Output Terminal & Inline Command Line (Authentic Linux Shell) */}
                                 <div
                                     ref={outputContainerRef}
-                                    className="bg-slate-950 border border-slate-800 rounded-2xl p-5 font-mono text-xs md:text-sm h-[500px] lg:h-[580px] xl:h-[620px] overflow-y-auto space-y-3 shadow-inner custom-scrollbar"
+                                    onClick={() => inputRef.current?.focus()}
+                                    className="bg-slate-950 border border-slate-800 rounded-2xl p-5 font-mono text-xs md:text-sm h-[580px] lg:h-[660px] xl:h-[720px] overflow-y-auto space-y-3 shadow-inner custom-scrollbar cursor-text relative flex flex-col justify-between"
                                 >
-                                    {history.map((h, i) => (
-                                        <div
-                                            key={i}
-                                            className={`leading-relaxed whitespace-pre-wrap ${
-                                                h.type === 'user'
-                                                    ? 'text-amber-300 font-bold'
-                                                    : h.type === 'success'
-                                                    ? 'text-emerald-400 font-bold bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-500/20'
-                                                    : h.type === 'error'
-                                                    ? 'text-red-400 font-semibold'
-                                                    : h.type === 'mission'
-                                                    ? 'text-purple-300 font-semibold bg-purple-500/20 p-3.5 rounded-xl border border-purple-500/30'
-                                                    : 'text-slate-300'
-                                            }`}
-                                        >
-                                            {h.text}
-                                        </div>
-                                    ))}
-                                    {executingCmd && (
-                                        <div className="text-emerald-400 animate-pulse font-bold text-xs">
-                                            ⚡ [Noyau Linux] Traitement de la commande en cours...
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Formulaire de Commande */}
-                                <form onSubmit={handleCommand} className="flex items-center gap-3 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3">
-                                    <span className="text-emerald-500 font-mono text-xs font-black shrink-0">root@mysterious-lab:{currentPath}#</span>
-                                    <input
-                                        type="text"
-                                        value={input}
-                                        onChange={(e) => setInput(e.target.value)}
-                                        disabled={executingCmd}
-                                        placeholder="Tapez votre commande Linux (ex: whoami, ls, cat, grep, useradd, chmod)..."
-                                        className="w-full bg-transparent text-slate-900 dark:text-white font-mono text-xs md:text-sm focus:outline-none placeholder:text-slate-400 disabled:opacity-50"
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={executingCmd}
-                                        className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/30 transition shrink-0 flex items-center gap-2"
-                                    >
-                                        {executingCmd ? (
-                                            <>
+                                    <div className="space-y-3">
+                                        {history.map((h, i) => (
+                                            <div
+                                                key={i}
+                                                className={`leading-relaxed whitespace-pre-wrap ${
+                                                    h.type === 'user'
+                                                        ? 'text-amber-300 font-bold'
+                                                        : h.type === 'success'
+                                                        ? 'text-emerald-400 font-bold bg-emerald-500/10 p-3.5 rounded-xl border border-emerald-500/20'
+                                                        : h.type === 'error'
+                                                        ? 'text-red-400 font-semibold'
+                                                        : h.type === 'mission'
+                                                        ? 'text-purple-300 font-semibold bg-purple-500/20 p-3.5 rounded-xl border border-purple-500/30'
+                                                        : 'text-slate-300'
+                                                }`}
+                                            >
+                                                {h.text}
+                                            </div>
+                                        ))}
+                                        {executingCmd && (
+                                            <div className="text-emerald-400 animate-pulse font-bold text-xs flex items-center gap-2">
                                                 <RefreshCw size={14} className="animate-spin" />
-                                                Exécution...
-                                            </>
-                                        ) : (
-                                            'Exécuter'
+                                                <span>⚡ [Noyau Linux] Traitement de la commande en cours...</span>
+                                            </div>
                                         )}
-                                    </button>
-                                </form>
+                                    </div>
+
+                                    {/* Invite de Commande Intégrée au Terminal */}
+                                    <form onSubmit={handleCommand} className="flex items-center gap-2 pt-4 border-t border-slate-800/80 mt-4 shrink-0">
+                                        <span className="text-emerald-400 font-mono text-xs md:text-sm font-black shrink-0">
+                                            root@mysterious-lab:{currentPath}#
+                                        </span>
+                                        <input
+                                            ref={inputRef}
+                                            type="text"
+                                            value={input}
+                                            onChange={(e) => setInput(e.target.value)}
+                                            disabled={executingCmd}
+                                            autoFocus
+                                            placeholder={executingCmd ? "Exécution en cours..." : "Tapez votre commande Linux..."}
+                                            className="w-full bg-transparent text-slate-100 font-mono text-xs md:text-sm focus:outline-none placeholder:text-slate-600 disabled:opacity-50"
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={executingCmd}
+                                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-black text-xs uppercase tracking-wider rounded-lg shadow-lg shadow-emerald-600/30 transition shrink-0 flex items-center gap-1.5"
+                                        >
+                                            {executingCmd ? (
+                                                <RefreshCw size={14} className="animate-spin" />
+                                            ) : (
+                                                'Exécuter ↵'
+                                            )}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
 
                             {/* Panneau de Guidage & Copilot Mentor (1 Colonne) */}
