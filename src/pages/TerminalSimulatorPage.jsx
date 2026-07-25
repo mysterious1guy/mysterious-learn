@@ -569,7 +569,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             <div className="flex-1 p-2 sm:p-4 lg:p-6 pb-12">
                 <div className="w-full max-w-full mx-auto space-y-4">
 
-                    {/* Header Minimaliste du Projet / Mode libre */}
+                    {/* Header Minimaliste du Projet - Mode libre */}
                     <div className="bg-slate-900/90 dark:bg-slate-900 rounded-2xl p-4 lg:p-5 border border-slate-800 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
@@ -606,7 +606,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     {/* Console Terminal Linux Authentique (100% Plein Écran) */}
                     <div className="w-full bg-[#06141d] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden font-mono">
 
-                        {/* Top Bar macOS / Linux Native */}
+                        {/* Top Bar macOS - Linux Native */}
                         <div className="bg-[#0b1d28] px-4 py-3 border-b border-slate-800/80 flex items-center justify-between select-none">
                             <div className="flex items-center gap-2">
                                 <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e]/50 cursor-pointer" onClick={() => navigate('/')}></div>
