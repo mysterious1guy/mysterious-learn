@@ -518,7 +518,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
             </div>
 
             {/* Intégration Élargie du Terminal CLI Simulator dans le Tableau de Bord */}
-            <div className="max-w-7xl mx-auto px-6 lg:px-12 mb-16">
+            <div id="tour-dashboard-terminal" className="max-w-7xl mx-auto px-6 lg:px-12 mb-16">
                 <TerminalSimulatorPage user={user} API_URL={API_URL} />
             </div>
 

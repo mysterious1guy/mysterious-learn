@@ -56,11 +56,11 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
             disableBeacon: true,
         },
         {
-            target: '#tour-terminal',
+            target: '#tour-dashboard-terminal',
             content: (
                 <div className="p-1 max-w-[280px] sm:max-w-sm">
-                    <h3 className="text-base sm:text-lg font-bold text-emerald-500 mb-2 uppercase tracking-wide">{t('onboardingTour.terminal_title') || "Terminal & Hacking Simulator"}</h3>
-                    <p className="text-slate-700 text-xs sm:text-sm font-medium">{t('onboardingTour.terminal_desc') || "Entraînez-vous en ligne de commande ! Exécutez de vraies commandes Linux et résolvez des missions de hacking avec l'aide de l'IA."}</p>
+                    <h3 className="text-base sm:text-lg font-bold text-emerald-500 mb-2 uppercase tracking-wide">{t('onboardingTour.terminal_title') || "Salle d'Entraînement CLI (Noyau Linux)"}</h3>
+                    <p className="text-slate-700 text-xs sm:text-sm font-medium">{t('onboardingTour.terminal_desc') || "La console Linux est désormais directement intégrée au cœur de votre Tableau de bord ! Entraînez-vous en ligne de commande avec l'aide de Mysterious Copilot."}</p>
                 </div>
             ),
             disableBeacon: true,
