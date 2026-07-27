@@ -68,7 +68,7 @@ const handleContactForm = async (req, res) => {
     try {
         // 1. Envoyer la notification à l'admin
         await sendEmail({
-            to: 'mouhamedfa2007@gmail.com',
+            to: 'mysteriousclassroom@gmail.com',
             subject: subjectLine,
             html,
             text: `Nouveau message de ${name} (${email})\n\nSujet: ${subject || 'Non spécifié'}\n\n${message}`
@@ -109,7 +109,7 @@ const handleContactForm = async (req, res) => {
     } catch (err) {
         console.error('❌ Erreur envoi formulaire contact:', err.message);
         return res.status(500).json({ 
-            message: 'Erreur lors de l\'envoi. Écrivez-nous directement à mouhamedfa2007@gmail.com' 
+            message: 'Erreur lors de l\'envoi. Écrivez-nous directement à mysteriousclassroom@gmail.com' 
         });
     }
 };

@@ -133,11 +133,11 @@ const AboutPage = () => {
                                 </p>
                             </div>
                             <a
-                                href="mailto:mouhamedfa2007@gmail.com"
+                                href="mailto:mysteriousclassroom@gmail.com"
                                 className="mt-6 inline-flex items-center gap-2 text-indigo-400 hover:text-white text-sm transition"
                             >
                                 <Mail size={14} />
-                                mouhamedfa2007@gmail.com
+                                mysteriousclassroom@gmail.com
                             </a>
                         </div>
                     </motion.div>

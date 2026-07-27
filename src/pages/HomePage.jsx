@@ -511,7 +511,7 @@ const HomePage = ({ API_URL }) => {
                             <a href="#" className="p-4 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700/60 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:border-blue-500 transition-all">
                                 <Linkedin size={24} />
                             </a>
-                            <a href="mailto:mouhamedfa2007@gmail.com" className="p-4 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700/60 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-red-500 hover:border-red-500 transition-all">
+                            <a href="mailto:mysteriousclassroom@gmail.com" className="p-4 bg-slate-50/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/80 dark:border-slate-700/60 rounded-2xl text-slate-600 dark:text-slate-300 hover:text-red-500 hover:border-red-500 transition-all">
                                 <Mail size={24} />
                             </a>
                         </div>

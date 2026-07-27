@@ -113,7 +113,7 @@ const PrivacyPage = () => {
                 },
                 {
                     subtitle: 'Exercer vos droits',
-                    text: 'Pour exercer ces droits, envoyez une demande à : mouhamedfa2007@gmail.com. Nous traiterons votre demande dans un délai maximum de 30 jours, conformément à la réglementation.'
+                    text: 'Pour exercer ces droits, envoyez une demande à : mysteriousclassroom@gmail.com. Nous traiterons votre demande dans un délai maximum de 30 jours, conformément à la réglementation.'
                 }
             ]
         }
@@ -229,11 +229,11 @@ const PrivacyPage = () => {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <a
-                            href="mailto:mouhamedfa2007@gmail.com"
+                            href="mailto:mysteriousclassroom@gmail.com"
                             className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all hover:scale-105"
                         >
                             <Mail size={16} />
-                            mouhamedfa2007@gmail.com
+                            mysteriousclassroom@gmail.com
                         </a>
                         <Link
                             to="/contact"

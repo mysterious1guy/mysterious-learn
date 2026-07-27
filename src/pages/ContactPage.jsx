@@ -39,9 +39,9 @@ const ContactPage = () => {
         {
             icon: Mail,
             title: 'Email Direct',
-            value: 'mouhamedfa2007@gmail.com',
+            value: 'mysteriousclassroom@gmail.com',
             desc: 'Réponse garantie sous 24h',
-            href: 'mailto:mouhamedfa2007@gmail.com',
+            href: 'mailto:mysteriousclassroom@gmail.com',
             color: 'text-blue-400 bg-blue-500/10 border-blue-500/30',
         },
         {
@@ -157,7 +157,7 @@ const ContactPage = () => {
                             </Link>
                         </div>
                         <p className="text-slate-500 text-xs pt-2 border-t border-slate-700">
-                            Éditeur : Mouhamed FALL — mouhamedfa2007@gmail.com<br />
+                            Éditeur : Mouhamed FALL — mysteriousclassroom@gmail.com<br />
                             Hébergeur : Render.com — 525 Brannan St, San Francisco, CA 94107
                         </p>
                     </motion.div>
@@ -256,7 +256,7 @@ const ContactPage = () => {
                                 {status === 'error' && (
                                     <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
                                         <AlertCircle size={16} />
-                                        Erreur lors de l'envoi. Veuillez nous écrire directement à mouhamedfa2007@gmail.com
+                                        Erreur lors de l'envoi. Veuillez nous écrire directement à mysteriousclassroom@gmail.com
                                     </div>
                                 )}
 

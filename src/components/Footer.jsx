@@ -30,7 +30,7 @@ const Footer = () => {
     { icon: Github, href: '#', label: 'GitHub' },
     { icon: Twitter, href: '#', label: 'Twitter' },
     { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Mail, href: 'mailto:mouhamedfa2007@gmail.com', label: 'Email' }
+    { icon: Mail, href: 'mailto:mysteriousclassroom@gmail.com', label: 'Email' }
   ];
 
   const defaultConfig = {
