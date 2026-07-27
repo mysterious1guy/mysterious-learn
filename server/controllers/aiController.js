@@ -875,9 +875,10 @@ const executeTerminalCommand = async (req, res) => {
 
                 if (sshResult) {
                     const hostLower = sshSession.host.toLowerCase();
-                    const isSimulatedTarget = ['192.168.', '10.', '172.', 'sat-orbit', 'classroom', 'webserver', 'target'].some(sub => hostLower.includes(sub));
+                    const isSimulatedTarget = mission && ['192.168.', '10.', '172.', 'sat-orbit', 'webserver', 'target'].some(sub => hostLower.includes(sub));
 
-                    if (sshResult.success || !isSimulatedTarget) {
+                    // En Mode Libre ou si SSH réel réussit ou pour tout hôte standard, TOUJOURS renvoyer le résultat SSH réel sans fallback local !
+                    if (!mission || sshResult.success || !isSimulatedTarget) {
                         return res.json({
                             output: sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host} port ${sshSession.port || 22}: Connection failed`),
                             newPath: path,
@@ -888,14 +889,24 @@ const executeTerminalCommand = async (req, res) => {
                 }
             } catch (err) {
                 console.error("Erreur lors de l'exécution SSH réelle:", err);
+                if (!mission) {
+                    return res.json({
+                        output: `ssh: connect to host ${sshSession.host} port ${sshSession.port || 22}: Connection failed`,
+                        newPath: path,
+                        isRealSsh: true,
+                        sshSuccess: false
+                    });
+                }
             }
         }
 
         // Extraction du Virtual File System (VFS)
         let vfsText = "";
-        if (vfs && typeof vfs === 'object' && Object.keys(vfs).length > 0) {
-            vfsText = `[SYSTÈME DE FICHIERS VIRTUEL ACTIF (VFS PERSISTANT)]:\n` + 
+        if (!sshSession && vfs && typeof vfs === 'object' && Object.keys(vfs).length > 0) {
+            vfsText = `[SYSTÈME DE FICHIERS VIRTUEL LOCAL (COMMUN)]:\n` + 
                 Object.entries(vfs).map(([filepath, content]) => `Fichier: ${filepath}\nContenu:\n"""\n${content}\n"""`).join('\n---\n');
+        } else if (sshSession) {
+            vfsText = `[SESSION SSH DISTANTE ACTIVE - MACHINE DISTANTE '${sshSession.host}']:\nMachine cible : ${sshSession.user}@${sshSession.host}.\nATTENTION: Vous êtes sur la machine DISTANTE '${sshSession.host}'. Ne montrez AUCUN fichier de la machine locale ('script.sh', '.cahe'). Générez un système de fichiers distant totalement propre, distinct et indépendant.`;
         }
 
         // Extraction de l'historique de la session pour la persistance de l'état

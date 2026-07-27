@@ -420,7 +420,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     });
 
                     const data = await res.json();
-                    if (res.ok && data.isRealSsh && data.sshSuccess) {
+                    if (res.ok && data.sshSuccess) {
                         setSshSession(targetSsh);
                         setHistory(prev => [
                             ...prev,
@@ -429,20 +429,21 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
                             }
                         ]);
-                    } else if (data.isRealSsh && data.sshSuccess === false) {
+                    } else if (activeMission && !data.isRealSsh) {
+                        // En mode APPRENTISSAGE uniquement (missions CTF / lab virtuel)
+                        setSshSession(targetSsh);
                         setHistory(prev => [
                             ...prev,
-                            { type: 'error', text: data.output || `ssh: connect to host ${auth.host} port 22: Connection failed` }
+                            {
+                                type: 'output',
+                                text: `[+] Connected to ${auth.host} via SSH (Virtual CTF Lab).\nWelcome to Ubuntu 24.04 LTS`
+                            }
                         ]);
                     } else {
-                        // En mode simulation ou mission d'apprentissage
-                        setSshSession(targetSsh);
+                        // En Mode Libre ou en cas d'échec SSH réel : afficher l'erreur et NE PAS ouvrir de session SSH !
                         setHistory(prev => [
                             ...prev,
-                            {
-                                type: 'output',
-                                text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
-                            }
+                            { type: 'error', text: data.output || `ssh: connect to host ${auth.host} port ${auth.port || 22}: Connection failed` }
                         ]);
                     }
                 } catch (err) {
