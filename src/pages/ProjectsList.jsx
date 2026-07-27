@@ -61,10 +61,85 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
         }
     };
 
+    const isAdmin = user?.role === 'admin' || user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn';
+
+    // Si l'utilisateur n'est pas administrateur, afficher l'écran de maintenance/préparation
+    if (!isAdmin) {
+        return (
+            <div className="flex-1 min-w-0 bg-slate-900 dark:bg-[#070C14] text-white relative flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 lg:p-8">
+                <div className="max-w-3xl w-full bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-10 lg:p-12 shadow-2xl text-center space-y-6 relative overflow-hidden my-auto">
+                    {/* Effets de lueur en arrière-plan */}
+                    <div className="absolute -top-24 -right-24 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                    <div className="w-20 h-20 bg-indigo-500/10 border border-indigo-500/30 rounded-3xl flex items-center justify-center text-indigo-400 mx-auto shadow-inner">
+                        <Lock size={38} className="animate-pulse" />
+                    </div>
+
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-bold uppercase tracking-wider">
+                        <Sparkles size={14} /> MODULE EN COURS DE PRÉPARATION
+                    </div>
+
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+                        Laboratoire de Projets & Quêtes
+                    </h1>
+
+                    <p className="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed max-w-xl mx-auto font-medium">
+                        Le module de <strong className="text-white">Projets Pratiques & Missions Hacking</strong> est actuellement en cours de finalisation et d'optimisation par l'Architecte Système.
+                    </p>
+
+                    <div className="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-5 max-w-lg mx-auto text-left space-y-3 shadow-inner">
+                        <div className="flex items-center gap-2.5 text-emerald-400 text-sm font-bold">
+                            <CheckCircle size={18} />
+                            <span>Prochainement disponibles :</span>
+                        </div>
+                        <ul className="text-xs text-slate-300 space-y-2 font-medium">
+                            <li className="flex items-center gap-2">
+                                <span className="text-indigo-400 font-bold">⚡</span> Missions de code concrètes guidées par Copilot
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="text-indigo-400 font-bold">⚡</span> Exercices pratiques d'infrastructures & sécurité
+                            </li>
+                            <li className="flex items-center gap-2">
+                                <span className="text-indigo-400 font-bold">⚡</span> Défis interactifs pour débloquer vos badges d'expert
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div className="pt-2 flex flex-wrap gap-4 justify-center">
+                        <button
+                            onClick={() => navigate('/dashboard')}
+                            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 hover:scale-105 active:scale-95"
+                        >
+                            Retour au Tableau de bord
+                        </button>
+                        <button
+                            onClick={() => navigate('/terminal-simulator')}
+                            className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs sm:text-sm border border-slate-700 transition flex items-center gap-2 hover:scale-105 active:scale-95"
+                        >
+                            <Terminal size={16} />
+                            Terminal Linux Libre
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="flex-1 min-w-0 bg-slate-50 dark:bg-[#0B1120] relative flex flex-col min-h-screen">
             <div className="flex-1 overflow-y-auto p-4 lg:p-12 mt-16 lg:mt-0 pb-32">
                 <div className="max-w-7xl mx-auto space-y-12">
+
+                    {/* Banner Administrateur */}
+                    {isAdmin && (
+                        <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex items-center justify-between text-amber-400 text-xs font-bold shadow-sm">
+                            <div className="flex items-center gap-2">
+                                <Lock size={16} className="shrink-0" />
+                                <span>MODE PREVIEW ADMINISTRATEUR : Le module Projets est fermé pour les utilisateurs standard (page "En cours de préparation" affichée).</span>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Hero Section Projects */}
                     <div className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-blue-600 via-indigo-700 to-slate-900 p-10 lg:p-16 text-white border border-blue-400/30 shadow-2xl">
