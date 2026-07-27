@@ -852,26 +852,18 @@ const executeTerminalCommand = async (req, res) => {
 
         // TENTATIVE DE CONNEXION ET D'EXÉCUTION SSH (RÉELLE OU SIMULÉE)
         if (sshSession && sshSession.host && sshSession.password) {
-            const { spawn } = require('child_process');
-            const pathModule = require('path');
-            const pyScript = pathModule.join(__dirname, '../helpers/realSshExec.py');
+            const { runSshNode } = require('../helpers/realSshExecNode');
 
             try {
-                const sshPort = String(sshSession.port || 22);
-                const sshResult = await new Promise((resolve) => {
-                    const py = spawn('python3', [pyScript, sshSession.host, sshSession.user || 'root', sshSession.password, cleanCmd, sshPort]);
-                    let stdout = '';
-                    let stderr = '';
-                    py.stdout.on('data', data => stdout += data.toString());
-                    py.stderr.on('data', data => stderr += data.toString());
-                    py.on('close', () => {
-                        try {
-                            resolve(JSON.parse(stdout));
-                        } catch (e) {
-                            resolve({ success: false, error: stdout.trim() || stderr.trim() || `ssh: connect to host ${sshSession.host}: Connection failed` });
-                        }
-                    });
-                });
+                const sshPort = Number(sshSession.port) || 22;
+                const sshResult = await runSshNode(
+                    sshSession.host,
+                    sshSession.user || 'root',
+                    sshSession.password,
+                    cleanCmd,
+                    sshPort,
+                    7000
+                );
 
                 if (sshResult) {
                     const hostLower = sshSession.host.toLowerCase();
@@ -880,7 +872,7 @@ const executeTerminalCommand = async (req, res) => {
                     // En Mode Libre ou si SSH réel réussit ou pour tout hôte standard, TOUJOURS renvoyer le résultat SSH réel sans fallback local !
                     if (!mission || sshResult.success || !isSimulatedTarget) {
                         return res.json({
-                            output: sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host} port ${sshSession.port || 22}: Connection failed`),
+                            output: sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host} port ${sshPort}: Connection failed`),
                             newPath: path,
                             isRealSsh: true,
                             sshSuccess: sshResult.success
@@ -888,7 +880,7 @@ const executeTerminalCommand = async (req, res) => {
                     }
                 }
             } catch (err) {
-                console.error("Erreur lors de l'exécution SSH réelle:", err);
+                console.error("Erreur lors de l'exécution SSH réelle (Node):", err);
                 if (!mission) {
                     return res.json({
                         output: `ssh: connect to host ${sshSession.host} port ${sshSession.port || 22}: Connection failed`,
