@@ -861,13 +861,13 @@ const executeTerminalCommand = async (req, res) => {
                 const sshPath = (path && path !== '~') ? path : '~';
 
                 let sshCmdToRun = '';
-                const isCd = cleanCmd === 'cd' || cleanCmd.startsWith('cd ');
+                const isCd = cleanCmd === 'cd' || cleanCmd.startsWith('cd ') || cleanCmd.startsWith('cd\t');
 
                 if (isCd) {
-                    // Pour cd, on se place dans le dossier courant, puis on exécute cd et on demande pwd
-                    sshCmdToRun = `cd "${sshPath}" 2>/dev/null; ${cleanCmd} >/dev/null 2>&1 && pwd || ${cleanCmd}`;
+                    const cdTarget = cleanCmd.trim() === 'cd' ? 'cd ~' : cleanCmd;
+                    sshCmdToRun = `cd "${sshPath}" 2>/dev/null; ${cdTarget} >/dev/null 2>&1 && pwd || ${cdTarget}`;
                 } else {
-                    // Pour les autres commandes (ls, cat, etc.), exécuter depuis le dossier distant courant
+                    // Pour les autres commandes (ls, cat, touch, etc.), exécuter depuis le dossier distant courant
                     sshCmdToRun = `cd "${sshPath}" 2>/dev/null; ${cleanCmd}`;
                 }
 

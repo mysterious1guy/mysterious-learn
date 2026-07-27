@@ -503,6 +503,15 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             return;
         }
 
+        if ((lower === 'exit' || lower === 'logout') && sshSession) {
+            const closedHost = sshSession.remoteHostname || sshSession.host;
+            setSshSession(null);
+            setCurrentPath('~');
+            newHistory.push({ type: 'output', text: `Connection to ${closedHost} closed.` });
+            setHistory(newHistory);
+            return;
+        }
+
         // Interception des éditeurs de texte (nano, vim, vi)
         if (lower.startsWith('nano') || lower.startsWith('vim') || lower.startsWith('vi')) {
             const parts = cmd.split(' ').filter(Boolean);
