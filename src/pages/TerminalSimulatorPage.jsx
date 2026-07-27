@@ -319,7 +319,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
     const handleCommand = async (e) => {
         e.preventDefault();
-        const cmd = input.trim();
+        let cmd = input.trim();
 
         // 1. Saisie de mot de passe en cours (mode d'attente de mot de passe)
         if (pendingAuth) {
