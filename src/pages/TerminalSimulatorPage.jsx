@@ -517,9 +517,51 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             const parts = cmd.split(' ').filter(Boolean);
             const editorName = parts[0].toLowerCase();
             const fileName = parts[1] || 'script.sh';
+
+            if (sshSession) {
+                setExecutingCmd(true);
+                setHistory(newHistory);
+                try {
+                    const token = user?.token || localStorage.getItem('token');
+                    const res = await fetch(`${API_URL}/ai/execute-terminal-command`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            command: `cat "${fileName}" 2>/dev/null || echo ""`,
+                            currentPath: currentPath,
+                            currentUser: activeUser,
+                            vfs: vfs,
+                            sshSession: sshSession,
+                            mission: activeMission,
+                            history: newHistory
+                        })
+                    });
+                    const data = await res.json();
+                    setActiveEditor({
+                        fileName: fileName,
+                        content: data.output || '',
+                        editorType: editorName.includes('vi') ? 'vim' : 'nano',
+                        isRemoteSsh: true
+                    });
+                } catch (e) {
+                    setActiveEditor({
+                        fileName: fileName,
+                        content: '',
+                        editorType: editorName.includes('vi') ? 'vim' : 'nano',
+                        isRemoteSsh: true
+                    });
+                } finally {
+                    setExecutingCmd(false);
+                }
+                return;
+            }
+
             setActiveEditor({
                 fileName: fileName,
-                content: fileName.endsWith('.sh') ? 'echo "Hello from Mysterious Classroom!"' : '',
+                content: vfs[`${currentPath}/${fileName}`] || vfs[`${fileName}`] || (fileName.endsWith('.sh') ? 'echo "Hello from Mysterious Classroom!"' : ''),
                 editorType: editorName.includes('vi') ? 'vim' : 'nano'
             });
             return;
@@ -824,12 +866,17 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 }
             } else {
                 const lastPart = parts[parts.length - 1];
+                const historyFiles = history
+                    .filter(h => h.type === 'output' && h.text)
+                    .flatMap(h => h.text.split('\n').map(l => l.trim().replace(/^["']|["']$/g, '')))
+                    .filter(f => f && !f.includes(' ') && !f.startsWith('[') && !f.startsWith('Connection'));
+
                 const vfsFiles = Object.keys(vfs || {}).map(pathStr => {
                     const pathParts = pathStr.split('/').filter(Boolean);
                     return pathParts[pathParts.length - 1] || pathStr;
                 });
-                const defaultFiles = ['script.sh', 'notes.txt', 'config.json', 'README.md', 'app.py'];
-                const candidates = Array.from(new Set([...vfsFiles, ...defaultFiles]));
+                const defaultFiles = ['script.sh', 'notes.txt', 'config.json', 'README.md', 'app.py', 'Musique', 'Bureau', 'Documents', 'Images', 'Téléchargements', 'Vidéos'];
+                const candidates = Array.from(new Set([...historyFiles, ...vfsFiles, ...defaultFiles]));
 
                 const matches = candidates.filter(f => f.toLowerCase().startsWith(lastPart.toLowerCase()));
                 if (matches.length === 1) {
@@ -1040,6 +1087,9 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 activeUser={activeUser}
                                 formattedPath={formattedPath}
                                 setHistory={setHistory}
+                                sshSession={sshSession}
+                                API_URL={API_URL}
+                                user={user}
                             />
                         ) : (
                             <TerminalConsole

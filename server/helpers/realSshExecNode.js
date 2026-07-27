@@ -25,9 +25,10 @@ function runSshNode(host, user, password, command, port = 22, timeoutMs = 8000) 
         }, timeoutMs);
 
         conn.on('ready', () => {
-            // Si c'est la vérification initiale de connexion ('whoami'), on récupère aussi le nom d'hôte réel et la distribution OS
-            const execCmd = (command === 'whoami') 
-                ? 'echo "___SSH_META___" && hostname && (grep "^PRETTY_NAME=" /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d \'"\' || uname -s) && echo "___SSH_END_META___" && whoami'
+            // Si la commande contient 'whoami', on récupère aussi le nom d'hôte réel et la distribution OS
+            const isWhoamiCheck = command.includes('whoami');
+            const execCmd = isWhoamiCheck
+                ? 'echo "___SSH_META___" && hostname && (grep "^PRETTY_NAME=" /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d \'"\' || uname -s) && echo "___SSH_END_META___" && ' + command
                 : command;
 
             conn.exec(execCmd, (err, stream) => {
