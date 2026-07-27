@@ -47,18 +47,18 @@ const ContactPage = () => {
         {
             icon: Github,
             title: 'GitHub',
-            value: 'github.com/mysterious-learn',
+            value: 'github.com/mysterious1guy',
             desc: 'Signaler un bug ou proposer une fonctionnalité',
-            href: 'https://github.com',
+            href: 'https://github.com/mysterious1guy',
             color: 'text-slate-300 bg-slate-500/10 border-slate-500/30',
         },
         {
-            icon: Linkedin,
-            title: 'LinkedIn',
-            value: 'Mouhamed FALL',
-            desc: 'Pour les collaborations professionnelles',
-            href: '#',
-            color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/30',
+            icon: Twitter,
+            title: 'Réseaux Sociaux',
+            value: '@MysteriousClassroom',
+            desc: 'Suivez nos actualités et nouvelles formations',
+            href: 'https://x.com',
+            color: 'text-sky-400 bg-sky-500/10 border-sky-500/30',
         },
     ];
 

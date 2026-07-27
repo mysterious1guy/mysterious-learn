@@ -121,6 +121,15 @@ app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/seed', require('./routes/seedRoutes')); // Temporary route to force update of database
 app.use('/api/payment', require('./routes/paymentRoutes'));
 
+// Route publique formulaire de contact
+const { handleContactForm } = require('./controllers/contactController');
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 heure
+  max: 5, // 5 messages max par IP par heure (anti-spam)
+  message: { message: 'Trop de messages envoyés. Réessayez dans 1 heure.' }
+});
+app.post('/api/contact', contactLimiter, handleContactForm);
+
 // 4. Gestion des fichiers statiques
 const rootDir = path.resolve(__dirname, '..');
 app.use(express.static(path.join(rootDir, 'dist')));
