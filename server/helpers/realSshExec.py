@@ -6,9 +6,9 @@ import shlex
 def run_ssh(host, user, password, command, port=22):
     # Échappement sécurisé de la commande pour éviter la casse des guillemets
     escaped_command = shlex.quote(command)
-    ssh_cmd = f"ssh -F /dev/null -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null -o ConnectTimeout=2 -p {port} {user}@{host} {escaped_command}"
+    ssh_cmd = f"ssh -F /dev/null -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null -o ConnectTimeout=7 -p {port} {user}@{host} {escaped_command}"
     try:
-        child = pexpect.spawn(ssh_cmd, timeout=4, encoding='utf-8')
+        child = pexpect.spawn(ssh_cmd, timeout=12, encoding='utf-8')
         idx = child.expect([
             r'Are you sure you want to continue connecting.*',
             r'\(yes/no/\[fingerprint\]\)\?',
@@ -30,10 +30,10 @@ def run_ssh(host, user, password, command, port=22):
                 pexpect.TIMEOUT,
                 pexpect.EOF,
                 'Permission denied'
-            ], timeout=3)
+            ], timeout=6)
             if idx_pass == 0:
                 child.sendline(password)
-                child.expect(pexpect.EOF, timeout=5)
+                child.expect(pexpect.EOF, timeout=10)
                 output = child.before.strip() if child.before else ""
                 if 'Permission denied' in output:
                     return {"success": False, "error": "Permission denied, please try again."}
@@ -43,7 +43,7 @@ def run_ssh(host, user, password, command, port=22):
 
         if idx == 3:
             child.sendline(password)
-            child.expect(pexpect.EOF, timeout=5)
+            child.expect(pexpect.EOF, timeout=10)
             output = child.before.strip() if child.before else ""
             if 'Permission denied' in output:
                 return {"success": False, "error": "Permission denied, please try again."}
@@ -78,8 +78,14 @@ if __name__ == "__main__":
         host = sys.argv[1]
         user = sys.argv[2]
         password = sys.argv[3]
-        command = " ".join(sys.argv[4:])
-        result = run_ssh(host, user, password, command)
+        command = sys.argv[4]
+        port = 22
+        if len(sys.argv) >= 6:
+            try:
+                port = int(sys.argv[5])
+            except ValueError:
+                port = 22
+        result = run_ssh(host, user, password, command, port)
         print(json.dumps(result))
     else:
         print(json.dumps({"success": False, "error": "Invalid arguments"}))

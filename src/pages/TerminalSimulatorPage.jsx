@@ -497,37 +497,39 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             return;
         }
 
-        // Execution instantanée des commandes système de base (Vitesse & Fluidité)
-        if (lower === 'whoami') {
-            newHistory.push({ type: 'output', text: activePromptUser });
-            setHistory(newHistory);
-            return;
-        }
+        // Execution instantanée des commandes système de base (Vitesse & Fluidité hors SSH)
+        if (!sshSession) {
+            if (lower === 'whoami') {
+                newHistory.push({ type: 'output', text: activePromptUser });
+                setHistory(newHistory);
+                return;
+            }
 
-        if (lower === 'pwd') {
-            newHistory.push({ type: 'output', text: currentPath });
-            setHistory(newHistory);
-            return;
-        }
+            if (lower === 'pwd') {
+                newHistory.push({ type: 'output', text: currentPath });
+                setHistory(newHistory);
+                return;
+            }
 
-        if (lower === 'date') {
-            newHistory.push({ type: 'output', text: new Date().toString() });
-            setHistory(newHistory);
-            return;
-        }
+            if (lower === 'date') {
+                newHistory.push({ type: 'output', text: new Date().toString() });
+                setHistory(newHistory);
+                return;
+            }
 
-        if (lower.startsWith('echo ')) {
-            const textToEcho = cmd.substring(5).replace(/^["']|["']$/g, '');
-            newHistory.push({ type: 'output', text: textToEcho });
-            setHistory(newHistory);
-            return;
-        }
+            if (lower.startsWith('echo ')) {
+                const textToEcho = cmd.substring(5).replace(/^["']|["']$/g, '');
+                newHistory.push({ type: 'output', text: textToEcho });
+                setHistory(newHistory);
+                return;
+            }
 
-        if (lower === 'history') {
-            const historyList = cmdStack.map((c, idx) => `  ${idx + 1}  ${c}`).join('\n');
-            newHistory.push({ type: 'output', text: historyList || '  1  history' });
-            setHistory(newHistory);
-            return;
+            if (lower === 'history') {
+                const historyList = cmdStack.map((c, idx) => `  ${idx + 1}  ${c}`).join('\n');
+                newHistory.push({ type: 'output', text: historyList || '  1  history' });
+                setHistory(newHistory);
+                return;
+            }
         }
 
         // Interception de su root / su / sudo -i / sudo su

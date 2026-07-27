@@ -857,8 +857,9 @@ const executeTerminalCommand = async (req, res) => {
             const pyScript = pathModule.join(__dirname, '../helpers/realSshExec.py');
 
             try {
+                const sshPort = String(sshSession.port || 22);
                 const sshResult = await new Promise((resolve) => {
-                    const py = spawn('python3', [pyScript, sshSession.host, sshSession.user || 'root', sshSession.password, cleanCmd]);
+                    const py = spawn('python3', [pyScript, sshSession.host, sshSession.user || 'root', sshSession.password, cleanCmd, sshPort]);
                     let stdout = '';
                     let stderr = '';
                     py.stdout.on('data', data => stdout += data.toString());
@@ -872,13 +873,18 @@ const executeTerminalCommand = async (req, res) => {
                     });
                 });
 
-                if (sshResult && sshResult.success) {
-                    return res.json({
-                        output: sshResult.output || '',
-                        newPath: path,
-                        isRealSsh: true,
-                        sshSuccess: true
-                    });
+                if (sshResult) {
+                    const hostLower = sshSession.host.toLowerCase();
+                    const isSimulatedTarget = ['192.168.', '10.', '172.', 'sat-orbit', 'classroom', 'webserver', 'target'].some(sub => hostLower.includes(sub));
+
+                    if (sshResult.success || !isSimulatedTarget) {
+                        return res.json({
+                            output: sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host} port ${sshSession.port || 22}: Connection failed`),
+                            newPath: path,
+                            isRealSsh: true,
+                            sshSuccess: sshResult.success
+                        });
+                    }
                 }
             } catch (err) {
                 console.error("Erreur lors de l'exécution SSH réelle:", err);
