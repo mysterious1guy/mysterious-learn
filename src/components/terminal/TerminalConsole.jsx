@@ -123,6 +123,7 @@ const TerminalConsole = ({
                 <form onSubmit={handleCommand} className="flex items-center gap-2 pt-1">
                     {pendingAuth ? (
                         <span className="text-slate-300 font-bold shrink-0">{pendingAuth.promptLabel}</span>
+                    ) : sshSession ? (
                         <div className="flex items-center font-bold shrink-0">
                             <span className={sshSession.user === 'root' ? 'text-red-400' : 'text-emerald-400'}>
                                 {sshSession.user}@{sshSession.remoteHostname || sshSession.host}
