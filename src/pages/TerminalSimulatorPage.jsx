@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Terminal, Shield, Sparkles, Trophy, HelpCircle, RefreshCw, CheckCircle2, 
     ArrowRight, BookOpen, Code2, Cpu, Zap, Lock, Eye, AlertCircle, Play, 
-    ArrowLeft, Compass, Bot, Check, Layers, Lightbulb, Key
+    ArrowLeft, Compass, Bot, Check, Layers, Lightbulb, Key, Maximize2, Minimize2
 } from 'lucide-react';
 import AIAssistant from '../components/AIAssistant';
 import NanoEditor from '../components/terminal/NanoEditor';
@@ -212,6 +212,12 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const [showHint, setShowHint] = useState(false);
     const [completedMissions, setCompletedMissions] = useState([]);
     const [score, setScore] = useState(user?.xp || 0);
+
+    // Mode Plein écran et Historique des commandes (Flèches Haut / Bas)
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [cmdStack, setCmdStack] = useState([]);
+    const [historyIndex, setHistoryIndex] = useState(-1);
+    const [draftInput, setDraftInput] = useState('');
 
     // Mode Authentification par mot de passe & Session SSH interactive
     const [pendingAuth, setPendingAuth] = useState(null);
@@ -453,6 +459,11 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
         if (!cmd || executingCmd) return;
 
+        // Enregistrer la commande dans la pile d'historique (Flèches Haut/Bas)
+        setCmdStack(prev => (prev[prev.length - 1] === cmd ? prev : [...prev, cmd]));
+        setHistoryIndex(-1);
+        setDraftInput('');
+
         const activePromptUser = sshSession ? sshSession.user : activeUser;
         const activeHost = sshSession ? sshSession.host : 'classroom';
         const promptSymbol = activePromptUser === 'root' ? '#' : '$';
@@ -486,9 +497,35 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             return;
         }
 
-        // Commande whoami directe
+        // Execution instantanée des commandes système de base (Vitesse & Fluidité)
         if (lower === 'whoami') {
             newHistory.push({ type: 'output', text: activePromptUser });
+            setHistory(newHistory);
+            return;
+        }
+
+        if (lower === 'pwd') {
+            newHistory.push({ type: 'output', text: currentPath });
+            setHistory(newHistory);
+            return;
+        }
+
+        if (lower === 'date') {
+            newHistory.push({ type: 'output', text: new Date().toString() });
+            setHistory(newHistory);
+            return;
+        }
+
+        if (lower.startsWith('echo ')) {
+            const textToEcho = cmd.substring(5).replace(/^["']|["']$/g, '');
+            newHistory.push({ type: 'output', text: textToEcho });
+            setHistory(newHistory);
+            return;
+        }
+
+        if (lower === 'history') {
+            const historyList = cmdStack.map((c, idx) => `  ${idx + 1}  ${c}`).join('\n');
+            newHistory.push({ type: 'output', text: historyList || '  1  history' });
             setHistory(newHistory);
             return;
         }
@@ -687,6 +724,45 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     };
 
     const handleKeyDown = (e) => {
+        // Navigation dans l'historique des commandes avec la flèche HAUT
+        if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (cmdStack.length === 0) return;
+            if (historyIndex === -1) {
+                setDraftInput(input);
+                const lastIdx = cmdStack.length - 1;
+                setHistoryIndex(lastIdx);
+                setInput(cmdStack[lastIdx]);
+            } else if (historyIndex > 0) {
+                const nextIdx = historyIndex - 1;
+                setHistoryIndex(nextIdx);
+                setInput(cmdStack[nextIdx]);
+            }
+            return;
+        }
+
+        // Navigation dans l'historique des commandes avec la flèche BAS
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (historyIndex === -1) return;
+            if (historyIndex < cmdStack.length - 1) {
+                const nextIdx = historyIndex + 1;
+                setHistoryIndex(nextIdx);
+                setInput(cmdStack[nextIdx]);
+            } else {
+                setHistoryIndex(-1);
+                setInput(draftInput);
+            }
+            return;
+        }
+
+        // Quitter le mode plein écran avec la touche ÉCHAP
+        if (e.key === 'Escape' && isFullscreen) {
+            setIsFullscreen(false);
+            return;
+        }
+
+        // Auto-complétion avec TAB
         if (e.key === 'Tab') {
             e.preventDefault();
             if (!input) return;
@@ -885,20 +961,41 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                         </div>
                     )}
 
-                    {/* Console Terminal Linux Authentique (100% Plein Écran) */}
-                    <div className="w-full bg-[#06141d] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden font-mono">
+                    {/* Console Terminal Linux Authentique */}
+                    <div className={
+                        isFullscreen 
+                            ? "fixed inset-0 z-[9999] bg-[#06141d] w-screen h-screen flex flex-col font-mono" 
+                            : "w-full bg-[#06141d] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden font-mono"
+                    }>
 
-                        {/* Top Bar macOS - Linux Native */}
+                        {/* Top Bar macOS - Linux Native avec Bouton Plein Écran */}
                         <div className="bg-[#0b1d28] px-4 py-3 border-b border-slate-800 flex items-center justify-between select-none">
                             <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] cursor-pointer" onClick={() => navigate('/')}></div>
+                                <div className="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] cursor-pointer" onClick={() => navigate('/')} title="Fermer"></div>
                                 <div className="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123]"></div>
                                 <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
                             </div>
                             <div className="text-xs font-bold text-slate-300 tracking-wide font-mono flex items-center gap-2">
                                 <span>{activeUser}@{sshSession ? sshSession.host : 'classroom'}: ~</span>
                             </div>
-                            <div className="w-12"></div>
+                            <button
+                                type="button"
+                                onClick={() => setIsFullscreen(!isFullscreen)}
+                                className="flex items-center gap-1.5 px-3 py-1 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-lg text-xs border border-slate-700 transition font-sans font-bold shadow-sm"
+                                title={isFullscreen ? "Quitter le plein écran (Échap)" : "Activer le mode plein écran"}
+                            >
+                                {isFullscreen ? (
+                                    <>
+                                        <Minimize2 size={14} className="text-amber-400" />
+                                        <span className="hidden sm:inline">Réduire</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Maximize2 size={14} className="text-emerald-400" />
+                                        <span className="hidden sm:inline">Plein Écran</span>
+                                    </>
+                                )}
+                            </button>
                         </div>
 
                         {/* Écran Terminal et Invite de Commande Directe ou Éditeur Nano */}
@@ -928,6 +1025,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 formattedPath={formattedPath}
                                 input={input}
                                 setInput={setInput}
+                                isFullscreen={isFullscreen}
                             />
                         )}
 

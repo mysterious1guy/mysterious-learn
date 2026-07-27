@@ -1,11 +1,14 @@
 import sys
 import pexpect
 import json
+import shlex
 
 def run_ssh(host, user, password, command, port=22):
-    ssh_cmd = f"ssh -F /dev/null -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null -o ConnectTimeout=5 -p {port} {user}@{host} \"{command}\""
+    # Échappement sécurisé de la commande pour éviter la casse des guillemets
+    escaped_command = shlex.quote(command)
+    ssh_cmd = f"ssh -F /dev/null -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null -o ConnectTimeout=2 -p {port} {user}@{host} {escaped_command}"
     try:
-        child = pexpect.spawn(ssh_cmd, timeout=8, encoding='utf-8')
+        child = pexpect.spawn(ssh_cmd, timeout=4, encoding='utf-8')
         idx = child.expect([
             r'Are you sure you want to continue connecting.*',
             r'\(yes/no/\[fingerprint\]\)\?',
@@ -27,10 +30,10 @@ def run_ssh(host, user, password, command, port=22):
                 pexpect.TIMEOUT,
                 pexpect.EOF,
                 'Permission denied'
-            ])
+            ], timeout=3)
             if idx_pass == 0:
                 child.sendline(password)
-                child.expect(pexpect.EOF, timeout=10)
+                child.expect(pexpect.EOF, timeout=5)
                 output = child.before.strip() if child.before else ""
                 if 'Permission denied' in output:
                     return {"success": False, "error": "Permission denied, please try again."}
@@ -40,7 +43,7 @@ def run_ssh(host, user, password, command, port=22):
 
         if idx == 3:
             child.sendline(password)
-            child.expect(pexpect.EOF, timeout=10)
+            child.expect(pexpect.EOF, timeout=5)
             output = child.before.strip() if child.before else ""
             if 'Permission denied' in output:
                 return {"success": False, "error": "Permission denied, please try again."}

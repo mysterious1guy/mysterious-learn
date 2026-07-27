@@ -13,13 +13,14 @@ const TerminalConsole = ({
     activeUser,
     formattedPath,
     input,
-    setInput
+    setInput,
+    isFullscreen = false
 }) => {
     return (
         <div
             ref={outputContainerRef}
             onClick={() => inputRef.current?.focus()}
-            className="p-4 sm:p-6 text-xs sm:text-sm md:text-base h-[680px] lg:h-[760px] overflow-y-auto custom-scrollbar cursor-text space-y-2 leading-relaxed text-slate-200"
+            className={`p-4 sm:p-6 text-xs sm:text-sm md:text-base ${isFullscreen ? 'flex-1 h-full' : 'h-[680px] lg:h-[760px]'} overflow-y-auto custom-scrollbar cursor-text space-y-2 leading-relaxed text-slate-200`}
             style={{ backgroundColor: '#06141d' }}
         >
             {/* Historique des lignes de commande */}

@@ -850,7 +850,7 @@ const executeTerminalCommand = async (req, res) => {
             return res.json({ output: '', newPath: path, isClear: true });
         }
 
-        // TENTATIVE DE CONNEXION ET D'EXÉCUTION SSH RÉELLE
+        // TENTATIVE DE CONNEXION ET D'EXÉCUTION SSH (RÉELLE OU SIMULÉE)
         if (sshSession && sshSession.host && sshSession.password) {
             const { spawn } = require('child_process');
             const pathModule = require('path');
@@ -872,12 +872,12 @@ const executeTerminalCommand = async (req, res) => {
                     });
                 });
 
-                if (sshResult) {
+                if (sshResult && sshResult.success) {
                     return res.json({
-                        output: sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host}: Connection failed`),
+                        output: sshResult.output || '',
                         newPath: path,
                         isRealSsh: true,
-                        sshSuccess: sshResult.success
+                        sshSuccess: true
                     });
                 }
             } catch (err) {
