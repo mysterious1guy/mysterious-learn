@@ -867,8 +867,9 @@ const executeTerminalCommand = async (req, res) => {
                     const cdTarget = cleanCmd.trim() === 'cd' ? 'cd ~' : cleanCmd;
                     sshCmdToRun = `cd "${sshPath}" 2>/dev/null; ${cdTarget} >/dev/null 2>&1 && pwd || ${cdTarget}`;
                 } else {
-                    // Pour les autres commandes (ls, cat, touch, etc.), exécuter depuis le dossier distant courant
-                    sshCmdToRun = `cd "${sshPath}" 2>/dev/null; ${cleanCmd}`;
+                    // Pour ls simple, ajouter -F pour marquer les dossiers (/) et exécutables (*)
+                    const execCmd = (cleanCmd === 'ls') ? 'ls -F' : cleanCmd;
+                    sshCmdToRun = `cd "${sshPath}" 2>/dev/null; ${execCmd}`;
                 }
 
                 const sshResult = await runSshNode(

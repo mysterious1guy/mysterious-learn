@@ -7,32 +7,56 @@ const renderFormattedOutput = (item) => {
 
     if (!text) return null;
 
-    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-    const isLs = cmd.startsWith('ls') || (lines.length > 2 && lines.every(line => !line.includes(' ') || line.startsWith("'") || line.startsWith('"')));
+    const isLs = cmd === 'ls' || cmd.startsWith('ls ') || cmd.startsWith('ls\t');
 
-    if (isLs && lines.length > 0) {
-        return (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-1 my-1.5 font-mono text-xs sm:text-sm">
-                {lines.map((entry, idx) => {
-                    const cleanName = entry.replace(/^["']|["']$/g, '');
-                    const isScript = cleanName.endsWith('.sh') || cleanName.endsWith('.py') || cleanName.endsWith('.js') || cleanName.endsWith('.bin') || cleanName.endsWith('.exe');
-                    const isDir = !cleanName.includes('.') || ['Android', 'android-studio', 'Bureau', 'BurpSuiteCommunity', 'Documents', 'Images', 'Musique', 'Personnel', 'Projets', 'Public', 'STAGE', 'Téléchargements', 'Vidéos', 'VirtualBox VMs', 'WhiteSur-gtk-theme', 'snap', 'Gogh', 'GoogleDrive', 'EXO1', 'florence', 'flutter', 'mgp', 'MON PROJET PERSONNEL', 'pt', 'supervision', 'supervision1', 'ul'].includes(cleanName);
+    if (isLs) {
+        // Découper les éléments renvoyés par la commande ls (par saut de ligne, tabulations ou espaces)
+        let rawTokens = [];
+        if (text.includes('\n')) {
+            rawTokens = text.split('\n').flatMap(line => line.split(/\t|\s{2,}/)).filter(Boolean);
+        } else {
+            rawTokens = text.split(/\s+/).filter(Boolean);
+        }
 
-                    let styleClass = "text-slate-200"; // Fichier ordinaire (blanc/gris)
-                    if (isScript) {
-                        styleClass = "text-yellow-400 font-semibold"; // Scripts exécutables (jaune/vert)
-                    } else if (isDir) {
-                        styleClass = "text-sky-400 font-bold"; // Dossiers/répertoires (bleu cyan)
-                    }
+        const knownDirs = ['Android', 'android-studio', 'Bureau', 'BurpSuiteCommunity', 'Documents', 'Images', 'Musique', 'Personnel', 'Projets', 'Public', 'STAGE', 'Téléchargements', 'Vidéos', 'VirtualBox VMs', 'WhiteSur-gtk-theme', 'snap', 'Gogh', 'GoogleDrive', 'EXO1', 'florence', 'flutter', 'mgp', 'MON PROJET PERSONNEL', 'pt', 'supervision', 'supervision1', 'ul'];
 
-                    return (
-                        <div key={idx} className={`truncate ${styleClass}`} title={cleanName}>
-                            {cleanName.includes(' ') ? `'${cleanName}'` : cleanName}
-                        </div>
-                    );
-                })}
-            </div>
-        );
+        if (rawTokens.length > 0) {
+            return (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-1 my-2 font-mono text-xs sm:text-sm">
+                    {rawTokens.map((entry, idx) => {
+                        let name = entry.trim().replace(/^["']|["']$/g, '');
+                        if (!name) return null;
+
+                        const isExplicitDir = name.endsWith('/');
+                        const isExplicitExec = name.endsWith('*');
+
+                        if (isExplicitDir) name = name.slice(0, -1);
+                        if (isExplicitExec) name = name.slice(0, -1);
+
+                        const isScript = isExplicitExec || name.endsWith('.sh') || name.endsWith('.py') || name.endsWith('.js') || name.endsWith('.bin') || name.endsWith('.run');
+                        const isDir = isExplicitDir || knownDirs.includes(name) || (!name.includes('.') && !isScript);
+
+                        let styleClass = "text-slate-200 font-normal"; // Fichier simple (gris clair)
+                        let prefix = "";
+
+                        if (isDir) {
+                            styleClass = "text-cyan-400 font-bold flex items-center gap-1"; // Dossier (Bleu Cyan très visible)
+                            prefix = "📁 ";
+                        } else if (isScript) {
+                            styleClass = "text-emerald-400 font-semibold flex items-center gap-1"; // Script exécutable (Vert Émeraude)
+                            prefix = "⚡ ";
+                        }
+
+                        return (
+                            <div key={idx} className={`truncate ${styleClass}`} title={name}>
+                                <span>{prefix}</span>
+                                <span>{name.includes(' ') ? `'${name}'` : name}</span>
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
     }
 
     return (
