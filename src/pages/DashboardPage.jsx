@@ -706,22 +706,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                 </div>
             )}
 
-            {/* Annonce Mysterious en Construction (Placée tout en bas de la page) */}
-            <div className="max-w-7xl mx-auto px-6 lg:px-12 my-12">
-                <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-6 text-amber-600 dark:text-amber-400 flex items-center gap-4 backdrop-blur-md shadow-xl">
-                    <div className="p-3.5 bg-amber-500/20 rounded-2xl shrink-0">
-                        <Sparkles size={28} className="text-amber-500" />
-                    </div>
-                    <div>
-                        <h4 className="font-black text-sm uppercase tracking-wider text-amber-700 dark:text-amber-300 flex items-center gap-2">
-                            <span>🚧</span> MYSTERIOUS CLASSROOM EST ACTUELLEMENT EN CONSTRUCTION
-                        </h4>
-                        <p className="text-xs mt-1 text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-                            {t('dashboard.new_modules_desc') || "La plateforme Mysterious Classroom prépare son nouvel écosystème de cours interactifs. L'infrastructure est prête et les futurs modules arriveront très bientôt !"}
-                        </p>
-                    </div>
-                </div>
-            </div>
+
 
             {/* Certificate Modal Component */}
             <CertificateModal
