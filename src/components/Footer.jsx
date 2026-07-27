@@ -199,6 +199,17 @@ const Footer = () => {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="mt-12 pt-8 border-t border-gray-800"
         >
+          {/* Liens légaux en bas */}
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-6 text-xs text-gray-500">
+            <Link to="/about" className="hover:text-white transition">À propos</Link>
+            <span>·</span>
+            <Link to="/contact" className="hover:text-white transition">Contact</Link>
+            <span>·</span>
+            <Link to="/privacy" className="hover:text-white transition">Politique de confidentialité</Link>
+            <span>·</span>
+            <Link to="/terms" className="hover:text-white transition">Conditions d'utilisation</Link>
+          </div>
+
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
               <p className="text-gray-400 text-sm">
