@@ -856,11 +856,26 @@ const executeTerminalCommand = async (req, res) => {
 
             try {
                 const sshPort = Number(sshSession.port) || 22;
+                
+                // Formater le chemin distant pour les commandes (remplacer ~ par $HOME ou le conserver)
+                const sshPath = (path && path !== '~') ? path : '~';
+
+                let sshCmdToRun = '';
+                const isCd = cleanCmd === 'cd' || cleanCmd.startsWith('cd ');
+
+                if (isCd) {
+                    // Pour cd, on se place dans le dossier courant, puis on exécute cd et on demande pwd
+                    sshCmdToRun = `cd "${sshPath}" 2>/dev/null; ${cleanCmd} >/dev/null 2>&1 && pwd || ${cleanCmd}`;
+                } else {
+                    // Pour les autres commandes (ls, cat, etc.), exécuter depuis le dossier distant courant
+                    sshCmdToRun = `cd "${sshPath}" 2>/dev/null; ${cleanCmd}`;
+                }
+
                 const sshResult = await runSshNode(
                     sshSession.host,
                     sshSession.user || 'root',
                     sshSession.password,
-                    cleanCmd,
+                    sshCmdToRun,
                     sshPort,
                     7000
                 );
@@ -869,11 +884,27 @@ const executeTerminalCommand = async (req, res) => {
                     const hostLower = sshSession.host.toLowerCase();
                     const isSimulatedTarget = mission && ['192.168.', '10.', '172.', 'sat-orbit', 'webserver', 'target'].some(sub => hostLower.includes(sub));
 
-                    // En Mode Libre ou si SSH réel réussit ou pour tout hôte standard, TOUJOURS renvoyer le résultat SSH réel sans fallback local !
                     if (!mission || sshResult.success || !isSimulatedTarget) {
+                        let finalOutput = sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host} port ${sshPort}: Connection failed`);
+                        let calculatedNewPath = path;
+
+                        // Si cd a réussi, la réponse contient le pwd distant calculé
+                        if (isCd && sshResult.success && finalOutput.startsWith('/')) {
+                            const pwdPath = finalOutput.trim();
+                            const homePrefix = `/home/${sshSession.user || 'root'}`;
+                            if (pwdPath === homePrefix || pwdPath === '/root') {
+                                calculatedNewPath = '~';
+                            } else if (pwdPath.startsWith(homePrefix + '/')) {
+                                calculatedNewPath = '~' + pwdPath.substring(homePrefix.length);
+                            } else {
+                                calculatedNewPath = pwdPath;
+                            }
+                            finalOutput = ''; // cd ne produit pas de texte dans le terminal
+                        }
+
                         return res.json({
-                            output: sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host} port ${sshPort}: Connection failed`),
-                            newPath: path,
+                            output: finalOutput,
+                            newPath: calculatedNewPath,
                             isRealSsh: true,
                             sshSuccess: sshResult.success,
                             remoteHostname: sshResult.remoteHostname || null,

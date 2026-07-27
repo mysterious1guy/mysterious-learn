@@ -267,6 +267,18 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         }
     }, [missionIdParam]);
 
+    // Bloquer le défilement global de la page en mode Plein Écran pour éviter que le footer n'apparaisse
+    useEffect(() => {
+        if (isFullscreen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isFullscreen]);
+
     // Initialisation & Persistance de l'historique du terminal
     useEffect(() => {
         if (activeMission) {
@@ -985,7 +997,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                 <div className="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29]"></div>
                             </div>
                             <div className="text-xs font-bold text-slate-300 tracking-wide font-mono flex items-center gap-2">
-                                <span>{activeUser}@{sshSession ? sshSession.host : 'classroom'}: ~</span>
+                                <span>{activeUser}@{sshSession ? (sshSession.remoteHostname || sshSession.host) : 'classroom'}:{formattedPath}</span>
                             </div>
                             <button
                                 type="button"
