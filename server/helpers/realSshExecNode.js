@@ -25,18 +25,39 @@ function runSshNode(host, user, password, command, port = 22, timeoutMs = 8000) 
         }, timeoutMs);
 
         conn.on('ready', () => {
-            conn.exec(command, (err, stream) => {
+            // Si c'est la vérification initiale de connexion ('whoami'), on récupère aussi le nom d'hôte réel et la distribution OS
+            const execCmd = (command === 'whoami') 
+                ? 'echo "___SSH_META___" && hostname && (grep "^PRETTY_NAME=" /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d \'"\' || uname -s) && echo "___SSH_END_META___" && whoami'
+                : command;
+
+            conn.exec(execCmd, (err, stream) => {
                 if (err) {
                     return safeResolve({ success: false, error: `ssh: ${err.message || 'Execution error'}` });
                 }
                 let stdout = '';
                 let stderr = '';
                 stream.on('close', () => {
-                    const output = (stdout || stderr).trim();
+                    let output = (stdout || stderr).trim();
+                    let remoteHostname = null;
+                    let osInfo = null;
+
+                    if (output.includes('___SSH_META___')) {
+                        const metaParts = output.split('___SSH_END_META___');
+                        const metaHeader = metaParts[0].replace('___SSH_META___', '').trim().split('\n');
+                        remoteHostname = metaHeader[0]?.trim() || null;
+                        osInfo = metaHeader[1]?.trim() || null;
+                        output = metaParts[1] ? metaParts[1].trim() : '';
+                    }
+
                     if (stderr && !stdout && stderr.toLowerCase().includes('permission denied')) {
                         return safeResolve({ success: false, error: stderr.trim() });
                     }
-                    safeResolve({ success: true, output: output });
+                    safeResolve({ 
+                        success: true, 
+                        output: output,
+                        remoteHostname: remoteHostname,
+                        osInfo: osInfo
+                    });
                 }).on('data', (data) => {
                     stdout += data.toString();
                 }).stderr.on('data', (data) => {

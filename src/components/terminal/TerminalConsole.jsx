@@ -1,6 +1,47 @@
 import React from 'react';
 import { RefreshCw } from 'lucide-react';
 
+const renderFormattedOutput = (item) => {
+    const text = item.text || '';
+    const cmd = (item.cmd || '').toLowerCase().trim();
+
+    if (!text) return null;
+
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    const isLs = cmd.startsWith('ls') || (lines.length > 2 && lines.every(line => !line.includes(' ') || line.startsWith("'") || line.startsWith('"')));
+
+    if (isLs && lines.length > 0) {
+        return (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-1 my-1.5 font-mono text-xs sm:text-sm">
+                {lines.map((entry, idx) => {
+                    const cleanName = entry.replace(/^["']|["']$/g, '');
+                    const isScript = cleanName.endsWith('.sh') || cleanName.endsWith('.py') || cleanName.endsWith('.js') || cleanName.endsWith('.bin') || cleanName.endsWith('.exe');
+                    const isDir = !cleanName.includes('.') || ['Android', 'android-studio', 'Bureau', 'BurpSuiteCommunity', 'Documents', 'Images', 'Musique', 'Personnel', 'Projets', 'Public', 'STAGE', 'Téléchargements', 'Vidéos', 'VirtualBox VMs', 'WhiteSur-gtk-theme', 'snap', 'Gogh', 'GoogleDrive', 'EXO1', 'florence', 'flutter', 'mgp', 'MON PROJET PERSONNEL', 'pt', 'supervision', 'supervision1', 'ul'].includes(cleanName);
+
+                    let styleClass = "text-slate-200"; // Fichier ordinaire (blanc/gris)
+                    if (isScript) {
+                        styleClass = "text-yellow-400 font-semibold"; // Scripts exécutables (jaune/vert)
+                    } else if (isDir) {
+                        styleClass = "text-sky-400 font-bold"; // Dossiers/répertoires (bleu cyan)
+                    }
+
+                    return (
+                        <div key={idx} className={`truncate ${styleClass}`} title={cleanName}>
+                            {cleanName.includes(' ') ? `'${cleanName}'` : cleanName}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
+    return (
+        <div className="text-slate-300 font-mono py-0.5 whitespace-pre-wrap">
+            {text}
+        </div>
+    );
+};
+
 const TerminalConsole = ({
     outputContainerRef,
     inputRef,
@@ -43,9 +84,7 @@ const TerminalConsole = ({
                             {h.text}
                         </div>
                     ) : (
-                        <div className="text-slate-300 font-mono py-0.5">
-                            {h.text}
-                        </div>
+                        renderFormattedOutput(h)
                     )}
                 </div>
             ))}
@@ -62,7 +101,7 @@ const TerminalConsole = ({
                         <span className="text-slate-300 font-bold shrink-0">{pendingAuth.promptLabel}</span>
                     ) : sshSession ? (
                         <div className="flex items-center font-bold shrink-0">
-                            <span className="text-emerald-400">{sshSession.user}@{sshSession.host}</span>
+                            <span className="text-emerald-400">{sshSession.user}@{sshSession.remoteHostname || sshSession.host}</span>
                             <span className="text-slate-400">:</span>
                             <span className="text-[#38bdf8]">{formattedPath}</span>
                             <span className="text-white ml-0.5">{sshSession.user === 'root' ? '#' : '$'}</span>

@@ -875,7 +875,9 @@ const executeTerminalCommand = async (req, res) => {
                             output: sshResult.success ? (sshResult.output || '') : (sshResult.error || `ssh: connect to host ${sshSession.host} port ${sshPort}: Connection failed`),
                             newPath: path,
                             isRealSsh: true,
-                            sshSuccess: sshResult.success
+                            sshSuccess: sshResult.success,
+                            remoteHostname: sshResult.remoteHostname || null,
+                            osInfo: sshResult.osInfo || null
                         });
                     }
                 }

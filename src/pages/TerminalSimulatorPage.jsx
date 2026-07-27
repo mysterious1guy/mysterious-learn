@@ -421,12 +421,18 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
                     const data = await res.json();
                     if (res.ok && data.sshSuccess) {
-                        setSshSession(targetSsh);
+                        const realHost = data.remoteHostname || auth.host;
+                        const osBanner = data.osInfo || 'Debian GNU/Linux 12 (bookworm)';
+                        setSshSession({
+                            ...targetSsh,
+                            remoteHostname: realHost,
+                            osInfo: osBanner
+                        });
                         setHistory(prev => [
                             ...prev,
                             {
                                 type: 'output',
-                                text: `[+] Connected to ${auth.host} via SSH.\nWelcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-generic x86_64)`
+                                text: `[+] Connected to ${realHost} via SSH.\nWelcome to ${osBanner}`
                             }
                         ]);
                     } else if (activeMission && !data.isRealSsh) {
@@ -436,7 +442,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             ...prev,
                             {
                                 type: 'output',
-                                text: `[+] Connected to ${auth.host} via SSH (Virtual CTF Lab).\nWelcome to Ubuntu 24.04 LTS`
+                                text: `[+] Connected to ${auth.host} via SSH (Virtual CTF Lab).\nWelcome to Debian GNU/Linux 12`
                             }
                         ]);
                     } else {
@@ -466,7 +472,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         setDraftInput('');
 
         const activePromptUser = sshSession ? sshSession.user : activeUser;
-        const activeHost = sshSession ? sshSession.host : 'classroom';
+        const activeHost = sshSession ? (sshSession.remoteHostname || sshSession.host) : 'classroom';
         const promptSymbol = activePromptUser === 'root' ? '#' : '$';
         const promptText = `${activePromptUser}@${activeHost}:${formattedPath}${promptSymbol} ${cmd}`;
         const newHistory = [...history, { type: 'user', text: promptText }];
@@ -669,7 +675,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
                 setHistory(prev => [
                     ...prev,
-                    { type: 'output', text: data.output }
+                    { type: 'output', text: data.output, cmd: cmd }
                 ]);
 
                 // Vérifier si le projet est accompli (si en mode projet)
