@@ -4,6 +4,7 @@ import {
     ArrowLeft, Shield, Lock, Eye, Trash2, Cookie, 
     Globe, Mail, CheckCircle, AlertTriangle, FileText, Clock
 } from 'lucide-react';
+import Footer from '../components/Footer';
 
 const PrivacyPage = () => {
     const lastUpdate = '27 Juillet 2026';
@@ -248,6 +249,7 @@ const PrivacyPage = () => {
                     </p>
                 </motion.div>
             </div>
+            <Footer />
         </div>
     );
 };

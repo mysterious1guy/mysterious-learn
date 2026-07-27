@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { motion } from 'framer-motion';
 import { Zap, ArrowRight, ShieldAlert, Sparkles, Heart, Github, Linkedin, Mail, Terminal, Lock, Globe, Cpu, AlertTriangle, Shield, Bot, Trophy } from 'lucide-react';
 import MysteriousGeometricLogo from '../MysteriousGeometricLogo';
+import Footer from '../components/Footer';
 
 const HomePage = ({ API_URL }) => {
     const navigate = useNavigate();
@@ -552,23 +553,8 @@ const HomePage = ({ API_URL }) => {
                 </div>
             </section>
 
-            {/* Footer avec Liens Légaux Google & Confidentialité */}
-            <footer className="bg-slate-950 text-slate-400 py-10 px-6 border-t border-slate-800 relative z-10 text-xs">
-                <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="font-medium">
-                        © {new Date().getFullYear()} Mysterious Classroom. Tous droits réservés.
-                    </p>
-                    <div className="flex items-center gap-6 font-semibold">
-                        <button onClick={() => navigate('/terms')} className="hover:text-white transition">
-                            Conditions d'Utilisation
-                        </button>
-                        <span className="text-slate-700">•</span>
-                        <button onClick={() => navigate('/privacy')} className="hover:text-white transition">
-                            Politique de Confidentialité
-                        </button>
-                    </div>
-                </div>
-            </footer>
+            {/* Footer avec Liens Légaux & Navigation */}
+            <Footer />
         </div>
     );
 };

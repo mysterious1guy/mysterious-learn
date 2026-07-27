@@ -74,7 +74,7 @@ const MainLayout = ({ user, onLogout, onSearch, progressions }) => {
         <Outlet />
       </main>
 
-      {currentView !== 'course' && <Footer />}
+      {!['course', 'home', 'about', 'contact', 'privacy', 'terms'].includes(currentView) && <Footer />}
 
       {/* Moniteur d'utilisation */}
       <UsageMonitor

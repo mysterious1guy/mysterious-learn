@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Github, Twitter, Linkedin, Mail, Heart, Code, Sparkles } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, Heart, Code, Sparkles, Compass, ShieldCheck } from 'lucide-react';
 import AnimatedLogo from './AnimatedLogo';
 import { API_URL } from '../config';
 import { useLanguage } from '../context/LanguageContext';
@@ -27,9 +27,9 @@ const Footer = () => {
   }, [API_URL]);
 
   const socialLinks = [
-    { icon: Github, href: '#', label: 'GitHub' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
+    { icon: Github, href: 'https://github.com/mysterious1guy', label: 'GitHub' },
+    { icon: Twitter, href: 'https://x.com', label: 'Twitter' },
+    { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
     { icon: Mail, href: 'mailto:mysteriousclassroom@gmail.com', label: 'Email' }
   ];
 
@@ -56,36 +56,39 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent border-t border-gray-800">
-      {/* Effet de brillance */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5" />
+    <footer className="relative bg-slate-950 text-slate-100 border-t border-slate-800/80 z-20">
+      {/* Effet d'ambiance en arrière-plan */}
+      <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/20 via-slate-950 to-slate-950 pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
 
-          {/* Section À propos */}
+          {/* Section 1: À propos du site */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >
             <div className="flex items-center gap-3">
               <AnimatedLogo size="medium" />
-              <h3 className="text-xl font-bold text-white">{c.siteName}</h3>
+              <h3 className="text-xl font-black text-white tracking-tight">{c.siteName}</h3>
             </div>
 
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-slate-300 text-sm leading-relaxed font-medium">
               {t('footer.innovative_platform') || c.footerText}
             </p>
 
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3 pt-2">
               {socialLinks.map((social) => (
                 <motion.a
                   key={social.label}
                   href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
                   aria-label={social.label}
-                  className="w-10 h-10 bg-gray-800/50 border border-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
+                  className="w-10 h-10 bg-slate-900 border border-slate-700/80 rounded-xl flex items-center justify-center text-slate-300 hover:text-white hover:border-indigo-500 hover:bg-indigo-500/20 transition-all duration-300 shadow-sm"
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -95,21 +98,22 @@ const Footer = () => {
             </div>
           </motion.div>
 
-          {/* Section Créateur */}
+          {/* Section 2: Le Créateur */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="space-y-4"
           >
-            <h4 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Code size={18} className="text-blue-400" />
+            <h4 className="text-lg font-bold text-white flex items-center gap-2">
+              <Code size={20} className="text-indigo-400" />
               {t('footer.creator') || t('footer_extended.creator') || 'Créateur'}
             </h4>
 
-            <div className="bg-gray-800/30 border border-gray-700 rounded-xl p-4 space-y-3">
+            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 space-y-3 shadow-lg">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center overflow-hidden">
+                <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center overflow-hidden shrink-0 border border-indigo-400/30">
                   <img
                     src={c.creatorAvatar && c.creatorAvatar.length > 10 ? c.creatorAvatar : "/creator.jpg"}
                     alt="Creator"
@@ -121,17 +125,17 @@ const Footer = () => {
                   />
                 </div>
                 <div>
-                  <h5 className="text-white font-medium">{c.creatorName}</h5>
-                  <p className="text-gray-400 text-sm">{t('footer_extended.creator_title') || t('footer.creator_title') || c.creatorTitle}</p>
+                  <h5 className="text-white font-bold text-base">{c.creatorName}</h5>
+                  <p className="text-indigo-400 text-xs font-semibold">{t('footer_extended.creator_title') || t('footer.creator_title') || c.creatorTitle}</p>
                 </div>
               </div>
 
-              <div className="space-y-2 text-sm text-gray-400">
+              <div className="space-y-2 text-xs text-slate-300 font-medium pt-1">
                 {bioLines.map((line, i) => (
-                  <p key={i} className="flex items-center gap-2">
-                    {i === 0 && <Sparkles size={14} className="text-yellow-400 shrink-0" />}
-                    {i === 1 && <Heart size={14} className="text-red-400 shrink-0" />}
-                    {i === 2 && <Code size={14} className="text-green-400 shrink-0" />}
+                  <p key={i} className="flex items-start gap-2 leading-relaxed">
+                    {i === 0 && <Sparkles size={14} className="text-yellow-400 shrink-0 mt-0.5" />}
+                    {i === 1 && <Heart size={14} className="text-red-400 shrink-0 mt-0.5" />}
+                    {i === 2 && <Code size={14} className="text-emerald-400 shrink-0 mt-0.5" />}
                     <span>{line}</span>
                   </p>
                 ))}
@@ -139,92 +143,83 @@ const Footer = () => {
             </div>
           </motion.div>
 
-          {/* Section Liens & Technologies */}
+          {/* Section 3: Navigation & Stack Technique */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="space-y-6"
           >
-            {/* Liens essentiels */}
+            {/* Liens Utiles de Navigation */}
             <div>
-              <h4 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
-                <Sparkles size={18} className="text-purple-400" />
-                {t('footer.technologies') || t('footer_extended.technologies') || 'Liens Utiles'}
+              <h4 className="text-lg font-bold text-white flex items-center gap-2 mb-3">
+                <Compass size={20} className="text-purple-400" />
+                {t('footer.quick_links') || 'Navigation'}
               </h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <Link to="/about" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
-                  → À propos
+                <Link to="/about" className="text-slate-300 hover:text-indigo-400 font-semibold transition hover:translate-x-1 flex items-center gap-1.5 py-1">
+                  <span className="text-indigo-500">→</span> À propos
                 </Link>
-                <Link to="/contact" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
-                  → Contact
+                <Link to="/contact" className="text-slate-300 hover:text-indigo-400 font-semibold transition hover:translate-x-1 flex items-center gap-1.5 py-1">
+                  <span className="text-indigo-500">→</span> Contact
                 </Link>
-                <Link to="/privacy" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
-                  → Confidentialité
+                <Link to="/privacy" className="text-slate-300 hover:text-indigo-400 font-semibold transition hover:translate-x-1 flex items-center gap-1.5 py-1">
+                  <span className="text-indigo-500">→</span> Confidentialité
                 </Link>
-                <Link to="/terms" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
-                  → CGU
+                <Link to="/terms" className="text-slate-300 hover:text-indigo-400 font-semibold transition hover:translate-x-1 flex items-center gap-1.5 py-1">
+                  <span className="text-indigo-500">→</span> CGU
                 </Link>
-                <Link to="/dashboard" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
-                  → Tableau de bord
+                <Link to="/dashboard" className="text-slate-300 hover:text-indigo-400 font-semibold transition hover:translate-x-1 flex items-center gap-1.5 py-1">
+                  <span className="text-indigo-500">→</span> Tableau de bord
                 </Link>
-                <Link to="/terminal-simulator" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
-                  → Terminal Linux
+                <Link to="/terminal-simulator" className="text-slate-300 hover:text-indigo-400 font-semibold transition hover:translate-x-1 flex items-center gap-1.5 py-1">
+                  <span className="text-indigo-500">→</span> Terminal Linux
                 </Link>
               </div>
             </div>
 
-            {/* Technologies */}
+            {/* Stack Technique */}
             <div>
-              <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Stack Technique</h4>
-              <div className="grid grid-cols-2 gap-2">
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-slate-400" />
+                Stack Technique
+              </h4>
+              <div className="flex flex-wrap gap-1.5">
                 {c.technologies.map((tech) => (
-                  <motion.div
+                  <span
                     key={tech}
-                    className="bg-gray-800/30 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
-                    whileHover={{ scale: 1.05 }}
+                    className="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs font-medium text-slate-200 hover:border-indigo-500/50 hover:bg-indigo-500/10 transition-all duration-300 shadow-sm"
                   >
                     {tech}
-                  </motion.div>
+                  </span>
                 ))}
               </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Copyright */}
+        {/* Copyright Bar Unique & Épurée */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-12 pt-8 border-t border-gray-800"
+          className="mt-12 pt-6 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400"
         >
-          {/* Liens légaux en bas */}
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-6 text-xs text-gray-500">
-            <Link to="/about" className="hover:text-white transition">À propos</Link>
-            <span>·</span>
-            <Link to="/contact" className="hover:text-white transition">Contact</Link>
-            <span>·</span>
-            <Link to="/privacy" className="hover:text-white transition">Politique de confidentialité</Link>
-            <span>·</span>
-            <Link to="/terms" className="hover:text-white transition">Conditions d'utilisation</Link>
+          <div className="text-center md:text-left">
+            <p className="font-medium text-slate-300">
+              © {currentYear} {c.siteName}. {t('footer.platform_created_by') || 'Plateforme créée par'} <strong className="text-white">{c.creatorName}</strong>.
+            </p>
+            <p className="text-slate-500 text-[11px] mt-0.5">
+              {c.creatorName} • {t('footer_extended.creator_title') || t('footer.creator_title') || c.creatorTitle} • {t('footer.age_label') || "18 ans"}
+            </p>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-center md:text-left">
-              <p className="text-gray-400 text-sm">
-                © {currentYear} {c.siteName}. {t('footer.platform_created_by') || 'Plateforme créée par'} {c.creatorName}.
-              </p>
-              <p className="text-gray-500 text-xs mt-1">
-                {c.creatorName} • {t('footer_extended.creator_title') || t('footer.creator_title') || c.creatorTitle} • {t('footer.age_label') || "18 ans"}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4 text-gray-500 text-xs">
-              <span>{t('footer.made_with_passion') || "Fait avec passion et l'aide de l'IA"}</span>
-              <span>•</span>
-              <span>{t('footer.fullstack_role') || "Développeur Full-Stack"}</span>
-            </div>
+          <div className="flex items-center gap-4 text-slate-400 font-medium text-[11px]">
+            <span>{t('footer.made_with_passion') || "Fait avec passion et l'aide de l'IA"}</span>
+            <span>•</span>
+            <span className="text-indigo-400">{t('footer.fullstack_role') || "Développeur Full-Stack"}</span>
           </div>
         </motion.div>
       </div>

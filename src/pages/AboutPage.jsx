@@ -4,6 +4,7 @@ import {
     ArrowLeft, BookOpen, Terminal, Shield, Users, Target, 
     Sparkles, Heart, Globe, Code2, Zap, Award, Mail
 } from 'lucide-react';
+import Footer from '../components/Footer';
 
 const AboutPage = () => {
     const stats = [
@@ -219,6 +220,8 @@ const AboutPage = () => {
                     </Link>
                 </div>
             </div>
+
+            <Footer />
         </div>
     );
 };

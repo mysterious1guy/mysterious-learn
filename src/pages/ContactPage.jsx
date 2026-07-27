@@ -5,6 +5,7 @@ import {
     ArrowLeft, Mail, MessageSquare, Github, Linkedin, 
     Twitter, Clock, CheckCircle, Send, AlertCircle, User, FileText
 } from 'lucide-react';
+import Footer from '../components/Footer';
 import { API_URL } from '../config';
 
 const ContactPage = () => {
@@ -282,6 +283,7 @@ const ContactPage = () => {
                     </div>
                 </motion.div>
             </div>
+            <Footer />
         </div>
     );
 };
