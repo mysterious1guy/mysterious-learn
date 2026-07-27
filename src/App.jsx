@@ -11,6 +11,8 @@ import AuthLayout from './layouts/AuthLayout';
 import HomePage from './pages/HomePage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 import AuthPage from './pages/AuthPage';
 import CallbackPage from './pages/CallbackPage';
 import OnboardingPage from './pages/OnboardingPage';
@@ -220,6 +222,8 @@ function App() {
                   <Route path="/" element={<HomePage API_URL={API_URL} />} />
                   <Route path="/privacy" element={<PrivacyPage />} />
                   <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
                   <Route path="/auth" element={
                     user ? <Navigate to={user.hasCompletedOnboarding ? "/dashboard" : "/onboarding"} replace /> :
                       <AuthPage user={user} setUser={handleUpdateUser} API_URL={API_URL} setToast={setToast} />

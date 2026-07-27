@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Github, Twitter, Linkedin, Mail, Heart, Code, Sparkles } from 'lucide-react';
 import AnimatedLogo from './AnimatedLogo';
 import { API_URL } from '../config';
@@ -138,28 +139,55 @@ const Footer = () => {
             </div>
           </motion.div>
 
-          {/* Section Technologies */}
+          {/* Section Liens & Technologies */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-4"
+            className="space-y-6"
           >
-            <h4 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Sparkles size={18} className="text-purple-400" />
-              {t('footer.technologies') || t('footer_extended.technologies') || 'Technologies'}
-            </h4>
+            {/* Liens essentiels */}
+            <div>
+              <h4 className="text-lg font-semibold text-white flex items-center gap-2 mb-4">
+                <Sparkles size={18} className="text-purple-400" />
+                {t('footer.technologies') || t('footer_extended.technologies') || 'Liens Utiles'}
+              </h4>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <Link to="/about" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
+                  → À propos
+                </Link>
+                <Link to="/contact" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
+                  → Contact
+                </Link>
+                <Link to="/privacy" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
+                  → Confidentialité
+                </Link>
+                <Link to="/terms" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
+                  → CGU
+                </Link>
+                <Link to="/dashboard" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
+                  → Tableau de bord
+                </Link>
+                <Link to="/terminal-simulator" className="text-gray-400 hover:text-white transition hover:translate-x-1 flex items-center gap-1">
+                  → Terminal Linux
+                </Link>
+              </div>
+            </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              {c.technologies.map((tech) => (
-                <motion.div
-                  key={tech}
-                  className="bg-gray-800/30 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  {tech}
-                </motion.div>
-              ))}
+            {/* Technologies */}
+            <div>
+              <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Stack Technique</h4>
+              <div className="grid grid-cols-2 gap-2">
+                {c.technologies.map((tech) => (
+                  <motion.div
+                    key={tech}
+                    className="bg-gray-800/30 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 hover:border-blue-500/50 hover:bg-blue-500/10 transition-all duration-300"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    {tech}
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>
