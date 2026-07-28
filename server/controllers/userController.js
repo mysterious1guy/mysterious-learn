@@ -41,28 +41,30 @@ const getLeaderboard = async (req, res) => {
       ? Math.max(highestRealUserXp + 45, 450)
       : Math.max(Math.round(highestRealUserXp * 0.95), 400);
 
-    // Profils de bots avec échelonnage d'XP
+    // Profils de bots avec échelonnage d'XP — avatars cohérents avec le genre
     const botRawData = [
-      { firstName: "Alexandre", lastName: "Dubois", multiplier: 1.0, streak: 42, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Fatou", lastName: "Sow", multiplier: 0.92, streak: 38, avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "David", lastName: "Miller", multiplier: 0.85, streak: 31, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Elena", lastName: "Rostova", multiplier: 0.78, streak: 29, avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Ousmane", lastName: "Diallo", multiplier: 0.72, streak: 26, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Kaito", lastName: "Tanaka", multiplier: 0.65, streak: 24, avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Sophie", lastName: "Laurent", multiplier: 0.60, streak: 21, avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Amadou", lastName: "Ndiaye", multiplier: 0.54, streak: 19, avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Sarah", lastName: "Conner", multiplier: 0.48, streak: 17, avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Lucas", lastName: "Martin", multiplier: 0.42, streak: 15, avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Aïcha", lastName: "Camara", multiplier: 0.38, streak: 14 },
-      { firstName: "Viktor", lastName: "Novak", multiplier: 0.34, streak: 12 },
-      { firstName: "Claire", lastName: "Moreau", multiplier: 0.30, streak: 11 },
-      { firstName: "Ibrahima", lastName: "Ba", multiplier: 0.26, streak: 10 },
-      { firstName: "Yuki", lastName: "Sato", multiplier: 0.22, streak: 9 },
-      { firstName: "Marcus", lastName: "Vance", multiplier: 0.18, streak: 8 },
-      { firstName: "Ndeye", lastName: "Diop", multiplier: 0.15, streak: 7 },
-      { firstName: "Mateo", lastName: "Silva", multiplier: 0.12, streak: 6 },
-      { firstName: "Chloe", lastName: "Bennett", multiplier: 0.10, streak: 5 },
-      { firstName: "Babacar", lastName: "Faye", multiplier: 0.08, streak: 4 }
+      // HOMMES
+      { firstName: "Alexandre", lastName: "Dubois",  multiplier: 1.00, streak: 42, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "David",     lastName: "Miller",  multiplier: 0.85, streak: 31, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Ousmane",   lastName: "Diallo",  multiplier: 0.72, streak: 26, avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Kaito",     lastName: "Tanaka",  multiplier: 0.65, streak: 24, avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Amadou",    lastName: "Ndiaye",  multiplier: 0.54, streak: 19, avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Lucas",     lastName: "Martin",  multiplier: 0.42, streak: 15, avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Viktor",    lastName: "Novak",   multiplier: 0.34, streak: 12, avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Ibrahima",  lastName: "Ba",      multiplier: 0.26, streak: 10, avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Marcus",    lastName: "Vance",   multiplier: 0.18, streak:  8, avatar: "https://images.unsplash.com/photo-1463453091185-61582044d556?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Mateo",     lastName: "Silva",   multiplier: 0.12, streak:  6, avatar: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Babacar",   lastName: "Faye",    multiplier: 0.08, streak:  4, avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80" },
+      // FEMMES
+      { firstName: "Fatou",     lastName: "Sow",     multiplier: 0.92, streak: 38, avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Elena",     lastName: "Rostova", multiplier: 0.78, streak: 29, avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Sophie",    lastName: "Laurent", multiplier: 0.60, streak: 21, avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Sarah",     lastName: "Conner",  multiplier: 0.48, streak: 17, avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Aïcha",     lastName: "Camara",  multiplier: 0.38, streak: 14, avatar: "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Claire",    lastName: "Moreau",  multiplier: 0.30, streak: 11, avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Yuki",      lastName: "Sato",    multiplier: 0.22, streak:  9, avatar: "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Ndeye",     lastName: "Diop",    multiplier: 0.15, streak:  7, avatar: "https://images.unsplash.com/photo-1598970434795-0c54fe7c0648?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Chloe",     lastName: "Bennett", multiplier: 0.10, streak:  5, avatar: "https://images.unsplash.com/photo-1598550874175-4d0ef436c909?w=150&auto=format&fit=crop&q=80" }
     ];
 
     const formattedBots = botRawData.map((bot, index) => ({
