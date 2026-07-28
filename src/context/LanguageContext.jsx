@@ -853,15 +853,25 @@ export const translations = {
 };
 
 export const LanguageProvider = ({ children }) => {
-    const [language, setLanguage] = useState(() => {
-        const saved = localStorage.getItem('language');
-        if (saved === 'en' || saved === 'fr') return saved;
-        return 'fr'; // Always default to French for new users
-    });
+    const detectBrowserLanguage = () => {
+        try {
+            const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+            if (browserLang.startsWith('en')) {
+                return 'en';
+            }
+        } catch (e) {}
+        return 'fr';
+    };
+
+    const [language, setLanguage] = useState(() => detectBrowserLanguage());
 
     useEffect(() => {
-        localStorage.setItem('language', language);
-    }, [language]);
+        const handleLangChange = () => {
+            setLanguage(detectBrowserLanguage());
+        };
+        window.addEventListener('languagechange', handleLangChange);
+        return () => window.removeEventListener('languagechange', handleLangChange);
+    }, []);
 
     const t = (key) => {
         const keys = key.split('.');

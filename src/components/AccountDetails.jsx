@@ -721,41 +721,6 @@ ${JSON.stringify(exportObj, null, 2)}
             </div>
           </div>
 
-          <div className="p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <p className="text-sm font-bold text-slate-800 dark:text-white">{t('profile_fields.language') || "Langue de l'interface"}</p>
-              <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile_fields.language_desc') || "Choisir la langue d'affichage globale du site (Français / English)."}</p>
-            </div>
-            <select
-              value={language || user?.preferences?.language || 'fr'}
-              onChange={async (e) => {
-                const val = e.target.value;
-                setLanguage(val);
-                try {
-                  const res = await fetch(`${API_URL}/auth/profile`, {
-                    method: 'PUT',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'Authorization': `Bearer ${user.token}`
-                    },
-                    body: JSON.stringify({ preferences: { ...user.preferences, language: val } })
-                  });
-                  if (res.ok) {
-                    const updated = await res.json();
-                    onUpdateUser(updated);
-                    setToast({ message: val === 'en' ? 'Language switched to English!' : 'Langue modifiée en Français !', type: 'success' });
-                  }
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-              className="px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm font-bold text-white focus:border-blue-500 outline-none transition-all shadow-sm cursor-pointer"
-            >
-              <option value="fr">Français 🇫🇷</option>
-              <option value="en">English 🇬🇧</option>
-            </select>
-          </div>
-
           <div className="p-5 bg-slate-50 dark:bg-gray-800/50 rounded-2xl border border-slate-200 dark:border-gray-700/50">
             <div className="space-y-1 mb-4">
               <p className="text-sm font-bold text-slate-800 dark:text-white">{t('profile_fields.theme') || 'Thème Dynamique'}</p>
