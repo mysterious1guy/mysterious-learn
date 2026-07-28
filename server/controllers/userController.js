@@ -34,12 +34,12 @@ const getLeaderboard = async (req, res) => {
       }
     }
 
-    // Calcul dynamique de l'XP de base pour le Top 1 des bots
-    // Si l'utilisateur réel est ACTIF, les bots restent à ~92% de son score.
-    // Si l'utilisateur réel est INACTIF (> 24h), le bot #1 dépasse l'utilisateur (+ 250 XP) !
+    // Calcul dynamique et équilibré de l'XP pour les bots (sans exagération)
+    // Si l'utilisateur réel est ACTIF, les bots restent juste derrière (~95% de son score).
+    // Si l'utilisateur réel est INACTIF (> 24h), le bot #1 prend légèrement le dessus (+45 XP).
     const baseBotTopXp = isTopUserInactive 
-      ? Math.max(highestRealUserXp + 250, 1500)
-      : Math.max(Math.round(highestRealUserXp * 0.92), 1200);
+      ? Math.max(highestRealUserXp + 45, 450)
+      : Math.max(Math.round(highestRealUserXp * 0.95), 400);
 
     // Profils de bots avec échelonnage d'XP
     const botRawData = [

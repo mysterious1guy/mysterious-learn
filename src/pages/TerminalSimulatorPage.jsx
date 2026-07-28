@@ -864,8 +864,6 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 triggerStepOrMissionValidation(lower, data);
             } else {
                 throw new Error("Erreur exécution");
-            } else {
-                throw new Error("Erreur exécution");
             }
         } catch (err) {
             console.error("Erreur commande terminal:", err);
