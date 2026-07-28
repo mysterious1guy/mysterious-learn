@@ -72,20 +72,6 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
             disableBeacon: true,
         },
         {
-            target: '#tour-dashboard-terminal',
-            content: (
-                <div className="p-1 max-w-sm">
-                    <h3 className="text-lg font-bold text-emerald-500 mb-2 uppercase tracking-wide">
-                        {t('onboardingTour.terminal_title') || "Salle d'Entraînement CLI (Noyau Linux)"}
-                    </h3>
-                    <p className="text-slate-700 text-sm font-medium">
-                        {t('onboardingTour.terminal_desc') || "La console Linux est directement intégrée au cœur de votre Tableau de bord ! Entraînez-vous en ligne de commande avec l'aide de Mysterious Copilot."}
-                    </p>
-                </div>
-            ),
-            disableBeacon: true,
-        },
-        {
             target: '#tour-notifications',
             content: (
                 <div className="p-1 max-w-sm">
@@ -164,21 +150,6 @@ const OnboardingTour = ({ onFinish, onSkip, stepIndex, onStepChange }) => {
                 </div>
             ),
             placement: 'bottom',
-            disableBeacon: true,
-        },
-        {
-            target: '#tour-dashboard-terminal',
-            content: (
-                <div className="p-2">
-                    <h3 className="text-base font-black text-emerald-600 mb-2 uppercase tracking-wide">
-                        🖥️ Terminal Linux Intégré
-                    </h3>
-                    <p className="text-slate-700 text-sm font-medium leading-relaxed">
-                        Un vrai terminal Linux est embarqué directement dans ton tableau de bord. Entraîne-toi en commandes réelles avec l'aide de l'IA Copilot !
-                    </p>
-                </div>
-            ),
-            placement: 'top',
             disableBeacon: true,
         },
         {

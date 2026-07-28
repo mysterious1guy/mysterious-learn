@@ -475,15 +475,18 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="w-full px-2 sm:px-4 lg:px-8 mb-8"
+                onClick={() => {
+                    document.getElementById('tour-dashboard-terminal')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full px-2 sm:px-4 lg:px-8 mb-8 cursor-pointer group"
             >
-                <div className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-xl shadow-indigo-900/30">
+                <div className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-xl shadow-indigo-900/30 group-hover:border-blue-500/50 transition-all duration-300">
                     {/* Glow */}
                     <div className="absolute -top-20 -left-20 w-72 h-72 bg-blue-600/10 blur-[80px] rounded-full pointer-events-none" />
                     <div className="absolute -bottom-20 -right-10 w-64 h-64 bg-indigo-500/10 blur-[80px] rounded-full pointer-events-none" />
 
                     {/* Icon */}
-                    <div className="relative shrink-0 w-16 h-16 md:w-20 md:h-20 bg-slate-800 rounded-2xl flex items-center justify-center ring-2 ring-blue-500/30 shadow-lg">
+                    <div className="relative shrink-0 w-16 h-16 md:w-20 md:h-20 bg-slate-800 rounded-2xl flex items-center justify-center ring-2 ring-blue-500/30 shadow-lg group-hover:scale-105 transition-transform">
                         <svg className="w-8 h-8 md:w-10 md:h-10 text-emerald-400 font-mono" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
                         </svg>
@@ -502,7 +505,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                 Ordinateurs & Serveurs
                             </span>
                         </div>
-                        <h2 className="text-xl md:text-2xl font-black text-white tracking-tight mb-1">
+                        <h2 className="text-xl md:text-2xl font-black text-white tracking-tight mb-1 group-hover:text-blue-400 transition-colors">
                             Ligne de Commande & Linux
                         </h2>
                         <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-xl">
@@ -510,11 +513,11 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                         </p>
                     </div>
 
-                    {/* CTA arrow */}
-                    <div className="shrink-0 flex items-center gap-2 text-blue-400 font-black text-sm uppercase tracking-widest">
-                        <span className="hidden md:inline">Commencer</span>
-                        <div className="w-10 h-10 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
-                            <svg className="w-5 h-5 text-blue-400 translate-y-1 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    {/* CTA arrow button */}
+                    <div className="shrink-0 flex items-center gap-2 text-blue-400 font-black text-sm uppercase tracking-widest bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 px-5 py-3 rounded-2xl transition-all group-hover:scale-105">
+                        <span>Commencer</span>
+                        <div className="w-7 h-7 rounded-full bg-blue-600/30 flex items-center justify-center">
+                            <svg className="w-4 h-4 text-blue-400 translate-y-0.5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                             </svg>
                         </div>

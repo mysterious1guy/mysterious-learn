@@ -294,8 +294,12 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         };
     }, [isFullscreen]);
 
-    // Initialisation & Persistance de l'historique du terminal
+    // Initialisation & Persistance de l'historique du terminal selon le mode (Libre vs Apprentissage)
     useEffect(() => {
+        setCmdStack([]);
+        setHistoryIndex(-1);
+        setInput('');
+
         if (activeMission) {
             setHistory([
                 { type: 'sys', text: `=== PROJET : ${activeMission.title.toUpperCase()} ===` },
@@ -305,8 +309,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             ]);
             setShowHint(false);
         } else {
-            // Mode entraînement libre : charger l'historique sauvegardé dans localStorage
-            const savedHistoryKey = `terminal_history_${displayUsername}`;
+            const savedHistoryKey = `terminal_history_${terminalMode}_${displayUsername}`;
             let loadedHistory = null;
             try {
                 const stored = localStorage.getItem(savedHistoryKey);
@@ -318,30 +321,40 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             if (loadedHistory && Array.isArray(loadedHistory) && loadedHistory.length > 0) {
                 setHistory(loadedHistory);
             } else {
-                setHistory([
-                    { type: 'sys', text: '=== MYSTERIOUS TERMINAL CLI (Console Officielle) ===' },
-                    { type: 'sys', text: `Bienvenue ${displayUsername} ! Répertoire personnel : ${userHomePath}` },
-                    { type: 'sys', text: 'Toutes les commandes Linux réelles sont supportées. Votre historique est sauvegardé.' },
-                    { type: 'mission', text: '💡 Tapez "clear" pour effacer l\'historique et recommencer à zéro.' },
-                    { type: 'output', text: '[+] Interprète bash prêt. Tapez votre commande...' }
-                ]);
+                if (terminalMode === 'apprentissage') {
+                    setHistory([
+                        { type: 'sys', text: '=== CONSOLE D\'APPRENTISSAGE LINUX (Mode Mission Infini) ===' },
+                        { type: 'sys', text: `Bienvenue ${displayUsername} ! Suivez la mission guidée ci-dessus.` },
+                        { type: 'sys', text: 'Chaque commande exécutée avec succès débloque l\'étape suivante et rapporte de l\'XP.' },
+                        { type: 'mission', text: '💡 Tapez "clear" pour réinitialiser la console d\'apprentissage.' },
+                        { type: 'output', text: '[+] Console d\'apprentissage active. Prêt pour l\'étape...' }
+                    ]);
+                } else {
+                    setHistory([
+                        { type: 'sys', text: '=== MYSTERIOUS TERMINAL CLI (Console Officielle - Mode Libre) ===' },
+                        { type: 'sys', text: `Bienvenue ${displayUsername} ! Répertoire personnel : ${userHomePath}` },
+                        { type: 'sys', text: 'Toutes les commandes Linux réelles sont supportées dans votre sandbox dédiée.' },
+                        { type: 'mission', text: '💡 Tapez "clear" pour effacer l\'historique du mode libre.' },
+                        { type: 'output', text: '[+] Interprète bash prêt (Mode Libre). Tapez votre commande...' }
+                    ]);
+                }
             }
         }
         setTimeout(() => {
             inputRef.current?.focus();
         }, 100);
-    }, [activeMission, displayUsername, userHomePath]);
+    }, [activeMission, terminalMode, displayUsername, userHomePath]);
 
-    // Sauvegarder l'historique dans localStorage après chaque modification
+    // Sauvegarder l'historique dans localStorage après chaque modification pour le mode actif
     useEffect(() => {
         if (!activeMission && history.length > 0) {
             try {
-                const savedHistoryKey = `terminal_history_${displayUsername}`;
+                const savedHistoryKey = `terminal_history_${terminalMode}_${displayUsername}`;
                 // Conserver les 120 dernières entrées pour des performances optimales
                 localStorage.setItem(savedHistoryKey, JSON.stringify(history.slice(-120)));
             } catch (e) {}
         }
-    }, [history, activeMission, displayUsername]);
+    }, [history, activeMission, terminalMode, displayUsername]);
 
     // Scroll automatique du terminal & maintien du focus
     useEffect(() => {
@@ -512,6 +525,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             setHistory([]);
             if (!activeMission) {
                 try {
+                    localStorage.removeItem(`terminal_history_${terminalMode}_${displayUsername}`);
                     localStorage.removeItem(`terminal_history_${displayUsername}`);
                 } catch (e) {}
             }
