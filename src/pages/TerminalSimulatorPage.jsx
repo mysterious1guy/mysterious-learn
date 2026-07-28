@@ -9,6 +9,7 @@ import {
 import AIAssistant from '../components/AIAssistant';
 import NanoEditor from '../components/terminal/NanoEditor';
 import TerminalConsole from '../components/terminal/TerminalConsole';
+import { getMissionByStep } from '../data/learningMissions';
 
 export const ALL_PROJECT_MISSIONS = [
     {
@@ -212,6 +213,20 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
     const [showHint, setShowHint] = useState(false);
     const [completedMissions, setCompletedMissions] = useState([]);
     const [score, setScore] = useState(user?.xp || 0);
+
+    // Mode Apprentissage Infini
+    const [learningStep, setLearningStep] = useState(() => {
+        try {
+            const saved = localStorage.getItem(`terminal_learning_step_${displayUsername}`);
+            return saved ? parseInt(saved, 10) : 0;
+        } catch (e) {
+            return 0;
+        }
+    });
+
+    const activeLearningMission = useMemo(() => {
+        return getMissionByStep(learningStep);
+    }, [learningStep]);
 
     // Mode Plein écran et Historique des commandes (Flèches Haut / Bas)
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -778,6 +793,62 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                         }
                     }
                 }
+
+                // Validation automatique pour le Mode Apprentissage Infini
+                if (terminalMode === 'apprentissage' && !activeMission && activeLearningMission) {
+                    const expectedCmd = (activeLearningMission.expectedCommand || '').toLowerCase().trim();
+                    const userCmdLower = lower.trim();
+
+                    const isStepCompleted = userCmdLower === expectedCmd || userCmdLower.startsWith(expectedCmd) || 
+                        (expectedCmd === 'pwd' && userCmdLower === 'pwd') ||
+                        (expectedCmd === 'ls' && userCmdLower.startsWith('ls')) ||
+                        (expectedCmd === 'whoami' && userCmdLower.includes('whoami')) ||
+                        (expectedCmd.startsWith('mkdir') && userCmdLower.startsWith('mkdir')) ||
+                        (expectedCmd.startsWith('cd') && userCmdLower.startsWith('cd')) ||
+                        (expectedCmd.startsWith('touch') && userCmdLower.startsWith('touch')) ||
+                        (expectedCmd.startsWith('cp') && userCmdLower.startsWith('cp')) ||
+                        (expectedCmd.startsWith('mv') && userCmdLower.startsWith('mv')) ||
+                        (expectedCmd.startsWith('rm') && userCmdLower.startsWith('rm')) ||
+                        (expectedCmd.startsWith('cat') && userCmdLower.startsWith('cat')) ||
+                        (expectedCmd.startsWith('chmod') && userCmdLower.startsWith('chmod')) ||
+                        (expectedCmd.startsWith('sudo') && userCmdLower.startsWith('sudo')) ||
+                        (expectedCmd.startsWith('ps') && userCmdLower.startsWith('ps')) ||
+                        (expectedCmd.startsWith('df') && userCmdLower.startsWith('df')) ||
+                        (expectedCmd.startsWith('du') && userCmdLower.startsWith('du')) ||
+                        (expectedCmd.startsWith('uname') && userCmdLower.startsWith('uname')) ||
+                        (expectedCmd.startsWith('history') && userCmdLower.startsWith('history')) ||
+                        (expectedCmd.startsWith('ping') && userCmdLower.startsWith('ping')) ||
+                        (expectedCmd.startsWith('ssh') && userCmdLower.startsWith('ssh'));
+
+                    if (isStepCompleted) {
+                        const gained = activeLearningMission.xpReward || 50;
+                        const newScore = score + gained;
+                        setScore(newScore);
+
+                        const nextStepIndex = learningStep + 1;
+                        setLearningStep(nextStepIndex);
+                        try {
+                            localStorage.setItem(`terminal_learning_step_${displayUsername}`, nextStepIndex.toString());
+                        } catch (e) {}
+
+                        const nextMission = getMissionByStep(nextStepIndex);
+
+                        setHistory(prev => [
+                            ...prev,
+                            { type: 'success', text: `[+] 🎉 BRAVO ! Étape ${activeLearningMission.id} Validée : "${activeLearningMission.title}" (+${gained} XP) !` },
+                            { type: 'sys', text: `[🎯 ÉTAPE SUIVANTE ${nextMission.id}] : ${nextMission.title}` },
+                            { type: 'sys', text: `🎯 Scénario : ${nextMission.scenario}` },
+                            { type: 'mission', text: `💡 Explication : ${nextMission.explanation}` }
+                        ]);
+
+                        if (setUser) {
+                            setUser(prev => prev ? ({ ...prev, xp: newScore }) : prev);
+                        }
+                        if (setToast) {
+                            setToast({ message: `🎯 Étape ${activeLearningMission.id} complétée ! +${gained} XP`, type: 'success' });
+                        }
+                    }
+                }
             } else {
                 throw new Error("Erreur exécution");
             }
@@ -1034,6 +1105,81 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                         <span>Insérer "{activeMission.expectedCommand}" dans le terminal</span>
                                     </button>
                                 )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Carte d'Apprentissage Didactique Infini (en Mode Apprentissage) */}
+                    {terminalMode === 'apprentissage' && !activeMission && activeLearningMission && (
+                        <div className="bg-gradient-to-r from-indigo-950/90 via-slate-900 to-slate-900 border border-indigo-500/40 rounded-2xl p-4 sm:p-5 text-indigo-100 shadow-2xl space-y-3 font-sans">
+                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-indigo-500/20 pb-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="px-3 py-1 bg-indigo-600 text-white rounded-lg font-black text-xs uppercase tracking-wider shadow">
+                                        ⚡ Étape {activeLearningMission.id} / Infini
+                                    </div>
+                                    <span className="text-xs text-indigo-300 font-semibold bg-indigo-950/60 px-2.5 py-1 rounded border border-indigo-500/30">
+                                        📚 {activeLearningMission.category}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        type="button"
+                                        disabled={learningStep === 0}
+                                        onClick={() => {
+                                            const prevStep = Math.max(0, learningStep - 1);
+                                            setLearningStep(prevStep);
+                                            try { localStorage.setItem(`terminal_learning_step_${displayUsername}`, prevStep.toString()); } catch (e) {}
+                                        }}
+                                        className="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-xs font-bold text-slate-300 transition"
+                                        title="Étape Précédente"
+                                    >
+                                        ⏮️ Précédent
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const nextStep = learningStep + 1;
+                                            setLearningStep(nextStep);
+                                            try { localStorage.setItem(`terminal_learning_step_${displayUsername}`, nextStep.toString()); } catch (e) {}
+                                        }}
+                                        className="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition shadow"
+                                        title="Sauter à l'étape suivante"
+                                    >
+                                        ⏭️ Sauter
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            if (window.confirm("Voulez-vous recommencer la formation Linux depuis l'Étape 1 ?")) {
+                                                setLearningStep(0);
+                                                try { localStorage.setItem(`terminal_learning_step_${displayUsername}`, '0'); } catch (e) {}
+                                            }
+                                        }}
+                                        className="px-2.5 py-1.5 rounded-lg bg-rose-950/60 hover:bg-rose-900 border border-rose-500/30 text-rose-300 text-xs font-bold transition"
+                                        title="Recommencer depuis l'Étape 1"
+                                    >
+                                        🔄 Recommencer
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <h3 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                                    <span>🎯</span>
+                                    <span>{activeLearningMission.title}</span>
+                                </h3>
+                                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-mono bg-slate-950/50 p-2.5 rounded-xl border border-slate-800">
+                                    {activeLearningMission.scenario}
+                                </p>
+                            </div>
+
+                            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+                                <div className="text-amber-300 font-semibold bg-amber-950/40 px-3 py-1.5 rounded-lg border border-amber-500/30">
+                                    💡 <strong>Explication & Indice :</strong> {activeLearningMission.explanation} ({activeLearningMission.hint})
+                                </div>
+                                <div className="text-emerald-400 font-bold bg-emerald-950/50 px-3 py-1.5 rounded-lg border border-emerald-500/30">
+                                    🏆 Récompense : +{activeLearningMission.xpReward} XP
+                                </div>
                             </div>
                         </div>
                     )}
