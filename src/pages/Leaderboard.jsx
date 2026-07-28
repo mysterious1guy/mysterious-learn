@@ -51,13 +51,25 @@ const Leaderboard = ({ user, API_URL, setToast }) => {
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-center space-y-4 mb-12"
+                className="text-center space-y-4 mb-8"
             >
-                <div className="inline-flex items-center justify-center p-4 bg-yellow-500/10 rounded-full mb-4 ring-1 ring-yellow-500/30">
+                <div className="inline-flex items-center justify-center p-4 bg-yellow-500/10 rounded-full mb-2 ring-1 ring-yellow-500/30">
                     <Trophy className="w-12 h-12 text-yellow-500" />
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black italic tracking-tighter">{t('leaderboard.title1') || "Temple de la"} <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">{t('leaderboard.title2') || "Renommée"}</span></h1>
                 <p className="text-gray-400 max-w-lg mx-auto">{t('leaderboard.desc') || "Découvre les meilleurs aventuriers de Mysterious Classroom. Gagne de l'XP en complétant des cours pour grimper dans le classement !"}</p>
+
+                {/* Community Stats Bar (Matching Home Page Stats) */}
+                <div className="flex items-center justify-center gap-6 pt-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full">
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span className="text-blue-400 font-mono text-sm">12,840+</span> Agents Inscrits
+                    </div>
+                    <div className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span className="text-emerald-400 font-mono text-sm">1,420+</span> Opérationnels
+                    </div>
+                </div>
             </motion.div>
 
             {loading ? (
