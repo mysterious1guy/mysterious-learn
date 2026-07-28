@@ -332,32 +332,55 @@ const HomePage = ({ API_URL }) => {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {cyberTopics.map((topic, idx) => (
-                            <motion.div
-                                key={topic.name}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="bg-white border border-slate-200/80 rounded-[2.5rem] p-8 md:p-10 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group flex flex-col items-center text-center relative overflow-hidden"
-                            >
-                                <div className="absolute top-0 left-0 w-full h-1.5 bg-slate-100 group-hover:bg-blue-500 transition-colors duration-500"></div>
-                                <div className={`w-20 h-20 rounded-[1.5rem] flex items-center justify-center mb-8 transition-transform duration-500 group-hover:-translate-y-2 shadow-inner ${topic.bgIcon}`}>
-                                    {topic.icon}
-                                </div>
-                                <span className={`px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest mb-5 border ${topic.color} bg-white shadow-sm`}>
-                                    {topic.tag}
-                                </span>
-                                <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">{topic.name}</h3>
-                                <p className="text-slate-600 text-base font-medium leading-relaxed mb-8 flex-1">
-                                    {topic.desc}
-                                </p>
-                                <div className="w-full pt-5 border-t border-slate-100 flex items-center justify-between mt-auto">
-                                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('home.mission_prep') || "Modules en préparation"}</span>
-                                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
-                                </div>
-                            </motion.div>
-                        ))}
+                        {cyberTopics.map((topic, idx) => {
+                            const isAvailable = idx === 0;
+                            return (
+                                <motion.div
+                                    key={topic.name}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    onClick={isAvailable ? () => navigate('/auth') : undefined}
+                                    className={`bg-white border rounded-[2.5rem] p-8 md:p-10 shadow-sm transition-all duration-500 group flex flex-col items-center text-center relative overflow-hidden
+                                        ${isAvailable
+                                            ? 'border-blue-400/60 shadow-blue-100 hover:shadow-blue-200/80 hover:-translate-y-2 cursor-pointer ring-2 ring-blue-400/20'
+                                            : 'border-slate-200/80 hover:shadow-2xl hover:-translate-y-2'
+                                        }`}
+                                >
+                                    <div className={`absolute top-0 left-0 w-full h-1.5 transition-colors duration-500 ${isAvailable ? 'bg-gradient-to-r from-blue-500 to-indigo-500' : 'bg-slate-100 group-hover:bg-blue-500'}`}></div>
+
+                                    {isAvailable && (
+                                        <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 bg-emerald-500 rounded-full shadow-lg">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                                            <span className="text-[10px] font-black text-white uppercase tracking-widest">Disponible</span>
+                                        </div>
+                                    )}
+
+                                    <div className={`w-20 h-20 rounded-[1.5rem] flex items-center justify-center mb-8 transition-transform duration-500 group-hover:-translate-y-2 shadow-inner ${topic.bgIcon}`}>
+                                        {topic.icon}
+                                    </div>
+                                    <span className={`px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest mb-5 border ${topic.color} bg-white shadow-sm`}>
+                                        {topic.tag}
+                                    </span>
+                                    <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">{topic.name}</h3>
+                                    <p className="text-slate-600 text-base font-medium leading-relaxed mb-8 flex-1">
+                                        {topic.desc}
+                                    </p>
+                                    <div className="w-full pt-5 border-t border-slate-100 flex items-center justify-between mt-auto">
+                                        {isAvailable ? (
+                                            <span className="text-xs font-black text-blue-600 uppercase tracking-widest flex items-center gap-1.5">
+                                                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                                                Accéder au module
+                                            </span>
+                                        ) : (
+                                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('home.mission_prep') || "En préparation"}</span>
+                                        )}
+                                        <div className={`w-2.5 h-2.5 rounded-full ${isAvailable ? 'bg-blue-500' : 'bg-emerald-500'} animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]`} />
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </div>
             </section>

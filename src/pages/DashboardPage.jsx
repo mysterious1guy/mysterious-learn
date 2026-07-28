@@ -470,6 +470,58 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                 </motion.div>
             </div>
 
+            {/* 🟢 Spotlight : Module Linux & Ligne de Commande (seul disponible) */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="w-full px-2 sm:px-4 lg:px-8 mb-8"
+            >
+                <div className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-xl shadow-indigo-900/30">
+                    {/* Glow */}
+                    <div className="absolute -top-20 -left-20 w-72 h-72 bg-blue-600/10 blur-[80px] rounded-full pointer-events-none" />
+                    <div className="absolute -bottom-20 -right-10 w-64 h-64 bg-indigo-500/10 blur-[80px] rounded-full pointer-events-none" />
+
+                    {/* Icon */}
+                    <div className="relative shrink-0 w-16 h-16 md:w-20 md:h-20 bg-slate-800 rounded-2xl flex items-center justify-center ring-2 ring-blue-500/30 shadow-lg">
+                        <svg className="w-8 h-8 md:w-10 md:h-10 text-emerald-400 font-mono" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                        <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center shadow">
+                            <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                        </div>
+                    </div>
+
+                    {/* Text */}
+                    <div className="flex-1 text-center md:text-left">
+                        <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                            <span className="px-3 py-1 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-black uppercase tracking-widest rounded-full">
+                                ✅ Module Disponible
+                            </span>
+                            <span className="px-3 py-1 bg-slate-700/60 text-slate-400 text-[10px] font-bold uppercase tracking-widest rounded-full">
+                                Ordinateurs & Serveurs
+                            </span>
+                        </div>
+                        <h2 className="text-xl md:text-2xl font-black text-white tracking-tight mb-1">
+                            Ligne de Commande & Linux
+                        </h2>
+                        <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-xl">
+                            Maîtrisez le terminal Linux pas à pas — de la navigation de base aux commandes avancées. Le seul module actuellement opérationnel. Lance-toi ci-dessous !
+                        </p>
+                    </div>
+
+                    {/* CTA arrow */}
+                    <div className="shrink-0 flex items-center gap-2 text-blue-400 font-black text-sm uppercase tracking-widest">
+                        <span className="hidden md:inline">Commencer</span>
+                        <div className="w-10 h-10 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
+                            <svg className="w-5 h-5 text-blue-400 translate-y-1 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+
             {/* Intégration Élargie du Terminal CLI Simulator Plein Écran */}
             <div id="tour-dashboard-terminal" className="w-full px-2 sm:px-4 lg:px-8 mb-16">
                 <TerminalSimulatorPage user={user} API_URL={API_URL} />
