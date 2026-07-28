@@ -183,22 +183,25 @@ const deleteUserProfile = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour le niveau de programmation
-// @route   PUT /api/users/level
-const updateProgrammingLevel = async (req, res) => {
+// @desc    Ajouter de l'XP à l'utilisateur (ex: validation d'étape du terminal)
+// @route   POST /api/users/add-xp
+const addXp = async (req, res) => {
   try {
-    const { level } = req.body;
+    const { amount } = req.body;
+    const xpToAdd = parseInt(amount, 10) || 50;
     const user = await User.findById(req.user._id);
     if (!user) {
       return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
-    user.programmingLevel = level;
+    user.xp = (user.xp || 0) + xpToAdd;
+    user.lastActiveAt = new Date();
     await user.save();
-    res.json({ message: 'Niveau mis à jour', level: user.programmingLevel });
+
+    res.json({ message: `+${xpToAdd} XP ajoutés avec succès !`, xp: user.xp });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Erreur serveur' });
+    console.error('❌ Error addXp:', err);
+    res.status(500).json({ message: 'Erreur lors de l\'ajout d\'XP' });
   }
 };
 
-module.exports = { getUsers, deleteUserProfile, updateProgrammingLevel, getLeaderboard };
+module.exports = { getUsers, deleteUserProfile, updateProgrammingLevel, getLeaderboard, addXp };

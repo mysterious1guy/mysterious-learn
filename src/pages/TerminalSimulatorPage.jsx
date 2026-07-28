@@ -356,6 +356,40 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
         }
     }, [history, activeMission, terminalMode, displayUsername]);
 
+    // Auto-synchronisation des XP accumulés en terminal vers la base de données MongoDB
+    useEffect(() => {
+        if (user && learningStep > 0) {
+            const expectedMinXp = learningStep * 50;
+            if ((user.xp || 0) < expectedMinXp) {
+                const token = user?.token || localStorage.getItem('token');
+                if (token) {
+                    fetch(`${API_URL}/users/add-xp`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ amount: expectedMinXp - (user.xp || 0) })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.xp !== undefined) {
+                            setScore(data.xp);
+                            if (setUser) {
+                                setUser(prev => {
+                                    const updated = prev ? ({ ...prev, xp: data.xp }) : prev;
+                                    try { localStorage.setItem('user', JSON.stringify(updated)); } catch (e) {}
+                                    return updated;
+                                });
+                            }
+                        }
+                    })
+                    .catch(err => console.error('❌ Auto-sync XP error:', err));
+                }
+            }
+        }
+    }, [user, learningStep, API_URL]);
+
     // Scroll automatique du terminal & maintien du focus
     useEffect(() => {
         if (outputContainerRef.current) {
@@ -688,6 +722,34 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     if (setUser) {
                         setUser(prev => prev ? ({ ...prev, xp: newScore }) : prev);
                     }
+
+                    // Envoi de la requête d'enregistrement des XP vers le serveur MongoDB
+                    const token = user?.token || localStorage.getItem('token');
+                    if (token) {
+                        fetch(`${API_URL}/users/add-xp`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ amount: gained })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.xp !== undefined) {
+                                setScore(data.xp);
+                                if (setUser) {
+                                    setUser(prev => {
+                                        const updated = prev ? ({ ...prev, xp: data.xp }) : prev;
+                                        try { localStorage.setItem('user', JSON.stringify(updated)); } catch (e) {}
+                                        return updated;
+                                    });
+                                }
+                            }
+                        })
+                        .catch(err => console.error('❌ Error saving XP to server:', err));
+                    }
+
                     if (setToast) {
                         setToast({ message: `🎯 Étape ${activeLearningMission.id} complétée ! +${gained} XP`, type: 'success' });
                     }
