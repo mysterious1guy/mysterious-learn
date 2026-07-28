@@ -80,9 +80,20 @@ const AIAssistant = ({ user, currentView, progressions, API_URL }) => {
 
     const handleDismissMurmur = (e) => {
         e.stopPropagation();
-        dismissedMurmursRef.current.add(currentMurmur);
-        setCurrentMurmur(null);
+        if (currentMurmur) {
+            dismissedMurmursRef.current.add(currentMurmur);
+            setCurrentMurmur(null);
+        }
         if (murmurTimerRef.current) clearTimeout(murmurTimerRef.current);
+    };
+
+    const handleMurmurClick = () => {
+        if (currentMurmur) {
+            dismissedMurmursRef.current.add(currentMurmur);
+            setCurrentMurmur(null);
+        }
+        if (murmurTimerRef.current) clearTimeout(murmurTimerRef.current);
+        setIsCopilotOpen(true);
     };
 
     return (
@@ -94,8 +105,8 @@ const AIAssistant = ({ user, currentView, progressions, API_URL }) => {
                         initial={{ opacity: 0, y: 20, scale: 0.9, x: 20 }}
                         animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
                         exit={{ opacity: 0, y: 20, scale: 0.9, x: 20 }}
-                        className="fixed bottom-28 right-8 z-[200] max-w-[320px] bg-slate-950/40 border border-blue-500/20 backdrop-blur-2xl p-6 rounded-[2.5rem] rounded-br-xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-l-4 border-l-blue-600/50 pointer-events-auto group overflow-hidden"
-                        onClick={() => setIsCopilotOpen(true)}
+                        className="fixed bottom-28 right-8 z-[200] max-w-[320px] bg-slate-950/40 border border-blue-500/20 backdrop-blur-2xl p-6 rounded-[2.5rem] rounded-br-xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-l-4 border-l-blue-600/50 pointer-events-auto group overflow-hidden cursor-pointer"
+                        onClick={handleMurmurClick}
                     >
                         {/* Background Gradient Mesh */}
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 via-transparent to-transparent pointer-none" />
