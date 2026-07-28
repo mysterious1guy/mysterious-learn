@@ -106,19 +106,12 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                         </ul>
                     </div>
 
-                    <div className="pt-2 flex flex-wrap gap-4 justify-center">
+                    <div className="pt-2 flex justify-center">
                         <button
                             onClick={() => navigate('/dashboard')}
                             className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 hover:scale-105 active:scale-95"
                         >
                             Retour au Tableau de bord
-                        </button>
-                        <button
-                            onClick={() => navigate('/terminal-simulator')}
-                            className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-xs sm:text-sm border border-slate-700 transition flex items-center gap-2 hover:scale-105 active:scale-95"
-                        >
-                            <Terminal size={16} />
-                            Terminal Linux Libre
                         </button>
                     </div>
                 </div>
@@ -179,24 +172,15 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                         </div>
                     </div>
 
-                    {/* Section : Cartes des Projets Hacking CLI */}
+                    {/* Section : Cartes des Projets */}
                     <div className="space-y-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-widest">
-                                    <Sparkles size={16} /> GUIDAGE PAR MYSTERIOUS COPILOT
-                                </div>
-                                <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-1">
-                                    Projets & Missions Hacking
-                                </h2>
+                        <div>
+                            <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 text-xs font-bold uppercase tracking-widest">
+                                <Sparkles size={16} /> APERÇU RESERVÉ AUX ADMINISTRATEURS
                             </div>
-                            <button
-                                onClick={() => navigate('/terminal')}
-                                className="px-5 py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-xs rounded-2xl border border-slate-700 flex items-center gap-2 transition"
-                            >
-                                <Terminal size={16} />
-                                Aller à la Salle d'Entraînement Libre
-                            </button>
+                            <h2 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight mt-1">
+                                Projets & Quêtes Pratiques
+                            </h2>
                         </div>
 
                         {/* Grille des Cartes de Projets */}
@@ -206,7 +190,6 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                 const userCompletedIds = (user?.completedQuests || []).map(q => typeof q === 'string' ? q : (q.projectId || q._id || q.id));
                                 const isCompleted = savedCompleted.includes(m.id) || userCompletedIds.includes(m.id);
 
-                                // Déblocage : Tout débloqué pour Admin/SuperAdmin/IA. Sinon déblocage étape par étape (projet N débloqué si N-1 validé).
                                 const isAdminOrAI = user?.role === 'admin' || user?.adminTier === 'owner' || user?.email === 'mouhamedfall@esp.sn' || user?.isAI;
                                 const isUnlocked = index === 0 || isAdminOrAI || (savedCompleted.includes(ALL_PROJECT_MISSIONS[index - 1]?.id) || userCompletedIds.includes(ALL_PROJECT_MISSIONS[index - 1]?.id));
 
@@ -216,7 +199,6 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                         whileHover={isUnlocked ? { y: -4 } : { scale: 1 }}
                                         className={`bg-white dark:bg-slate-900 border ${isCompleted ? 'border-emerald-500/50' : 'border-slate-200 dark:border-slate-800'} rounded-3xl p-6 shadow-xl flex flex-col justify-between transition relative overflow-hidden group ${isUnlocked ? 'hover:border-indigo-500/40' : ''}`}
                                     >
-                                        {/* Overlay Cadenas de Verrouillage Étape par Étape */}
                                         {!isUnlocked && (
                                             <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-md z-20 flex flex-col items-center justify-center p-6 text-center space-y-3">
                                                 <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/10">
@@ -224,7 +206,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                                 </div>
                                                 <div>
                                                     <h4 className="text-base font-black text-white uppercase tracking-wider">Projet Verrouillé 🔒</h4>
-                                                    <p className="text-xs text-slate-300 font-medium mt-1">Validez le projet précédent ({ALL_PROJECT_MISSIONS[index - 1]?.title.split(':')[0]}) pour débloquer cette mission.</p>
+                                                    <p className="text-xs text-slate-300 font-medium mt-1">Validez le projet précédent pour débloquer cette mission.</p>
                                                 </div>
                                             </div>
                                         )}
@@ -234,13 +216,9 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                                 <span className="px-3.5 py-1 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
                                                     ⚡ {m.category}
                                                 </span>
-                                                {isCompleted ? (
+                                                {isCompleted && (
                                                     <span className="inline-flex items-center gap-1 text-[10px] font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
                                                         <Check size={12} /> VALIDÉ
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-[11px] font-mono text-slate-400 font-bold">
-                                                        Cible: {m.targetHost}
                                                     </span>
                                                 )}
                                             </div>
@@ -255,7 +233,7 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
 
                                             {/* Objectifs du projet */}
                                             <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
-                                                <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Objectifs d'Infiltration :</p>
+                                                <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">Objectifs du Projet :</p>
                                                 <ul className="space-y-2">
                                                     {m.objectives.map((obj, i) => (
                                                         <li key={i} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2.5 font-medium">
@@ -274,12 +252,12 @@ const ProjectsList = ({ user, setUser, setToast, API_URL }) => {
                                             </div>
 
                                             <button
-                                                onClick={() => navigate(`/terminal?mission=${m.id}`)}
+                                                onClick={() => setToast && setToast({ type: 'info', message: `Projet "${m.title}" (Aperçu Admin)` })}
                                                 disabled={!isUnlocked}
-                                                className={`px-5 py-2.5 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg flex items-center gap-2 transition ${isCompleted ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/20' : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-600/20'}`}
+                                                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg flex items-center gap-2 transition shadow-indigo-600/20"
                                             >
                                                 <Play size={14} />
-                                                {isCompleted ? 'Rejouer ⚡' : 'Lancer le Projet ⚡'}
+                                                Aperçu Admin ⚡
                                             </button>
                                         </div>
                                     </motion.div>
