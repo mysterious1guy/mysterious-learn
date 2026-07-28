@@ -135,6 +135,10 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    lastRankAlertSentAt: {
+      type: Date,
+      default: null,
+    },
     // Gamification
     xp: {
       type: Number,

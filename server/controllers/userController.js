@@ -12,49 +12,66 @@ const getUsers = async (req, res) => {
   }
 };
 
-// @desc    Obtenir le classement des utilisateurs (Top + Bots)
+const { sendEmail } = require('../utils/emailService');
+
+// @desc    Obtenir le classement des utilisateurs (Top + Bots dynamiques)
 // @route   GET /api/users/leaderboard
 const getLeaderboard = async (req, res) => {
   try {
     const topRealUsers = await User.find({ role: 'user' })
       .sort({ xp: -1, streak: -1 })
-      .select('firstName lastName name avatar xp streak programmingLevel joinedAt');
+      .select('firstName lastName name email avatar xp streak programmingLevel joinedAt lastLogin lastRankAlertSentAt');
 
-    const botProfiles = [
-      { firstName: "Alexandre", lastName: "Dubois", xp: 18450, streak: 42, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Fatou", lastName: "Sow", xp: 16800, streak: 38, avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "David", lastName: "Miller", xp: 15250, streak: 31, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Elena", lastName: "Rostova", xp: 14100, streak: 29, avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Ousmane", lastName: "Diallo", xp: 13650, streak: 26, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Kaito", lastName: "Tanaka", xp: 12900, streak: 24, avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Sophie", lastName: "Laurent", xp: 11800, streak: 21, avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Amadou", lastName: "Ndiaye", xp: 10950, streak: 19, avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Sarah", lastName: "Conner", xp: 9800, streak: 17, avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Lucas", lastName: "Martin", xp: 8900, streak: 15, avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Aïcha", lastName: "Camara", xp: 8200, streak: 14, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" },
-      { firstName: "Viktor", lastName: "Novak", xp: 7600, streak: 12 },
-      { firstName: "Claire", lastName: "Moreau", xp: 7100, streak: 11 },
-      { firstName: "Ibrahima", lastName: "Ba", xp: 6500, streak: 10 },
-      { firstName: "Yuki", lastName: "Sato", xp: 5900, streak: 9 },
-      { firstName: "Marcus", lastName: "Vance", xp: 5400, streak: 8 },
-      { firstName: "Ndeye", lastName: "Diop", xp: 4800, streak: 7 },
-      { firstName: "Mateo", lastName: "Silva", xp: 4200, streak: 6 },
-      { firstName: "Chloe", lastName: "Bennett", xp: 3700, streak: 5 },
-      { firstName: "Babacar", lastName: "Faye", xp: 3100, streak: 4 },
-      { firstName: "Emma", lastName: "Watson", xp: 2600, streak: 4 },
-      { firstName: "Cheikh", lastName: "Toure", xp: 2100, streak: 3 },
-      { firstName: "Liam", lastName: "O'Connor", xp: 1700, streak: 2 },
-      { firstName: "Mariama", lastName: "Gaye", xp: 1300, streak: 2 },
-      { firstName: "Carlos", lastName: "Mendoza", xp: 950, streak: 1 }
+    const topRealUser = topRealUsers[0];
+    const highestRealUserXp = topRealUser?.xp || 0;
+
+    // Vérifier le délai d'inactivité du meilleur utilisateur réel (ex: >= 24 heures sans connexion)
+    let isTopUserInactive = false;
+    if (topRealUser && topRealUser.lastLogin) {
+      const hoursInactive = (Date.now() - new Date(topRealUser.lastLogin).getTime()) / (1000 * 3600);
+      if (hoursInactive >= 24) {
+        isTopUserInactive = true;
+      }
+    }
+
+    // Calcul dynamique de l'XP de base pour le Top 1 des bots
+    // Si l'utilisateur réel est ACTIF, les bots restent à ~92% de son score.
+    // Si l'utilisateur réel est INACTIF (> 24h), le bot #1 dépasse l'utilisateur (+ 250 XP) !
+    const baseBotTopXp = isTopUserInactive 
+      ? Math.max(highestRealUserXp + 250, 1500)
+      : Math.max(Math.round(highestRealUserXp * 0.92), 1200);
+
+    // Profils de bots avec échelonnage d'XP
+    const botRawData = [
+      { firstName: "Alexandre", lastName: "Dubois", multiplier: 1.0, streak: 42, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Fatou", lastName: "Sow", multiplier: 0.92, streak: 38, avatar: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "David", lastName: "Miller", multiplier: 0.85, streak: 31, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Elena", lastName: "Rostova", multiplier: 0.78, streak: 29, avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Ousmane", lastName: "Diallo", multiplier: 0.72, streak: 26, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Kaito", lastName: "Tanaka", multiplier: 0.65, streak: 24, avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Sophie", lastName: "Laurent", multiplier: 0.60, streak: 21, avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Amadou", lastName: "Ndiaye", multiplier: 0.54, streak: 19, avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Sarah", lastName: "Conner", multiplier: 0.48, streak: 17, avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Lucas", lastName: "Martin", multiplier: 0.42, streak: 15, avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80" },
+      { firstName: "Aïcha", lastName: "Camara", multiplier: 0.38, streak: 14 },
+      { firstName: "Viktor", lastName: "Novak", multiplier: 0.34, streak: 12 },
+      { firstName: "Claire", lastName: "Moreau", multiplier: 0.30, streak: 11 },
+      { firstName: "Ibrahima", lastName: "Ba", multiplier: 0.26, streak: 10 },
+      { firstName: "Yuki", lastName: "Sato", multiplier: 0.22, streak: 9 },
+      { firstName: "Marcus", lastName: "Vance", multiplier: 0.18, streak: 8 },
+      { firstName: "Ndeye", lastName: "Diop", multiplier: 0.15, streak: 7 },
+      { firstName: "Mateo", lastName: "Silva", multiplier: 0.12, streak: 6 },
+      { firstName: "Chloe", lastName: "Bennett", multiplier: 0.10, streak: 5 },
+      { firstName: "Babacar", lastName: "Faye", multiplier: 0.08, streak: 4 }
     ];
 
-    const formattedBots = botProfiles.map((bot, index) => ({
+    const formattedBots = botRawData.map((bot, index) => ({
       _id: `bot_${index + 1}`,
       firstName: bot.firstName,
       lastName: bot.lastName,
       name: `${bot.firstName} ${bot.lastName}`,
       avatar: bot.avatar || null,
-      xp: bot.xp,
+      xp: Math.round(baseBotTopXp * bot.multiplier),
       streak: bot.streak,
       programmingLevel: 'Avancé',
       isBot: true
@@ -62,6 +79,67 @@ const getLeaderboard = async (req, res) => {
 
     const combined = [...(topRealUsers || []), ...formattedBots];
     combined.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+
+    // Si le meilleur utilisateur réel est inactif et a perdu la 1ère place au profit d'un bot
+    if (isTopUserInactive && topRealUser && combined[0]._id !== topRealUser._id) {
+      const lastAlert = topRealUser.lastRankAlertSentAt ? new Date(topRealUser.lastRankAlertSentAt).getTime() : 0;
+      const cooldownHours = (Date.now() - lastAlert) / (1000 * 3600);
+
+      // Envoyer un mail d'alerte maximum une fois toutes les 48 heures
+      if (cooldownHours >= 48) {
+        const leaderBotName = combined[0].name;
+        const leaderBotXp = combined[0].xp;
+
+        try {
+          await sendEmail({
+            to: topRealUser.email,
+            subject: `🚨 Alerte Classement : ${leaderBotName} a pris ta 1ère place !`,
+            html: `
+              <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b0f19; color: #f1f5f9; padding: 32px; border-radius: 24px; max-width: 600px; margin: 0 auto; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="text-align: center; margin-bottom: 24px;">
+                  <span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); padding: 8px 16px; border-radius: 9999px; font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;">
+                    🚨 ALERTE DU CLASSEMENT
+                  </span>
+                </div>
+                
+                <h2 style="font-size: 24px; font-weight: 900; color: #ffffff; text-align: center; margin-bottom: 16px; line-height: 1.3;">
+                  Tu as perdu ton trône sur <span style="color: #3b82f6;">Mysterious Classroom</span> !
+                </h2>
+                
+                <p style="font-size: 16px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;">
+                  Bonjour <strong>${topRealUser.firstName || topRealUser.name}</strong>,
+                </p>
+                
+                <p style="font-size: 15px; color: #94a3b8; line-height: 1.6; margin-bottom: 24px;">
+                  Pendant ton absence de plus de 24 heures, l'agent <strong>${leaderBotName}</strong> a engrangé de l'expérience et vient de te dépasser au classement général avec <strong>${leaderBotXp} XP</strong> !
+                </p>
+
+                <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.08); padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 28px;">
+                  <p style="margin: 0; font-size: 14px; color: #64748b; font-weight: bold; text-transform: uppercase;">Nouveau Rang 1</p>
+                  <p style="margin: 6px 0 0 0; font-size: 22px; font-weight: 900; color: #f59e0b;">🏆 ${leaderBotName} (${leaderBotXp} XP)</p>
+                  <p style="margin: 4px 0 0 0; font-size: 14px; color: #94a3b8;">Ton XP : ${highestRealUserXp} XP</p>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 24px;">
+                  <a href="https://mysterious-learn.onrender.com/auth" style="background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); color: #ffffff; text-decoration: none; padding: 16px 36px; border-radius: 16px; font-weight: 900; font-size: 16px; display: inline-block; box-shadow: 0 10px 30px rgba(59,130,246,0.3);">
+                    🔥 REPRENDRE MON TRÔNE
+                  </a>
+                </div>
+
+                <p style="font-size: 12px; color: #64748b; text-align: center; line-height: 1.5; margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;">
+                  Connecte-toi, exécute des commandes dans le terminal et complète des modules pour engranger de l'XP.
+                </p>
+              </div>
+            `
+          });
+
+          await User.findByIdAndUpdate(topRealUser._id, { lastRankAlertSentAt: new Date() });
+          console.log(`✉️ Mail d'alerte classement envoyé à ${topRealUser.email}`);
+        } catch (emailErr) {
+          console.error("❌ Échec envoi mail alerte classement:", emailErr.message);
+        }
+      }
+    }
 
     res.json(combined);
   } catch (err) {
