@@ -5,7 +5,6 @@ import { ChevronRight, Star, Clock, Users, Lock, BookOpen, ArrowRight, ArrowLeft
 import PlacementTestModal from '../components/PlacementTestModal';
 import OnboardingTour from '../components/OnboardingTour';
 import CertificateModal from '../components/CertificateModal';
-import TerminalSimulatorPage from './TerminalSimulatorPage';
 import { useLanguage } from '../context/LanguageContext';
 
 const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, progressions = {}, API_URL }) => {
@@ -475,9 +474,7 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                onClick={() => {
-                    document.getElementById('tour-dashboard-terminal')?.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onClick={() => navigate('/terminal')}
                 className="w-full px-2 sm:px-4 lg:px-8 mb-8 cursor-pointer group"
             >
                 <div className="relative overflow-hidden rounded-3xl border border-blue-500/20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 shadow-xl shadow-indigo-900/30 group-hover:border-blue-500/50 transition-all duration-300">
@@ -502,33 +499,24 @@ const DashboardPage = ({ user, onUpdateUser, favorites = [], toggleFavorite, pro
                                 ✅ Module Disponible
                             </span>
                             <span className="px-3 py-1 bg-slate-700/60 text-slate-400 text-[10px] font-bold uppercase tracking-widest rounded-full">
-                                Ordinateurs & Serveurs
+                                Ordinateurs &amp; Serveurs
                             </span>
                         </div>
                         <h2 className="text-xl md:text-2xl font-black text-white tracking-tight mb-1 group-hover:text-blue-400 transition-colors">
-                            Ligne de Commande & Linux
+                            Ligne de Commande &amp; Linux
                         </h2>
                         <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-xl">
-                            Maîtrisez le terminal Linux pas à pas — de la navigation de base aux commandes avancées. Le seul module actuellement opérationnel. Lance-toi ci-dessous !
+                            Maîtrisez le terminal Linux pas à pas — de la navigation de base aux commandes avancées. Le seul module actuellement opérationnel.
                         </p>
                     </div>
 
-                    {/* CTA arrow button */}
+                    {/* CTA button → redirect to /terminal */}
                     <div className="shrink-0 flex items-center gap-2 text-blue-400 font-black text-sm uppercase tracking-widest bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 px-5 py-3 rounded-2xl transition-all group-hover:scale-105">
                         <span>Commencer</span>
-                        <div className="w-7 h-7 rounded-full bg-blue-600/30 flex items-center justify-center">
-                            <svg className="w-4 h-4 text-blue-400 translate-y-0.5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                            </svg>
-                        </div>
+                        <ArrowRight size={18} />
                     </div>
                 </div>
             </motion.div>
-
-            {/* Intégration Élargie du Terminal CLI Simulator Plein Écran */}
-            <div id="tour-dashboard-terminal" className="w-full px-2 sm:px-4 lg:px-8 mb-16">
-                <TerminalSimulatorPage user={user} API_URL={API_URL} />
-            </div>
 
             {/* Categories */}
             <div className="space-y-12">
