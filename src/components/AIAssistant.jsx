@@ -49,9 +49,9 @@ const AIAssistant = ({ user, currentView, progressions, API_URL }) => {
             const now = Date.now();
             const timeSinceLast = now - lastMurmurTimeRef.current;
 
-            // ANTI-SPAM: 10 seconds cooldown between murmurs
-            if (timeSinceLast < 10000) return;
-            if (text === lastMurmurTextRef.current && timeSinceLast < 30000) return;
+            // ANTI-SPAM: 30 seconds cooldown between murmurs to prevent overlap
+            if (timeSinceLast < 30000) return;
+            if (text === lastMurmurTextRef.current && timeSinceLast < 60000) return;
 
             if (murmurTimerRef.current) clearTimeout(murmurTimerRef.current);
 

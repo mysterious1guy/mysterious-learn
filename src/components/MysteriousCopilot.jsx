@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X, Terminal, BrainCircuit, Send, Loader, ChevronRight, Minimize2, Maximize2, Copy, Check, Image as ImageIcon, Trash2, Monitor, Paperclip, Sun, Moon } from 'lucide-react';
+import { Sparkles, X, Terminal, Send, Copy, Check, Trash2, Monitor, Paperclip } from 'lucide-react';
 import { safeGetUserName } from '../utils/userUtils';
 import AnimatedAIAvatar from './AnimatedAIAvatar';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 
 const getRandomThought = (lang, name) => {
     const frThoughts = [
@@ -65,6 +66,7 @@ const TerminalBlock = ({ code, lang }) => {
 
 const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const { t, language } = useLanguage();
+    const { theme } = useTheme();
     const userName = safeGetUserName(user, 'Voyageur');
     
     const [messages, setMessages] = useState([
@@ -73,11 +75,13 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
     const [input, setInput] = useState('');
     const [selectedImage, setSelectedImage] = useState(null);
     const [isTyping, setIsTyping] = useState(false);
-    const [isExpanded, setIsExpanded] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
     const fileInputRef = useRef(null);
+
+    // Sync with site theme
+    const copilotTheme = theme === 'dark' ? 'dark' : 'light';
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -97,15 +101,19 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         }
     }, [isOpen]);
 
-    // Initial Greeting Dynamic Murmur
+    // Initial Greeting: only dispatch once per mount, not on re-renders
+    const hasFiredMurmur = useRef(false);
     useEffect(() => {
+        if (hasFiredMurmur.current) return;
+        hasFiredMurmur.current = true;
         const timer = setTimeout(() => {
             window.dispatchEvent(new CustomEvent('mysterious-ai-murmur', {
                 detail: { text: getRandomThought(language, userName) }
             }));
-        }, 2000);
+        }, 3500);
         return () => clearTimeout(timer);
-    }, [user, language]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         const handleSuggest = (e) => {
@@ -443,7 +451,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         );
     };
 
-    const [copilotTheme, setCopilotTheme] = useState('light'); // 'light' by default per user request
+    // copilotTheme is derived from site theme above (no separate state needed)
 
     return (
         <AnimatePresence>
@@ -460,11 +468,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                     } ${
                         isFullScreen 
                             ? 'fixed inset-0 w-screen h-screen z-[99999] top-0 left-0 right-0 bottom-0' 
-                            : 'top-0 right-0 h-full z-[150] ' + (
-                                isExpanded 
-                                    ? 'w-full sm:w-[850px] lg:w-[1000px]' 
-                                    : 'w-full sm:w-[540px] md:w-[640px]'
-                            )
+                            : 'top-0 right-0 h-full z-[150] w-full sm:w-[540px] md:w-[640px]'
                     }`}
                 >
                     {/* Header */}
@@ -493,43 +497,6 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
 
                         {/* Top Window Mode Controls */}
                         <div className="flex items-center gap-2">
-                            {/* Theme Toggle Button */}
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setCopilotTheme(copilotTheme === 'light' ? 'dark' : 'light');
-                                }}
-                                className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
-                                    copilotTheme === 'light'
-                                        ? 'bg-amber-500/10 text-amber-700 border-amber-500/30 hover:bg-amber-500/20'
-                                        : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
-                                }`}
-                                title="Basculer le Thème (Clair / Sombre)"
-                            >
-                                {copilotTheme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-                                <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{copilotTheme === 'light' ? 'Sombre' : 'Clair'}</span>
-                            </button>
-
-                            {/* Expand / Normal Mode Button */}
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setIsExpanded(!isExpanded);
-                                    if (isFullScreen) setIsFullScreen(false);
-                                }}
-                                className={`px-3 py-1.5 rounded-xl border transition-all active:scale-95 flex items-center gap-1.5 font-mono text-xs ${
-                                    isExpanded && !isFullScreen
-                                        ? 'bg-blue-600/30 text-blue-500 border-blue-500/50 shadow-[0_0_12px_rgba(59,130,246,0.3)]'
-                                        : copilotTheme === 'light'
-                                            ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
-                                            : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:text-white'
-                                }`}
-                                title={isExpanded ? "Mode Standard" : "Élargir la fenêtre"}
-                            >
-                                {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-                                <span className="hidden sm:inline text-[11px] font-bold uppercase tracking-wider">{isExpanded ? 'Normal' : 'Élargir'}</span>
-                            </button>
-
                             {/* FullScreen Button */}
                             <button
                                 onClick={(e) => {

@@ -56,24 +56,28 @@ const useIntelligentMurmurs = (user, currentView, progressions) => {
             if (interventionLevel === 'high' || (interventionLevel === 'normal' && Math.random() > 0.3)) {
                 const contextualPool = {
                     projects: [
-                        "Chaque projet terminé est une brique de ton futur empire technologique.",
+                        "Ces projets sont des défis réels. Chaque ligne de code que tu écris ici forge ton portfolio.",
                         "Le code immortel commence par un projet passionné.",
                         "Prêt à transformer tes idées en réalité architecturale ?"
                     ],
                     leaderboard: [
-                        "Ta position ici reflète ton intensité. Mais rappelle-toi : ton seul vrai rival, c'est celui que tu étais hier.",
+                        "Ta position ici reflète ton intensité. Rappelle-toi : ton seul vrai rival, c'est celui que tu étais hier.",
                         "L'excellence n'est pas un acte, c'est une habitude.",
                         "Regarde le sommet, pas ceux que tu as dépassés."
                     ],
                     settings: [
-                        "L'optimisation de ton espace de travail est la première étape d'une exécution parfaite.",
                         "Un environnement pur, un esprit clair.",
                         "La personnalisation est le luxe du maître."
                     ],
                     dashboard: [
                         "Ton tableau de bord, ton centre de commande. Qu'allons-nous conquérir aujourd'hui ?",
                         "La progression est visible, mais la maîtrise est ce qui compte vraiment.",
-                        "Chaque module est une connaissance que tu possèdes désormais."
+                        "Pense à aller dans le Terminal > Mode Apprentissage pour accumuler des XP et progresser !"
+                    ],
+                    terminal: [
+                        "Mode Libre ou Apprentissage ? En Mode Apprentissage, chaque étape validée te rapporte de l'XP réel !",
+                        "Le Terminal est ton meilleur allié pour pratiquer Linux sans risque.",
+                        "Utilise le bouton 'Mode Apprentissage' en haut du terminal pour démarrer une session guidée."
                     ]
                 };
 
