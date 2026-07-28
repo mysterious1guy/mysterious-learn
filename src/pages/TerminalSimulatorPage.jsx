@@ -323,7 +323,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             } else {
                 if (terminalMode === 'apprentissage') {
                     setHistory([
-                        { type: 'sys', text: '=== CONSOLE D\'APPRENTISSAGE LINUX (Mode Mission Infini) ===' },
+                        { type: 'sys', text: '=== CONSOLE D\'APPRENTISSAGE LINUX ===' },
                         { type: 'sys', text: `Bienvenue ${displayUsername} ! Suivez la mission guidée ci-dessus.` },
                         { type: 'sys', text: 'Chaque commande exécutée avec succès débloque l\'étape suivante et rapporte de l\'XP.' },
                         { type: 'mission', text: '💡 Tapez "clear" pour réinitialiser la console d\'apprentissage.' },
@@ -1208,7 +1208,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-indigo-500/20 pb-3">
                                 <div className="flex items-center gap-3">
                                     <div className="px-3 py-1 bg-indigo-600 text-white rounded-lg font-black text-xs uppercase tracking-wider shadow">
-                                        ⚡ Étape {activeLearningMission.id} / Infini
+                                        ⚡ Étape {activeLearningMission.id}
                                     </div>
                                     <span className="text-xs text-indigo-300 font-semibold bg-indigo-950/60 px-2.5 py-1 rounded border border-indigo-500/30">
                                         📚 {activeLearningMission.category}

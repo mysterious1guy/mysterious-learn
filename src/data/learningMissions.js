@@ -274,7 +274,7 @@ export const getMissionByStep = (stepIndex) => {
         return {
             id: dynamicLevel,
             title: `Mission ${dynamicLevel} : Créer le lab d'audit '${targetFolder}'`,
-            category: "Administration & Sécurité Infini",
+            category: "Administration & Sécurité",
             scenario: `Créer un environnement de travail sécurisé nommé '${targetFolder}'.`,
             explanation: "L'apprentissage continu sur Linux repose sur l'organisation méthodique des répertoires.",
             expectedCommand: `mkdir ${targetFolder}`,
@@ -285,7 +285,7 @@ export const getMissionByStep = (stepIndex) => {
         return {
             id: dynamicLevel,
             title: `Mission ${dynamicLevel} : Générer le rapport '${targetFile}'`,
-            category: "Administration & Sécurité Infini",
+            category: "Administration & Sécurité",
             scenario: `Générer le fichier de log '${targetFile}' à des fins d'analyse.`,
             explanation: "Les journaux de logs sous Linux sont essentiels pour analyser la sécurité système.",
             expectedCommand: `touch ${targetFile}`,
@@ -296,7 +296,7 @@ export const getMissionByStep = (stepIndex) => {
         return {
             id: dynamicLevel,
             title: `Mission ${dynamicLevel} : Rediriger l'audit de sécurité`,
-            category: "Administration & Sécurité Infini",
+            category: "Administration & Sécurité",
             scenario: `Inscrivez le statut 'System Secure' dans le fichier '${targetFile}'.`,
             explanation: "La redirection d'output via l'opérateur '>' permet d'enregistrer des rapports automatiques.",
             expectedCommand: `echo "System Secure" > ${targetFile}`,
