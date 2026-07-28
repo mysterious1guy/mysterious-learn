@@ -203,7 +203,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
 
     const userHomePath = `/home/${displayUsername}`;
     const [activeUser, setActiveUser] = useState(displayUsername);
-    const [terminalMode, setTerminalMode] = useState('libre');
+    const [terminalMode, setTerminalMode] = useState('apprentissage');
     const [activeEditor, setActiveEditor] = useState(null);
     const [activeMission, setActiveMission] = useState(null);
     const [input, setInput] = useState('');
@@ -582,23 +582,125 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
             return;
         }
 
+        // Helper pour valider l'accomplissement d'une étape d'apprentissage ou d'un projet
+        const triggerStepOrMissionValidation = (lowerCmd, data = {}) => {
+            const expected = (activeMission?.expectedCommand || '').toLowerCase().trim();
+
+            // Vérifier si le projet est accompli (si en mode projet)
+            if (activeMission) {
+                const isCompleted = data.isMissionCompleted || (expected && (lowerCmd === expected || lowerCmd.startsWith(expected)));
+
+                if (isCompleted && !completedMissions.includes(activeMission.id)) {
+                    const gained = activeMission.xpReward || 100;
+                    const newScore = score + gained;
+                    setScore(newScore);
+
+                    const updatedCompleted = [...completedMissions, activeMission.id];
+                    setCompletedMissions(updatedCompleted);
+                    try {
+                        localStorage.setItem('completed_missions', JSON.stringify(updatedCompleted));
+                    } catch (e) {}
+
+                    setHistory(prev => [
+                        ...prev,
+                        { type: 'success', text: data.completionMessage || activeMission.successOutput || '[+] Projet accompli avec succès !' }
+                    ]);
+
+                    if (setUser) {
+                        setUser(prev => {
+                            if (!prev) return prev;
+                            const quests = prev.completedQuests || [];
+                            const hasQuest = quests.some(q => (typeof q === 'string' ? q : q.projectId) === activeMission.id);
+                            return {
+                                ...prev,
+                                xp: newScore,
+                                completedQuests: hasQuest ? quests : [...quests, { projectId: activeMission.id, completedAt: new Date() }]
+                            };
+                        });
+                    }
+                    if (setToast) {
+                        setToast({ message: `🎯 Projet complété ! +${gained} XP gagnés`, type: 'success' });
+                    }
+                }
+            }
+
+            // Validation automatique pour le Mode Apprentissage Infini
+            if (terminalMode === 'apprentissage' && !activeMission && activeLearningMission) {
+                const expectedCmd = (activeLearningMission.expectedCommand || '').toLowerCase().trim();
+                const userCmdLower = lowerCmd.trim();
+
+                const isStepCompleted = userCmdLower === expectedCmd || userCmdLower.startsWith(expectedCmd) || 
+                    (expectedCmd === 'pwd' && userCmdLower === 'pwd') ||
+                    (expectedCmd === 'ls' && userCmdLower.startsWith('ls')) ||
+                    (expectedCmd === 'whoami' && userCmdLower.includes('whoami')) ||
+                    (expectedCmd.startsWith('mkdir') && userCmdLower.startsWith('mkdir')) ||
+                    (expectedCmd.startsWith('cd') && userCmdLower.startsWith('cd')) ||
+                    (expectedCmd.startsWith('touch') && userCmdLower.startsWith('touch')) ||
+                    (expectedCmd.startsWith('cp') && userCmdLower.startsWith('cp')) ||
+                    (expectedCmd.startsWith('mv') && userCmdLower.startsWith('mv')) ||
+                    (expectedCmd.startsWith('rm') && userCmdLower.startsWith('rm')) ||
+                    (expectedCmd.startsWith('cat') && userCmdLower.startsWith('cat')) ||
+                    (expectedCmd.startsWith('chmod') && userCmdLower.startsWith('chmod')) ||
+                    (expectedCmd.startsWith('sudo') && userCmdLower.startsWith('sudo')) ||
+                    (expectedCmd.startsWith('ps') && userCmdLower.startsWith('ps')) ||
+                    (expectedCmd.startsWith('df') && userCmdLower.startsWith('df')) ||
+                    (expectedCmd.startsWith('du') && userCmdLower.startsWith('du')) ||
+                    (expectedCmd.startsWith('uname') && userCmdLower.startsWith('uname')) ||
+                    (expectedCmd.startsWith('history') && userCmdLower.startsWith('history')) ||
+                    (expectedCmd.startsWith('ping') && userCmdLower.startsWith('ping')) ||
+                    (expectedCmd.startsWith('ssh') && userCmdLower.startsWith('ssh'));
+
+                if (isStepCompleted) {
+                    const gained = activeLearningMission.xpReward || 50;
+                    const newScore = score + gained;
+                    setScore(newScore);
+
+                    const nextStepIndex = learningStep + 1;
+                    setLearningStep(nextStepIndex);
+                    try {
+                        localStorage.setItem(`terminal_learning_step_${displayUsername}`, nextStepIndex.toString());
+                    } catch (e) {}
+
+                    const nextMission = getMissionByStep(nextStepIndex);
+
+                    setHistory(prev => [
+                        ...prev,
+                        { type: 'success', text: `[+] 🎉 BRAVO ! Étape ${activeLearningMission.id} Validée : "${activeLearningMission.title}" (+${gained} XP) !` },
+                        { type: 'sys', text: `[🎯 ÉTAPE SUIVANTE ${nextMission.id}] : ${nextMission.title}` },
+                        { type: 'sys', text: `🎯 Scénario : ${nextMission.scenario}` },
+                        { type: 'mission', text: `💡 Explication : ${nextMission.explanation}` }
+                    ]);
+
+                    if (setUser) {
+                        setUser(prev => prev ? ({ ...prev, xp: newScore }) : prev);
+                    }
+                    if (setToast) {
+                        setToast({ message: `🎯 Étape ${activeLearningMission.id} complétée ! +${gained} XP`, type: 'success' });
+                    }
+                }
+            }
+        };
+
         // Execution instantanée des commandes système de base (Vitesse & Fluidité hors SSH)
         if (!sshSession) {
             if (lower === 'whoami') {
                 newHistory.push({ type: 'output', text: activePromptUser });
                 setHistory(newHistory);
+                triggerStepOrMissionValidation('whoami');
                 return;
             }
 
             if (lower === 'pwd') {
                 newHistory.push({ type: 'output', text: currentPath });
                 setHistory(newHistory);
+                triggerStepOrMissionValidation('pwd');
                 return;
             }
 
             if (lower === 'date') {
                 newHistory.push({ type: 'output', text: new Date().toString() });
                 setHistory(newHistory);
+                triggerStepOrMissionValidation('date');
                 return;
             }
 
@@ -606,6 +708,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 const textToEcho = cmd.substring(5).replace(/^["']|["']$/g, '');
                 newHistory.push({ type: 'output', text: textToEcho });
                 setHistory(newHistory);
+                triggerStepOrMissionValidation(lower);
                 return;
             }
 
@@ -613,6 +716,7 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                 const historyList = cmdStack.map((c, idx) => `  ${idx + 1}  ${c}`).join('\n');
                 newHistory.push({ type: 'output', text: historyList || '  1  history' });
                 setHistory(newHistory);
+                triggerStepOrMissionValidation('history');
                 return;
             }
         }
@@ -756,99 +860,10 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                     { type: 'output', text: data.output, cmd: cmd }
                 ]);
 
-                // Vérifier si le projet est accompli (si en mode projet)
-                if (activeMission) {
-                    const isCompleted = data.isMissionCompleted || (expected && (lower === expected || lower.startsWith(expected)));
-
-                    if (isCompleted && !completedMissions.includes(activeMission.id)) {
-                        const gained = activeMission.xpReward || 100;
-                        const newScore = score + gained;
-                        setScore(newScore);
-
-                        const updatedCompleted = [...completedMissions, activeMission.id];
-                        setCompletedMissions(updatedCompleted);
-                        try {
-                            localStorage.setItem('completed_missions', JSON.stringify(updatedCompleted));
-                        } catch (e) {}
-
-                        setHistory(prev => [
-                            ...prev,
-                            { type: 'success', text: data.completionMessage || activeMission.successOutput || '[+] Projet accompli avec succès !' }
-                        ]);
-
-                        if (setUser) {
-                            setUser(prev => {
-                                if (!prev) return prev;
-                                const quests = prev.completedQuests || [];
-                                const hasQuest = quests.some(q => (typeof q === 'string' ? q : q.projectId) === activeMission.id);
-                                return {
-                                    ...prev,
-                                    xp: newScore,
-                                    completedQuests: hasQuest ? quests : [...quests, { projectId: activeMission.id, completedAt: new Date() }]
-                                };
-                            });
-                        }
-                        if (setToast) {
-                            setToast({ message: `🎯 Projet complété ! +${gained} XP gagnés`, type: 'success' });
-                        }
-                    }
-                }
-
-                // Validation automatique pour le Mode Apprentissage Infini
-                if (terminalMode === 'apprentissage' && !activeMission && activeLearningMission) {
-                    const expectedCmd = (activeLearningMission.expectedCommand || '').toLowerCase().trim();
-                    const userCmdLower = lower.trim();
-
-                    const isStepCompleted = userCmdLower === expectedCmd || userCmdLower.startsWith(expectedCmd) || 
-                        (expectedCmd === 'pwd' && userCmdLower === 'pwd') ||
-                        (expectedCmd === 'ls' && userCmdLower.startsWith('ls')) ||
-                        (expectedCmd === 'whoami' && userCmdLower.includes('whoami')) ||
-                        (expectedCmd.startsWith('mkdir') && userCmdLower.startsWith('mkdir')) ||
-                        (expectedCmd.startsWith('cd') && userCmdLower.startsWith('cd')) ||
-                        (expectedCmd.startsWith('touch') && userCmdLower.startsWith('touch')) ||
-                        (expectedCmd.startsWith('cp') && userCmdLower.startsWith('cp')) ||
-                        (expectedCmd.startsWith('mv') && userCmdLower.startsWith('mv')) ||
-                        (expectedCmd.startsWith('rm') && userCmdLower.startsWith('rm')) ||
-                        (expectedCmd.startsWith('cat') && userCmdLower.startsWith('cat')) ||
-                        (expectedCmd.startsWith('chmod') && userCmdLower.startsWith('chmod')) ||
-                        (expectedCmd.startsWith('sudo') && userCmdLower.startsWith('sudo')) ||
-                        (expectedCmd.startsWith('ps') && userCmdLower.startsWith('ps')) ||
-                        (expectedCmd.startsWith('df') && userCmdLower.startsWith('df')) ||
-                        (expectedCmd.startsWith('du') && userCmdLower.startsWith('du')) ||
-                        (expectedCmd.startsWith('uname') && userCmdLower.startsWith('uname')) ||
-                        (expectedCmd.startsWith('history') && userCmdLower.startsWith('history')) ||
-                        (expectedCmd.startsWith('ping') && userCmdLower.startsWith('ping')) ||
-                        (expectedCmd.startsWith('ssh') && userCmdLower.startsWith('ssh'));
-
-                    if (isStepCompleted) {
-                        const gained = activeLearningMission.xpReward || 50;
-                        const newScore = score + gained;
-                        setScore(newScore);
-
-                        const nextStepIndex = learningStep + 1;
-                        setLearningStep(nextStepIndex);
-                        try {
-                            localStorage.setItem(`terminal_learning_step_${displayUsername}`, nextStepIndex.toString());
-                        } catch (e) {}
-
-                        const nextMission = getMissionByStep(nextStepIndex);
-
-                        setHistory(prev => [
-                            ...prev,
-                            { type: 'success', text: `[+] 🎉 BRAVO ! Étape ${activeLearningMission.id} Validée : "${activeLearningMission.title}" (+${gained} XP) !` },
-                            { type: 'sys', text: `[🎯 ÉTAPE SUIVANTE ${nextMission.id}] : ${nextMission.title}` },
-                            { type: 'sys', text: `🎯 Scénario : ${nextMission.scenario}` },
-                            { type: 'mission', text: `💡 Explication : ${nextMission.explanation}` }
-                        ]);
-
-                        if (setUser) {
-                            setUser(prev => prev ? ({ ...prev, xp: newScore }) : prev);
-                        }
-                        if (setToast) {
-                            setToast({ message: `🎯 Étape ${activeLearningMission.id} complétée ! +${gained} XP`, type: 'success' });
-                        }
-                    }
-                }
+                // Déclencher la validation
+                triggerStepOrMissionValidation(lower, data);
+            } else {
+                throw new Error("Erreur exécution");
             } else {
                 throw new Error("Erreur exécution");
             }
