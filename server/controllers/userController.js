@@ -148,8 +148,6 @@ const getLeaderboard = async (req, res) => {
   }
 };
 
-const { sendEmail } = require('../utils/emailService');
-
 // @desc    Supprimer son propre compte
 // @route   DELETE /api/users/profile
 const deleteUserProfile = async (req, res) => {
