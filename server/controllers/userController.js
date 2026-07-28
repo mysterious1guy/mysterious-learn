@@ -183,6 +183,24 @@ const deleteUserProfile = async (req, res) => {
   }
 };
 
+// @desc    Mettre à jour le niveau de programmation
+// @route   PUT /api/users/level
+const updateProgrammingLevel = async (req, res) => {
+  try {
+    const { level } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+    user.programmingLevel = level;
+    await user.save();
+    res.json({ message: 'Niveau mis à jour', level: user.programmingLevel });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
 // @desc    Ajouter de l'XP à l'utilisateur (ex: validation d'étape du terminal)
 // @route   POST /api/users/add-xp
 const addXp = async (req, res) => {
