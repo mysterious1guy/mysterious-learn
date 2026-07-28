@@ -1037,14 +1037,18 @@ const TerminalSimulatorPage = ({ user, setUser, setToast, API_URL }) => {
                                     <button
                                         type="button"
                                         onClick={() => setTerminalMode('apprentissage')}
-                                        className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
+                                        className={`relative px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all duration-300 flex items-center gap-2 ${
                                             terminalMode === 'apprentissage'
-                                                ? 'bg-indigo-600 text-white shadow-lg font-bold'
-                                                : 'text-slate-400 hover:text-white'
+                                                ? 'bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white shadow-[0_0_25px_rgba(129,140,248,0.8)] border-2 border-indigo-300 scale-105 font-bold'
+                                                : 'bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 text-indigo-200 border-2 border-indigo-500/50 hover:border-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.4)] hover:shadow-[0_0_25px_rgba(99,102,241,0.7)] hover:scale-105'
                                         }`}
                                     >
-                                        <BookOpen size={14} />
-                                        Mode Apprentissage
+                                        <span className="absolute -top-2.5 -right-2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-[9px] font-black px-2 py-0.5 rounded-full shadow-lg flex items-center gap-1 border border-amber-300 animate-bounce">
+                                            <Sparkles size={10} className="fill-slate-950" />
+                                            RECOMMANDÉ
+                                        </span>
+                                        <BookOpen size={16} className={terminalMode === 'apprentissage' ? 'animate-bounce text-white' : 'text-indigo-400 animate-pulse'} />
+                                        <span>Mode Apprentissage</span>
                                     </button>
                                 </>
                             )}
