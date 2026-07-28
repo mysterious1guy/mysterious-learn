@@ -443,30 +443,40 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
         );
     };
 
-    const [copilotTheme, setCopilotTheme] = useState('light'); // 'light' by default per user request
+    const [copilotTheme, setCopilotTheme] = useState('dark');
 
     return (
         <AnimatePresence>
             {isOpen && (
-                <motion.div
-                    initial={{ x: '100%', opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: '100%', opacity: 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className={`fixed transition-all duration-300 backdrop-blur-2xl flex flex-col shadow-[-10px_0_50px_rgba(0,0,0,0.15)] ${
-                        copilotTheme === 'light'
-                            ? 'bg-slate-50 text-slate-900 border-l border-slate-300'
-                            : 'bg-slate-950/95 text-white border-l border-blue-500/20'
-                    } ${
-                        isFullScreen 
-                            ? 'fixed inset-0 w-screen h-screen z-[99999] top-0 left-0 right-0 bottom-0' 
-                            : 'top-0 right-0 h-full z-[150] ' + (
-                                isExpanded 
-                                    ? 'w-full sm:w-[850px] lg:w-[1000px]' 
-                                    : 'w-full sm:w-[540px] md:w-[640px]'
-                            )
-                    }`}
-                >
+                <>
+                    {/* Backdrop Overlay to close when clicking outside */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[145]"
+                    />
+
+                    <motion.div
+                        initial={{ x: '100%', opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        exit={{ x: '100%', opacity: 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        className={`fixed transition-all duration-300 backdrop-blur-2xl flex flex-col shadow-[-10px_0_50px_rgba(0,0,0,0.5)] ${
+                            copilotTheme === 'light'
+                                ? 'bg-slate-900 text-slate-100 border-l border-slate-700'
+                                : 'bg-slate-950/95 text-white border-l border-blue-500/30'
+                        } ${
+                            isFullScreen 
+                                ? 'fixed inset-0 w-screen h-screen z-[99999] top-0 left-0 right-0 bottom-0' 
+                                : 'top-0 right-0 h-full z-[150] ' + (
+                                    isExpanded 
+                                        ? 'w-full sm:w-[850px] lg:w-[1000px]' 
+                                        : 'w-full sm:w-[480px] md:w-[560px]'
+                                )
+                        }`}
+                    >
                     {/* Header */}
                     <div className={`p-6 flex justify-between items-center relative z-10 transition-colors ${
                         copilotTheme === 'light'
@@ -738,6 +748,7 @@ const MysteriousCopilot = ({ isOpen, onClose, user, API_URL }) => {
                         </form>
                     </div>
                 </motion.div>
+            </>
             )}
         </AnimatePresence>
     );
